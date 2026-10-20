@@ -668,7 +668,7 @@
       "quote": "Get a price",
       "book": "Book an intro call",
       "email": "Email the studio",
-      "whatsapp": "Message on WhatsApp",
+      "whatsapp": "Request a Google Meeting",
       "admin": "Open dashboard"
     }
   },
@@ -736,7 +736,7 @@
     "body": "A short, friendly conversation about your goal and deadline. Choose anytime that suits your schedule.",
     "cta": "Choose a time",
     "note": "Prefer email? Send us a message and we will reply promptly.",
-    "noteCta": "Message us on WhatsApp",
+    "noteCta": "Request a Google Meeting",
     "timezone": "Available anytime across all timezones."
   },
   "About": {

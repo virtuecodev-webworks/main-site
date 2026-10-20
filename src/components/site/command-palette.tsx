@@ -5,7 +5,7 @@ import {
   ArrowRight,
   LayoutDashboard,
   Mail,
-  MessageCircle,
+  Video,
   Moon,
   Search,
   Sun,
@@ -112,13 +112,13 @@ export function CommandPalette({ className }: CommandPaletteProps) {
         },
       },
       {
-        id: 'action:whatsapp',
+        id: 'action:meet',
         group: 'actions',
-        label: t('actions.whatsapp'),
-        icon: MessageCircle,
-        keywords: 'whatsapp chat message',
+        label: 'Request a Google Meeting',
+        icon: Video,
+        keywords: 'google meet call schedule calendar appointment',
         run: () => {
-          window.open(`https://wa.me/${AGENCY.phone.replace(/[^\d]/g, '')}`, '_blank', 'noopener')
+          window.location.href = `mailto:${AGENCY.fallbackEmail}?subject=Request%20a%20Meeting%20-%20Google%20Meet&body=Hello%20Virtue%20%26%20Co.,%0A%0AI%20would%20like%20to%20request%20a%20meeting%20on%20Google%20Meet.`
         },
       },
       {

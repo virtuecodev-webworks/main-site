@@ -116,7 +116,7 @@ export const AGENCY_SERVICES: AgencyServiceOffering[] = [
           'Inline secure payment gateway (Cards & Apple Pay)',
           'Mobile-first responsive cart & checkout',
           'Instant customer email confirmation receipts',
-          'WhatsApp direct order link widget',
+          'Direct meeting & priority consultation scheduling',
           'Order notification to agency / client inbox',
         ],
       },

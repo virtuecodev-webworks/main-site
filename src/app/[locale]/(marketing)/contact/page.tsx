@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { CalendarClock, Clock, Mail, MessageCircle } from 'lucide-react'
+import { CalendarClock, Clock, Mail, Video } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PageHero } from '@/components/site/page-hero'
 import { ContactForm } from '@/components/site/contact-form'
 import { Faq } from '@/components/site/faq'
 import { Reveal } from '@/components/motion/reveal'
 import { Button } from '@/components/ui/button'
-import { AGENCY, WHATSAPP_DIGITS } from '@/lib/constants'
+import { AGENCY, GOOGLE_MEET_MAILTO } from '@/lib/constants'
 import { PHOTOS } from '@/lib/photos'
 import { buildPageMetadata } from '@/lib/seo'
 
@@ -111,12 +111,15 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button asChild variant="gold" size="lg">
-                  <a href={`mailto:${AGENCY.email}?subject=Intro%20call`}>{tBooking('cta')}</a>
+                  <a href={GOOGLE_MEET_MAILTO}>
+                    <Video className="size-4 mr-2" aria-hidden />
+                    Request a Google Meeting
+                  </a>
                 </Button>
                 <Button asChild variant="outline" size="lg">
-                  <a href={`https://wa.me/${WHATSAPP_DIGITS}`} target="_blank" rel="noreferrer noopener">
-                    <MessageCircle className="size-4" aria-hidden />
-                    {tBooking('noteCta')}
+                  <a href={`mailto:${AGENCY.email}?subject=Project%20Inquiry`}>
+                    <Mail className="size-4 mr-2" aria-hidden />
+                    Email the Studio
                   </a>
                 </Button>
               </div>

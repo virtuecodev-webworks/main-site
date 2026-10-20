@@ -29,7 +29,7 @@ import {
 import { useRouter } from '@/i18n/navigation'
 import { useRegion } from './region-provider'
 import { openFlutterwaveCheckout } from '@/lib/payments/checkout-client'
-import { AGENCY, CURRENCIES, WHATSAPP_DIGITS, type CurrencyCode } from '@/lib/constants'
+import { AGENCY, CURRENCIES, GOOGLE_MEET_MAILTO, type CurrencyCode } from '@/lib/constants'
 import { cn, formatMoney } from '@/lib/utils'
 
 /** Flutterwave has a different economic floor per currency. */
@@ -420,14 +420,12 @@ export function PaymentForm({ className }: { className?: string }) {
               </a>
             </div>
             <div className="flex items-center justify-between pt-1">
-              <span className="text-muted-foreground">WhatsApp:</span>
+              <span className="text-muted-foreground">Meeting:</span>
               <a
-                href={`https://wa.me/${WHATSAPP_DIGITS}?text=Hello%20Virtue%20%26%20Co.,%20I%20have%20a%20question%20about%20a%20payment.`}
-                target="_blank"
-                rel="noreferrer"
+                href={GOOGLE_MEET_MAILTO}
                 className="inline-flex items-center gap-1 font-medium text-emerald hover:underline"
               >
-                <span>{AGENCY.phone}</span>
+                <span>Request Google Meet</span>
                 <ExternalLink className="size-3" />
               </a>
             </div>

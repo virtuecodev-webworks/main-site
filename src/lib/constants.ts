@@ -19,8 +19,11 @@ export const AGENCY = {
   founded: 2024,
 } as const
 
-/** Digits-only form of the studio phone, for `wa.me` deep links. */
-export const WHATSAPP_DIGITS = AGENCY.phone.replace(/[^\d]/g, '')
+/** Direct Google Meet booking mailto link routed to the studio Gmail account. */
+export const GOOGLE_MEET_MAILTO = `mailto:${AGENCY.fallbackEmail}?subject=Request%20a%20Meeting%20-%20Google%20Meet&body=Hello%20Virtue%20%26%20Co.,%0A%0AI%20would%20like%20to%20request%20a%20meeting%20on%20Google%20Meet.%0A%0ACompany%20/%20Project:%0AProposed%20Date%20%26%20Time:%0AMy%20Timezone:`
+
+/** Deprecated: WhatsApp is removed studio-wide in favour of email, form, and Google Meet. */
+export const WHATSAPP_DIGITS = ''
 
 /**
  * Real, working contact channels only.
