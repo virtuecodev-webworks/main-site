@@ -40,7 +40,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: 'not-configured' }, { status: 503 })
   }
 
-  const publicKey = process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY
+  const publicKey =
+    process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY ||
+    process.env.FLW_PUBLIC_KEY ||
+    process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY
   if (!publicKey || publicKey.includes('xxxx')) {
     return NextResponse.json({ ok: false, message: 'not-configured' }, { status: 503 })
   }

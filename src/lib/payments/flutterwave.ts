@@ -13,7 +13,7 @@ import 'server-only'
 const FLW_API = 'https://api.flutterwave.com/v3'
 
 export function isFlutterwaveConfigured() {
-  const key = process.env.FLUTTERWAVE_SECRET_KEY
+  const key = process.env.FLUTTERWAVE_SECRET_KEY || process.env.FLW_SECRET_KEY
   return Boolean(key && !key.includes('xxxx'))
 }
 
@@ -45,9 +45,9 @@ interface FlutterwaveEnvelope<T> {
 export async function verifyTransaction(
   transactionId: string | number,
 ): Promise<VerifiedTransaction | null> {
-  const secret = process.env.FLUTTERWAVE_SECRET_KEY
+  const secret = process.env.FLUTTERWAVE_SECRET_KEY || process.env.FLW_SECRET_KEY
   if (!secret) {
-    console.warn('[flutterwave] FLUTTERWAVE_SECRET_KEY missing - cannot verify')
+    console.warn('[flutterwave] Secret key missing - cannot verify')
     return null
   }
 
@@ -91,7 +91,10 @@ export async function verifyTransaction(
  * `verif-hash` header. Compared in constant time.
  */
 export function verifyWebhookSignature(headerValue: string | null) {
-  const expected = process.env.FLUTTERWAVE_WEBHOOK_HASH
+  const expected =
+    process.env.FLUTTERWAVE_WEBHOOK_HASH ||
+    process.env.FLW_SECRET_HASH ||
+    process.env.FLUTTERWAVE_SECRET_HASH
   if (!expected || !headerValue) return false
   if (expected.length !== headerValue.length) return false
 

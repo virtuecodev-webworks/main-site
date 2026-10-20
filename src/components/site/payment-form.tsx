@@ -1,8 +1,19 @@
 'use client'
 
 import * as React from 'react'
-import { CreditCard, Lock, ShieldCheck } from 'lucide-react'
+import {
+  CreditCard,
+  Lock,
+  ShieldCheck,
+  CheckCircle2,
+  Building2,
+  MessageCircle,
+  ExternalLink,
+  ShieldAlert,
+} from 'lucide-react'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
+import { VirtueMark } from '@/components/brand/virtue-mark'
+import { VirtueWordmark } from '@/components/brand/virtue-wordmark'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
@@ -18,7 +29,7 @@ import {
 import { useRouter } from '@/i18n/navigation'
 import { useRegion } from './region-provider'
 import { openFlutterwaveCheckout } from '@/lib/payments/checkout-client'
-import { AGENCY, CURRENCIES, type CurrencyCode } from '@/lib/constants'
+import { AGENCY, CURRENCIES, WHATSAPP_DIGITS, type CurrencyCode } from '@/lib/constants'
 import { cn, formatMoney } from '@/lib/utils'
 
 /** Flutterwave has a different economic floor per currency. */
@@ -141,8 +152,8 @@ export function PaymentForm({ className }: { className?: string }) {
         },
         customizations: {
           title: AGENCY.name,
-          description: purpose || 'Project payment',
-          logo: `${window.location.origin}/brand/logo.svg`,
+          description: purpose || 'Milestone Payment · Virtue & Co. Webworks',
+          logo: `${window.location.origin}/brand/logo-mark.png`,
         },
         ...(result.redirectUrl ? { redirect_url: result.redirectUrl } : {}),
         callback: (callback) => {
@@ -189,8 +200,19 @@ export function PaymentForm({ className }: { className?: string }) {
   }
 
   return (
-    <div className={cn('grid gap-6 lg:grid-cols-[1.35fr_1fr]', className)}>
-      <form onSubmit={handleSubmit} noValidate className="surface flex flex-col gap-5 p-6 sm:p-8">
+    <div className={cn('grid gap-8 lg:grid-cols-[1.35fr_1fr]', className)}>
+      <form onSubmit={handleSubmit} noValidate className="surface relative flex flex-col gap-6 p-6 sm:p-9 rounded-2xl border border-border/80 shadow-sm">
+        {/* Branded Security Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/70 pb-5">
+          <div className="flex items-center gap-3">
+            <VirtueWordmark descriptor={true} size="default" />
+          </div>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald/30 bg-emerald/10 px-3 py-1 text-[11.5px] font-medium text-emerald">
+            <span className="size-1.5 rounded-full bg-emerald animate-pulse" />
+            <span>Verified Studio Escrow</span>
+          </div>
+        </div>
+
         <div className="grid gap-5 sm:grid-cols-[1.4fr_1fr]">
           <Field label={t('amount')} name="amount" errors={fieldErrors.amount} required>
             <Input
@@ -202,6 +224,7 @@ export function PaymentForm({ className }: { className?: string }) {
               step="0.01"
               required
               placeholder={String(minimum)}
+              className="text-lg font-medium"
             />
             <p className="text-[11.5px] text-muted-foreground">
               {t('amountHint', { amount: formatMoney(minimum, currency) })}
@@ -213,13 +236,13 @@ export function PaymentForm({ className }: { className?: string }) {
               value={currency}
               onValueChange={(value) => setCurrencyOverride(value as CurrencyCode)}
             >
-              <SelectTrigger id="pay-currency">
+              <SelectTrigger id="pay-currency" className="h-10">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {CURRENCIES.map((entry) => (
                   <SelectItem key={entry.code} value={entry.code}>
-                    <span className="font-mono text-[11px] tracking-widest text-muted-foreground">
+                    <span className="font-mono text-[11px] tracking-widest text-muted-foreground mr-1.5">
                       {entry.code}
                     </span>
                     <span>
@@ -241,6 +264,7 @@ export function PaymentForm({ className }: { className?: string }) {
               required
               minLength={2}
               maxLength={140}
+              placeholder="e.g. Alex Vance"
             />
           </Field>
 
@@ -252,6 +276,7 @@ export function PaymentForm({ className }: { className?: string }) {
               autoComplete="email"
               required
               maxLength={180}
+              placeholder="you@company.com"
             />
           </Field>
         </div>
@@ -264,11 +289,12 @@ export function PaymentForm({ className }: { className?: string }) {
               type="tel"
               autoComplete="tel"
               maxLength={40}
+              placeholder="+1 (555) 000-0000"
             />
           </Field>
 
           <Field label={`${t('invoiceReference')} (optional)`} name="reference" errors={fieldErrors.reference} hint={t('invoiceHint')}>
-            <Input id="pay-reference" name="reference" maxLength={80} />
+            <Input id="pay-reference" name="reference" maxLength={80} placeholder="e.g. VCW-2026-001" />
           </Field>
         </div>
 
@@ -280,9 +306,9 @@ export function PaymentForm({ className }: { className?: string }) {
                 type="button"
                 onClick={() => choosePreset(key)}
                 className={cn(
-                  'rounded-full border px-3.5 py-1.5 text-[12.5px] font-medium transition-colors',
+                  'rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-all',
                   preset === key
-                    ? 'border-gold-400 bg-gold-50 text-gold-800 dark:border-gold-500/45 dark:bg-gold-500/12 dark:text-gold-300'
+                    ? 'border-gold-400 bg-gold-500/15 text-gold-700 dark:border-gold-500/50 dark:bg-gold-500/20 dark:text-gold-300 shadow-sm'
                     : 'border-border text-muted-foreground hover:border-gold-300 hover:text-foreground',
                 )}
               >
@@ -301,48 +327,112 @@ export function PaymentForm({ className }: { className?: string }) {
           />
         </Field>
 
-        <div className="flex flex-col gap-4 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-2 text-[12.5px] text-muted-foreground">
-            <Lock className="size-3.5 text-gold-600" />
-            {t('processing').replace('…', '')} · PCI-DSS
-          </p>
+        {/* Accepted Payment Channels */}
+        <div className="rounded-xl border border-border/60 bg-muted/30 p-3.5 flex flex-wrap items-center justify-between gap-2.5">
+          <span className="text-[11.5px] font-medium text-muted-foreground">Accepted Methods:</span>
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono text-foreground/80">
+            <span className="rounded bg-background px-2 py-0.5 border border-border/80">Visa</span>
+            <span className="rounded bg-background px-2 py-0.5 border border-border/80">Mastercard</span>
+            <span className="rounded bg-background px-2 py-0.5 border border-border/80">Verve</span>
+            <span className="rounded bg-background px-2 py-0.5 border border-border/80">Bank Transfer</span>
+            <span className="rounded bg-background px-2 py-0.5 border border-border/80">USSD</span>
+            <span className="rounded bg-background px-2 py-0.5 border border-border/80">Apple Pay</span>
+          </div>
+        </div>
 
-          <Button type="submit" variant="gold" size="lg" disabled={pending} className="shrink-0">
+        <div className="flex flex-col gap-4 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+            <Lock className="size-3.5 text-gold-600 shrink-0" />
+            <span>256-Bit Bank Grade SSL · 3D-Secure 2.0</span>
+          </div>
+
+          <Button type="submit" variant="gold" size="lg" disabled={pending} className="shrink-0 h-11 px-7 font-semibold">
             {pending ? (
               <>
                 <VirtueSpinner className="size-4" />
-                {t('processing')}
+                <span>{t('processing')}</span>
               </>
             ) : (
               <>
-                <CreditCard className="size-4" />
-                {t('payNow')}
+                <CreditCard className="size-4 mr-1.5" />
+                <span>{t('payNow')}</span>
               </>
             )}
           </Button>
         </div>
       </form>
 
-      <aside className="surface flex flex-col gap-5 p-6 sm:p-8">
-        <div className="flex items-center gap-3">
-          <span className="grid size-11 place-items-center rounded-2xl bg-gold-500/14 text-gold-700 ring-1 ring-gold-500/30 ring-inset">
-            <ShieldCheck className="size-5" />
+      {/* Branded Studio Assurance Sidebar */}
+      <aside className="surface flex flex-col gap-6 p-6 sm:p-8 rounded-2xl border border-border/80 shadow-sm">
+        <div className="flex items-center gap-3.5 border-b border-border/70 pb-5">
+          <span className="grid size-12 place-items-center rounded-2xl bg-gold-500/12 ring-1 ring-gold-500/25 ring-inset">
+            <VirtueMark className="size-8" animate={false} />
           </span>
-          <h2 className="text-base font-semibold">{tAssurance('title')}</h2>
+          <div>
+            <h2 className="text-base font-bold text-foreground">Virtue & Co. Webworks</h2>
+            <p className="text-[12px] text-muted-foreground font-mono">virtuecowebworks.solutions</p>
+          </div>
         </div>
 
-        <ul className="space-y-4">
-          {(['point1', 'point2', 'point3'] as const).map((key) => (
-            <li key={key} className="flex items-start gap-3 text-[13.5px] leading-relaxed">
-              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-gold-500" aria-hidden />
-              <span className="text-muted-foreground">{tAssurance(key)}</span>
-            </li>
-          ))}
-        </ul>
+        {/* Verification Checkmarks */}
+        <div className="space-y-4">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="size-4 text-emerald shrink-0 mt-0.5" />
+            <div className="text-[13px] leading-relaxed">
+              <span className="font-semibold text-foreground block">Milestone Escrow Protection</span>
+              <span className="text-muted-foreground">Payments are allocated directly to confirmed project milestones. No surprise scope fees.</span>
+            </div>
+          </div>
 
-        <p className="mt-auto border-t border-border pt-5 text-[12px] text-muted-foreground">
-          {AGENCY.email}
-        </p>
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="size-4 text-emerald shrink-0 mt-0.5" />
+            <div className="text-[13px] leading-relaxed">
+              <span className="font-semibold text-foreground block">Instant Receipt & Portal Sync</span>
+              <span className="text-muted-foreground">Your PDF tax invoice is automatically emailed within 60 seconds, and your order dashboard is activated.</span>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="size-4 text-emerald shrink-0 mt-0.5" />
+            <div className="text-[13px] leading-relaxed">
+              <span className="font-semibold text-foreground block">Direct Studio Contact</span>
+              <span className="text-muted-foreground">Need help or a custom wire invoice? You talk directly to the engineers building your platform.</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Official Channels Box */}
+        <div className="mt-auto rounded-xl border border-border/70 bg-muted/20 p-4 space-y-2.5">
+          <div className="text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Official Studio Support
+          </div>
+          <div className="text-[12.5px] space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Primary:</span>
+              <a href={`mailto:${AGENCY.email}`} className="font-medium text-foreground hover:text-gold-500 transition-colors">
+                {AGENCY.email}
+              </a>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Direct:</span>
+              <a href={`mailto:${AGENCY.fallbackEmail}`} className="font-medium text-foreground hover:text-gold-500 transition-colors">
+                {AGENCY.fallbackEmail}
+              </a>
+            </div>
+            <div className="flex items-center justify-between pt-1">
+              <span className="text-muted-foreground">WhatsApp:</span>
+              <a
+                href={`https://wa.me/${WHATSAPP_DIGITS}?text=Hello%20Virtue%20%26%20Co.,%20I%20have%20a%20question%20about%20a%20payment.`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 font-medium text-emerald hover:underline"
+              >
+                <span>{AGENCY.phone}</span>
+                <ExternalLink className="size-3" />
+              </a>
+            </div>
+          </div>
+        </div>
       </aside>
     </div>
   )
