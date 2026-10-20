@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-label="Meridian editorial newsroom">
+  <defs>
+    <linearGradient id="m-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fdfcf9"/>
+      <stop offset="100%" stop-color="#f6f3ec"/>
+    </linearGradient>
+    <linearGradient id="m-hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#3a3a3f"/>
+    </linearGradient>
+    <linearGradient id="m-a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8a6f2a"/>
+      <stop offset="100%" stop-color="#c5a059"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#m-bg)"/>
+
+  <!-- chrome -->
+  <rect x="0" y="0" width="1200" height="52" fill="#ffffff"/>
+  <circle cx="34" cy="26" r="6" fill="#dadade"/>
+  <circle cx="56" cy="26" r="6" fill="#dadade"/>
+  <circle cx="78" cy="26" r="6" fill="#dadade"/>
+  <rect x="112" y="14" width="360" height="24" rx="12" fill="#f1f1f4"/>
+  <text x="132" y="31" font-family="Poppins, Segoe UI, sans-serif" font-size="13" fill="#9a9aa3">meridian.media/edition/october</text>
+
+  <!-- masthead -->
+  <text x="60" y="126" font-family="Poppins, Segoe UI, sans-serif" font-size="40" font-weight="700" fill="#1a1a1a" letter-spacing="2">MERIDIAN</text>
+  <rect x="60" y="146" width="1080" height="1" fill="#1a1a1a" opacity="0.16"/>
+  <g fill="#55555c">
+    <rect x="60" y="160" width="48" height="8" rx="4"/>
+    <rect x="126" y="160" width="60" height="8" rx="4"/>
+    <rect x="206" y="160" width="42" height="8" rx="4"/>
+    <rect x="268" y="160" width="66" height="8" rx="4"/>
+    <rect x="354" y="160" width="54" height="8" rx="4"/>
+  </g>
+
+  <!-- lead story -->
+  <rect x="60" y="196" width="660" height="360" rx="18" fill="url(#m-hero)"/>
+  <rect x="90" y="452" width="440" height="16" rx="8" fill="#ffffff" opacity="0.92"/>
+  <rect x="90" y="482" width="360" height="16" rx="8" fill="#ffffff" opacity="0.7"/>
+  <rect x="90" y="516" width="520" height="10" rx="5" fill="#ffffff" opacity="0.3"/>
+  <rect x="90" y="228" width="104" height="26" rx="13" fill="url(#m-a)"/>
+  <text x="110" y="246" font-family="Poppins, Segoe UI, sans-serif" font-size="13" font-weight="600" fill="#1a1508">Markets</text>
+
+  <!-- sidebar stories -->
+  <g>
+    <rect x="748" y="196" width="392" height="108" rx="16" fill="#ffffff"/>
+    <rect x="770" y="222" width="80" height="56" rx="10" fill="url(#m-a)"/>
+    <rect x="866" y="222" width="230" height="11" rx="5.5" fill="#3a3a3f"/>
+    <rect x="866" y="244" width="180" height="9" rx="4.5" fill="#c4c4cc"/>
+    <rect x="866" y="262" width="210" height="9" rx="4.5" fill="#c4c4cc"/>
+
+    <rect x="748" y="322" width="392" height="108" rx="16" fill="#ffffff"/>
+    <rect x="770" y="348" width="80" height="56" rx="10" fill="#e4e4e8"/>
+    <rect x="866" y="348" width="230" height="11" rx="5.5" fill="#3a3a3f"/>
+    <rect x="866" y="370" width="150" height="9" rx="4.5" fill="#c4c4cc"/>
+    <rect x="866" y="388" width="200" height="9" rx="4.5" fill="#c4c4cc"/>
+
+    <rect x="748" y="448" width="392" height="108" rx="16" fill="#ffffff"/>
+    <rect x="770" y="474" width="80" height="56" rx="10" fill="#e4e4e8"/>
+    <rect x="866" y="474" width="230" height="11" rx="5.5" fill="#3a3a3f"/>
+    <rect x="866" y="496" width="170" height="9" rx="4.5" fill="#c4c4cc"/>
+    <rect x="866" y="514" width="196" height="9" rx="4.5" fill="#c4c4cc"/>
+  </g>
+
+  <!-- lower cards -->
+  <g>
+    <rect x="60" y="588" width="346" height="118" rx="16" fill="#ffffff"/>
+    <rect x="60" y="588" width="346" height="8" rx="4" fill="url(#m-a)"/>
+    <rect x="88" y="620" width="240" height="11" rx="5.5" fill="#3a3a3f"/>
+    <rect x="88" y="642" width="180" height="9" rx="4.5" fill="#c4c4cc"/>
+    <rect x="88" y="660" width="210" height="9" rx="4.5" fill="#c4c4cc"/>
+
+    <rect x="428" y="588" width="346" height="118" rx="16" fill="#ffffff"/>
+    <rect x="428" y="588" width="346" height="8" rx="4" fill="#1a1a1a"/>
+    <rect x="456" y="620" width="240" height="11" rx="5.5" fill="#3a3a3f"/>
+    <rect x="456" y="642" width="180" height="9" rx="4.5" fill="#c4c4cc"/>
+    <rect x="456" y="660" width="200" height="9" rx="4.5" fill="#c4c4cc"/>
+
+    <rect x="796" y="588" width="344" height="118" rx="16" fill="#ffffff"/>
+    <rect x="796" y="588" width="344" height="8" rx="4" fill="url(#m-a)"/>
+    <rect x="824" y="620" width="230" height="11" rx="5.5" fill="#3a3a3f"/>
+    <rect x="824" y="642" width="170" height="9" rx="4.5" fill="#c4c4cc"/>
+    <rect x="824" y="660" width="196" height="9" rx="4.5" fill="#c4c4cc"/>
+  </g>
+</svg>

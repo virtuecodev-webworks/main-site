@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-label="Aurum Capital investor platform dashboard">
+  <defs>
+    <linearGradient id="a-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1b1b21"/>
+      <stop offset="55%" stop-color="#121216"/>
+      <stop offset="100%" stop-color="#0a0a0c"/>
+    </linearGradient>
+    <linearGradient id="a-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8a6f2a"/>
+      <stop offset="45%" stop-color="#d4af37"/>
+      <stop offset="70%" stop-color="#f3e3a6"/>
+      <stop offset="100%" stop-color="#a2823c"/>
+    </linearGradient>
+    <linearGradient id="a-area" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4af37" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="a-bloom" cx="72%" cy="18%" r="60%">
+      <stop offset="0%" stop-color="#d4af37" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#a-bg)"/>
+  <rect width="1200" height="750" fill="url(#a-bloom)"/>
+
+  <!-- browser chrome -->
+  <rect x="0" y="0" width="1200" height="52" fill="#ffffff" opacity="0.04"/>
+  <circle cx="34" cy="26" r="6" fill="#ff5f57"/>
+  <circle cx="56" cy="26" r="6" fill="#febc2e"/>
+  <circle cx="78" cy="26" r="6" fill="#28c840"/>
+  <rect x="112" y="14" width="380" height="24" rx="12" fill="#ffffff" opacity="0.07"/>
+  <text x="132" y="31" font-family="Poppins, Segoe UI, sans-serif" font-size="13" fill="#c8c8d0">aurumcapital.com/portal</text>
+
+  <!-- sidebar -->
+  <rect x="0" y="52" width="212" height="698" fill="#ffffff" opacity="0.03"/>
+  <rect x="26" y="86" width="34" height="34" rx="10" fill="url(#a-gold)"/>
+  <rect x="74" y="94" width="98" height="9" rx="4.5" fill="#ffffff" opacity="0.5"/>
+  <rect x="74" y="110" width="62" height="7" rx="3.5" fill="#ffffff" opacity="0.24"/>
+  <g fill="#ffffff" opacity="0.26">
+    <rect x="26" y="164" width="150" height="10" rx="5"/>
+    <rect x="26" y="200" width="120" height="10" rx="5"/>
+    <rect x="26" y="236" width="140" height="10" rx="5"/>
+    <rect x="26" y="272" width="104" height="10" rx="5"/>
+    <rect x="26" y="308" width="132" height="10" rx="5"/>
+  </g>
+  <rect x="18" y="156" width="4" height="26" rx="2" fill="url(#a-gold)"/>
+
+  <!-- header -->
+  <text x="256" y="112" font-family="Poppins, Segoe UI, sans-serif" font-size="30" font-weight="700" fill="#f5f5f7">Portfolio overview</text>
+  <rect x="256" y="132" width="250" height="10" rx="5" fill="#ffffff" opacity="0.22"/>
+  <rect x="1010" y="88" width="150" height="42" rx="21" fill="url(#a-gold)"/>
+  <text x="1046" y="115" font-family="Poppins, Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#1a1508">Invest</text>
+
+  <!-- balance card -->
+  <rect x="256" y="180" width="450" height="216" rx="20" fill="#ffffff" opacity="0.05"/>
+  <text x="288" y="226" font-family="Poppins, Segoe UI, sans-serif" font-size="15" fill="#9a9aa3">Total portfolio value</text>
+  <text x="288" y="286" font-family="Poppins, Segoe UI, sans-serif" font-size="52" font-weight="700" fill="url(#a-gold)">$2,481,930</text>
+  <rect x="288" y="312" width="118" height="30" rx="15" fill="#1f7a52" opacity="0.28"/>
+  <text x="306" y="332" font-family="Poppins, Segoe UI, sans-serif" font-size="14" font-weight="600" fill="#5fd39c">+12.4%</text>
+  <rect x="420" y="319" width="150" height="9" rx="4.5" fill="#ffffff" opacity="0.2"/>
+  <rect x="288" y="362" width="386" height="1" fill="#ffffff" opacity="0.1"/>
+
+  <!-- chart card -->
+  <rect x="730" y="180" width="430" height="216" rx="20" fill="#ffffff" opacity="0.05"/>
+  <text x="762" y="222" font-family="Poppins, Segoe UI, sans-serif" font-size="15" fill="#9a9aa3">Performance · 12 months</text>
+  <path d="M762 372 L818 340 L874 352 L930 300 L986 312 L1042 256 L1098 268 L1130 232"
+        fill="none" stroke="url(#a-gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M762 372 L818 340 L874 352 L930 300 L986 312 L1042 256 L1098 268 L1130 232 L1130 388 L762 388 Z"
+        fill="url(#a-area)"/>
+
+  <!-- stat chips -->
+  <g>
+    <rect x="256" y="424" width="288" height="126" rx="18" fill="#ffffff" opacity="0.045"/>
+    <rect x="288" y="456" width="60" height="8" rx="4" fill="#ffffff" opacity="0.24"/>
+    <text x="288" y="512" font-family="Poppins, Segoe UI, sans-serif" font-size="34" font-weight="700" fill="#f5f5f7">14</text>
+    <rect x="360" y="500" width="120" height="9" rx="4.5" fill="#ffffff" opacity="0.22"/>
+
+    <rect x="572" y="424" width="288" height="126" rx="18" fill="#ffffff" opacity="0.045"/>
+    <rect x="604" y="456" width="60" height="8" rx="4" fill="#ffffff" opacity="0.24"/>
+    <text x="604" y="512" font-family="Poppins, Segoe UI, sans-serif" font-size="34" font-weight="700" fill="#f5f5f7">₦84.2M</text>
+
+    <rect x="888" y="424" width="272" height="126" rx="18" fill="#ffffff" opacity="0.045"/>
+    <rect x="920" y="456" width="60" height="8" rx="4" fill="#ffffff" opacity="0.24"/>
+    <text x="920" y="512" font-family="Poppins, Segoe UI, sans-serif" font-size="34" font-weight="700" fill="#f5f5f7">A+ KYC</text>
+  </g>
+
+  <!-- holdings table -->
+  <rect x="256" y="576" width="904" height="140" rx="20" fill="#ffffff" opacity="0.045"/>
+  <g fill="#ffffff" opacity="0.2">
+    <rect x="288" y="606" width="70" height="8" rx="4"/>
+    <rect x="288" y="646" width="150" height="9" rx="4.5"/>
+    <rect x="288" y="674" width="118" height="9" rx="4.5"/>
+    <rect x="560" y="646" width="90" height="9" rx="4.5"/>
+    <rect x="560" y="674" width="70" height="9" rx="4.5"/>
+    <rect x="820" y="646" width="110" height="9" rx="4.5"/>
+    <rect x="820" y="674" width="84" height="9" rx="4.5"/>
+  </g>
+  <rect x="1050" y="640" width="80" height="28" rx="14" fill="url(#a-gold)" opacity="0.9"/>
+</svg>

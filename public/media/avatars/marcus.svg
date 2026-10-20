@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Marcus Feld">
+  <defs>
+    <linearGradient id="av2-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1b1b21"/>
+      <stop offset="100%" stop-color="#33333d"/>
+    </linearGradient>
+    <linearGradient id="av2-g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8d48c"/>
+      <stop offset="100%" stop-color="#c5a059"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="80" fill="url(#av2-bg)"/>
+  <circle cx="80" cy="80" r="79" fill="none" stroke="#c5a059" stroke-opacity="0.4"/>
+  <text x="80" y="99" text-anchor="middle" font-family="Poppins, Segoe UI, sans-serif" font-size="54" font-weight="700" fill="url(#av2-g)">MF</text>
+</svg>

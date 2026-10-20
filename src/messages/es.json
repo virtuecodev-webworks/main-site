@@ -1,0 +1,621 @@
+{
+  "Metadata": {
+    "title": "Virtue & Co. Webworks - Diseño y desarrollo de sitios web",
+    "titleTemplate": "%s · Virtue & Co. Webworks",
+    "description": "Diseñamos y creamos sitios web rápidos y atractivos para empresas de todo el mundo: a medida, WordPress, Wix, tiendas online y pagos. Siempre recibes un plan claro y un precio fijo antes de empezar.",
+    "keywords": "estudio de diseño web, desarrolladores web, desarrollo Next.js, desarrollo React, desarrollo WordPress, diseño Wix, creación de tienda online, integración de pagos, estudio web global"
+  },
+  "Brand": {
+    "name": "Virtue & Co. Webworks",
+    "short": "Virtue & Co.",
+    "tagline": "Creamos sitios web que se ven genial y funcionan aún mejor.",
+    "wordmark": "Virtue & Co.",
+    "wordmarkSub": "WEBWORKS",
+    "loaderLabel": "Cargando Virtue & Co. Webworks"
+  },
+  "Nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "portfolio": "Portafolio",
+    "payment": "Pagos",
+    "contact": "Contacto",
+    "quote": "Ver precio",
+    "admin": "Panel",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "menu": "Menú",
+    "language": "Idioma",
+    "changeLanguage": "Cambiar idioma",
+    "skipToContent": "Ir al contenido",
+    "about": "Nosotros",
+    "blog": "Blog",
+    "theme": "Cambiar tema",
+    "country": "País y moneda",
+    "account": "Tus proyectos"
+  },
+  "Region": {
+    "label": "País y moneda",
+    "title": "País y moneda",
+    "description": "Detectamos tu país automáticamente y lo usamos para la moneda, los precios y el horario en tu zona. Cámbialo cuando quieras: lo recordaremos.",
+    "search": "Buscar países",
+    "detected": "Detectado automáticamente",
+    "chosen": "Tu elección",
+    "noResults": "Ningún país coincide con esa búsqueda.",
+    "reset": "Usar mi país detectado",
+    "settlementNote": "Cobramos en NGN, USD, GBP y EUR. En el resto del mundo, los precios se cotizan en USD.",
+    "openNow": "Abierto ahora",
+    "opensAt": "Abre {when}",
+    "soon": "pronto",
+    "yourZone": "Las horas se muestran en tu propia zona horaria.",
+    "yourTimeIs": "Son las {time} donde estás.",
+    "studioOpen": "Estamos abiertos - escríbenos y te respondemos hoy.",
+    "studioClosed": "Estamos cerrados. Volvemos {when}, tu hora.",
+    "zoneUnknown": "Los horarios que se muestran son los del estudio."
+  },
+  "Common": {
+    "learnMore": "Saber más",
+    "viewAll": "Ver todo",
+    "all": "Todo",
+    "close": "Cerrar",
+    "loading": "Cargando…",
+    "sending": "Enviando…",
+    "backHome": "Volver al inicio",
+    "required": "Obligatorio",
+    "optional": "opcional",
+    "viewProject": "Ver proyecto",
+    "visitSite": "Visitar el sitio en vivo",
+    "techStack": "Stack tecnológico",
+    "featured": "Destacado",
+    "empty": "Todavía no hay nada aquí.",
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "or": "o",
+    "secure": "Seguro",
+    "poweredBy": "Pagos protegidos por Stripe"
+  },
+  "Home": {
+    "hero": {
+      "title": "Creamos sitios web y experiencias digitales de alto rendimiento.",
+      "subtitle": "Diseñamos, desarrollamos y lanzamos plataformas web a medida, sistemas de comercio y experiencias de marca para empresas, marcas globales y marcas personales.",
+      "primaryCta": "Ver nuestro trabajo",
+      "secondaryCta": "Ver precio"
+    },
+    "stats": {
+      "launch": "Lanzamiento típico",
+      "lighthouse": "Objetivo Lighthouse",
+      "senior": "Equipo sénior, sin intermediarios",
+      "response": "Primera respuesta"
+    },
+    "services": {
+      "eyebrow": "Qué hacemos",
+      "title": "Ingeniería pensada para tu resultado, no para una plantilla.",
+      "subtitle": "Cuatro disciplinas, un solo estándar: software rápido, accesible y bellamente construido.",
+      "cta": "Ver todos los servicios"
+    },
+    "work": {
+      "eyebrow": "Trabajo seleccionado",
+      "title": "Plataformas que hemos construido de principio a fin.",
+      "subtitle": "Una muestra de desarrollos a medida, plataformas WordPress, experiencias Wix y sistemas de comercio.",
+      "cta": "Explorar el portafolio completo"
+    },
+    "process": {},
+    "cta": {
+      "title": "Construyamos algo que merezca guardarse en favoritos.",
+      "subtitle": "Cuéntanos tu proyecto. Recibirás una propuesta detallada y un precio fijo en dos días hábiles.",
+      "primary": "Empezar tu proyecto",
+      "secondary": "Reservar una llamada gratis"
+    },
+    "journey": {
+      "eyebrow": "Cómo trabajamos",
+      "title": "Cómo transcurre un proyecto, de principio a fin.",
+      "subtitle": "Cinco pasos, sin sorpresas. Siempre sabes qué viene después y cuánto cuesta.",
+      "step1Title": "Hablamos",
+      "step1Body": "Una llamada corta sobre tu objetivo, tus clientes y tu plazo. Sin tecnicismos y sin presión.",
+      "step2Title": "Recibes un precio",
+      "step2Body": "Un plan por escrito y un precio fijo. Ese número solo cambia si cambias lo que incluye.",
+      "step3Title": "Diseñamos",
+      "step3Body": "Ves diseños reales de tus propias páginas, no un tablero de ideas - y los retocamos hasta que queden bien.",
+      "step4Title": "Construimos",
+      "step4Body": "Creamos el sitio y compartimos un enlace privado, para que veas cómo avanza cada semana.",
+      "step5Title": "Publicamos",
+      "step5Body": "Lo ponemos en marcha, te enseñamos a actualizarlo y seguimos disponibles 30 días después."
+    }
+  },
+  "Services": {
+    "title": "Servicios",
+    "metaTitle": "Servicios de ingeniería web",
+    "metaDescription": "Sitios codificados a medida, WordPress, Wix y tiendas e-commerce con integraciones de pago propias.",
+    "eyebrow": "Capacidades",
+    "subtitle": "Ya necesites una plataforma a medida o un sitio corporativo que convierta, se aplica el mismo estándar de ingeniería.",
+    "deliverables": "Qué obtienes",
+    "startingAt": "Desde",
+    "items": {
+      "custom": {
+        "title": "Sitios codificados a medida",
+        "summary": "Aplicaciones React y Next.js a medida, diseñadas para velocidad, escala y buscadores.",
+        "description": "Cuando las herramientas estándar frenan tu ambición, construimos bien. Front-ends tipados y basados en componentes, con renderizado en servidor, caché en el edge y un design system que es tuyo.",
+        "features": [
+          "Arquitectura Next.js App Router + TypeScript",
+          "Design system propio con tokens de Tailwind CSS",
+          "Presupuestos de Core Web Vitals verificados en CI",
+          "APIs headless, paneles e integraciones"
+        ]
+      },
+      "wordpress": {
+        "title": "Desarrollo WordPress",
+        "summary": "Sitios WordPress cómodos de editar que no sacrifican el rendimiento.",
+        "description": "Temas basados en bloques, tipos de contenido personalizados y editores con ACF para que tu equipo publique con confianza - en headless o en stack clásico, según tu hoja de ruta.",
+        "features": [
+          "Temas de bloques personalizados y patrones Gutenberg",
+          "Tipos de contenido y modelos de datos estructurados",
+          "Optimización de velocidad y seguridad de serie",
+          "Migración y formación editorial incluidas"
+        ]
+      },
+      "wix": {
+        "title": "Wix y soluciones no-code",
+        "summary": "Sitios Wix que convierten, lanzados rápido y sin parecer una plantilla.",
+        "description": "Ideal para lanzamientos, campañas y equipos ágiles. Llevamos Wix Studio y Velo al límite para que controles tu contenido sin depender de un desarrollador.",
+        "features": [
+          "Design systems de Wix Studio y breakpoints adaptables",
+          "Lógica propia con Velo y APIs de terceros",
+          "SEO, datos estructurados y analítica",
+          "Listo para lanzar en días, no en meses"
+        ]
+      },
+      "ecommerce": {
+        "title": "E-commerce y pagos",
+        "summary": "Vende globalmente con checkouts diseñados para la conversión y la conciliación.",
+        "description": "Tiendas, suscripciones, retainers y anticipos - con integraciones de Paystack y Stripe, y webhooks que mantienen tus cuentas al día.",
+        "features": [
+          "Checkout multidivisa con Stripe y Stripe",
+          "Arquitectura de carrito, catálogo e inventario",
+          "Registro de transacciones verificado por webhook",
+          "Carritos abandonados y correos de ciclo de vida"
+        ]
+      }
+    }
+  },
+  "Portfolio": {
+    "title": "Portafolio",
+    "metaTitle": "Portafolio y casos de estudio",
+    "metaDescription": "Plataformas web, sitios de marca y sistemas de comercio creados por Virtue & Co. Webworks.",
+    "eyebrow": "Trabajo seleccionado",
+    "subtitle": "Filtra por la plataforma que usamos. Todos los proyectos están en producción.",
+    "filters": {
+      "all": "Todo el trabajo",
+      "custom": "A medida",
+      "wordpress": "WordPress",
+      "wix": "Wix",
+      "ecommerce": "E-commerce"
+    },
+    "resultCount": "{count, plural, =0 {Sin proyectos} one {# proyecto} other {# proyectos}}",
+    "empty": "Aún no hay proyectos para ese filtro.",
+    "emptyAdminHint": "Añade tu primer proyecto desde el panel para llenar esta cuadrícula.",
+    "client": "Cliente",
+    "year": "Año",
+    "services": "Servicios",
+    "viewLive": "Ver en vivo",
+    "preview": "Vista previa en vivo",
+    "previewHint": "Las vistas previas se incrustan desde el dominio de producción del cliente.",
+    "closePreview": "Cerrar vista previa"
+  },
+  "Payment": {
+    "title": "Pagos",
+    "metaTitle": "Pagar un retainer o anticipo",
+    "metaDescription": "Paga retainers y anticipos de Virtue & Co. Webworks de forma segura en NGN, USD, GBP o EUR con Stripe.",
+    "eyebrow": "Pagos de clientes",
+    "subtitle": "Liquida un retainer o un anticipo en tu divisa. Se admiten tarjetas, transferencia bancaria, USSD y dinero móvil.",
+    "form": {
+      "amount": "Importe",
+      "currency": "Divisa",
+      "fullName": "Nombre completo",
+      "email": "Correo electrónico",
+      "phone": "Número de teléfono",
+      "purpose": "¿A qué corresponde este pago?",
+      "purposePlaceholder": "p. ej. 50 % de anticipo - plataforma e-commerce",
+      "invoiceReference": "Referencia de factura o presupuesto",
+      "invoiceHint": "Opcional, pero acelera la conciliación.",
+      "payNow": "Pagar de forma segura",
+      "processing": "Abriendo el pago seguro…",
+      "amountHint": "Mínimo {amount}."
+    },
+    "presets": {
+      "deposit": "Anticipo del proyecto - 50 %",
+      "retainer": "Retainer mensual",
+      "custom": "Importe libre"
+    },
+    "assurance": {
+      "title": "Por qué es seguro",
+      "point1": "Te redirigimos al checkout PCI-DSS de Stripe - nunca vemos los datos de tu tarjeta.",
+      "point2": "Cada pago se verifica en el servidor y se vincula a un recibo antes de confirmarlo.",
+      "point3": "Los recibos se envían por correo automáticamente en pocos minutos."
+    },
+    "success": {
+      "title": "Pago recibido",
+      "body": "Gracias - tu pago está confirmado y el recibo va camino de tu bandeja de entrada.",
+      "reference": "Referencia",
+      "backHome": "Volver al inicio"
+    },
+    "failed": {
+      "title": "Pago no completado",
+      "body": "La transacción se canceló o fue rechazada. No se ha cobrado nada - puedes intentarlo de nuevo cuando quieras.",
+      "retry": "Intentar de nuevo"
+    }
+  },
+  "Contact": {
+    "title": "Contacto",
+    "metaTitle": "Ver precio",
+    "metaDescription": "Cuéntale tu proyecto a Virtue & Co. Webworks. Propuesta detallada y precio fijo en dos días hábiles.",
+    "eyebrow": "Ver precio",
+    "subtitle": "Cuéntanos qué necesitas. Te responderemos con un plan claro, un plazo y un precio fijo.",
+    "directEmail": "¿Prefieres el correo?",
+    "responseNote": "Respondemos a todas las consultas en dos días hábiles.",
+    "form": {
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "phone": "Número de teléfono",
+      "company": "Empresa o marca",
+      "service": "¿Qué necesitas?",
+      "budget": "¿Qué tamaño tiene el proyecto?",
+      "timeline": "Plazo",
+      "message": "Detalles del proyecto",
+      "messagePlaceholder": "Objetivos, audiencia, funciones imprescindibles, sitio actual, plazos…",
+      "consent": "Acepto que me contacten sobre esta consulta.",
+      "submit": "Enviar mensaje",
+      "submitting": "Enviando…",
+      "successTitle": "Consulta recibida",
+      "successBody": "Gracias - tu consulta ya está con nosotros y tienes una confirmación en tu correo. Recibirás una respuesta detallada en dos días hábiles.",
+      "sendAnother": "Enviar otra consulta"
+    },
+    "options": {
+      "service": {
+        "custom": "Sitio o aplicación a medida",
+        "wordpress": "Desarrollo WordPress",
+        "wix": "Sitio Wix o no-code",
+        "ecommerce": "E-commerce y pagos",
+        "redesign": "Rediseño o rescate de rendimiento",
+        "other": "Otra cosa"
+      },
+      "budget": {
+        "single-page": "Una página o una landing concreta",
+        "multi-page": "Un sitio multipágina o una tienda",
+        "platform": "Una plataforma con cuentas o pagos",
+        "ongoing": "Trabajo continuo o retainer",
+        "not-sure": "Aún no lo sé"
+      },
+      "timeline": {
+        "asap": "Lo antes posible",
+        "2-4-weeks": "En 2-4 semanas",
+        "1-3-months": "En 1-3 meses",
+        "flexible": "Flexible"
+      }
+    },
+    "next": {
+      "title": "Qué pasa después",
+      "step1Title": "Leemos tu mensaje",
+      "step1Body": "Una persona real lo lee y comprueba si somos la opción adecuada para el trabajo.",
+      "step2Title": "Hacemos unas preguntas",
+      "step2Body": "Preguntas cortas y concretas para calcular el precio con precisión, sin adivinar.",
+      "step3Title": "Recibes un precio fijo",
+      "step3Body": "Un plan claro, un plazo y un precio fijo - normalmente en dos días laborables."
+    }
+  },
+  "Footer": {
+    "blurb": "Un pequeño estudio que crea sitios web que se ven genial y funcionan aún mejor - para empresas de todo el mundo.",
+    "explore": "Explorar",
+    "services": "Servicios",
+    "company": "Estudio",
+    "contact": "Hablemos",
+    "about": "Sobre el estudio",
+    "process": "Cómo trabajamos",
+    "terms": "Términos del servicio",
+    "privacy": "Política de privacidad",
+    "rights": "Todos los derechos reservados.",
+    "builtWith": "Desarrollado con Next.js, Supabase y Remotion.",
+    "availableIn": "Disponible en",
+    "worldwide": "Trabajamos con clientes de todo el mundo"
+  },
+  "Admin": {
+    "title": "Panel",
+    "metaTitle": "Panel de administración",
+    "nav": {
+      "overview": "Resumen",
+      "portfolio": "Portafolio",
+      "inquiries": "Consultas",
+      "viewSite": "Ver sitio",
+      "orders": "Orders",
+      "label": "Studio navigation"
+    },
+    "overview": {
+      "title": "Resumen del estudio",
+      "subtitle": "Todo lo que ocurre en el sitio público, de un vistazo.",
+      "publishedProjects": "Proyectos publicados",
+      "draftProjects": "Borradores",
+      "newInquiries": "Consultas nuevas",
+      "collectedValue": "Valor cobrado",
+      "recentInquiries": "Consultas recientes",
+      "noInquiries": "Todavía no hay consultas."
+    },
+    "portfolio": {
+      "title": "CMS del portafolio",
+      "subtitle": "Publica trabajo de clientes, etiqueta el stack y guarda capturas.",
+      "new": "Nuevo proyecto",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "deleteConfirm": "¿Eliminar este proyecto de forma permanente?",
+      "published": "Publicado",
+      "draft": "Borrador",
+      "updated": "Actualizado"
+    },
+    "projectForm": {
+      "createTitle": "Añadir un proyecto",
+      "editTitle": "Editar proyecto",
+      "title": "Título del proyecto",
+      "slug": "Slug de URL",
+      "slugHint": "Déjalo vacío para generarlo desde el título.",
+      "client": "Cliente",
+      "summary": "Resumen corto",
+      "description": "Descripción completa",
+      "category": "Categoría",
+      "techTags": "Etiquetas tecnológicas",
+      "techTagsHint": "Separadas por comas, p. ej. Next.js, Supabase, Tailwind",
+      "liveUrl": "URL en vivo",
+      "repoUrl": "URL del repositorio",
+      "cover": "Imagen de portada",
+      "coverHint": "PNG o JPG, hasta 5 MB. Se guarda en Supabase Storage.",
+      "gallery": "Capturas de galería",
+      "featured": "Destacar en la página de inicio",
+      "publishedLabel": "Publicar de inmediato",
+      "sortOrder": "Orden",
+      "save": "Guardar proyecto",
+      "saving": "Guardando…",
+      "saved": "Proyecto guardado.",
+      "create": "Crear proyecto"
+    },
+    "inquiries": {
+      "title": "Consultas y leads",
+      "subtitle": "Todas las solicitudes del formulario de contacto, las más recientes primero.",
+      "name": "Nombre",
+      "contact": "Contacto",
+      "service": "Servicio",
+      "budget": "Presupuesto",
+      "status": "Estado",
+      "received": "Recibida",
+      "message": "Mensaje",
+      "updateStatus": "Estado actualizado.",
+      "empty": "Todavía no ha llegado ninguna consulta."
+    },
+    "status": {
+      "new": "Nueva",
+      "contacted": "Contactada",
+      "won": "Ganada",
+      "archived": "Archivada"
+    },
+    "errors": {
+      "unauthorised": "Necesitas una sesión de administrador para eso.",
+      "saveFailed": "No se pudo guardar. Revisa los campos obligatorios e inténtalo de nuevo.",
+      "notConfigured": "Supabase aún no está configurado. Añade tus claves a .env.local."
+    },
+    "signOut": "Sign out",
+    "roles": {
+      "admin": "Admin",
+      "agent": "Agent"
+    },
+    "orders": {
+      "title": "Orders",
+      "subtitle": "Every request and project, newest activity first.",
+      "empty": "No orders yet.",
+      "emptyForAgent": "Nothing is assigned to you yet.",
+      "client": "Client",
+      "agent": "Agent",
+      "unassigned": "Unassigned",
+      "updated": "Last activity",
+      "filter": {
+        "all": "All",
+        "live": "Live",
+        "past": "Finished",
+        "unassigned": "Unassigned"
+      },
+      "updateStatus": "Change status",
+      "newStatus": "New status",
+      "note": "Add a note",
+      "noteHint": "Goes to the client thread unless you keep it internal.",
+      "noteInternal": "Keep internal",
+      "update": "Update",
+      "assignment": "Who is on it",
+      "agentEmail": "Staff email address",
+      "agentHint": "Must be an existing staff account.",
+      "save": "Save",
+      "clear": "Unassign",
+      "milestones": "Milestones",
+      "addMilestone": "Add a milestone",
+      "milestoneTitle": "Label",
+      "amount": "Amount",
+      "dueDate": "Due date",
+      "add": "Add",
+      "remove": "Remove",
+      "history": "History",
+      "brief": "Brief",
+      "reference": "Reference",
+      "requested": "Requested",
+      "contact": "Contact",
+      "company": "Company",
+      "thread": "Conversation",
+      "milestoneStatus": "Payment status",
+      "noTransitions": "No further status changes are possible from here.",
+      "noMilestones": "No milestones yet.",
+      "saved": {
+        "generic": "Saved.",
+        "status": "Status updated.",
+        "assigned": "Assigned.",
+        "unassigned": "Assignment cleared.",
+        "milestoneAdded": "Milestone added.",
+        "removed": "Milestone removed."
+      }
+    }
+  },
+  "NotFound": {
+    "title": "Página no encontrada",
+    "body": "La página que buscas se ha movido o nunca existió.",
+    "cta": "Volver al inicio"
+  },
+  "Capabilities": {
+    "heading": "Lo que construimos y cómo trabajamos"
+  },
+  "Pricing": {
+    "cta": "Ver precio"
+  },
+  "Login": {
+    "title": "Iniciar sesión",
+    "subtitle": "Clientes y estudio: una sola entrada.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión",
+    "submitting": "Iniciando sesión…",
+    "invalid": "Ese correo y esa contraseña no corresponden a ninguna cuenta.",
+    "notAuthorised": "Esa cuenta aún no está activada. Escríbenos y lo solucionamos.",
+    "notConfigured": "El inicio de sesión aún no está configurado. Añade tus claves de Supabase en .env.local.",
+    "newHere": "¿Primera vez?",
+    "createAccount": "Crear una cuenta",
+    "forgot": "¿Olvidaste tu contraseña?",
+    "forgotBody": "Escríbenos y la restablecemos."
+  },
+  "Signup": {
+    "title": "Crea tu cuenta",
+    "subtitle": "Sigue tu proyecto, su avance y sus pagos en un solo sitio.",
+    "name": "Tu nombre",
+    "namePlaceholder": "Ada Okafor",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "passwordHint": "Al menos 8 caracteres.",
+    "confirmPassword": "Confirma la contraseña",
+    "phone": "Teléfono",
+    "phoneHint": "Opcional. Solo si prefieres que te llamemos.",
+    "company": "Empresa o marca",
+    "companyHint": "Opcional.",
+    "submit": "Crear cuenta",
+    "submitting": "Creando tu cuenta…",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "signIn": "Iniciar sesión",
+    "confirmTitle": "Revisa tu correo",
+    "confirmBody": "Enviamos un enlace de confirmación a {email}. Ábrelo y tu cuenta estará lista.",
+    "confirmAction": "Volver al inicio de sesión",
+    "legal": "Al crear una cuenta aceptas nuestros <terms>Términos</terms> y nuestra <privacy>Política de privacidad</privacy>.",
+    "errors": {
+      "invalid-email": "Escribe una dirección de correo válida.",
+      "weak-password": "Usa al menos 8 caracteres.",
+      "password-mismatch": "Las dos contraseñas no coinciden.",
+      "missing-name": "Dinos cómo llamarte.",
+      "email-taken": "Ya existe una cuenta con ese correo. Inicia sesión.",
+      "rate-limited": "Demasiados intentos. Espera un minuto y vuelve a probar.",
+      "not-configured": "Las cuentas aún no están conectadas. Añade tus claves de Supabase en .env.local.",
+      "unknown": "Algo falló de nuestro lado. Inténtalo en un momento."
+    }
+  },
+  "Portal": {
+    "title": "Tus proyectos",
+    "subtitle": "Todo lo que construimos juntos y en qué punto está cada parte.",
+    "signedInAs": "Sesión iniciada como",
+    "signOut": "Cerrar sesión",
+    "backToSite": "Volver al sitio",
+    "active": "En curso",
+    "past": "Trabajos terminados",
+    "open": "Abrir proyecto",
+    "reference": "Referencia",
+    "opened": "Solicitado",
+    "updated": "Última actualización",
+    "newMessages": "{count, plural, =0 {No hay mensajes nuevos} one {# mensaje nuevo} other {# mensajes nuevos}}",
+    "progress": "En qué punto estamos",
+    "brief": "Tu brief",
+    "payments": "Pagos",
+    "paymentsEmpty": "Todavía no hay calendario de pagos. Lo añadimos antes de empezar.",
+    "conversation": "Mensajes",
+    "conversationEmpty": "Aún no hay mensajes. Saluda y seguimos desde ahí.",
+    "messagePlaceholder": "Escribe un mensaje…",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "sent": "Mensaje enviado.",
+    "you": "Tú",
+    "studio": "Estudio",
+    "history": "Lo que ha pasado hasta ahora",
+    "historyEmpty": "Todavía no hay nada registrado.",
+    "totals": {
+      "billed": "Total acordado",
+      "paid": "Pagado hasta ahora",
+      "due": "Pendiente"
+    },
+    "empty": {
+      "title": "Aún no hay nada",
+      "body": "Cuéntanos qué necesitas y volveremos con un precio y un plan."
+    },
+    "request": {
+      "title": "Empezar un proyecto",
+      "subtitle": "Cuéntanos qué estás construyendo. Unas líneas bastan.",
+      "projectTitle": "Nombre del proyecto",
+      "projectTitleHint": "Una etiqueta corta, p. ej. Rediseño de la tienda.",
+      "service": "¿Qué necesitas?",
+      "serviceNone": "Aún no lo sé",
+      "scope": "Tamaño aproximado",
+      "brief": "¿Qué estás construyendo?",
+      "briefHint": "El problema, para quién es y lo que ya tienes.",
+      "submit": "Enviar solicitud",
+      "submitting": "Enviando…",
+      "created": "Solicitud recibida. Te escribiremos.",
+      "referenceHint": "Tu referencia es {reference}.",
+      "cancel": "Cancelar"
+    },
+    "edit": {
+      "title": "Editar tu brief",
+      "submit": "Guardar cambios",
+      "saving": "Guardando…",
+      "saved": "Cambios guardados.",
+      "locked": "Esta solicitud ya avanzó, así que el brief está bloqueado. Envía un mensaje."
+    },
+    "errors": {
+      "not-signed-in": "Vuelve a iniciar sesión, por favor.",
+      "not-configured": "El portal aún no está conectado.",
+      "missing-fields": "Rellena los campos obligatorios.",
+      "save-failed": "No pudimos guardarlo. Inténtalo de nuevo.",
+      "not-editable": "Este brief ya no se puede editar.",
+      "not-allowed": "No tienes acceso a eso.",
+      "invalid-status": "Ese estado no es válido.",
+      "invalid-transition": "Ese cambio no está permitido desde aquí.",
+      "not-found": "No encontramos ese proyecto.",
+      "invalid-amount": "Introduce un importe válido.",
+      "agent-not-found": "No hay ninguna cuenta de equipo con ese correo."
+    },
+    "dueOn": "Vence",
+    "internalNote": "Interno"
+  },
+  "Orders": {
+    "status": {
+      "inquiry": "Nueva solicitud",
+      "scoping": "Planificación",
+      "quoted": "Presupuestado",
+      "active": "En curso",
+      "review": "En revisión",
+      "delivered": "Entregado",
+      "closed": "Cerrado",
+      "cancelled": "Cancelado"
+    },
+    "phase": {
+      "request": "Solicitud",
+      "planning": "Plan",
+      "building": "Construcción",
+      "review": "Revisión",
+      "done": "Publicado"
+    },
+    "milestone": {
+      "pending": "Sin pagar",
+      "invoiced": "Facturado",
+      "paid": "Pagado"
+    },
+    "role": {
+      "client": "Cliente",
+      "agent": "Responsable",
+      "admin": "Administrador"
+    }
+  }
+}

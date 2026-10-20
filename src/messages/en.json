@@ -1,0 +1,1097 @@
+{
+  "Metadata": {
+    "title": "Virtue & Co. Webworks - Web Design & Development",
+    "titleTemplate": "%s · Virtue & Co. Webworks",
+    "description": "We design and build fast, good-looking websites for businesses anywhere: custom builds, WordPress, Wix, online stores and payments. You always get a clear plan and a fixed price before work starts.",
+    "keywords": "web design studio, website developers, Next.js development, React development, WordPress development, Wix design, online store development, payment integration, Stripe, global web studio"
+  },
+  "Brand": {
+    "name": "Virtue & Co. Webworks",
+    "short": "Virtue & Co.",
+    "tagline": "We build websites that look great and work even better.",
+    "wordmark": "Virtue & Co.",
+    "wordmarkSub": "WEBWORKS",
+    "loaderLabel": "Loading Virtue & Co. Webworks"
+  },
+  "Nav": {
+    "home": "Home",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "payment": "Payments",
+    "contact": "Contact",
+    "quote": "Get a price",
+    "admin": "Dashboard",
+    "login": "Sign in",
+    "logout": "Sign out",
+    "menu": "Menu",
+    "language": "Language",
+    "changeLanguage": "Change language",
+    "skipToContent": "Skip to content",
+    "about": "About",
+    "blog": "Blog",
+    "theme": "Toggle theme",
+    "country": "Country & currency",
+    "account": "Your projects"
+  },
+  "Region": {
+    "label": "Country & currency",
+    "title": "Country & currency",
+    "description": "We detect your country automatically and use it for currency, pricing and office hours in your own time. Change it any time - we'll remember.",
+    "search": "Search countries",
+    "detected": "Detected automatically",
+    "chosen": "Your choice",
+    "noResults": "No country matches that search.",
+    "reset": "Use my detected country",
+    "settlementNote": "We charge in NGN, USD, GBP and EUR. Everywhere else, prices are quoted in USD.",
+    "openNow": "Open now",
+    "opensAt": "Opens {when}",
+    "soon": "soon",
+    "yourZone": "Times are shown in your own timezone.",
+    "yourTimeIs": "It's {time} for you.",
+    "studioOpen": "We're open right now - message us and we'll reply today.",
+    "studioClosed": "We're closed right now. Back {when}, your time.",
+    "zoneUnknown": "Times are shown in the studio's own working hours."
+  },
+  "Common": {
+    "learnMore": "Learn more",
+    "viewAll": "View all",
+    "all": "All",
+    "close": "Close",
+    "loading": "Loading…",
+    "sending": "Sending…",
+    "backHome": "Back to home",
+    "required": "Required",
+    "optional": "optional",
+    "viewProject": "View project",
+    "visitSite": "Visit live site",
+    "techStack": "Tech stack",
+    "featured": "Featured",
+    "empty": "Nothing here yet.",
+    "error": "Something went wrong. Please try again.",
+    "email": "Email",
+    "phone": "Phone",
+    "or": "or",
+    "secure": "Secure",
+    "poweredBy": "Bank-grade 256-bit encrypted checkout",
+    "bookCall": "Book a call",
+    "emailUs": "Email us",
+    "whatsapp": "WhatsApp",
+    "search": "Search",
+    "toggleTheme": "Toggle theme",
+    "readMore": "Read more",
+    "learnAbout": "Learn about the studio"
+  },
+  "Home": {
+    "hero": {
+      "title": "Your website should look great - and work even better.",
+      "subtitle": "We design and build websites for businesses anywhere: custom-built, WordPress, Wix or an online store. You get a clear plan and a fixed price before any work starts.",
+      "primaryCta": "See our work",
+      "secondaryCta": "Get a price",
+      "imageAlt": "Two designers reviewing a website layout together on a laptop.",
+      "available": "Taking on new projects"
+    },
+    "stats": {
+      "launch": "Most projects take",
+      "lighthouse": "Speed score we aim for",
+      "senior": "You talk to the builder",
+      "response": "We reply within"
+    },
+    "services": {
+      "eyebrow": "What we do",
+      "title": "Four ways we can help.",
+      "subtitle": "Whichever you need, you get the same thing: a site that loads fast, looks the part and is easy for you to update yourself.",
+      "cta": "See all services"
+    },
+    "work": {
+      "eyebrow": "Our work",
+      "title": "Some of the websites we've built.",
+      "subtitle": "A mix of custom builds, WordPress sites, Wix launches and online stores.",
+      "cta": "Browse the full portfolio"
+    },
+    "journey": {
+      "eyebrow": "How we work",
+      "title": "How a project runs, start to finish.",
+      "subtitle": "Five steps, no surprises. You always know what happens next and what it costs.",
+      "step1Title": "We talk",
+      "step1Body": "A short call about your goal, your customers and your deadline. No jargon and no pressure.",
+      "step2Title": "You get a price",
+      "step2Body": "A written plan and one fixed price. That number only changes if you change what's included.",
+      "step3Title": "We design",
+      "step3Body": "You see real designs of your own pages, not a mood board - and we revise until they're right.",
+      "step4Title": "We build",
+      "step4Body": "We build the site and share a private link, so you can watch it come together each week.",
+      "step5Title": "We launch",
+      "step5Body": "We put it live, show you how to update it, and stay on hand for 30 days afterwards."
+    },
+    "band": {
+      "eyebrow": "Straight answers",
+      "title": "We tell you what we'd build, what it costs and how long it takes.",
+      "body": "No pitch decks and no vague estimates. You get a straight answer, in writing, before you commit to anything.",
+      "cta": "Get a price"
+    },
+    "cta": {
+      "title": "Let's build your website.",
+      "subtitle": "Tell us what you need. You'll get a clear plan and a fixed price within two working days.",
+      "primary": "Start your project",
+      "secondary": "Book a free call"
+    }
+  },
+  "Services": {
+    "title": "Services",
+    "metaTitle": "Website Design & Development Services",
+    "metaDescription": "Custom websites, WordPress, Wix and online stores - with payment systems built in. Fixed price, agreed before we start.",
+    "eyebrow": "Services",
+    "subtitle": "Whether you need a bespoke platform or a simple brochure site, the same standard applies: fast, clear and easy to run.",
+    "deliverables": "What you get",
+    "startingAt": "Starting at",
+    "items": {
+      "custom": {
+        "title": "Custom Websites",
+        "summary": "A website built from scratch, shaped around how your business actually works.",
+        "description": "When ready-made tools start holding you back, we build it properly. You get a fast, modern website with a design of its own - and a system you can extend later without starting again.",
+        "features": [
+          "A design made for your brand, not a template",
+          "Loads quickly on phones and older laptops",
+          "Easy for your team to update",
+          "Dashboards, logins and integrations when you need them"
+        ],
+        "imageAlt": "A designer and a developer reviewing a custom website layout on screen."
+      },
+      "wordpress": {
+        "title": "WordPress Websites",
+        "summary": "A WordPress site your team can edit confidently - without the usual slowdown.",
+        "description": "WordPress is a great choice when your team publishes often. We build custom, block-based themes so editing feels simple, and we keep pages fast and secure from day one.",
+        "features": [
+          "Custom design built as reusable blocks",
+          "Content types that match how you publish",
+          "Speed and security set up properly",
+          "We move your old content across and train your team"
+        ],
+        "imageAlt": "Two people editing pages together in a content management system."
+      },
+      "wix": {
+        "title": "Wix Websites",
+        "summary": "A Wix site that looks hand-made, launched quickly.",
+        "description": "A good fit for launches, campaigns and small teams. We push Wix Studio and Velo as far as they go, so your site looks nothing like a template and you can still edit it yourself.",
+        "features": [
+          "Design built for phone, tablet and desktop",
+          "Custom features with Velo when you need them",
+          "Found on Google, with analytics set up",
+          "Live in days rather than months"
+        ],
+        "imageAlt": "A laptop on a desk showing a newly launched website."
+      },
+      "ecommerce": {
+        "title": "Online Stores & Payments",
+        "summary": "Sell online with a checkout that's quick to use and easy to reconcile.",
+        "description": "Storefronts, subscriptions and deposits, with payment providers wired in properly. Every payment is checked against a reference, so your records and your bank always agree.",
+        "features": [
+          "Checkout in your customers' currencies",
+          "Products, stock and orders set up properly",
+          "Every payment verified and recorded",
+          "Recovery emails for abandoned baskets"
+        ],
+        "imageAlt": "An online storefront open on a desktop screen beside a card terminal."
+      }
+    }
+  },
+  "Portfolio": {
+    "title": "Portfolio",
+    "metaTitle": "Portfolio & Case Studies",
+    "metaDescription": "Websites, brand sites and online stores built by Virtue & Co. Webworks.",
+    "eyebrow": "Our work",
+    "subtitle": "Pick a category to see the kind of work we take on. Every case study explains what the job was and what we did.",
+    "filters": {
+      "all": "All work",
+      "custom": "Custom-built",
+      "wordpress": "WordPress",
+      "wix": "Wix",
+      "ecommerce": "Online stores"
+    },
+    "resultCount": "{count, plural, =0 {No projects} one {# project} other {# projects}}",
+    "empty": "No projects match that filter yet.",
+    "emptyAdminHint": "Add your first project from the dashboard to populate this grid.",
+    "client": "Client",
+    "year": "Year",
+    "services": "Services",
+    "viewLive": "View live",
+    "preview": "Live preview",
+    "previewHint": "Live previews are embedded from the client's production domain.",
+    "closePreview": "Close preview",
+    "viewCaseStudy": "Read the case study",
+    "caseStudies": "Case studies",
+    "inside": {
+      "eyebrow": "Inside a project",
+      "title": "What you actually get.",
+      "subtitle": "Open a folder to see what's in it. Every project we take on ships with the same four - no hidden extras you have to ask for.",
+      "hint": "Open the folder",
+      "items": {
+        "design": {
+          "title": "Design",
+          "caption": "Every page is designed properly before a line of code is written.",
+          "files": [
+            "Wireframes for each page",
+            "Your colours, fonts and components",
+            "Finished designs for every screen",
+            "A clickable prototype you can try"
+          ]
+        },
+        "build": {
+          "title": "Build",
+          "caption": "The actual website, built to be fast and handed over cleanly.",
+          "files": [
+            "The full source code",
+            "A content editor your team can use",
+            "Payments and third-party connections",
+            "Automated tests on the key journeys"
+          ]
+        },
+        "content": {
+          "title": "Content & search",
+          "caption": "The unglamorous groundwork that makes you findable.",
+          "files": [
+            "Page copy, written where you need it",
+            "Page titles and descriptions",
+            "A sitemap and clean, readable links",
+            "Analytics you can actually read"
+          ]
+        },
+        "handover": {
+          "title": "Handover",
+          "caption": "So you can run the site yourself without calling us first.",
+          "files": [
+            "Written documentation",
+            "A recorded walkthrough",
+            "Every account in your name",
+            "30 days of support after launch"
+          ]
+        }
+      }
+    }
+  },
+  "Payment": {
+    "title": "Payments",
+    "metaTitle": "Pay an Invoice or Deposit",
+    "metaDescription": "Pay Virtue & Co. Webworks invoices and project deposits securely via encrypted card checkout.",
+    "eyebrow": "Client payments",
+    "subtitle": "Pay an invoice or deposit securely. Worldwide credit/debit cards and international checkout supported.",
+    "form": {
+      "amount": "Amount",
+      "currency": "Currency",
+      "fullName": "Full name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "purpose": "What is this payment for?",
+      "purposePlaceholder": "e.g. 50% deposit - online store build",
+      "invoiceReference": "Invoice or quote reference",
+      "invoiceHint": "Optional, but it helps us match your payment faster.",
+      "payNow": "Pay securely",
+      "processing": "Opening secure checkout…",
+      "amountHint": "Minimum {amount}."
+    },
+    "presets": {
+      "deposit": "Project deposit - 50%",
+      "retainer": "Monthly retainer",
+      "custom": "Custom amount"
+    },
+    "assurance": {
+      "title": "Why it's safe",
+      "point1": "You pay via an encrypted PCI-DSS Level 1 compliant gateway. We never see or store your card details.",
+      "point2": "Every transaction is cryptographically verified before confirmation and your receipt is instantly delivered.",
+      "point3": "Your receipt arrives automatically within minutes."
+    },
+    "success": {
+      "title": "Payment received",
+      "body": "Thank you - your payment is confirmed and a receipt is on its way to your inbox.",
+      "reference": "Reference",
+      "backHome": "Back to home"
+    },
+    "failed": {
+      "title": "Payment not completed",
+      "body": "The transaction was cancelled or declined. Nothing has been charged - you can try again whenever you're ready.",
+      "retry": "Try again"
+    }
+  },
+  "Contact": {
+    "title": "Contact",
+    "metaTitle": "Get a Price",
+    "metaDescription": "Tell Virtue & Co. Webworks about your project. You get a clear plan and a fixed price within two working days.",
+    "eyebrow": "Get a price",
+    "subtitle": "Tell us what you need. We'll reply with a clear plan, a timeline and one fixed price.",
+    "directEmail": "Prefer email?",
+    "responseNote": "We reply to every message within two working days.",
+    "form": {
+      "name": "Full name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "company": "Company or brand",
+      "service": "What do you need?",
+      "budget": "How big is the job?",
+      "timeline": "When do you need it?",
+      "message": "Tell us about the project",
+      "messagePlaceholder": "What it's for, who it's for, what it must do, and anything you already have…",
+      "consent": "I agree to be contacted about this enquiry.",
+      "submit": "Send message",
+      "submitting": "Sending…",
+      "successTitle": "Message received",
+      "successBody": "Thank you - your message is with us and a confirmation is in your inbox. Expect a reply with a price within two working days.",
+      "sendAnother": "Send another message"
+    },
+    "options": {
+      "service": {
+        "custom": "Custom hard-coded website / web app",
+        "wordpress": "WordPress development",
+        "wix": "Wix or no-code site",
+        "ecommerce": "E-commerce & payments",
+        "redesign": "Redesign or performance rescue",
+        "other": "Something else"
+      },
+      "budget": {
+        "single-page": "One page or a focused landing",
+        "multi-page": "A multi-page site or store",
+        "platform": "A platform with accounts or payments",
+        "ongoing": "Ongoing work or a retainer",
+        "not-sure": "Not sure yet"
+      },
+      "timeline": {
+        "asap": "As soon as possible",
+        "2-4-weeks": "In 2-4 weeks",
+        "1-3-months": "In 1-3 months",
+        "flexible": "Flexible"
+      }
+    },
+    "hours": "Availability",
+    "hoursNote": "We work remotely and take on clients worldwide. You can reach out anytime 24/7.",
+    "next": {
+      "title": "What happens next",
+      "step1Title": "We read your message",
+      "step1Body": "A real person reads it and checks whether we're the right fit for the job.",
+      "step2Title": "We ask a few questions",
+      "step2Body": "Short, specific questions so we can price the work accurately instead of guessing.",
+      "step3Title": "You get a fixed price",
+      "step3Body": "A clear plan, a timeline and one fixed price - usually within two working days."
+    },
+    "beforeYouWrite": "Before you write",
+    "days": {
+      "weekdays": "Monday - Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "bookingTitle": "Book a 30-minute intro call"
+  },
+  "Footer": {
+    "blurb": "A small studio building websites that look great and work even better - for businesses anywhere in the world.",
+    "worldwide": "Working with clients worldwide",
+    "explore": "Explore",
+    "services": "Services",
+    "company": "Company",
+    "contact": "Get in touch",
+    "about": "About the studio",
+    "process": "How we work",
+    "terms": "Terms of service",
+    "privacy": "Privacy policy",
+    "rights": "All rights reserved.",
+    "builtWith": "Engineered with Next.js, Supabase and Remotion.",
+    "availableIn": "Available in",
+    "legal": "Legal",
+    "newsletter": "Newsletter",
+    "hours": "Office hours"
+  },
+  "Admin": {
+    "title": "Dashboard",
+    "metaTitle": "Admin Dashboard",
+    "nav": {
+      "overview": "Overview",
+      "portfolio": "Portfolio",
+      "inquiries": "Inquiries",
+      "viewSite": "View site",
+      "orders": "Orders",
+      "design": "Design",
+      "label": "Studio navigation"
+    },
+    "overview": {
+      "title": "Studio overview",
+      "subtitle": "Everything happening on the public site, at a glance.",
+      "publishedProjects": "Published projects",
+      "draftProjects": "Drafts",
+      "newInquiries": "New inquiries",
+      "collectedValue": "Collected value",
+      "recentInquiries": "Recent inquiries",
+      "noInquiries": "No inquiries yet."
+    },
+    "portfolio": {
+      "title": "Portfolio CMS",
+      "subtitle": "Publish client work, tag the stack and store screenshots.",
+      "new": "New project",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Delete this project permanently?",
+      "published": "Published",
+      "draft": "Draft",
+      "updated": "Updated"
+    },
+    "projectForm": {
+      "createTitle": "Add a project",
+      "editTitle": "Edit project",
+      "title": "Project title",
+      "slug": "URL slug",
+      "slugHint": "Leave blank to generate from the title.",
+      "client": "Client",
+      "summary": "Short summary",
+      "description": "Full description",
+      "category": "Category",
+      "techTags": "Tech tags",
+      "techTagsHint": "Comma separated, e.g. Next.js, Supabase, Tailwind",
+      "liveUrl": "Live URL",
+      "repoUrl": "Repository URL",
+      "cover": "Cover image",
+      "coverHint": "PNG or JPG, up to 5 MB. Stored in Supabase Storage.",
+      "gallery": "Gallery screenshots",
+      "featured": "Feature on the home page",
+      "publishedLabel": "Publish immediately",
+      "sortOrder": "Sort order",
+      "save": "Save project",
+      "saving": "Saving…",
+      "saved": "Project saved.",
+      "create": "Create project"
+    },
+    "inquiries": {
+      "title": "Inquiries & leads",
+      "subtitle": "Every submission from the contact form, newest first.",
+      "name": "Name",
+      "contact": "Contact",
+      "service": "Service",
+      "budget": "Budget",
+      "status": "Status",
+      "received": "Received",
+      "message": "Message",
+      "updateStatus": "Status updated.",
+      "empty": "No inquiries have come in yet."
+    },
+    "status": {
+      "new": "New",
+      "contacted": "Contacted",
+      "won": "Won",
+      "archived": "Archived"
+    },
+    "design": {
+      "title": "Design",
+      "subtitle": "One design for the whole site. The marketing pages, the client portal and this console all read from these settings.",
+      "theme": {
+        "title": "Theme",
+        "hint": "Pick an accent and the surfaces it sits on. Dark mode is worked out from your light choices, so the two can never drift apart."
+      },
+      "accent": "Accent colour",
+      "accentHint": "Buttons, links and highlights are built from this.",
+      "lightBackground": "Light background",
+      "lightSurface": "Light surface",
+      "darkBackground": "Dark background",
+      "darkSurface": "Dark surface",
+      "surfaceHint": "A surface is anything raised above the page: cards, panels, popovers and this editor.",
+      "radius": "Corner radius",
+      "radiusHint": "Applies to buttons, cards, inputs and images.",
+      "typography": {
+        "title": "Typography",
+        "hint": "Choose a body face and a display face. Google families are fetched when you pick them; uploaded files are served from your own storage."
+      },
+      "bodyFont": "Body font",
+      "bodyFontHint": "Paragraphs, labels and everything else.",
+      "displayFont": "Display font",
+      "displayFontHint": "Headings and large numerals. Anything it lacks falls back to the body face.",
+      "groupBrand": "Brand",
+      "groupUploaded": "Uploaded",
+      "groupGoogle": "Google Fonts",
+      "brandBody": "Inter (brand)",
+      "brandDisplay": "Gropled (brand)",
+      "library": {
+        "title": "Custom fonts",
+        "hint": "Upload your own files and use them anywhere on the site. Google families need no installing - choosing one is enough.",
+        "empty": "No custom fonts yet.",
+        "inUse": "In use",
+        "noFile": "No file recorded",
+        "family": "Family name",
+        "familyPlaceholder": "Studio Sans",
+        "familyHint": "Exactly as the font names itself, so it matches what the file declares.",
+        "slot": "Use for",
+        "slotBody": "Body",
+        "slotDisplay": "Display",
+        "file": "Font file",
+        "fileHint": "woff2 is smallest and works everywhere. ttf and otf also work. 4 MB maximum.",
+        "submit": "Upload and use",
+        "uploading": "Uploading…",
+        "installed": "{family} is installed and in use.",
+        "removed": "{family} was removed.",
+        "removeLabel": "Remove {family}",
+        "needFile": "Choose a font file first.",
+        "needFamily": "Give the font a family name.",
+        "tooBig": "That file is over 4 MB. Subset it, or use woff2.",
+        "uploadFailed": "The upload did not finish.",
+        "unavailable": "Something went wrong talking to storage."
+      },
+      "contrast": {
+        "title": "Readability",
+        "hint": "Measured on the colours above, before anything is saved.",
+        "lightLabel": "Button label, light",
+        "darkLabel": "Button label, dark",
+        "lightFlip": "Hover change, light",
+        "darkFlip": "Hover change, dark",
+        "buttonNote": "Text on a filled button.",
+        "flipNote": "How different the hover state looks.",
+        "good": "Comfortable",
+        "workable": "Passable",
+        "low": "Too close",
+        "footnote": "Labels and hover states are chosen automatically for whatever accent you pick, so these stay readable. A small hover change means the accent is very close to the colour it flips to.",
+        "lightPreview": "Light",
+        "darkPreview": "Dark"
+      },
+      "saved": {
+        "saved": "Design saved. Every page now uses it.",
+        "reset": "Back to the brand design."
+      },
+      "save": "Save design",
+      "saving": "Saving…",
+      "reset": "Reset to brand",
+      "resetHint": "Puts the colours and fonts back to the shipped design. Uploaded files stay in the library.",
+      "errors": {
+        "format": "Use a six-digit hex colour, like #dcaa28.",
+        "validation": "Some values could not be read. Check the highlighted fields.",
+        "unknownFont": "That family is not in the catalogue and has not been uploaded.",
+        "invalidFamily": "Use letters, digits, spaces and hyphens only.",
+        "invalidFile": "That file path could not be used.",
+        "unauthorised": "You need an admin session to change the design.",
+        "notConfigured": "Supabase is not configured yet, or the design migration has not been run.",
+        "saveFailed": "Could not save the design. Try again."
+      }
+    },
+    "errors": {
+      "unauthorised": "You need an admin session to do that.",
+      "saveFailed": "Could not save. Check the required fields and try again.",
+      "notConfigured": "Supabase is not configured yet. Add your keys to .env.local."
+    },
+    "signOut": "Sign out",
+    "roles": {
+      "admin": "Admin",
+      "agent": "Agent"
+    },
+    "orders": {
+      "title": "Orders",
+      "subtitle": "Every request and project, newest activity first.",
+      "empty": "No orders yet.",
+      "emptyForAgent": "Nothing is assigned to you yet.",
+      "client": "Client",
+      "agent": "Agent",
+      "unassigned": "Unassigned",
+      "updated": "Last activity",
+      "filter": {
+        "all": "All",
+        "live": "Live",
+        "past": "Finished",
+        "unassigned": "Unassigned"
+      },
+      "updateStatus": "Change status",
+      "newStatus": "New status",
+      "note": "Add a note",
+      "noteHint": "Goes to the client thread unless you keep it internal.",
+      "noteInternal": "Keep internal",
+      "update": "Update",
+      "assignment": "Who is on it",
+      "agentEmail": "Staff email address",
+      "agentHint": "Must be an existing staff account.",
+      "save": "Save",
+      "clear": "Unassign",
+      "milestones": "Milestones",
+      "addMilestone": "Add a milestone",
+      "milestoneTitle": "Label",
+      "amount": "Amount",
+      "dueDate": "Due date",
+      "add": "Add",
+      "remove": "Remove",
+      "history": "History",
+      "brief": "Brief",
+      "reference": "Reference",
+      "requested": "Requested",
+      "contact": "Contact",
+      "company": "Company",
+      "thread": "Conversation",
+      "milestoneStatus": "Payment status",
+      "noTransitions": "No further status changes are possible from here.",
+      "noMilestones": "No milestones yet.",
+      "saved": {
+        "generic": "Saved.",
+        "status": "Status updated.",
+        "assigned": "Assigned.",
+        "unassigned": "Assignment cleared.",
+        "milestoneAdded": "Milestone added.",
+        "removed": "Milestone removed."
+      }
+    }
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "body": "The page you're looking for has moved, or never existed.",
+    "cta": "Back to home"
+  },
+  "Capabilities": {
+    "heading": "What we build, and how we work",
+    "promises": {
+      "senior": {
+        "title": "You talk to the builder",
+        "body": "No handoffs. Whoever works out your price is the person who builds your site."
+      },
+      "scope": {
+        "title": "Fixed scope, fixed price",
+        "body": "You get the plan and the price in writing before anything starts."
+      },
+      "reply": {
+        "title": "A reply within 48 hours",
+        "body": "Every message gets a real answer, quickly."
+      },
+      "handover": {
+        "title": "You own everything",
+        "body": "The code, the designs and the accounts are yours - documented and handed over."
+      }
+    }
+  },
+  "Command": {
+    "label": "Command palette",
+    "placeholder": "Search pages, work, services and actions…",
+    "empty": "No matches found.",
+    "openHint": "Search",
+    "groups": {
+      "pages": "Pages",
+      "services": "Services",
+      "actions": "Actions"
+    },
+    "themeLight": "Switch to light",
+    "themeDark": "Switch to dark",
+    "actions": {
+      "quote": "Get a price",
+      "book": "Book an intro call",
+      "email": "Email the studio",
+      "whatsapp": "Message on WhatsApp",
+      "admin": "Open dashboard"
+    }
+  },
+  "Pricing": {
+    "eyebrow": "Pricing",
+    "title": "Simple, honest pricing.",
+    "subtitle": "No packages and no invented tiers - every project is priced on what it actually needs.",
+    "from": "Projects from",
+    "note": "That's the smallest job we take on. Real projects are priced after a short call, and you always get the final number in writing before anything starts.",
+    "cta": "Get a price",
+    "secondary": "See what's included"
+  },
+  "Faq": {
+    "eyebrow": "Good to know",
+    "title": "Questions we get asked.",
+    "items": {
+      "timeline": {
+        "q": "How long does a project take?",
+        "a": "A simple site usually takes two to four weeks. A custom platform or online store takes six to twelve weeks, depending on what it needs to do and how quickly you can send us content and feedback."
+      },
+      "stack": {
+        "q": "What do you build with?",
+        "a": "Custom work is built on React and Next.js, with Supabase behind it when you need a database, logins or file storage. We also work in WordPress and Wix when that is genuinely the better choice for you."
+      },
+      "ownership": {
+        "q": "Do we own the website?",
+        "a": "Yes. You own the code, the design files and every account. We hand over the whole thing with notes and a walkthrough recording at the end of the project."
+      },
+      "support": {
+        "q": "What happens after launch?",
+        "a": "Every project includes 30 days of support after launch. After that you can take it in-house, or keep us on a light monthly retainer for changes and improvements."
+      },
+      "payments": {
+        "q": "How do payments work?",
+        "a": "Projects are split into a deposit and milestone payments. You can pay by card, bank transfer, USSD or mobile money, in your own currency, from the payments page."
+      },
+      "start": {
+        "q": "How do we start?",
+        "a": "Send us a message through the contact form, or book a free intro call. We reply within two working days with a few questions, then a clear plan and a fixed price."
+      }
+    }
+  },
+  "Newsletter": {
+    "eyebrow": "Newsletter",
+    "title": "Occasional notes. No noise.",
+    "body": "Roughly one email a month on web performance, payments and shipping software on a deadline.",
+    "label": "Email address",
+    "placeholder": "you@company.com",
+    "submit": "Subscribe",
+    "success": "You're on the list - thank you.",
+    "error": "That didn't work. Please try again.",
+    "invalid": "Enter a valid email address.",
+    "privacy": "No spam, and we never share your address."
+  },
+  "Cookie": {
+    "title": "A quick note on cookies",
+    "body": "We use a couple of cookies to remember your language and theme, plus anonymous analytics to see which pages help. No advertising trackers.",
+    "accept": "Accept all",
+    "decline": "Essential only",
+    "policy": "Privacy policy"
+  },
+  "Booking": {
+    "eyebrow": "Always Available",
+    "title": "Book a discovery call",
+    "body": "A short, friendly conversation about your goal and deadline. Choose anytime that suits your schedule.",
+    "cta": "Choose a time",
+    "note": "Prefer email? Send us a message and we will reply promptly.",
+    "noteCta": "Message us on WhatsApp",
+    "timezone": "Available anytime across all timezones."
+  },
+  "About": {
+    "metaTitle": "About the Studio",
+    "metaDescription": "Virtue & Co. Webworks is a small, senior studio building fast, good-looking websites for clients worldwide.",
+    "eyebrow": "About us",
+    "title": "A small studio for serious websites.",
+    "intro": "We're a small studio and we keep it that way on purpose. The person who works out your price is the person who builds your site, so nothing gets lost between people.",
+    "story": {
+      "title": "Why we started",
+      "body": "We kept meeting businesses that had paid for a website and ended up with a problem: slow, fragile, impossible to update and locked behind an agency. We started Virtue & Co. Webworks to do the opposite - websites that are properly built, well documented and genuinely fast, that you can run yourself. We're new, and we'd rather say that plainly than pretend to be a big firm."
+    },
+    "principles": {
+      "title": "How we work",
+      "items": {
+        "senior": {
+          "title": "You deal with the maker",
+          "body": "No account managers and no juniors learning on your money. You talk to the people building your site."
+        },
+        "fast": {
+          "title": "Speed is part of the design",
+          "body": "We plan for speed from the first day. A beautiful site that loads slowly has failed."
+        },
+        "clear": {
+          "title": "Fixed scope, fixed price",
+          "body": "You get the plan and the price in writing before we start. Extra work is quoted first - never a surprise bill."
+        },
+        "owned": {
+          "title": "You own everything",
+          "body": "The code, the designs, the domain and the accounts are yours. We document the handover so you're never stuck."
+        }
+      }
+    },
+    "capabilities": {
+      "title": "Where we are strongest",
+      "items": [
+        "Custom websites and web apps",
+        "Content-managed marketing sites",
+        "Online stores and payment systems",
+        "Fixing slow or broken websites",
+        "Design systems and component libraries"
+      ]
+    },
+    "cta": {
+      "title": "Have a project in mind?",
+      "body": "Tell us what you're building and we'll come back with a clear plan and a fixed price within two working days.",
+      "button": "Get a price"
+    },
+    "bandAlt": "Members of the studio working together around a table covered in laptops.",
+    "bandCaption": "A small, senior team - you work directly with the people who build your site."
+  },
+  "Blog": {
+    "metaTitle": "Insights and Notes",
+    "metaDescription": "Notes from Virtue & Co. Webworks on web performance, payments, content platforms and shipping on deadline.",
+    "eyebrow": "Insights",
+    "title": "Notes on building for the web.",
+    "subtitle": "Practical writing on performance, payments and running a small studio that ships.",
+    "readMore": "Read the article",
+    "readTime": "{minutes} min read",
+    "publishedOn": "Published",
+    "updated": "Updated",
+    "back": "All articles",
+    "empty": "No articles yet - the first one is being written.",
+    "relatedTitle": "More reading"
+  },
+  "CaseStudy": {
+    "back": "All work",
+    "client": "Client",
+    "year": "Year",
+    "role": "Our role",
+    "timeline": "Timeline",
+    "stack": "Stack",
+    "visit": "Visit the live site",
+    "challenge": "The challenge",
+    "approach": "What we did",
+    "outcome": "The outcome",
+    "results": "Results",
+    "gallery": "Selected screens",
+    "next": "Next project",
+    "notFound": "That case study doesn't exist."
+  },
+  "WhatsApp": {
+    "label": "Open WhatsApp chat",
+    "title": "Chat with the studio",
+    "body": "Have a quick question? Send us a message on WhatsApp and we will reply during office hours.",
+    "cta": "Start chatting",
+    "close": "Dismiss"
+  },
+  "Legal": {
+    "updated": "Last updated 17 October 2026",
+    "contactNote": "Questions about this policy can be sent to virtueco.dev@gmail.com and we will respond within two working days.",
+    "privacy": {
+      "title": "Privacy Policy",
+      "metaTitle": "Privacy Policy",
+      "metaDescription": "How Virtue & Co. Webworks collects, uses and protects personal information submitted through this website.",
+      "intro": "This policy explains what we collect when you use virtueco.dev, why we collect it, and the choices you have. We keep it deliberately short because we collect very little.",
+      "sections": [
+        {
+          "heading": "Who we are",
+          "body": "Virtue & Co. Webworks is a web design and development studio working with clients worldwide. We are the data controller for information collected through this website."
+        },
+        {
+          "heading": "What we collect",
+          "body": "When you submit the contact form we collect your name, email address and the project details you choose to share, including an optional phone number, company name, budget band and timeline. When you subscribe to the newsletter we collect only your email address. When you make a payment we collect the billing details required to process it."
+        },
+        {
+          "heading": "How we use it",
+          "body": "We use your information to answer your enquiry, prepare a proposal, deliver work you have engaged us for, and send the newsletter you asked for. We do not sell personal information, and we do not use it for advertising."
+        },
+        {
+          "heading": "Cookies and local storage",
+          "body": "We store your language and colour-theme preferences in your browser so the site behaves consistently on return visits. We may use privacy-respecting, anonymous analytics to understand which pages are useful. No advertising trackers are used."
+        },
+        {
+          "heading": "Payments",
+          "body": "Card payments are processed securely by certified payment processors. Card numbers never reach our servers; we store only a transaction reference, the amount, the currency and the status so that invoices can be reconciled."
+        },
+        {
+          "heading": "Third parties",
+          "body": "We use a small number of processors to run the site and communicate with you, including Supabase (database and authentication), Vercel (hosting), and Resend (transactional email). Each processes data only as needed to provide that service."
+        },
+        {
+          "heading": "Retention",
+          "body": "Enquiries are kept for up to three years so we can pick a conversation back up. Newsletter subscriptions are kept until you unsubscribe. Payment records are kept as long as tax and accounting rules require."
+        },
+        {
+          "heading": "Your rights",
+          "body": "You can ask us for a copy of the information we hold about you, ask us to correct or delete it, or withdraw consent for the newsletter at any time by replying to any email we send."
+        },
+        {
+          "heading": "Contact",
+          "body": "Write to virtueco.dev@gmail.com for any privacy request and we will respond within two business days."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "metaTitle": "Terms of Service",
+      "metaDescription": "The terms that govern engagements, quotes, payments and deliverables from Virtue & Co. Webworks.",
+      "intro": "These terms describe how we work with clients. A signed proposal or paid deposit confirms that you accept them, and a project-specific proposal always takes precedence over anything written here.",
+      "sections": [
+        {
+          "heading": "Agreement",
+          "body": "An engagement begins when you accept a written proposal and pay the deposit it specifies. The proposal sets out the scope, the price, the timeline and the deliverables for your project."
+        },
+        {
+          "heading": "Quotes and pricing",
+          "body": "Quotes are valid for 30 days and are fixed for the scope described. Prices are shown in US Dollars unless your proposal states otherwise. The currency you are invoiced in is agreed in the proposal and is not adjusted for exchange-rate movement during the project."
+        },
+        {
+          "heading": "Payment terms",
+          "body": "Projects are split into a deposit and milestone payments, typically 50% to begin and the balance on delivery. Retainers are invoiced monthly in advance. Work may be paused if an invoice is overdue by more than 14 days."
+        },
+        {
+          "heading": "Client responsibilities",
+          "body": "You agree to provide content, brand assets, access and timely feedback. Delays in supplying these shift the delivery date by at least the length of the delay."
+        },
+        {
+          "heading": "Revisions and scope changes",
+          "body": "Each phase includes two rounds of revisions. Anything beyond the agreed scope is quoted separately and only starts once you approve that quote in writing."
+        },
+        {
+          "heading": "Intellectual property",
+          "body": "On final payment you own the deliverables, including the source code, design files and content we produced for you. We retain the right to showcase the work in our portfolio unless we agree otherwise in writing."
+        },
+        {
+          "heading": "Warranty and support",
+          "body": "We fix defects in what we delivered, free of charge, for 30 days after launch. Ongoing changes, new features and third-party maintenance are covered by a support retainer."
+        },
+        {
+          "heading": "Liability",
+          "body": "Our total liability for any engagement is limited to the fees you paid for it. We are not liable for indirect or consequential losses, including lost profit or lost data."
+        },
+        {
+          "heading": "Termination",
+          "body": "Either party may end an engagement with 14 days written notice. Work completed up to that point is invoiced and payable, and completed deliverables are handed over on settlement."
+        },
+        {
+          "heading": "Governing law",
+          "body": "These terms are governed by the laws named in your proposal, and the courts sitting in that jurisdiction have exclusive jurisdiction over any dispute. Where a proposal does not name a jurisdiction, the laws and courts of the studio's place of business apply."
+        }
+      ]
+    }
+  },
+  "Photos": {
+    "services": {
+      "alt": "A designer and an engineer reviewing a component library together on screen.",
+      "caption": "Design and engineering, in the same room."
+    },
+    "work": {
+      "alt": "Several website layouts pinned up side by side for review.",
+      "caption": "Every project starts as a layout on the wall."
+    },
+    "blog": {
+      "alt": "A laptop showing a performance audit in a bright workspace.",
+      "caption": "Notes taken from real builds, not theory."
+    },
+    "contact": {
+      "alt": "A quiet desk with a notebook, a cup of coffee and an open laptop.",
+      "caption": ""
+    },
+    "process": {
+      "alt": "Two people sketching a project plan together on a whiteboard.",
+      "caption": "Scoping happens in the open."
+    }
+  },
+  "Login": {
+    "title": "Sign in",
+    "subtitle": "Clients and studio: one door.",
+    "email": "Email address",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "invalid": "That email and password do not match an account.",
+    "notAuthorised": "That account is not set up yet. Get in touch and we will sort it.",
+    "notConfigured": "Sign-in is not connected yet. Add your Supabase keys to .env.local.",
+    "newHere": "New to us?",
+    "createAccount": "Create an account",
+    "forgot": "Forgotten your password?",
+    "forgotBody": "Message us and we will reset it for you."
+  },
+  "Signup": {
+    "title": "Create your account",
+    "subtitle": "Follow your project, its progress and its payments in one place.",
+    "name": "Your name",
+    "namePlaceholder": "Ada Okafor",
+    "email": "Email address",
+    "password": "Password",
+    "passwordHint": "At least 8 characters.",
+    "confirmPassword": "Confirm password",
+    "phone": "Phone number",
+    "phoneHint": "Optional. Only if you would rather we called.",
+    "company": "Company or brand",
+    "companyHint": "Optional.",
+    "submit": "Create account",
+    "submitting": "Creating your account…",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "confirmTitle": "Check your email",
+    "confirmBody": "We sent a confirmation link to {email}. Open it and your account is ready.",
+    "confirmAction": "Back to sign-in",
+    "legal": "By creating an account you agree to our <terms>Terms</terms> and <privacy>Privacy Policy</privacy>.",
+    "errors": {
+      "invalid-email": "Enter a valid email address.",
+      "weak-password": "Use at least 8 characters.",
+      "password-mismatch": "Those two passwords do not match.",
+      "missing-name": "Tell us what to call you.",
+      "email-taken": "An account already exists for that email. Sign in instead.",
+      "rate-limited": "Too many attempts. Wait a minute and try again.",
+      "not-configured": "Accounts are not connected yet. Add your Supabase keys to .env.local.",
+      "unknown": "Something went wrong on our side. Try again in a moment."
+    }
+  },
+  "Portal": {
+    "title": "Your work",
+    "subtitle": "Everything we are building together, and where each piece has got to.",
+    "signedInAs": "Signed in as",
+    "signOut": "Sign out",
+    "backToSite": "Back to site",
+    "active": "In progress",
+    "past": "Finished work",
+    "open": "Open project",
+    "reference": "Reference",
+    "opened": "Requested",
+    "updated": "Last update",
+    "newMessages": "{count, plural, =0 {No new messages} one {# new message} other {# new messages}}",
+    "progress": "Where we are",
+    "brief": "Your brief",
+    "payments": "Payments",
+    "paymentsEmpty": "No payment schedule yet. We add one before any work starts.",
+    "conversation": "Messages",
+    "conversationEmpty": "No messages yet. Say hello and we will pick it up from there.",
+    "messagePlaceholder": "Write a message…",
+    "send": "Send",
+    "sending": "Sending…",
+    "sent": "Message sent.",
+    "you": "You",
+    "studio": "Studio",
+    "history": "What has happened so far",
+    "historyEmpty": "Nothing logged yet.",
+    "totals": {
+      "billed": "Agreed total",
+      "paid": "Paid so far",
+      "due": "Still to come"
+    },
+    "empty": {
+      "title": "Nothing here yet",
+      "body": "Tell us what you need and we will come back with a price and a plan."
+    },
+    "request": {
+      "title": "Start a project",
+      "subtitle": "Tell us what you are building. A few lines is plenty.",
+      "projectTitle": "Project name",
+      "projectTitleHint": "A short label you will recognise, e.g. Shop redesign.",
+      "service": "What do you need?",
+      "serviceNone": "Not sure yet",
+      "scope": "Rough size",
+      "brief": "What are you building?",
+      "briefHint": "The problem, who it is for, and anything you already have.",
+      "submit": "Send request",
+      "submitting": "Sending…",
+      "created": "Request received. We will be in touch.",
+      "referenceHint": "Your reference is {reference}.",
+      "cancel": "Cancel"
+    },
+    "edit": {
+      "title": "Edit your brief",
+      "submit": "Save changes",
+      "saving": "Saving…",
+      "saved": "Changes saved.",
+      "locked": "This request has moved on, so the brief is locked. Send a message instead."
+    },
+    "errors": {
+      "not-signed-in": "Please sign in again.",
+      "not-configured": "The portal is not connected yet.",
+      "missing-fields": "Fill in the required fields.",
+      "save-failed": "We could not save that. Try again.",
+      "not-editable": "This brief can no longer be edited.",
+      "not-allowed": "You do not have access to that.",
+      "invalid-status": "That is not a valid status.",
+      "invalid-transition": "That change is not allowed from here.",
+      "not-found": "That project could not be found.",
+      "invalid-amount": "Enter a valid amount.",
+      "agent-not-found": "No staff account with that email."
+    },
+    "dueOn": "Due",
+    "internalNote": "Internal"
+  },
+  "Orders": {
+    "status": {
+      "inquiry": "New request",
+      "scoping": "Planning",
+      "quoted": "Quoted",
+      "active": "In progress",
+      "review": "In review",
+      "delivered": "Delivered",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
+    },
+    "phase": {
+      "request": "Request",
+      "planning": "Plan",
+      "building": "Build",
+      "review": "Review",
+      "done": "Live"
+    },
+    "milestone": {
+      "pending": "Not yet paid",
+      "invoiced": "Invoiced",
+      "paid": "Paid"
+    },
+    "role": {
+      "client": "Client",
+      "agent": "Agent",
+      "admin": "Admin"
+    }
+  }
+}
