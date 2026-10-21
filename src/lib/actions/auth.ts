@@ -133,6 +133,11 @@ export async function signUpAction(
       return { status: 'error', message: 'email-taken' }
     }
     if (message.includes('password')) return { status: 'error', message: 'weak-password' }
+    // Supabase throws "Error sending confirmation email" when no SMTP is configured.
+    // Treat it as a configuration gap, not a user error.
+    if (message.includes('sending confirmation email') || message.includes('smtp')) {
+      return { status: 'error', message: 'not-configured' }
+    }
     console.warn('[auth] sign-up failed:', error.message)
     return { status: 'error', message: 'unknown' }
   }

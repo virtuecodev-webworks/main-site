@@ -999,7 +999,7 @@
       "missing-name": "Tell us what to call you.",
       "email-taken": "An account already exists for that email. Sign in instead.",
       "rate-limited": "Too many attempts. Wait a minute and try again.",
-      "not-configured": "Accounts are not connected yet. Add your Supabase keys to .env.local.",
+      "not-configured": "Email sending is not yet configured. Please contact us directly at virtueco.dev@gmail.com to complete your signup.",
       "unknown": "Something went wrong on our side. Try again in a moment."
     }
   },
