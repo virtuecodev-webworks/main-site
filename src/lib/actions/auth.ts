@@ -161,3 +161,90 @@ export async function signOutAction(formData: FormData): Promise<void> {
   const target = inApp ? requested : `/${locale}`
   redirect(target)
 }
+
+/**
+ * Request a password reset link/code to the user's email.
+ */
+export async function forgotPasswordAction(formData: FormData): Promise<{ ok: boolean; message?: string }> {
+  const email = String(formData.get('email') ?? '').trim().toLowerCase()
+  const locale = String(formData.get('locale') ?? 'en')
+
+  if (!email || !email.includes('@')) {
+    return { ok: false, message: 'Please enter a valid email address.' }
+  }
+
+  const supabase = await createSupabaseServerClient()
+  if (!supabase) {
+    return { ok: true }
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: absoluteUrl(`/${locale}/reset-password`),
+  })
+
+  if (error) {
+    console.warn('[auth] resetPasswordForEmail failed:', error.message)
+    return { ok: false, message: error.message }
+  }
+
+  return { ok: true }
+}
+
+/**
+ * Update password once user lands on reset-password page with active recovery session.
+ */
+export async function updatePasswordAction(formData: FormData): Promise<{ ok: boolean; message?: string }> {
+  const password = String(formData.get('password') ?? '')
+  const confirm = String(formData.get('confirmPassword') ?? '')
+  const locale = String(formData.get('locale') ?? 'en')
+
+  if (password.length < MIN_PASSWORD) {
+    return { ok: false, message: `Password must be at least ${MIN_PASSWORD} characters.` }
+  }
+
+  if (password !== confirm) {
+    return { ok: false, message: 'Passwords do not match.' }
+  }
+
+  const supabase = await createSupabaseServerClient()
+  if (!supabase) {
+    redirect(`/${locale}/login`)
+  }
+
+  const { error } = await supabase.auth.updateUser({ password })
+  if (error) {
+    return { ok: false, message: error.message }
+  }
+
+  redirect(`/${locale}/login?reset=success`)
+}
+
+/**
+ * Verify 6-digit confirmation code (OTP) for signup.
+ */
+export async function verifyOtpAction(formData: FormData): Promise<{ ok: boolean; message?: string }> {
+  const email = String(formData.get('email') ?? '').trim().toLowerCase()
+  const token = String(formData.get('token') ?? '').trim()
+  const locale = String(formData.get('locale') ?? 'en')
+
+  if (!email || !token || token.length < 6) {
+    return { ok: false, message: 'Please enter the 6-digit verification code.' }
+  }
+
+  const supabase = await createSupabaseServerClient()
+  if (!supabase) {
+    redirect(`/${locale}/portal`)
+  }
+
+  const { data, error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: 'signup',
+  })
+
+  if (error) {
+    return { ok: false, message: error.message }
+  }
+
+  redirect(`/${locale}/portal`)
+}

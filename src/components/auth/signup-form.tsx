@@ -8,7 +8,7 @@ import { VirtueSpinner } from '@/components/brand/virtue-spinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { signUpAction } from '@/lib/actions/auth'
+import { signUpAction, verifyOtpAction } from '@/lib/actions/auth'
 import { SIGN_UP_IDLE } from '@/lib/actions/state'
 import { PwaInstallPrompt } from '@/components/pwa/pwa-install-prompt'
 
@@ -59,24 +59,80 @@ export function SignupForm({ locale }: { locale: string }) {
   const errorText =
     state.status === 'error' ? t(`errors.${state.message}`) : null
 
+  const [otpError, setOtpError] = React.useState<string | null>(null)
+  const [otpPending, setOtpPending] = React.useState(false)
+
+  const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setOtpPending(true)
+    setOtpError(null)
+    const formData = new FormData(e.currentTarget)
+    const res = await verifyOtpAction(formData)
+    if (res && !res.ok) {
+      setOtpError(res.message ?? 'Invalid verification code. Please check and try again.')
+      setOtpPending(false)
+    }
+  }
+
   if (state.status === 'confirm-email') {
     return (
       <div className="flex flex-col gap-5">
         <div className="flex items-center gap-3 rounded-xl bg-gold-500/10 p-3.5 text-gold-800 ring-1 ring-gold-500/25 ring-inset dark:text-gold-300">
-          <MailCheck aria-hidden="true" className="size-5 shrink-0" />
-          <p className="text-[13px] font-medium">{t('confirmTitle')}</p>
+          <MailCheck aria-hidden="true" className="size-5 shrink-0 text-emerald-500" />
+          <p className="text-[13px] font-medium">Check your email for your 6-digit verification code</p>
         </div>
 
         <p className="text-sm text-muted-foreground">
-          {t('confirmBody', { email: state.email })}
+          We sent a branded verification code to <strong className="text-foreground">{state.email}</strong>. Enter the 6-digit code below to activate your account.
         </p>
+
+        <form onSubmit={handleVerifyOtp} className="flex flex-col gap-4">
+          <input type="hidden" name="email" value={state.email} />
+          <input type="hidden" name="locale" value={locale} />
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="signup-otp">6-Digit Verification Code</Label>
+            <Input
+              id="signup-otp"
+              name="token"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]{6}"
+              maxLength={6}
+              autoFocus
+              placeholder="123456"
+              className="text-center font-mono text-2xl tracking-[0.35em] font-bold"
+              required
+            />
+          </div>
+
+          {otpError ? (
+            <p className="text-xs text-destructive font-medium" role="alert">
+              {otpError}
+            </p>
+          ) : null}
+
+          <Button type="submit" variant="gold" size="lg" disabled={otpPending} className="w-full">
+            {otpPending ? (
+              <>
+                <VirtueSpinner className="size-4" />
+                <span>Verifying...</span>
+              </>
+            ) : (
+              <span>Verify &amp; Enter Portal</span>
+            )}
+          </Button>
+        </form>
 
         {/* PWA App Install & Notification prompt upon account creation */}
         <PwaInstallPrompt autoShow />
 
-        <Button asChild variant="outline" size="lg">
-          <Link href="/login">{t('confirmAction')}</Link>
-        </Button>
+        <div className="flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
+          <span>Didn't receive it?</span>
+          <Link href="/login" className="font-semibold text-primary hover:underline">
+            Back to Sign in
+          </Link>
+        </div>
       </div>
     )
   }

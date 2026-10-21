@@ -96,7 +96,10 @@ export function LoginForm({ locale }: { locale: string }) {
           </Link>
         </p>
         <p className="text-muted-foreground">
-          {t('forgot')} <span className="text-foreground">{t('forgotBody')}</span>
+          {t('forgot')}{' '}
+          <Link href="/forgot-password" className="font-medium text-primary underline-offset-4 hover:underline">
+            Reset it here
+          </Link>
         </p>
       </div>
     </form>

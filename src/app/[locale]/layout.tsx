@@ -5,7 +5,6 @@ import localFont from 'next/font/local'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { routing, getDirection, localeMeta, type AppLocale } from '@/i18n/routing'
-import { BrandLoader } from '@/components/site/brand-loader'
 import { RouteProgress } from '@/components/site/route-progress'
 import { DesignStyles } from '@/components/design/design-styles'
 import { ThemeScript } from '@/components/theme/theme-script'
@@ -186,7 +185,6 @@ export default async function LocaleLayout({
         <DesignStyles design={design} />
         <ThemeScript />
         <NextIntlClientProvider locale={locale}>
-          <BrandLoader label={t('loaderLabel')} />
           <RouteProgress />
           {children}
           <Toaster />
