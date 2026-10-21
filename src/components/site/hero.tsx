@@ -8,6 +8,13 @@ import { Button } from '@/components/ui/button'
 import { Reveal } from '@/components/motion/reveal'
 import { FloatingPaths } from '@/components/ui/background-paths'
 
+const VALUE_PROMISES = [
+  'Fixed Prices',
+  'Guaranteed Deadlines',
+  'Zero Agency Fluff',
+  'Direct Developer Access',
+]
+
 const POPULAR_TAGS = [
   { label: 'Website Design', href: '/services#custom' },
   { label: 'Website Redesign', href: '/services#wordpress' },
@@ -27,15 +34,39 @@ export function Hero() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl px-5 py-20 sm:px-8 lg:py-24 text-center">
-        {/* Eyebrow Pill */}
+        {/* Subtle, Compact Horizontal Motion Strip */}
         <Reveal immediate>
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-4 py-1.5 text-xs font-semibold tracking-wider text-gold-600 uppercase dark:text-gold-400">
-            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Fixed Prices</span>
-            <span className="text-border">/</span>
-            <span>Guaranteed Deadlines</span>
-            <span className="text-border">/</span>
-            <span>Zero Agency Fluff</span>
+          <div className="mx-auto flex justify-center">
+            <div className="inline-flex items-center gap-2 max-w-[310px] sm:max-w-[380px] overflow-hidden rounded-full border border-border/70 bg-card/40 dark:bg-card/30 px-2.5 py-1 text-[10.5px] font-medium tracking-wider text-muted-foreground backdrop-blur-sm shadow-xs">
+              <span className="relative flex size-1.5 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+              </span>
+              <div className="relative overflow-hidden w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+                <motion.div
+                  className="flex shrink-0 items-center gap-3 whitespace-nowrap uppercase text-[10px] sm:text-[10.5px]"
+                  animate={{ x: ['0%', '-50%'] }}
+                  transition={{
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: 'linear',
+                    duration: 18,
+                  }}
+                >
+                  {[...VALUE_PROMISES, ...VALUE_PROMISES].map((item, idx) => (
+                    <React.Fragment key={`ticker-1-${idx}`}>
+                      <span className="text-muted-foreground/90">{item}</span>
+                      <span className="text-border">/</span>
+                    </React.Fragment>
+                  ))}
+                  {[...VALUE_PROMISES, ...VALUE_PROMISES].map((item, idx) => (
+                    <React.Fragment key={`ticker-2-${idx}`}>
+                      <span className="text-muted-foreground/90">{item}</span>
+                      <span className="text-border">/</span>
+                    </React.Fragment>
+                  ))}
+                </motion.div>
+              </div>
+            </div>
           </div>
         </Reveal>
 
