@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { AdminNav } from '@/components/admin/admin-nav'
+import { PwaInstallBanner } from '@/components/admin/pwa-install-banner'
 import { requireStaff } from '@/lib/supabase/auth'
 
 // The gate below reads the request cookie jar, which is only available per
@@ -49,6 +50,7 @@ export default async function AdminLayout({
         />
         <main className="min-w-0">{children}</main>
       </div>
+      <PwaInstallBanner />
     </div>
   )
 }

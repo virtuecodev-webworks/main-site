@@ -171,3 +171,39 @@ export interface OrderWithClient extends Order {
   client: Pick<Profile, 'id' | 'email' | 'full_name' | 'company'> | null
   agent: Pick<Profile, 'id' | 'email' | 'full_name'> | null
 }
+
+export interface NewsletterDispatch {
+  id: string
+  title: string
+  subject: string
+  content_html: string
+  content_text: string | null
+  recipients_total: number
+  recipients_sent: number
+  recipients_failed: number
+  triggered_by: 'cron' | 'admin'
+  triggered_by_user?: string | null
+  sent_at: string
+  created_at: string
+}
+
+export interface NewsletterSubscriber {
+  id: string
+  email: string
+  status: 'active' | 'unsubscribed'
+  confirmed_at: string | null
+  unsubscribed_at: string | null
+  source: string | null
+  created_at: string
+}
+
+export interface PushSubscriptionRecord {
+  id: string
+  user_id: string
+  endpoint: string
+  p256dh: string
+  auth_key: string
+  user_agent: string | null
+  created_at: string
+  updated_at: string
+}

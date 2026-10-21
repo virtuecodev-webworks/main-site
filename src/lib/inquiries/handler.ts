@@ -5,7 +5,12 @@ import { headers, cookies } from 'next/headers'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { isEmailConfigured, leadRecipient, sendMany } from '@/lib/email'
-import { confirmationCopyFor, leadConfirmationEmail, leadNotificationEmail, localeLabel } from '@/lib/email/templates'
+import {
+  enquiryAdminEmail,
+  enquiryClientEmail,
+  localeLabel,
+} from '@/lib/email/templates'
+import { sendPushToAdmins } from '@/app/api/push/send/route'
 import { clientKey, rateLimit } from '@/lib/rate-limit'
 import type { Inquiry } from '@/lib/supabase/types'
 import { inquirySchema, issuesToFieldErrors } from '@/lib/validation'
@@ -115,17 +120,38 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
 
   // Dispatch after the response so the form never waits on Resend.
   after(async () => {
-    await sendMany([
-      {
-        to: leadRecipient(),
-        replyTo: input.email,
-        email: leadNotificationEmail(record, label),
-      },
-      {
-        to: input.email,
-        email: leadConfirmationEmail(record, confirmationCopyFor(input.locale)),
-      },
-    ])
+    try {
+      const [adminEmailRendered, clientEmailRendered] = await Promise.all([
+        enquiryAdminEmail(record, label),
+        enquiryClientEmail(record),
+      ])
+
+      await sendMany([
+        {
+          to: leadRecipient(),
+          replyTo: input.email,
+          email: adminEmailRendered,
+        },
+        {
+          to: input.email,
+          email: clientEmailRendered,
+        },
+      ])
+
+      // Push notification to installed admin devices (PWA / Mobile)
+      try {
+        await sendPushToAdmins({
+          title: `🔔 New Enquiry: ${record.name}`,
+          body: `${record.service ?? 'General Enquiry'}${record.company ? ` · ${record.company}` : ''} (${record.budget ?? 'Flexible'})`,
+          url: `/${input.locale}/admin/inquiries`,
+          tag: `lead-${record.id}`,
+        })
+      } catch (pushErr) {
+        console.warn('[inquiries] push notification dispatch failed:', pushErr)
+      }
+    } catch (err) {
+      console.error('[inquiries] email/push dispatch error:', err)
+    }
 
     if (storedId && supabase) {
       await supabase

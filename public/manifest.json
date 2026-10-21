@@ -2,18 +2,76 @@
   "name": "Virtue & Co. Webworks",
   "short_name": "VirtueWeb",
   "description": "Bespoke high-performance web applications, productized services, and client portal tracker.",
-  "start_url": "/",
+  "start_url": "/en/admin",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#dcaa28",
+  "background_color": "#08090C",
+  "theme_color": "#DCAA28",
   "categories": ["business", "productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
+      "src": "/brand/logo-mark.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/logo-mark.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "/brand/logo.svg",
-      "sizes": "192x192 512x512",
+      "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/brand/screenshot-desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Admin Dashboard — Virtue & Co. Webworks"
+    },
+    {
+      "src": "/brand/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile Client Portal"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Enquiry",
+      "short_name": "Enquiry",
+      "description": "View latest client enquiries",
+      "url": "/en/admin/inquiries",
+      "icons": [{ "src": "/brand/logo-mark.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Orders",
+      "short_name": "Orders",
+      "description": "Manage client orders and payments",
+      "url": "/en/admin/orders",
+      "icons": [{ "src": "/brand/logo-mark.png", "sizes": "96x96" }]
+    }
+  ],
+  "share_target": {
+    "action": "/en/admin",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "prefer_related_applications": false,
+  "related_applications": []
 }

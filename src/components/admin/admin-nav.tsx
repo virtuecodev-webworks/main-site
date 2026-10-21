@@ -7,6 +7,7 @@ import {
   Inbox,
   LayoutDashboard,
   LogOut,
+  Mail,
   Palette,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -28,6 +29,7 @@ const ITEMS = [
   { href: '/admin/orders', labelKey: 'orders', icon: FolderKanban, exact: false, adminOnly: false },
   { href: '/admin/portfolio', labelKey: 'portfolio', icon: Images, exact: false, adminOnly: true },
   { href: '/admin/inquiries', labelKey: 'inquiries', icon: Inbox, exact: false, adminOnly: true },
+  { href: '/admin/newsletter', labelKey: 'newsletter', icon: Mail, exact: false, adminOnly: true },
   { href: '/admin/design', labelKey: 'design', icon: Palette, exact: false, adminOnly: true },
 ] as const
 

@@ -7,6 +7,15 @@
   "functions": {
     "src/app/api/webhooks/flutterwave/route.ts": {
       "maxDuration": 30
+    },
+    "src/app/api/newsletter/auto-dispatch/route.ts": {
+      "maxDuration": 60
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/newsletter/auto-dispatch",
+      "schedule": "0 8 * * 1"
+    }
+  ]
 }
