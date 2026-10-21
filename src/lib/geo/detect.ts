@@ -1,3 +1,5 @@
+import type { AppLocale } from '@/i18n/routing'
+
 /**
  * Server-side country detection.
  *
@@ -33,4 +35,41 @@ export function countryFromHeaders(headerList: Headers): string | null {
     return raw
   }
   return null
+}
+
+/**
+ * Maps an ISO 3166-1 alpha-2 country code to the studio's supported locales.
+ *
+ * Supported locales:
+ * - 'fr': France, Belgium, Switzerland (Romandie), Monaco, Luxembourg, and Francophone Africa (SN, CI, CM, CD, etc.)
+ * - 'es': Spain, Mexico, Argentina, Colombia, Chile, Peru, and Hispanic America
+ * - 'de': Germany, Austria, Switzerland, Liechtenstein
+ * - 'ar': Saudi Arabia, UAE, Egypt, Qatar, Kuwait, Morocco, Algeria, etc.
+ * - 'en': UK, US, Nigeria, Canada, Australia, and fallback for all other countries
+ */
+export function localeFromCountry(country: string | null | undefined): AppLocale {
+  if (!country) return 'en'
+  const c = country.toUpperCase()
+
+  // Arabic-speaking countries
+  if (['SA', 'AE', 'EG', 'QA', 'KW', 'OM', 'BH', 'IQ', 'JO', 'LB', 'MA', 'DZ', 'TN', 'LY', 'SD', 'YE', 'PS', 'SY'].includes(c)) {
+    return 'ar'
+  }
+
+  // French-speaking countries
+  if (['FR', 'BE', 'MC', 'LU', 'SN', 'CI', 'CM', 'CD', 'CG', 'GA', 'GN', 'ML', 'NE', 'BF', 'TG', 'BJ', 'MG', 'HT'].includes(c)) {
+    return 'fr'
+  }
+
+  // Spanish-speaking countries
+  if (['ES', 'MX', 'CO', 'AR', 'PE', 'VE', 'CL', 'EC', 'GT', 'CU', 'BO', 'DO', 'HN', 'PY', 'SV', 'NI', 'CR', 'PA', 'UY', 'PR', 'GQ'].includes(c)) {
+    return 'es'
+  }
+
+  // German-speaking countries
+  if (['DE', 'AT', 'LI', 'CH'].includes(c)) {
+    return 'de'
+  }
+
+  return 'en'
 }

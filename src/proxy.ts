@@ -1,7 +1,7 @@
 import createMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './i18n/routing'
-import { countryFromHeaders } from './lib/geo/detect'
+import { countryFromHeaders, localeFromCountry } from './lib/geo/detect'
 import { COUNTRY_COOKIE, GEO_COOKIE, REGION_COOKIE_MAX_AGE } from './lib/geo/countries'
 
 const handleI18n = createMiddleware(routing)
@@ -61,6 +61,37 @@ function signedOutGuard(request: NextRequest): NextResponse | null {
  * concerns without a second pass over the request.
  */
 export default function proxy(request: NextRequest) {
+  // Respect explicit user choice; otherwise verify visitor location from geo IP headers
+  const hasLocaleCookie = request.cookies.has('NEXT_LOCALE')
+  const detectedCountry = countryFromHeaders(request.headers)
+  const detectedLocale = localeFromCountry(detectedCountry)
+
+  // When a first-time visitor lands on '/', redirect immediately to their location's native language
+  if (request.nextUrl.pathname === '/' && !hasLocaleCookie && detectedLocale !== routing.defaultLocale) {
+    const url = request.nextUrl.clone()
+    url.pathname = `/${detectedLocale}`
+    const redirectResponse = NextResponse.redirect(url)
+
+    if (detectedCountry) {
+      redirectResponse.cookies.set(GEO_COOKIE, detectedCountry, {
+        path: '/',
+        maxAge: REGION_COOKIE_MAX_AGE,
+        sameSite: 'lax',
+      })
+    }
+    redirectResponse.cookies.set('NEXT_LOCALE', detectedLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+    })
+    return redirectResponse
+  }
+
+  // Pre-seed NEXT_LOCALE on the incoming request so Next-Intl respects location-aware routing
+  if (!hasLocaleCookie && detectedLocale) {
+    request.cookies.set('NEXT_LOCALE', detectedLocale)
+  }
+
   const response = signedOutGuard(request) ?? handleI18n(request)
 
   // Helpful correlation id for checkout webhooks and background tasks.
@@ -70,19 +101,10 @@ export default function proxy(request: NextRequest) {
 
   /*
    * Cache the IP-derived country in a cookie on the first request.
-   *
-   * The browser applies this `Set-Cookie` before the document's scripts run, so
-   * the client can resolve the visitor's region *synchronously* on hydration —
-   * no fallback currency flashing, and no lookup round trip on a first visit.
-   *
-   * Doing the detection here rather than in a layout is what lets every marketing
-   * page stay statically rendered. A cookie for a choice the visitor made
-   * themselves is never overwritten.
    */
   if (!request.cookies.has(COUNTRY_COOKIE) && !request.cookies.has(GEO_COOKIE)) {
-    const country = countryFromHeaders(request.headers)
-    if (country) {
-      response.cookies.set(GEO_COOKIE, country, {
+    if (detectedCountry) {
+      response.cookies.set(GEO_COOKIE, detectedCountry, {
         path: '/',
         maxAge: REGION_COOKIE_MAX_AGE,
         sameSite: 'lax',

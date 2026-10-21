@@ -42,6 +42,10 @@ export function LanguageSwitcher({
   const change = React.useCallback(
     (next: AppLocale) => {
       if (next === activeLocale) return
+      if (typeof document !== 'undefined') {
+        const secure = window.location.protocol === 'https:' ? '; secure' : ''
+        document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax${secure}`
+      }
       startTransition(() => {
         router.replace(pathname, { locale: next })
       })

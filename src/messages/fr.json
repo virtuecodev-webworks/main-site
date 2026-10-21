@@ -72,14 +72,23 @@
     "phone": "Téléphone",
     "or": "ou",
     "secure": "Sécurisé",
-    "poweredBy": "Paiements sécurisés par Stripe"
+    "poweredBy": "Paiements sécurisés par Stripe",
+    "bookCall": "Réserver un appel",
+    "emailUs": "Écrivez-nous",
+    "whatsapp": "WhatsApp",
+    "search": "Rechercher",
+    "toggleTheme": "Changer de thème",
+    "readMore": "Lire la suite",
+    "learnAbout": "Découvrir le studio"
   },
   "Home": {
     "hero": {
       "title": "Nous concevons des sites web et des expériences digitales à haute performance.",
       "subtitle": "Nous imaginons, développons et livrons des plateformes web sur mesure, des systèmes de commerce et des expériences de marque pour les entreprises, les marques mondiales et les marques personnelles.",
       "primaryCta": "Voir nos réalisations",
-      "secondaryCta": "Obtenir un prix"
+      "secondaryCta": "Obtenir un prix",
+      "imageAlt": "Deux designers examinant ensemble une mise en page web sur ordinateur portable.",
+      "available": "Nouveaux projets acceptés"
     },
     "stats": {
       "launch": "Lancement typique",
@@ -120,6 +129,12 @@
       "step4Body": "Nous construisons le site et partageons un lien privé, pour que vous le voyiez avancer chaque semaine.",
       "step5Title": "Nous mettons en ligne",
       "step5Body": "Nous le publions, vous montrons comment le mettre à jour, et restons disponibles 30 jours après."
+    },
+    "band": {
+      "eyebrow": "Réponses directes",
+      "title": "Nous vous disons ce que nous construisons, ce que cela coûte et le délai requis.",
+      "body": "Pas de discours commercial flou ni d'estimations vagues. Vous obtenez un engagement ferme et écrit avant tout début de projet.",
+      "cta": "Obtenir un tarif"
     }
   },
   "Services": {
@@ -140,7 +155,8 @@
           "Design system sur mesure avec les tokens Tailwind CSS",
           "Budgets Core Web Vitals contrôlés en intégration continue",
           "API headless, tableaux de bord et intégrations"
-        ]
+        ],
+        "imageAlt": "Un designer et un développeur examinant ensemble la mise en page d'un site sur mesure."
       },
       "wordpress": {
         "title": "Développement WordPress",
@@ -151,7 +167,8 @@
           "Types de contenu personnalisés et modèles structurés",
           "Optimisation vitesse et sécurité par défaut",
           "Migration et formation éditoriale incluses"
-        ]
+        ],
+        "imageAlt": "Deux personnes éditant des contenus ensemble sur un système de gestion de contenu."
       },
       "wix": {
         "title": "Wix & solutions no-code",
@@ -162,7 +179,8 @@
           "Logique personnalisée Velo et API tierces",
           "SEO, données structurées et analytics",
           "Prêt à lancer en quelques jours, pas en mois"
-        ]
+        ],
+        "imageAlt": "Un ordinateur portable sur un bureau affichant un site nouvellement mis en ligne."
       },
       "ecommerce": {
         "title": "E-commerce & paiements",
@@ -173,7 +191,8 @@
           "Architecture panier, catalogue et stocks",
           "Registre de transactions vérifié par webhook",
           "Paniers abandonnés et e-mails de cycle de vie"
-        ]
+        ],
+        "imageAlt": "Une boutique en ligne affichée à côté d'un terminal de paiement sécurisé."
       }
     }
   },
@@ -199,7 +218,57 @@
     "viewLive": "Voir en ligne",
     "preview": "Aperçu en direct",
     "previewHint": "Les aperçus en direct sont intégrés depuis le domaine de production du client.",
-    "closePreview": "Fermer l'aperçu"
+    "closePreview": "Fermer l'aperçu",
+    "viewCaseStudy": "Lire l'étude de cas",
+    "caseStudies": "Études de cas",
+    "inside": {
+      "eyebrow": "Dans les coulisses d'un projet",
+      "title": "Ce que vous recevez concrètement.",
+      "subtitle": "Ouvrez un dossier pour découvrir son contenu. Chaque projet que nous livrons comprend systématiquement ces quatre piliers.",
+      "hint": "Ouvrir le dossier",
+      "items": {
+        "design": {
+          "title": "Design",
+          "caption": "Chaque écran est rigoureusement conçu avant d'écrire la moindre ligne de code.",
+          "files": [
+            "Wireframes de chaque page",
+            "Palette, typographies et composants",
+            "Maquettes haute fidélité pour tous les écrans",
+            "Prototype interactif testable"
+          ]
+        },
+        "build": {
+          "title": "Développement",
+          "caption": "Le site réel, pensé pour la vitesse et livré avec une architecture propre.",
+          "files": [
+            "Code source complet",
+            "Éditeur de contenu intuitif pour votre équipe",
+            "Paiements et intégrations tierces",
+            "Tests automatisés des parcours clés"
+          ]
+        },
+        "content": {
+          "title": "Contenu & SEO",
+          "caption": "Le travail de fond indispensable pour être visible et pertinent.",
+          "files": [
+            "Textes de pages rédigés au besoin",
+            "Balises titres et méta-descriptions",
+            "Plan de site et URLs soignées",
+            "Tableaux de bord d'analyse clairs"
+          ]
+        },
+        "handover": {
+          "title": "Transmission",
+          "caption": "Pour que vous puissiez gérer le site en toute autonomie.",
+          "files": [
+            "Documentation écrite détaillée",
+            "Vidéo pas-à-pas de prise en main",
+            "Tous les comptes à votre nom",
+            "30 jours d'assistance offerts après lancement"
+          ]
+        }
+      }
+    }
   },
   "Payment": {
     "title": "Paiements",
@@ -300,7 +369,16 @@
       "step2Body": "Des questions courtes et précises pour chiffrer le travail correctement, sans deviner.",
       "step3Title": "Vous recevez un prix fixe",
       "step3Body": "Un plan clair, un délai et un prix fixe - généralement en deux jours ouvrés."
-    }
+    },
+    "hours": "Disponibilité",
+    "hoursNote": "Nous travaillons à distance avec des clients du monde entier. Vous pouvez nous écrire 24h/24 et 7j/7.",
+    "beforeYouWrite": "Avant de nous écrire",
+    "days": {
+      "weekdays": "Du lundi au vendredi",
+      "saturday": "Samedi",
+      "sunday": "Dimanche"
+    },
+    "bookingTitle": "Réserver un appel découverte de 30 minutes"
   },
   "Footer": {
     "blurb": "Un petit studio qui crée des sites web beaux, et encore plus performants - pour des entreprises partout dans le monde.",
@@ -315,7 +393,10 @@
     "rights": "Tous droits réservés.",
     "builtWith": "Développé avec Next.js, Supabase et Remotion.",
     "availableIn": "Disponible en",
-    "worldwide": "Nous travaillons avec des clients partout dans le monde"
+    "worldwide": "Nous travaillons avec des clients partout dans le monde",
+    "legal": "Mentions légales",
+    "newsletter": "Lettre d'information",
+    "hours": "Horaires du studio"
   },
   "Admin": {
     "title": "Tableau de bord",
@@ -326,7 +407,8 @@
       "inquiries": "Demandes",
       "viewSite": "Voir le site",
       "orders": "Orders",
-      "label": "Studio navigation"
+      "label": "Studio navigation",
+      "design": "Design"
     },
     "overview": {
       "title": "Vue d'ensemble du studio",
@@ -454,6 +536,95 @@
         "milestoneAdded": "Milestone added.",
         "removed": "Milestone removed."
       }
+    },
+    "design": {
+      "title": "Design",
+      "subtitle": "One design for the whole site. The marketing pages, the client portal and this console all read from these settings.",
+      "theme": {
+        "title": "Theme",
+        "hint": "Pick an accent and the surfaces it sits on. Dark mode is worked out from your light choices, so the two can never drift apart."
+      },
+      "accent": "Accent colour",
+      "accentHint": "Buttons, links and highlights are built from this.",
+      "lightBackground": "Light background",
+      "lightSurface": "Light surface",
+      "darkBackground": "Dark background",
+      "darkSurface": "Dark surface",
+      "surfaceHint": "A surface is anything raised above the page: cards, panels, popovers and this editor.",
+      "radius": "Corner radius",
+      "radiusHint": "Applies to buttons, cards, inputs and images.",
+      "typography": {
+        "title": "Typography",
+        "hint": "Choose a body face and a display face. Google families are fetched when you pick them; uploaded files are served from your own storage."
+      },
+      "bodyFont": "Body font",
+      "bodyFontHint": "Paragraphs, labels and everything else.",
+      "displayFont": "Display font",
+      "displayFontHint": "Headings and large numerals. Anything it lacks falls back to the body face.",
+      "groupBrand": "Brand",
+      "groupUploaded": "Uploaded",
+      "groupGoogle": "Google Fonts",
+      "brandBody": "Inter (brand)",
+      "brandDisplay": "Gropled (brand)",
+      "library": {
+        "title": "Custom fonts",
+        "hint": "Upload your own files and use them anywhere on the site. Google families need no installing - choosing one is enough.",
+        "empty": "No custom fonts yet.",
+        "inUse": "In use",
+        "noFile": "No file recorded",
+        "family": "Family name",
+        "familyPlaceholder": "Studio Sans",
+        "familyHint": "Exactly as the font names itself, so it matches what the file declares.",
+        "slot": "Use for",
+        "slotBody": "Body",
+        "slotDisplay": "Display",
+        "file": "Font file",
+        "fileHint": "woff2 is smallest and works everywhere. ttf and otf also work. 4 MB maximum.",
+        "submit": "Upload and use",
+        "uploading": "Uploading…",
+        "installed": "{family} is installed and in use.",
+        "removed": "{family} was removed.",
+        "removeLabel": "Remove {family}",
+        "needFile": "Choose a font file first.",
+        "needFamily": "Give the font a family name.",
+        "tooBig": "That file is over 4 MB. Subset it, or use woff2.",
+        "uploadFailed": "The upload did not finish.",
+        "unavailable": "Something went wrong talking to storage."
+      },
+      "contrast": {
+        "title": "Readability",
+        "hint": "Measured on the colours above, before anything is saved.",
+        "lightLabel": "Button label, light",
+        "darkLabel": "Button label, dark",
+        "lightFlip": "Hover change, light",
+        "darkFlip": "Hover change, dark",
+        "buttonNote": "Text on a filled button.",
+        "flipNote": "How different the hover state looks.",
+        "good": "Comfortable",
+        "workable": "Passable",
+        "low": "Too close",
+        "footnote": "Labels and hover states are chosen automatically for whatever accent you pick, so these stay readable. A small hover change means the accent is very close to the colour it flips to.",
+        "lightPreview": "Light",
+        "darkPreview": "Dark"
+      },
+      "saved": {
+        "saved": "Design saved. Every page now uses it.",
+        "reset": "Back to the brand design."
+      },
+      "save": "Save design",
+      "saving": "Saving…",
+      "reset": "Reset to brand",
+      "resetHint": "Puts the colours and fonts back to the shipped design. Uploaded files stay in the library.",
+      "errors": {
+        "format": "Use a six-digit hex colour, like #dcaa28.",
+        "validation": "Some values could not be read. Check the highlighted fields.",
+        "unknownFont": "That family is not in the catalogue and has not been uploaded.",
+        "invalidFamily": "Use letters, digits, spaces and hyphens only.",
+        "invalidFile": "That file path could not be used.",
+        "unauthorised": "You need an admin session to change the design.",
+        "notConfigured": "Supabase is not configured yet, or the design migration has not been run.",
+        "saveFailed": "Could not save the design. Try again."
+      }
     }
   },
   "NotFound": {
@@ -462,10 +633,34 @@
     "cta": "Retour à l'accueil"
   },
   "Capabilities": {
-    "heading": "Ce que nous construisons, et comment nous travaillons"
+    "heading": "Ce que nous construisons, et comment nous travaillons",
+    "promises": {
+      "senior": {
+        "title": "Vous parlez au concepteur",
+        "body": "Aucun intermédiaire. La personne qui chiffre votre projet est celle qui le développe."
+      },
+      "scope": {
+        "title": "Périmètre fixe, prix fixe",
+        "body": "Vous recevez le plan et le tarif par écrit avant tout début de chantier."
+      },
+      "reply": {
+        "title": "Une réponse sous 48 heures",
+        "body": "Chaque message reçoit une réponse claire et rapide."
+      },
+      "handover": {
+        "title": "Vous êtes propriétaire de tout",
+        "body": "Le code source, les maquettes et les accès vous appartiennent, intégralement documentés."
+      }
+    }
   },
   "Pricing": {
-    "cta": "Obtenir un prix"
+    "cta": "Obtenir un prix",
+    "eyebrow": "Tarifs",
+    "title": "Des tarifs simples et transparents.",
+    "subtitle": "Pas de forfaits opaques ni de paliers inventés — chaque projet est tarifé selon ses besoins réels.",
+    "from": "Projets à partir de",
+    "note": "C'est notre tarif plancher. Les projets réels sont chiffrés après un court échange, avec un montant garanti par écrit avant le début des travaux.",
+    "secondary": "Découvrir ce qui est inclus"
   },
   "Login": {
     "title": "Connexion",
@@ -616,6 +811,288 @@
       "client": "Client",
       "agent": "Chargé de projet",
       "admin": "Administrateur"
+    }
+  },
+  "Command": {
+    "label": "Palette de commandes",
+    "placeholder": "Rechercher pages, services, projets et actions…",
+    "empty": "Aucun résultat trouvé.",
+    "openHint": "Rechercher",
+    "groups": {
+      "pages": "Pages",
+      "services": "Services",
+      "actions": "Actions"
+    },
+    "themeLight": "Passer au thème clair",
+    "themeDark": "Passer au thème sombre",
+    "actions": {
+      "quote": "Obtenir un tarif",
+      "book": "Réserver un appel",
+      "email": "Écrire au studio",
+      "whatsapp": "Demander un Google Meet",
+      "admin": "Ouvrir le tableau de bord"
+    }
+  },
+  "Faq": {
+    "eyebrow": "Bon à savoir",
+    "title": "Questions fréquentes.",
+    "items": {
+      "timeline": {
+        "q": "Combien de temps prend un projet ?",
+        "a": "Un site vitrine simple prend généralement deux à quatre semaines. Une plateforme sur mesure ou une boutique en ligne demande six à douze semaines, selon le périmètre et la rapidité de vos retours."
+      },
+      "stack": {
+        "q": "Quelles technologies utilisez-vous ?",
+        "a": "Nos développements sur mesure reposent sur React et Next.js, avec Supabase pour la base de données, l'authentification et les fichiers. Nous concevons également sur WordPress et Wix lorsque cela correspond mieux à vos besoins."
+      },
+      "ownership": {
+        "q": "Sommes-nous propriétaires du site ?",
+        "a": "Oui, à 100%. Vous possédez l'intégralité du code source, des designs et des accès hébergeurs. Nous vous transmettons tous les livrables avec une vidéo explicative."
+      },
+      "support": {
+        "q": "Que se passe-t-il après le lancement ?",
+        "a": "Chaque projet inclut 30 jours d'assistance complète après mise en ligne. Ensuite, vous pouvez gérer le site en autonomie ou souscrire un forfait de maintenance mensuel."
+      },
+      "payments": {
+        "q": "Comment fonctionnent les paiements ?",
+        "a": "Les projets sont divisés en un acompte initial et des règlements par jalons validés. Paiement sécurisé par carte, virement ou mobile money dans votre devise."
+      },
+      "start": {
+        "q": "Comment démarrer ?",
+        "a": "Envoyez-nous un message via le formulaire ou réservez un appel découverte. Nous vous répondrons sous 48h avec une proposition claire et un tarif ferme."
+      }
+    }
+  },
+  "Newsletter": {
+    "eyebrow": "Lettre d'information",
+    "title": "Notes techniques périodiques. Zéro bruit.",
+    "body": "Environ un email par mois sur la performance web, les paiements et le déploiement de produits digitaux sur mesure.",
+    "label": "Adresse email",
+    "placeholder": "vous@entreprise.com",
+    "submit": "S'abonner",
+    "success": "Vous êtes bien inscrit — merci.",
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "invalid": "Veuillez saisir une adresse email valide.",
+    "privacy": "Zéro spam. Nous ne partageons jamais votre adresse."
+  },
+  "Cookie": {
+    "title": "Gestion des cookies",
+    "body": "Nous utilisons quelques cookies pour mémoriser votre langue et votre thème, ainsi qu'une mesure d'audience anonyme. Zéro traceur publicitaire.",
+    "accept": "Tout accepter",
+    "decline": "Essentiels uniquement",
+    "policy": "Politique de confidentialité"
+  },
+  "Booking": {
+    "eyebrow": "Toujours disponible",
+    "title": "Réserver un appel découverte",
+    "body": "Un échange court et convivial sur vos objectifs et vos délais. Choisissez le créneau qui vous convient.",
+    "cta": "Choisir un horaire",
+    "note": "Vous préférez par écrit ? Envoyez-nous un email et nous répondrons rapidement.",
+    "noteCta": "Demander un Google Meet",
+    "timezone": "Disponible sur tous les fuseaux horaires."
+  },
+  "About": {
+    "metaTitle": "À propos du studio · Ingénierie web et savoir-faire d'excellence",
+    "metaDescription": "Découvrez Virtue & Co. Webworks — un studio d'ingénierie web dédié à la création d'expériences ultra-rapides, au code irréprochable et aux prix fixes garantis.",
+    "eyebrow": "À propos",
+    "title": "Un studio indépendant pour des sites web exigeants.",
+    "intro": "Nous sommes un studio à taille humaine et nous tenons à le rester. L'ingénieur qui chiffre votre projet est celui qui le conçoit et le code, pour une communication fluide sans déperdition.",
+    "story": {
+      "title": "Pourquoi nous avons créé le studio",
+      "body": "Nous avons trop souvent rencontré des entreprises bloquées avec des sites lents, instables, impossibles à modifier et dépendants d'agences opaques. Nous avons fondé Virtue & Co. Webworks pour bâtir exactement l'inverse : des sites web performants, documentés et faciles à gérer soi-même."
+    },
+    "principles": {
+      "title": "Nos engagements",
+      "items": {
+        "senior": {
+          "title": "Directement avec l'ingénieur",
+          "body": "Aucun commercial ni stagiaire. Vous échangez directement avec les spécialistes qui conçoivent votre site."
+        },
+        "fast": {
+          "title": "La vitesse au cœur du design",
+          "body": "La performance est pensée dès la première maquette. Un site lent est un site manqué."
+        },
+        "clear": {
+          "title": "Périmètre fixe, prix fixe",
+          "body": "Tout est cadré par écrit avant de commencer. Les évolutions éventuelles font l'objet d'un devis préalable — jamais de surprise."
+        },
+        "owned": {
+          "title": "Pleine propriété",
+          "body": "Le code source, les maquettes, le nom de domaine et les accès vous appartiennent intégralement."
+        }
+      }
+    },
+    "capabilities": {
+      "title": "Nos domaines d'excellence",
+      "items": [
+        "Sites web et applications sur mesure",
+        "Sites vitrines avec gestion de contenu autonome",
+        "Boutiques en ligne et passerelles de paiement",
+        "Optimisation et refonte de sites existants",
+        "Design systems et bibliothèques d'interfaces"
+      ]
+    },
+    "cta": {
+      "title": "Un projet à concrétiser ?",
+      "body": "Expliquez-nous votre besoin : vous recevrez un plan d'action détaillé et un devis fixe sous deux jours ouvrés.",
+      "button": "Obtenir un tarif"
+    },
+    "bandAlt": "Membres du studio travaillant ensemble autour d'une table avec des ordinateurs portables.",
+    "bandCaption": "Une équipe senior resserrée — vous collaborez directement avec les artisans de votre site."
+  },
+  "Blog": {
+    "metaTitle": "Articles & Notes Techniques",
+    "metaDescription": "Analyses et retours d'expérience de Virtue & Co. Webworks sur la vitesse web, les paiements et le développement moderne.",
+    "eyebrow": "Articles",
+    "title": "Notes sur la conception web moderne.",
+    "subtitle": "Écrits pratiques sur la performance, les architectures de paiement et l'artisanat logiciel.",
+    "readMore": "Lire l'article",
+    "readTime": "{minutes} min de lecture",
+    "publishedOn": "Publié le",
+    "updated": "Mis à jour",
+    "back": "Retour aux articles",
+    "empty": "Aucun article publié pour le moment.",
+    "relatedTitle": "Dans la même thématique"
+  },
+  "CaseStudy": {
+    "back": "Retour au portfolio",
+    "client": "Client",
+    "year": "Année",
+    "role": "Rôle",
+    "timeline": "Durée",
+    "stack": "Technologies",
+    "visit": "Visiter le site en ligne",
+    "challenge": "Le défi",
+    "approach": "Notre approche",
+    "outcome": "Le résultat",
+    "results": "Impact mesuré",
+    "gallery": "Aperçus du projet",
+    "next": "Projet suivant",
+    "notFound": "Étude de cas introuvable"
+  },
+  "WhatsApp": {
+    "label": "Prendre rendez-vous",
+    "title": "Planifier un rendez-vous",
+    "body": "Échangez en direct avec notre équipe d'ingénierie sur vos objectifs et votre calendrier.",
+    "cta": "Demander un Google Meet",
+    "close": "Fermer"
+  },
+  "Legal": {
+    "updated": "Dernière mise à jour :",
+    "contactNote": "Pour toute question juridique ou relative à vos données, écrivez à privacy@virtuecowebworks.solutions.",
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "metaTitle": "Politique de confidentialité · Virtue & Co. Webworks",
+      "metaDescription": "Découvrez comment Virtue & Co. Webworks protège vos données personnelles et respecte votre vie privée.",
+      "intro": "La confidentialité de vos informations est fondamentale. Cette politique expose nos principes de collecte minimale et de sécurisation absolue de vos données.",
+      "sections": [
+        {
+          "heading": "Who we are",
+          "body": "Virtue & Co. Webworks is a web design and development studio working with clients worldwide. We are the data controller for information collected through this website."
+        },
+        {
+          "heading": "What we collect",
+          "body": "When you submit the contact form we collect your name, email address and the project details you choose to share, including an optional phone number, company name, budget band and timeline. When you subscribe to the newsletter we collect only your email address. When you make a payment we collect the billing details required to process it."
+        },
+        {
+          "heading": "How we use it",
+          "body": "We use your information to answer your enquiry, prepare a proposal, deliver work you have engaged us for, and send the newsletter you asked for. We do not sell personal information, and we do not use it for advertising."
+        },
+        {
+          "heading": "Cookies and local storage",
+          "body": "We store your language and colour-theme preferences in your browser so the site behaves consistently on return visits. We may use privacy-respecting, anonymous analytics to understand which pages are useful. No advertising trackers are used."
+        },
+        {
+          "heading": "Payments",
+          "body": "Card payments are processed securely by certified payment processors. Card numbers never reach our servers; we store only a transaction reference, the amount, the currency and the status so that invoices can be reconciled."
+        },
+        {
+          "heading": "Third parties",
+          "body": "We use a small number of processors to run the site and communicate with you, including Supabase (database and authentication), Vercel (hosting), and Resend (transactional email). Each processes data only as needed to provide that service."
+        },
+        {
+          "heading": "Retention",
+          "body": "Enquiries are kept for up to three years so we can pick a conversation back up. Newsletter subscriptions are kept until you unsubscribe. Payment records are kept as long as tax and accounting rules require."
+        },
+        {
+          "heading": "Your rights",
+          "body": "You can ask us for a copy of the information we hold about you, ask us to correct or delete it, or withdraw consent for the newsletter at any time by replying to any email we send."
+        },
+        {
+          "heading": "Contact",
+          "body": "Write to virtueco.dev@gmail.com for any privacy request and we will respond within two business days."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Conditions générales de service",
+      "metaTitle": "Conditions générales de service · Virtue & Co. Webworks",
+      "metaDescription": "Conditions contractuelles, propriété intellectuelle, garanties et modalités de réalisation des projets chez Virtue & Co. Webworks.",
+      "intro": "Ces conditions régissent nos prestations d'ingénierie et de conception web, garantissant un partenariat clair, équitable et transparent.",
+      "sections": [
+        {
+          "heading": "Agreement",
+          "body": "An engagement begins when you accept a written proposal and pay the deposit it specifies. The proposal sets out the scope, the price, the timeline and the deliverables for your project."
+        },
+        {
+          "heading": "Quotes and pricing",
+          "body": "Quotes are valid for 30 days and are fixed for the scope described. Prices are shown in US Dollars unless your proposal states otherwise. The currency you are invoiced in is agreed in the proposal and is not adjusted for exchange-rate movement during the project."
+        },
+        {
+          "heading": "Payment terms",
+          "body": "Projects are split into a deposit and milestone payments, typically 50% to begin and the balance on delivery. Retainers are invoiced monthly in advance. Work may be paused if an invoice is overdue by more than 14 days."
+        },
+        {
+          "heading": "Client responsibilities",
+          "body": "You agree to provide content, brand assets, access and timely feedback. Delays in supplying these shift the delivery date by at least the length of the delay."
+        },
+        {
+          "heading": "Revisions and scope changes",
+          "body": "Each phase includes two rounds of revisions. Anything beyond the agreed scope is quoted separately and only starts once you approve that quote in writing."
+        },
+        {
+          "heading": "Intellectual property",
+          "body": "On final payment you own the deliverables, including the source code, design files and content we produced for you. We retain the right to showcase the work in our portfolio unless we agree otherwise in writing."
+        },
+        {
+          "heading": "Warranty and support",
+          "body": "We fix defects in what we delivered, free of charge, for 30 days after launch. Ongoing changes, new features and third-party maintenance are covered by a support retainer."
+        },
+        {
+          "heading": "Liability",
+          "body": "Our total liability for any engagement is limited to the fees you paid for it. We are not liable for indirect or consequential losses, including lost profit or lost data."
+        },
+        {
+          "heading": "Termination",
+          "body": "Either party may end an engagement with 14 days written notice. Work completed up to that point is invoiced and payable, and completed deliverables are handed over on settlement."
+        },
+        {
+          "heading": "Governing law",
+          "body": "These terms are governed by the laws named in your proposal, and the courts sitting in that jurisdiction have exclusive jurisdiction over any dispute. Where a proposal does not name a jurisdiction, the laws and courts of the studio's place of business apply."
+        }
+      ]
+    }
+  },
+  "Photos": {
+    "services": {
+      "alt": "Développeurs travaillant sur du code et du design d'interface.",
+      "caption": "Ingénierie sur mesure et standards de performance élevés."
+    },
+    "work": {
+      "alt": "Aperçu de projets web récents sur différents appareils.",
+      "caption": "Des interfaces réactives qui convertissent sur mobile et ordinateur."
+    },
+    "blog": {
+      "alt": "Architecture logicielle moderne et performances web.",
+      "caption": "Des réflexions issues de chantiers réels."
+    },
+    "contact": {
+      "alt": "Échange et cadrage de projet digital.",
+      "caption": "Une écoute attentive dès le premier contact."
+    },
+    "process": {
+      "alt": "Cycle de conception et validation par étapes.",
+      "caption": "Un processus fluide en cinq étapes sans surprise."
     }
   }
 }

@@ -27,29 +27,44 @@ export function Hero() {
 
   return (
     <div className="relative isolate min-h-[75vh] sm:min-h-[82vh] flex items-center justify-center overflow-hidden border-b border-border bg-background font-sans max-w-full">
-      {/* Floating Animated Kinetic Vector Paths (Light + Dark mode, GPU accelerated) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden transform-gpu will-change-transform" aria-hidden="true">
+      {/* Floating Animated Kinetic Vector Paths (Desktop only: hidden on mobile so phone scroll never stutters) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden sm:block transform-gpu will-change-transform" aria-hidden="true">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl px-5 py-20 sm:px-8 lg:py-24 text-center">
-        {/* Subtle, Compact Horizontal Motion Strip */}
+        {/* Value Promises Strip: Sleek static creative pill on mobile (0% CPU, 0% skip), slow ambient ticker on desktop */}
         <Reveal immediate>
-          <div className="mx-auto flex justify-center">
-            <div className="inline-flex items-center gap-2 max-w-[310px] sm:max-w-[380px] overflow-hidden rounded-full border border-border/70 bg-card/40 dark:bg-card/30 px-2.5 py-1 text-[10.5px] font-medium tracking-wider text-muted-foreground backdrop-blur-sm shadow-xs">
+          {/* Mobile: Creative, sleek static pill badge */}
+          <div className="flex sm:hidden justify-center mx-auto">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/70 dark:bg-card/50 px-3.5 py-1.5 text-[11px] font-medium tracking-wide text-muted-foreground backdrop-blur-sm shadow-xs">
+              <span className="relative flex size-1.5 shrink-0">
+                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+              </span>
+              <span className="text-foreground/90 font-medium">Fixed Prices</span>
+              <span className="text-border">·</span>
+              <span>Guaranteed Deadlines</span>
+              <span className="text-border">·</span>
+              <span className="text-emerald-500 font-semibold">Zero Fluff</span>
+            </div>
+          </div>
+
+          {/* Tablet & Desktop: Refined horizontal motion strip */}
+          <div className="hidden sm:flex justify-center mx-auto">
+            <div className="inline-flex items-center gap-2 max-w-[380px] overflow-hidden rounded-full border border-border/70 bg-card/40 dark:bg-card/30 px-2.5 py-1 text-[10.5px] font-medium tracking-wider text-muted-foreground backdrop-blur-sm shadow-xs">
               <span className="relative flex size-1.5 shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
               </span>
               <div className="relative overflow-hidden w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
                 <motion.div
-                  className="flex shrink-0 items-center gap-3 whitespace-nowrap uppercase text-[10px] sm:text-[10.5px]"
+                  className="flex shrink-0 items-center gap-3 whitespace-nowrap uppercase text-[10.5px]"
                   animate={{ x: ['0%', '-50%'] }}
                   transition={{
                     repeat: Number.POSITIVE_INFINITY,
                     ease: 'linear',
-                    duration: 18,
+                    duration: 20,
                   }}
                 >
                   {[...VALUE_PROMISES, ...VALUE_PROMISES].map((item, idx) => (

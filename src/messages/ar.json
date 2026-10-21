@@ -72,14 +72,23 @@
     "phone": "الهاتف",
     "or": "أو",
     "secure": "آمن",
-    "poweredBy": "المدفوعات مؤمّنة بواسطة Stripe"
+    "poweredBy": "المدفوعات مؤمّنة بواسطة Stripe",
+    "bookCall": "حجز مكالمة",
+    "emailUs": "راسلنا عبر البريد",
+    "whatsapp": "واتساب",
+    "search": "بحث",
+    "toggleTheme": "تبديل المظهر",
+    "readMore": "اقرأ المزيد",
+    "learnAbout": "تعرف على الاستوديو"
   },
   "Home": {
     "hero": {
       "title": "نصمّم مواقع عالية الأداء وتجارب رقمية استثنائية.",
       "subtitle": "نصمّم ونطوّر ونطلق منصات ويب مخصصة وأنظمة تجارة وتجارب علامات تجارية للمؤسسات والعلامات العالمية والعلامات الشخصية.",
       "primaryCta": "شاهد أعمالنا",
-      "secondaryCta": "احصل على سعر"
+      "secondaryCta": "احصل على سعر",
+      "imageAlt": "مصممان يراجعان معاً تصميم موقع إلكتروني على حاسوب محمول.",
+      "available": "متاحون لاستقبال مشاريع جديدة"
     },
     "stats": {
       "launch": "مدة الإطلاق المعتادة",
@@ -120,6 +129,12 @@
       "step4Body": "نبني الموقع ونشاركك رابطًا خاصًا، لتتابع تقدمه كل أسبوع.",
       "step5Title": "نطلق",
       "step5Body": "ننشره على الإنترنت، ونعلّمك كيف تحدّثه، ونبقى معك 30 يومًا بعده."
+    },
+    "band": {
+      "eyebrow": "إجابات واضحة",
+      "title": "نخبرك بما سنبنيه، وتكلفته الدقيقة، والمدة الزمنية المحددة.",
+      "body": "لا عروض ترويجية غامضة ولا تقديرات تقريبية. تحصل على خطة مكتوبة وسعر ثابت قبل الالتزام بأي شيء.",
+      "cta": "احصل على سعر"
     }
   },
   "Services": {
@@ -140,7 +155,8 @@
           "نظام تصميم مخصص برموز Tailwind CSS",
           "حدود أداء Core Web Vitals مُلزَمة في التكامل المستمر",
           "واجهات برمجية ولوحات تحكم وتكاملات"
-        ]
+        ],
+        "imageAlt": "مصمم ومطور يراجعان تصميماً مخصصاً لموقع إلكتروني."
       },
       "wordpress": {
         "title": "تطوير ووردبريس",
@@ -151,7 +167,8 @@
           "أنواع محتوى مخصصة ونماذج بيانات منظمة",
           "تقوية السرعة والأمان بشكل افتراضي",
           "الترحيل وتدريب فريق التحرير مشمولان"
-        ]
+        ],
+        "imageAlt": "شخصان يقومان بتحرير المحتوى عبر نظام إدارة المحتوى."
       },
       "wix": {
         "title": "وِكس والحلول بدون برمجة",
@@ -162,7 +179,8 @@
           "منطق مخصص بـ Velo وواجهات برمجية خارجية",
           "تهيئة SEO والبيانات المنظمة والتحليلات",
           "جاهز للإطلاق في أيام لا شهور"
-        ]
+        ],
+        "imageAlt": "حاسوب محمول يعرض موقعاً تم إطلاقه حديثاً."
       },
       "ecommerce": {
         "title": "التجارة الإلكترونية والمدفوعات",
@@ -173,7 +191,8 @@
           "بنية السلة والكتالوج والمخزون",
           "سجل معاملات موثّق عبر webhooks",
           "السلات المتروكة ورسائل دورة حياة العميل"
-        ]
+        ],
+        "imageAlt": "متجر إلكتروني معروض بجانب جهاز دفع آمن."
       }
     }
   },
@@ -199,7 +218,57 @@
     "viewLive": "عرض مباشر",
     "preview": "معاينة مباشرة",
     "previewHint": "المعاينات المباشرة مُضمّنة من نطاق العميل الفعلي.",
-    "closePreview": "إغلاق المعاينة"
+    "closePreview": "إغلاق المعاينة",
+    "viewCaseStudy": "عرض دراسة الحالة",
+    "caseStudies": "دراسات الحالة",
+    "inside": {
+      "eyebrow": "في كواليس المشروع",
+      "title": "ما ستحصل عليه فعلياً.",
+      "subtitle": "افتح أي مجلد لمعرفة تفاصيله. كل مشروع نطلقه يشمل هذه العناصر الأربعة دون رسوم خفية.",
+      "hint": "افتح المجلد",
+      "items": {
+        "design": {
+          "title": "التصميم",
+          "caption": "يتم تصميم كل صفحة بعناية فائقة قبل كتابة أي سطر برمجي.",
+          "files": [
+            "مخططات هيكلية لكل صفحة",
+            "ألوانك وخطوطك ومكونات علامتك",
+            "تصاميم نهائية متوافقة مع كل الشاشات",
+            "نموذج أولي تفاعلي للتجربة"
+          ]
+        },
+        "build": {
+          "title": "التطوير البرمجي",
+          "caption": "الموقع الفعلي مبني للسرعة الفائقة ومُسلّم بكود نظيف.",
+          "files": [
+            "الكود المصدري كاملاً",
+            "محرر محتوى سلس لفريقك",
+            "بوابات الدفع والربط الخارجي",
+            "اختبارات آلية لرحلة المستخدم"
+          ]
+        },
+        "content": {
+          "title": "المحتوى وتهيئة محركات البحث",
+          "caption": "الأساس المتين للظهور في محركات البحث بسهولة.",
+          "files": [
+            "نصوص متقنة لصفحاتك",
+            "عناوين ووصف ميتا مُحسّن",
+            "خريطة موقع وروابط واضحة",
+            "لوحة تحليلات وإحصائيات دقيقة"
+          ]
+        },
+        "handover": {
+          "title": "التسليم والدعم",
+          "caption": "لتتمكن من إدارة الموقع بنفسك بكل ثقة دون الحاجة إلينا.",
+          "files": [
+            "دليل استخدام مكتوب ومفصل",
+            "فيديو توضيحي لشرح لوحة التحكم",
+            "جميع الحسابات مسجلة باسمك",
+            "30 يوماً من الدعم المجاني بعد الإطلاق"
+          ]
+        }
+      }
+    }
   },
   "Payment": {
     "title": "المدفوعات",
@@ -300,7 +369,16 @@
       "step2Body": "أسئلة قصيرة ومحددة لنقدّر العمل بدقة بدل التخمين.",
       "step3Title": "تحصل على سعر ثابت",
       "step3Body": "خطة واضحة وجدول زمني وسعر ثابت - عادة خلال يومَي عمل."
-    }
+    },
+    "hours": "أوقات التوفر",
+    "hoursNote": "نعمل عن بُعد مع عملاء من مختلف أنحاء العالم. يمكنك التواصل معنا في أي وقت على مدار الساعة.",
+    "beforeYouWrite": "قبل أن تراسلنا",
+    "days": {
+      "weekdays": "الاثنين – الجمعة",
+      "saturday": "السبت",
+      "sunday": "الأحد"
+    },
+    "bookingTitle": "حجز مكالمة تمهيدية لمدة 30 دقيقة"
   },
   "Footer": {
     "blurb": "استوديو صغير يبني مواقع تبدو رائعة وتعمل بشكل أفضل - لشركات في كل أنحاء العالم.",
@@ -315,7 +393,10 @@
     "rights": "جميع الحقوق محفوظة.",
     "builtWith": "مُطوَّر باستخدام Next.js وSupabase وRemotion.",
     "availableIn": "متاح بـ",
-    "worldwide": "نعمل مع عملاء من كل أنحاء العالم"
+    "worldwide": "نعمل مع عملاء من كل أنحاء العالم",
+    "legal": "الشؤون القانونية",
+    "newsletter": "النشرة الإخبارية",
+    "hours": "أوقات العمل"
   },
   "Admin": {
     "title": "لوحة التحكم",
@@ -326,7 +407,8 @@
       "inquiries": "الاستفسارات",
       "viewSite": "عرض الموقع",
       "orders": "Orders",
-      "label": "Studio navigation"
+      "label": "Studio navigation",
+      "design": "التصميم"
     },
     "overview": {
       "title": "نظرة عامة على الاستوديو",
@@ -454,6 +536,95 @@
         "milestoneAdded": "Milestone added.",
         "removed": "Milestone removed."
       }
+    },
+    "design": {
+      "title": "Design",
+      "subtitle": "One design for the whole site. The marketing pages, the client portal and this console all read from these settings.",
+      "theme": {
+        "title": "Theme",
+        "hint": "Pick an accent and the surfaces it sits on. Dark mode is worked out from your light choices, so the two can never drift apart."
+      },
+      "accent": "Accent colour",
+      "accentHint": "Buttons, links and highlights are built from this.",
+      "lightBackground": "Light background",
+      "lightSurface": "Light surface",
+      "darkBackground": "Dark background",
+      "darkSurface": "Dark surface",
+      "surfaceHint": "A surface is anything raised above the page: cards, panels, popovers and this editor.",
+      "radius": "Corner radius",
+      "radiusHint": "Applies to buttons, cards, inputs and images.",
+      "typography": {
+        "title": "Typography",
+        "hint": "Choose a body face and a display face. Google families are fetched when you pick them; uploaded files are served from your own storage."
+      },
+      "bodyFont": "Body font",
+      "bodyFontHint": "Paragraphs, labels and everything else.",
+      "displayFont": "Display font",
+      "displayFontHint": "Headings and large numerals. Anything it lacks falls back to the body face.",
+      "groupBrand": "Brand",
+      "groupUploaded": "Uploaded",
+      "groupGoogle": "Google Fonts",
+      "brandBody": "Inter (brand)",
+      "brandDisplay": "Gropled (brand)",
+      "library": {
+        "title": "Custom fonts",
+        "hint": "Upload your own files and use them anywhere on the site. Google families need no installing - choosing one is enough.",
+        "empty": "No custom fonts yet.",
+        "inUse": "In use",
+        "noFile": "No file recorded",
+        "family": "Family name",
+        "familyPlaceholder": "Studio Sans",
+        "familyHint": "Exactly as the font names itself, so it matches what the file declares.",
+        "slot": "Use for",
+        "slotBody": "Body",
+        "slotDisplay": "Display",
+        "file": "Font file",
+        "fileHint": "woff2 is smallest and works everywhere. ttf and otf also work. 4 MB maximum.",
+        "submit": "Upload and use",
+        "uploading": "Uploading…",
+        "installed": "{family} is installed and in use.",
+        "removed": "{family} was removed.",
+        "removeLabel": "Remove {family}",
+        "needFile": "Choose a font file first.",
+        "needFamily": "Give the font a family name.",
+        "tooBig": "That file is over 4 MB. Subset it, or use woff2.",
+        "uploadFailed": "The upload did not finish.",
+        "unavailable": "Something went wrong talking to storage."
+      },
+      "contrast": {
+        "title": "Readability",
+        "hint": "Measured on the colours above, before anything is saved.",
+        "lightLabel": "Button label, light",
+        "darkLabel": "Button label, dark",
+        "lightFlip": "Hover change, light",
+        "darkFlip": "Hover change, dark",
+        "buttonNote": "Text on a filled button.",
+        "flipNote": "How different the hover state looks.",
+        "good": "Comfortable",
+        "workable": "Passable",
+        "low": "Too close",
+        "footnote": "Labels and hover states are chosen automatically for whatever accent you pick, so these stay readable. A small hover change means the accent is very close to the colour it flips to.",
+        "lightPreview": "Light",
+        "darkPreview": "Dark"
+      },
+      "saved": {
+        "saved": "Design saved. Every page now uses it.",
+        "reset": "Back to the brand design."
+      },
+      "save": "Save design",
+      "saving": "Saving…",
+      "reset": "Reset to brand",
+      "resetHint": "Puts the colours and fonts back to the shipped design. Uploaded files stay in the library.",
+      "errors": {
+        "format": "Use a six-digit hex colour, like #dcaa28.",
+        "validation": "Some values could not be read. Check the highlighted fields.",
+        "unknownFont": "That family is not in the catalogue and has not been uploaded.",
+        "invalidFamily": "Use letters, digits, spaces and hyphens only.",
+        "invalidFile": "That file path could not be used.",
+        "unauthorised": "You need an admin session to change the design.",
+        "notConfigured": "Supabase is not configured yet, or the design migration has not been run.",
+        "saveFailed": "Could not save the design. Try again."
+      }
     }
   },
   "NotFound": {
@@ -462,10 +633,34 @@
     "cta": "العودة إلى الرئيسية"
   },
   "Capabilities": {
-    "heading": "ما نبنيه وكيف نعمل"
+    "heading": "ما نبنيه وكيف نعمل",
+    "promises": {
+      "senior": {
+        "title": "تتحدث مباشرة مع المطور",
+        "body": "لا وسطاء ولا مسؤولي مبيعات. الشخص الذي يسعّر مشروعك هو نفسه من يبنيه."
+      },
+      "scope": {
+        "title": "نطاق عمل محدد بسعر ثابت",
+        "body": "تحصل على خطة العمل والسعر النهائي كتابياً قبل انطلاق المشروع."
+      },
+      "reply": {
+        "title": "رد خلال 48 ساعة",
+        "body": "تتلقى كل رسالة رداً واضحاً ومفصلاً في وقت قياسي."
+      },
+      "handover": {
+        "title": "الملكية الكاملة لك",
+        "body": "الكود المصدري، ملفات التصميم، وجميع الحسابات ملكك وحدك ومُسلّمة لك."
+      }
+    }
   },
   "Pricing": {
-    "cta": "احصل على سعر"
+    "cta": "احصل على سعر",
+    "eyebrow": "الأسعار",
+    "title": "تسعير واضح وشفاف.",
+    "subtitle": "لا باقات معقدة ولا تكاليف غير مبررة — يُسعّر كل مشروع بدقة وفقاً لمتطلباته الحقيقية.",
+    "from": "مشاريع تبدأ من",
+    "note": "هذا أقل نطاق عمل نقبله. تتحدد أسعار المشاريع بعد مكالمة قصيرة، وتحصل دائماً على المبلغ النهائي كتابياً قبل البدء.",
+    "secondary": "اكتشف ما هو مشمول"
   },
   "Login": {
     "title": "تسجيل الدخول",
@@ -616,6 +811,288 @@
       "client": "عميل",
       "agent": "مسؤول المشروع",
       "admin": "مدير"
+    }
+  },
+  "Command": {
+    "label": "لوحة الأوامر",
+    "placeholder": "ابحث في الصفحات، الخدمات، الأعمال، والإجراءات…",
+    "empty": "لم يتم العثور على نتائج.",
+    "openHint": "بحث",
+    "groups": {
+      "pages": "الصفحات",
+      "services": "الخدمات",
+      "actions": "الإجراءات"
+    },
+    "themeLight": "التحويل للوضع الفاتح",
+    "themeDark": "التحويل للوضع الداكن",
+    "actions": {
+      "quote": "احصل على تسعير",
+      "book": "احجز مكالمة",
+      "email": "راسل الاستوديو",
+      "whatsapp": "طلب لقاء Google Meet",
+      "admin": "لوحة التحكم"
+    }
+  },
+  "Faq": {
+    "eyebrow": "معلومات تهمك",
+    "title": "أسئلة شائعة.",
+    "items": {
+      "timeline": {
+        "q": "كم يستغرق بناء الموقع الإلكتروني؟",
+        "a": "الموقع التعريفي البسيط يستغرق عادة بين أسبوعين إلى أربعة أسابيع. أما المنصات المخصصة والمتاجر الإلكترونية فتتطلب بين ستة إلى اثني عشر أسبوعاً."
+      },
+      "stack": {
+        "q": "ما هي التقنيات التي تستخدمونها؟",
+        "a": "المشاريع المخصصة تُبنى بواسطة React و Next.js مع Supabase لقواعد البيانات والمصادقة. كما نبني أيضاً على WordPress و Wix حينما يكون ذلك الخيار الأنسب لك."
+      },
+      "ownership": {
+        "q": "هل نمتلك الموقع بالكامل؟",
+        "a": "نعم بنسبة 100%. تمتلك الكود المصدري، ملفات التصميم، وكافة الحسابات. نقوم بتسليم كل شيء مع فيديو شرح تفصيلي."
+      },
+      "support": {
+        "q": "ماذا يحدث بعد إطلاق الموقع؟",
+        "a": "يشمل كل مشروع 30 يوماً من الدعم الفني بعد الإطلاق. بعد ذلك، يمكنك إدارته بنفسك أو الاستمرار معنا في خطة تحسينات شهرية."
+      },
+      "payments": {
+        "q": "كيف تتم الدفعات المالية؟",
+        "a": "تُقسّم المشاريع إلى دفعة مقدمة ودفعات مرتبطة بالمراحل المنجزة. الدفع آمن عبر البطاقات الائتمانية والتحويل البنكي ووسائل الدفع المحلية."
+      },
+      "start": {
+        "q": "كيف نبدأ العمل معاً؟",
+        "a": "أرسل لنا رسالة عبر النموذج أو احجز مكالمة تمهيدية مجانية. سنرد عليك خلال يومي عمل بخطة واضحة وتسعير ثابت."
+      }
+    }
+  },
+  "Newsletter": {
+    "eyebrow": "النشرة البريدية",
+    "title": "أفكار برمجية دورية. دون إزعاج.",
+    "body": "رسالة واحدة شهرياً تقريباً حول سرعة الويب، بوابات الدفع الإلكتروني، وتسليم البرمجيات بدقة في مواعيدها.",
+    "label": "البريد الإلكتروني",
+    "placeholder": "you@company.com",
+    "submit": "اشتراك",
+    "success": "تم تسجيلك بنجاح في القائمة البريدية — شكراً لك.",
+    "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "invalid": "يرجى إدخال عنوان بريد إلكتروني صحيح.",
+    "privacy": "لا رسائل مزعجة إطلاقاً، ولا نشارك بريدك مع أي طرف ثالث."
+  },
+  "Cookie": {
+    "title": "ملاحظة حول ملفات تعريف الارتباط",
+    "body": "نستخدم عدداً محدوداً من ملفات تعريف الارتباط لتذكر لغتك ومظهر الموقع، بالإضافة لتحليلات مجهولة المصدر دون تتبع إعلاني.",
+    "accept": "قبول الكل",
+    "decline": "الضرورية فقط",
+    "policy": "سياسة الخصوصية"
+  },
+  "Booking": {
+    "eyebrow": "متاحون دائماً",
+    "title": "احجز مكالمة استكشافية",
+    "body": "مكالمة قصيرة ومباشرة لمناقشة أهدافك ومواعيدك النهائية. اختر الوقت المناسب لك.",
+    "cta": "اختر موعداً",
+    "note": "تفضل المراسلة؟ أرسل لنا رسالة وسنرد عليك بسرعة.",
+    "noteCta": "طلب لقاء Google Meet",
+    "timezone": "متاحون في كافة المناطق الزمنية."
+  },
+  "About": {
+    "metaTitle": "عن الاستوديو · هندسة الويب وحرفية التنفيذ الرقمي",
+    "metaDescription": "تعرف على Virtue & Co. Webworks — استوديو متخصص في تطوير تجارب رقمية فائقة السرعة، أكواد نظيفة، وشراكات بأسعار ثابتة.",
+    "eyebrow": "من نحن",
+    "title": "استوديو هندسي متخصص للمواقع الراقية.",
+    "intro": "نحن استوديو صغير ونحافظ على حجمنا هذا عن قصد. الشخص الذي يسعر مشروعك هو ذاته من يقوم ببنائه، لتفادي أي ضياع للأفكار أو الوقت.",
+    "story": {
+      "title": "لماذا بدأنا",
+      "body": "التقينا بالكثير من أصحاب الأعمال الذين دفعوا مبالغ كبيرة وحصلوا على مواقع بطيئة، هشة، وصعبة التعديل ومرتهنة لشركات وسيطة. أسسنا هذا الاستوديو لنصنع العكس: مواقع سريعة جداً، موثقة بالكامل، وسهلة الإدارة ذاتياً."
+    },
+    "principles": {
+      "title": "مبادئ عملنا",
+      "items": {
+        "senior": {
+          "title": "تتواصل مباشرة مع المنفّذ",
+          "body": "لا مدراء حسابات ولا متدربين يتعلمون على حساب ميزانيتك. حديثك مباشر مع المطورين."
+        },
+        "fast": {
+          "title": "السرعة جزء أصيل من التصميم",
+          "body": "نخطط لسرعة التحميل من اليوم الأول. فالموقع الجميل الذي يفتح ببطء موقع فاشل."
+        },
+        "clear": {
+          "title": "نطاق عمل محدد، سعر ثابت",
+          "body": "تحصل على خطة العمل والسعر المكتوب قبل الانطلاق. وأي عمل إضافي يُسعّر مسبقاً دون مفاجآت."
+        },
+        "owned": {
+          "title": "ملكية تامة بنسبة 100%",
+          "body": "الكود والتصاميم والنطاق والحسابات ملكك وحدك."
+        }
+      }
+    },
+    "capabilities": {
+      "title": "أبرز مجالات تميزنا",
+      "items": [
+        "تطوير المواقع وتطبيقات الويب المخصصة",
+        "مواقع الشركات مع أنظمة إدارة محتوى سهلة",
+        "المتاجر الإلكترونية وأنظمة الدفع المباشر",
+        "تحسين وإعادة بناء المواقع البطيئة",
+        "أنظمة التصميم ومكتبات المكونات البرمجية"
+      ]
+    },
+    "cta": {
+      "title": "هل لديك مشروع ترغب في تنفيذه؟",
+      "body": "أخبرنا بتفاصيل ما تريده وسنوافيك بخطة عمل واضحة وسعر ثابت خلال يومي عمل.",
+      "button": "احصل على سعر"
+    },
+    "bandAlt": "أعضاء الاستوديو يعملون معاً حول طاولة مليئة بالحواسيب المحمولة.",
+    "bandCaption": "فريق هندسي متخصص — تعمل مباشرة مع الأشخاص الذين يبنون موقعك."
+  },
+  "Blog": {
+    "metaTitle": "مقالات وأفكار تقنية",
+    "metaDescription": "رؤى وتجارب من استوديو Virtue & Co. Webworks حول سرعة المواقع، بوابات الدفع، وإنجاز البرمجيات.",
+    "eyebrow": "المقالات",
+    "title": "خواطر في صناعة الويب الحديثة.",
+    "subtitle": "كتابات عملية حول سرعة الأداء، معمارية الدفع، والبرمجة الرصينة.",
+    "readMore": "اقرأ المقال",
+    "readTime": "{minutes} دقائق قراءة",
+    "publishedOn": "تاريخ النشر",
+    "updated": "تم التحديث",
+    "back": "العودة للمقالات",
+    "empty": "لا توجد مقالات منشورة حالياً.",
+    "relatedTitle": "مقالات ذات صلة"
+  },
+  "CaseStudy": {
+    "back": "العودة لسجل الأعمال",
+    "client": "العميل",
+    "year": "السنة",
+    "role": "الدور",
+    "timeline": "المدة الزمنية",
+    "stack": "التقنيات المستخدمة",
+    "visit": "زيارة الموقع الحي",
+    "challenge": "التحدي",
+    "approach": "منهجية الحل",
+    "outcome": "النتيجة",
+    "results": "الأثر والنتائج",
+    "gallery": "معرض الصور",
+    "next": "المشروع التالي",
+    "notFound": "دراسة الحالة غير موجودة"
+  },
+  "WhatsApp": {
+    "label": "حجز موعد",
+    "title": "تحديد موعد لقاء",
+    "body": "تحدث مباشرة مع فريقنا الهندسي لمناقشة أهدافك والجدول الزمني لمشروعك.",
+    "cta": "طلب لقاء Google Meet",
+    "close": "إغلاق"
+  },
+  "Legal": {
+    "updated": "آخر تحديث:",
+    "contactNote": "لأي استفسارات قانونية أو تتعلق بالخصوصية، يرجى مراسلتنا على privacy@virtuecowebworks.solutions.",
+    "privacy": {
+      "title": "سياسة الخصوصية",
+      "metaTitle": "سياسة الخصوصية · Virtue & Co. Webworks",
+      "metaDescription": "تعرف على كيفية حماية بياناتك الشخصية وحفظ خصوصيتك لدى Virtue & Co. Webworks.",
+      "intro": "نولي خصوصية معلوماتك أهمية قصوى. توضح هذه السياسة مبادئنا في الحد الأدنى لجمع البيانات وتأمينها بأعلى المعايير.",
+      "sections": [
+        {
+          "heading": "Who we are",
+          "body": "Virtue & Co. Webworks is a web design and development studio working with clients worldwide. We are the data controller for information collected through this website."
+        },
+        {
+          "heading": "What we collect",
+          "body": "When you submit the contact form we collect your name, email address and the project details you choose to share, including an optional phone number, company name, budget band and timeline. When you subscribe to the newsletter we collect only your email address. When you make a payment we collect the billing details required to process it."
+        },
+        {
+          "heading": "How we use it",
+          "body": "We use your information to answer your enquiry, prepare a proposal, deliver work you have engaged us for, and send the newsletter you asked for. We do not sell personal information, and we do not use it for advertising."
+        },
+        {
+          "heading": "Cookies and local storage",
+          "body": "We store your language and colour-theme preferences in your browser so the site behaves consistently on return visits. We may use privacy-respecting, anonymous analytics to understand which pages are useful. No advertising trackers are used."
+        },
+        {
+          "heading": "Payments",
+          "body": "Card payments are processed securely by certified payment processors. Card numbers never reach our servers; we store only a transaction reference, the amount, the currency and the status so that invoices can be reconciled."
+        },
+        {
+          "heading": "Third parties",
+          "body": "We use a small number of processors to run the site and communicate with you, including Supabase (database and authentication), Vercel (hosting), and Resend (transactional email). Each processes data only as needed to provide that service."
+        },
+        {
+          "heading": "Retention",
+          "body": "Enquiries are kept for up to three years so we can pick a conversation back up. Newsletter subscriptions are kept until you unsubscribe. Payment records are kept as long as tax and accounting rules require."
+        },
+        {
+          "heading": "Your rights",
+          "body": "You can ask us for a copy of the information we hold about you, ask us to correct or delete it, or withdraw consent for the newsletter at any time by replying to any email we send."
+        },
+        {
+          "heading": "Contact",
+          "body": "Write to virtueco.dev@gmail.com for any privacy request and we will respond within two business days."
+        }
+      ]
+    },
+    "terms": {
+      "title": "الشروط والأحكام",
+      "metaTitle": "الشروط والأحكام · Virtue & Co. Webworks",
+      "metaDescription": "الشروط التعاقدية، حقوق الملكية الفكرية، الضمانات، ومراحل تسليم المشاريع لدى Virtue & Co. Webworks.",
+      "intro": "تحكم هذه الشروط جميع خدمات التصميم والتطوير البرمجي التي يقدمها الاستوديو، لتوفير إطار تعاوني عادل وشفاف.",
+      "sections": [
+        {
+          "heading": "Agreement",
+          "body": "An engagement begins when you accept a written proposal and pay the deposit it specifies. The proposal sets out the scope, the price, the timeline and the deliverables for your project."
+        },
+        {
+          "heading": "Quotes and pricing",
+          "body": "Quotes are valid for 30 days and are fixed for the scope described. Prices are shown in US Dollars unless your proposal states otherwise. The currency you are invoiced in is agreed in the proposal and is not adjusted for exchange-rate movement during the project."
+        },
+        {
+          "heading": "Payment terms",
+          "body": "Projects are split into a deposit and milestone payments, typically 50% to begin and the balance on delivery. Retainers are invoiced monthly in advance. Work may be paused if an invoice is overdue by more than 14 days."
+        },
+        {
+          "heading": "Client responsibilities",
+          "body": "You agree to provide content, brand assets, access and timely feedback. Delays in supplying these shift the delivery date by at least the length of the delay."
+        },
+        {
+          "heading": "Revisions and scope changes",
+          "body": "Each phase includes two rounds of revisions. Anything beyond the agreed scope is quoted separately and only starts once you approve that quote in writing."
+        },
+        {
+          "heading": "Intellectual property",
+          "body": "On final payment you own the deliverables, including the source code, design files and content we produced for you. We retain the right to showcase the work in our portfolio unless we agree otherwise in writing."
+        },
+        {
+          "heading": "Warranty and support",
+          "body": "We fix defects in what we delivered, free of charge, for 30 days after launch. Ongoing changes, new features and third-party maintenance are covered by a support retainer."
+        },
+        {
+          "heading": "Liability",
+          "body": "Our total liability for any engagement is limited to the fees you paid for it. We are not liable for indirect or consequential losses, including lost profit or lost data."
+        },
+        {
+          "heading": "Termination",
+          "body": "Either party may end an engagement with 14 days written notice. Work completed up to that point is invoiced and payable, and completed deliverables are handed over on settlement."
+        },
+        {
+          "heading": "Governing law",
+          "body": "These terms are governed by the laws named in your proposal, and the courts sitting in that jurisdiction have exclusive jurisdiction over any dispute. Where a proposal does not name a jurisdiction, the laws and courts of the studio's place of business apply."
+        }
+      ]
+    }
+  },
+  "Photos": {
+    "services": {
+      "alt": "مطورون يعملون على كتابة الأكواد وتصميم واجهات المستخدم.",
+      "caption": "هندسة مخصصة ومعايير أداء فائقة."
+    },
+    "work": {
+      "alt": "عرض لمشاريع الويب الحديثة على أجهزة مختلفة.",
+      "caption": "مواقع سريعة تحول الزوار إلى عملاء فعليين."
+    },
+    "blog": {
+      "alt": "معمارية برمجية حديثة ورسوم بيانية لأداء الويب.",
+      "caption": "دروس مستفادة من مشاريع واقعية."
+    },
+    "contact": {
+      "alt": "اجتماع تخطيط وتحديد متطلبات المشروع الرقمي.",
+      "caption": "اهتمام شخصي من أول لحظة تواصل."
+    },
+    "process": {
+      "alt": "مراحل منهجية العمل الخمس المحددة.",
+      "caption": "مسار عمل منظم دون مفاجآت أو تكاليف خفية."
     }
   }
 }
