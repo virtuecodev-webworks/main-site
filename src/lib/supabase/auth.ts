@@ -166,7 +166,9 @@ export async function resolveSession(): Promise<Session | null> {
     name = (data?.full_name as string | null) ?? name
   }
 
-  if (!role && email && getAdminAllowlist().includes(email)) role = 'admin'
+  if (email && getAdminAllowlist().includes(email)) {
+    role = 'admin'
+  }
 
   return {
     userId: user.id,

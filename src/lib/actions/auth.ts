@@ -45,8 +45,10 @@ export async function signInAction(
     .eq('id', data.user.id)
     .maybeSingle<{ role: ProfileRole }>()
 
-  const role =
-    profile?.role ?? (getAdminAllowlist().includes(email) ? ('admin' as ProfileRole) : null)
+  const isAllowlisted = Boolean(email && getAdminAllowlist().includes(email))
+  const role = isAllowlisted
+    ? ('admin' as ProfileRole)
+    : (profile?.role ?? null)
 
   if (!role) {
     await supabase.auth.signOut()
