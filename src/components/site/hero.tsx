@@ -20,8 +20,8 @@ export function Hero() {
 
   return (
     <div className="relative isolate min-h-[75vh] sm:min-h-[82vh] flex items-center justify-center overflow-hidden border-b border-border bg-background font-sans max-w-full">
-      {/* Floating Animated Kinetic Vector Paths (Light + Dark mode) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      {/* Floating Animated Kinetic Vector Paths (Light + Dark mode, GPU accelerated) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden transform-gpu will-change-transform" aria-hidden="true">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>
@@ -39,27 +39,22 @@ export function Hero() {
           </div>
         </Reveal>
 
-        {/* Dynamic Letter-by-Letter Animated Headline */}
+        {/* Smooth High-Performance Animated Headline */}
         <h1 className="mt-8 text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-foreground text-balance max-w-4xl mx-auto leading-[1.1]">
           {headlineWords.map((word, wordIndex) => (
-            <span key={wordIndex} className="inline-block mr-2 sm:mr-3.5 last:mr-0">
-              {word.split('').map((letter, letterIndex) => (
-                <motion.span
-                  key={`${wordIndex}-${letterIndex}`}
-                  initial={{ y: 50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{
-                    delay: wordIndex * 0.08 + letterIndex * 0.02,
-                    type: 'spring',
-                    stiffness: 140,
-                    damping: 22,
-                  }}
-                  className="inline-block"
-                >
-                  {letter}
-                </motion.span>
-              ))}
-            </span>
+            <motion.span
+              key={wordIndex}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: wordIndex * 0.08,
+                duration: 0.5,
+                ease: [0.2, 0, 0, 1],
+              }}
+              className="inline-block mr-2 sm:mr-3.5 last:mr-0"
+            >
+              {word}
+            </motion.span>
           ))}
         </h1>
 
