@@ -7,7 +7,6 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { Reveal } from '@/components/motion/reveal'
-import { FloatingPaths } from '@/components/ui/background-paths'
 
 export function Hero() {
   const t = useTranslations('Home.hero')
@@ -29,25 +28,20 @@ export function Hero() {
 
   return (
     <div className="relative isolate min-h-[75vh] sm:min-h-[82vh] flex items-center justify-center overflow-hidden border-b border-border bg-background font-sans max-w-full">
-      {/* Ambient Remotion Brand Video Background (Desktop only: blurred subtle luxury background) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block -z-10" aria-hidden="true">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="/media/hero-poster.png"
-          className="w-full h-full object-cover opacity-25 dark:opacity-20 blur-3xl scale-110 transform-gpu"
-        >
-          <source src="/media/hero-loop.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-background/60 dark:bg-background/70 backdrop-blur-xs" />
-      </div>
+      {/* Natural Ambient Organic Glow (Composited on GPU, 120 FPS, Syncs with Light & Dark Mode) */}
+      <div
+        className="absolute inset-0 pointer-events-none overflow-hidden -z-10"
+        aria-hidden="true"
+      >
+        {/* Core Atmospheric Bloom (Soft radiant sapphire + warm studio gold accent) */}
+        <div
+          className="absolute inset-0 opacity-80 dark:opacity-100 transition-opacity duration-700
+            bg-[radial-gradient(ellipse_at_50%_18%,rgba(59,130,246,0.15)_0%,rgba(37,99,235,0.06)_40%,transparent_72%),radial-gradient(ellipse_at_18%_38%,rgba(220,170,40,0.10)_0%,transparent_52%),radial-gradient(ellipse_at_82%_32%,rgba(20,160,108,0.08)_0%,transparent_52%)]
+            dark:bg-[radial-gradient(ellipse_at_50%_18%,rgba(59,130,246,0.28)_0%,rgba(37,99,235,0.14)_35%,transparent_72%),radial-gradient(ellipse_at_18%_38%,rgba(220,170,40,0.16)_0%,transparent_52%),radial-gradient(ellipse_at_82%_32%,rgba(20,160,108,0.12)_0%,transparent_52%)]"
+        />
 
-      {/* Floating Animated Kinetic Vector Paths (Desktop only: hidden on mobile so phone scroll never stutters) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden sm:block transform-gpu will-change-transform -z-10" aria-hidden="true">
-        <FloatingPaths position={1} />
-        <FloatingPaths position={-1} />
+        {/* Soft Ambient Depth Vignette (seamless blend with background surface) */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,var(--background)_82%)]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl px-5 py-20 sm:px-8 lg:py-24 text-center">
