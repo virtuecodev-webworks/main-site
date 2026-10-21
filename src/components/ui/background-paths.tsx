@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 export function FloatingPaths({ position }: { position: number }) {
-  // 10 streamlined GPU-accelerated paths per side (20 total) — fully optimized for mobile
+  // 10 streamlined GPU-accelerated paths per side (20 total) — distinct, crisp, mobile-optimized
   const paths = React.useMemo(
     () =>
       Array.from({ length: 10 }, (_, i) => ({
@@ -17,7 +17,7 @@ export function FloatingPaths({ position }: { position: number }) {
         } ${300 - i * 16}C${540 - i * 16 * position} ${420 - i * 16} ${
           640 - i * 16 * position
         } ${780 - i * 16} ${640 - i * 16 * position} ${780 - i * 16}`,
-        width: 0.8 + i * 0.08,
+        width: 1.2 + i * 0.1,
       })),
     [position],
   )
@@ -28,7 +28,7 @@ export function FloatingPaths({ position }: { position: number }) {
       aria-hidden="true"
     >
       <svg
-        className="size-full text-foreground/20 dark:text-gold-400/25"
+        className="size-full text-slate-800/80 dark:text-gold-400/70"
         viewBox="0 0 696 316"
         fill="none"
         preserveAspectRatio="xMidYMid slice"
@@ -36,11 +36,11 @@ export function FloatingPaths({ position }: { position: number }) {
         <title>Background Paths</title>
         <motion.g
           animate={{
-            x: position > 0 ? [-10, 10, -10] : [10, -10, 10],
-            y: [-7, 7, -7],
+            x: position > 0 ? [-12, 12, -12] : [12, -12, 12],
+            y: [-8, 8, -8],
           }}
           transition={{
-            duration: 20,
+            duration: 22,
             repeat: Number.POSITIVE_INFINITY,
             ease: 'easeInOut',
           }}
@@ -51,15 +51,15 @@ export function FloatingPaths({ position }: { position: number }) {
               d={path.d}
               stroke="currentColor"
               strokeWidth={path.width}
-              strokeOpacity={0.12 + path.id * 0.02}
-              initial={{ pathLength: 0.35, pathOffset: 0, opacity: 0.25 }}
+              strokeOpacity={0.25 + path.id * 0.05}
+              initial={{ pathLength: 0.35, pathOffset: 0, opacity: 0.5 }}
               animate={{
-                pathLength: [0.35, 0.75, 0.35],
+                pathLength: [0.35, 0.85, 0.35],
                 pathOffset: [0, 1, 0],
-                opacity: [0.25, 0.55, 0.25],
+                opacity: [0.45, 0.85, 0.45],
               }}
               transition={{
-                duration: 24 + path.id * 2.5,
+                duration: 20 + path.id * 2,
                 repeat: Number.POSITIVE_INFINITY,
                 ease: 'linear',
               }}
