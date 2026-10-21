@@ -7,8 +7,18 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        // Keep the CMS, auth screen and API out of the index across every locale.
-        disallow: ['/api/', '/admin', '/*/admin', '/login', '/*/login'],
+        // Keep the CMS, auth screens, client portal and API out of search index across every locale.
+        disallow: [
+          '/api/',
+          '/admin',
+          '/*/admin',
+          '/portal',
+          '/*/portal',
+          '/login',
+          '/*/login',
+          '/signup',
+          '/*/signup',
+        ],
       },
     ],
     sitemap: absoluteUrl('/sitemap.xml'),

@@ -1,9 +1,9 @@
 {
   "Metadata": {
-    "title": "Virtue & Co. Webworks - Web Design & Development",
+    "title": "Virtue & Co. Webworks · High-Performance Web Development Agency",
     "titleTemplate": "%s · Virtue & Co. Webworks",
-    "description": "We design and build fast, good-looking websites for businesses anywhere: custom builds, WordPress, Wix, online stores and payments. You always get a clear plan and a fixed price before work starts.",
-    "keywords": "web design studio, website developers, Next.js development, React development, WordPress development, Wix design, online store development, payment integration, Stripe, global web studio"
+    "description": "We engineer high-converting web applications, custom Next.js storefronts, WordPress, and Wix platforms for founders and scaling businesses worldwide. Fixed prices, 100/100 Lighthouse performance, guaranteed timelines.",
+    "keywords": "hire Next.js agency, custom web application developers, fixed price web development, high performance website agency, React development studio, e-commerce web developers, WordPress development agency, Wix Studio developer, full stack web engineering"
   },
   "Brand": {
     "name": "Virtue & Co. Webworks",
@@ -138,8 +138,8 @@
   },
   "Services": {
     "title": "Services",
-    "metaTitle": "Website Design & Development Services",
-    "metaDescription": "Custom websites, WordPress, Wix and online stores - with payment systems built in. Fixed price, agreed before we start.",
+    "metaTitle": "Custom Web Development & Engineering Services",
+    "metaDescription": "Explore our fixed-price web engineering services: custom Next.js web applications, e-commerce storefronts, high-converting brand platforms, and verified payment gateway integrations.",
     "eyebrow": "Services",
     "subtitle": "Whether you need a bespoke platform or a simple brochure site, the same standard applies: fast, clear and easy to run.",
     "deliverables": "What you get",
@@ -197,8 +197,8 @@
   },
   "Portfolio": {
     "title": "Portfolio",
-    "metaTitle": "Portfolio & Case Studies",
-    "metaDescription": "Websites, brand sites and online stores built by Virtue & Co. Webworks.",
+    "metaTitle": "Selected Web Engineering Case Studies & Client Work",
+    "metaDescription": "Explore production web applications and digital platforms engineered by Virtue & Co. Webworks. Real client builds with 100/100 Lighthouse performance.",
     "eyebrow": "Our work",
     "subtitle": "Pick a category to see the kind of work we take on. Every case study explains what the job was and what we did.",
     "filters": {
@@ -271,8 +271,8 @@
   },
   "Payment": {
     "title": "Payments",
-    "metaTitle": "Pay an Invoice or Deposit",
-    "metaDescription": "Pay Virtue & Co. Webworks invoices and project deposits securely via encrypted card checkout.",
+    "metaTitle": "Verified Studio Escrow & Milestone Payments",
+    "metaDescription": "Pay project milestones and invoices securely via 256-bit SSL encrypted checkout powered by Flutterwave. Multi-currency support across USD, GBP, EUR, and NGN.",
     "eyebrow": "Client payments",
     "subtitle": "Pay an invoice or deposit securely. Worldwide credit/debit cards and international checkout supported.",
     "form": {
@@ -314,8 +314,8 @@
   },
   "Contact": {
     "title": "Contact",
-    "metaTitle": "Get a Price",
-    "metaDescription": "Tell Virtue & Co. Webworks about your project. You get a clear plan and a fixed price within two working days.",
+    "metaTitle": "Start a Project · Fixed Price Discovery Consultation",
+    "metaDescription": "Tell us about your web application or website project. Receive an itemized scope and guaranteed fixed-price quote within 24–48 hours.",
     "eyebrow": "Get a price",
     "subtitle": "Tell us what you need. We'll reply with a clear plan, a timeline and one fixed price.",
     "directEmail": "Prefer email?",
@@ -740,8 +740,8 @@
     "timezone": "Available anytime across all timezones."
   },
   "About": {
-    "metaTitle": "About the Studio",
-    "metaDescription": "Virtue & Co. Webworks is a small, senior studio building fast, good-looking websites for clients worldwide.",
+    "metaTitle": "About the Studio · Senior Web Engineering & Craftsmanship",
+    "metaDescription": "Learn about Virtue & Co. Webworks — a global web engineering studio dedicated to building lightning-fast digital experiences, clean codebases, and fixed-price client partnerships.",
     "eyebrow": "About us",
     "title": "A small studio for serious websites.",
     "intro": "We're a small studio and we keep it that way on purpose. The person who works out your price is the person who builds your site, so nothing gets lost between people.",

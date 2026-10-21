@@ -102,6 +102,16 @@ export async function generateMetadata({
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Metadata' })
 
+  const googleVerification =
+    process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+    process.env.GOOGLE_SITE_VERIFICATION ||
+    undefined
+
+  const bingVerification =
+    process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ||
+    process.env.BING_SITE_VERIFICATION ||
+    undefined
+
   return {
     metadataBase: new URL(absoluteUrl('/')),
     title: { default: t('title'), template: t('titleTemplate') },
@@ -110,12 +120,27 @@ export async function generateMetadata({
     authors: [{ name: AGENCY.name }],
     creator: AGENCY.name,
     icons: { icon: '/brand/logo.svg', apple: '/brand/logo.svg' },
+    verification: {
+      google: googleVerification,
+      other: bingVerification ? { 'msvalidate.01': [bingVerification] } : undefined,
+    },
     openGraph: {
       type: 'website',
       siteName: AGENCY.name,
       locale: localeMeta[locale as AppLocale]?.tag ?? 'en_US',
+      images: [
+        {
+          url: absoluteUrl('/brand/logo-mark.png'),
+          width: 1200,
+          height: 630,
+          alt: `${AGENCY.name} - Digital Architecture Studio`,
+        },
+      ],
     },
-    twitter: { card: 'summary_large_image' },
+    twitter: {
+      card: 'summary_large_image',
+      images: [absoluteUrl('/brand/logo-mark.png')],
+    },
   }
 }
 
