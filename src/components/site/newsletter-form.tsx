@@ -31,6 +31,7 @@ export function NewsletterForm({
   const t = useTranslations('Newsletter')
   const locale = useLocale()
   const [status, setStatus] = React.useState<Status>('idle')
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
 
   const invert = tone === 'invert'
 
@@ -38,25 +39,41 @@ export function NewsletterForm({
     event.preventDefault()
     const form = event.currentTarget
     const data = new FormData(form)
+    const email = String(data.get('email') ?? '').trim()
+
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      setStatus('error')
+      setErrorMessage('Please enter a valid email address (e.g. name@example.com)')
+      return
+    }
 
     setStatus('loading')
+    setErrorMessage(null)
+
     try {
       const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: data.get('email'),
+          email,
           website: data.get('website'),
           locale,
           source,
         }),
       })
 
-      if (!response.ok) throw new Error('request failed')
+      if (!response.ok) {
+        if (response.status === 422) {
+          throw new Error('Please enter a valid email address.')
+        }
+        throw new Error('request failed')
+      }
+
       form.reset()
       setStatus('success')
-    } catch {
+    } catch (err) {
       setStatus('error')
+      setErrorMessage(err instanceof Error && err.message !== 'request failed' ? err.message : t('error'))
     }
   }
 
@@ -118,8 +135,8 @@ export function NewsletterForm({
         className="hidden"
       />
 
-      <p className={cn('text-[11px]', invert ? 'text-ink-400' : 'text-muted-foreground')}>
-        {status === 'error' ? t('error') : t('privacy')}
+      <p className={cn('text-[11.5px]', status === 'error' ? 'text-rose-400 font-medium' : invert ? 'text-ink-400' : 'text-muted-foreground')}>
+        {status === 'error' ? (errorMessage ?? t('error')) : t('privacy')}
       </p>
     </form>
   )

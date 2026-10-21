@@ -4,6 +4,7 @@ import { CookieConsent } from '@/components/site/cookie-consent'
 import { AiAssistant } from '@/components/site/ai-assistant'
 import { PageTransition } from '@/components/motion/page-transition'
 import { RegionProvider } from '@/components/site/region-provider'
+import { NewsletterPopup } from '@/components/site/newsletter-popup'
 
 /**
  * Marketing shell: public header, footer and the route transition.
@@ -26,6 +27,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
         <SiteFooter />
         <AiAssistant />
         <CookieConsent />
+        <NewsletterPopup />
       </div>
     </RegionProvider>
   )

@@ -7,12 +7,10 @@ export const AGENCY = {
   name: 'Virtue & Co. Webworks',
   shortName: 'Virtue & Co.',
   domain: 'virtuecowebworks.solutions',
-  email: 'admin@virtuecowebworks.solutions',
+  email: 'virtueco.dev@gmail.com',
   fallbackEmail: 'virtueco.dev@gmail.com',
   teamEmails: [
-    'admin@virtuecowebworks.solutions',
-    'divine@virtuecowebworks.solutions',
-    'glory@virtuecowebworks.solutions',
+    'virtueco.dev@gmail.com',
   ],
   /** Drives the `tel:` links and the WhatsApp deep links; digits derived below. */
   phone: '+2349168047236',

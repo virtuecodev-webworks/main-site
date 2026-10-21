@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { clientKey, rateLimit } from '@/lib/rate-limit'
 import { newsletterSchema } from '@/lib/validation'
+import { sendEmail } from '@/lib/email'
+import { newsletterConfirmEmail } from '@/lib/email/templates'
 
 /**
  * Newsletter subscribe endpoint.
@@ -9,15 +11,13 @@ import { newsletterSchema } from '@/lib/validation'
  *   POST /api/newsletter { email, locale, source }
  *
  * Duplicate addresses are treated as success (idempotent subscribe) so a
- * returning reader never sees an error. The admin client is used because the
- * `subscribers` table has RLS enabled with no public policies — the mailing list
- * is never readable with the anon key.
+ * returning reader never sees an error.
  */
 export const runtime = 'nodejs'
 
 export async function POST(request: Request) {
   const limit = rateLimit(clientKey(request.headers, 'newsletter'), {
-    limit: 5,
+    limit: 10,
     windowMs: 60_000,
   })
 
@@ -43,26 +43,52 @@ export async function POST(request: Request) {
   // Honeypot tripped: pretend it worked so the bot does not retry.
   if (parsed.data.website) return NextResponse.json({ ok: true }, { status: 201 })
 
+  const email = parsed.data.email.toLowerCase().trim()
+  const source = parsed.data.source || 'website'
+  const locale = parsed.data.locale || 'en'
+
   const supabase = createSupabaseAdminClient()
 
   if (supabase) {
-    const { error } = await supabase.from('subscribers').upsert(
-      {
-        email: parsed.data.email,
-        locale: parsed.data.locale,
-        source: parsed.data.source,
-      },
-      { onConflict: 'email', ignoreDuplicates: true },
-    )
-
-    if (error) {
-      console.warn('[newsletter] subscribe failed:', error.message)
-      return NextResponse.json({ ok: false, code: 'error' }, { status: 500 })
+    // 1. Upsert into newsletter_subscribers (primary table for admin dispatch)
+    try {
+      await supabase.from('newsletter_subscribers').upsert(
+        {
+          email,
+          status: 'active',
+          source,
+          confirmed_at: new Date().toISOString(),
+        },
+        { onConflict: 'email', ignoreDuplicates: true },
+      )
+    } catch (err) {
+      console.warn('[newsletter] newsletter_subscribers upsert warning:', err)
     }
-  } else {
-    // No database configured (local preview): accept the address so the flow is
-    // testable end to end, and leave a breadcrumb in the logs.
-    console.info('[newsletter] captured without Supabase:', parsed.data.email)
+
+    // 2. Also keep subscribers table in sync
+    try {
+      await supabase.from('subscribers').upsert(
+        {
+          email,
+          locale,
+          source,
+        },
+        { onConflict: 'email', ignoreDuplicates: true },
+      )
+    } catch (err) {
+      console.warn('[newsletter] subscribers upsert warning:', err)
+    }
+  }
+
+  // 3. Send the branded luxury subscription confirmation email asynchronously
+  try {
+    const rendered = await newsletterConfirmEmail({ email })
+    await sendEmail({
+      to: email,
+      email: rendered,
+    })
+  } catch (emailErr) {
+    console.warn('[newsletter] confirmation email dispatch warning:', emailErr)
   }
 
   return NextResponse.json({ ok: true }, { status: 201 })

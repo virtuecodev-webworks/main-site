@@ -6,7 +6,7 @@ import { resolveSession } from '@/lib/supabase/auth'
 
 if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
   webpush.setVapidDetails(
-    `mailto:${process.env.ADMIN_EMAIL ?? 'admin@virtuecowebworks.solutions'}`,
+    `mailto:${process.env.ADMIN_EMAIL ?? 'virtueco.dev@gmail.com'}`,
     process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
   )

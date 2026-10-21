@@ -41,7 +41,7 @@ function fromAddress(): string {
   return (
     process.env.BREVO_FROM_EMAIL ??
     process.env.SMTP_FROM_EMAIL ??
-    `${AGENCY.name} <hello@virtuecowebworks.solutions>`
+    `${AGENCY.name} <${AGENCY.email}>`
   )
 }
 
