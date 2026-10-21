@@ -66,13 +66,13 @@ export async function CapabilitiesBand({ className }: CapabilitiesBandProps) {
   const tServices = await getTranslations('Services')
 
   const singleLineItems = [
-    'Custom Websites',
-    'WordPress Websites',
-    'Wix Websites',
-    'Online Stores',
-    'Website Redesign',
-    'Fast Turnaround',
-  ] as const
+    tServices('items.custom.title'),
+    tServices('items.wordpress.title'),
+    tServices('items.wix.title'),
+    tServices('items.ecommerce.title'),
+    t('promises.fast.title'),
+    t('promises.scope.title'),
+  ]
 
   return (
     <section

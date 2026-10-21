@@ -83,12 +83,24 @@
   },
   "Home": {
     "hero": {
-      "title": "Wir entwickeln leistungsstarke Websites und digitale Erlebnisse.",
-      "subtitle": "Wir konzipieren, entwickeln und liefern individuelle Webplattformen, Commerce-Systeme und Markenerlebnisse für Unternehmen, globale Marken und Personal Brands.",
-      "primaryCta": "Unsere Arbeiten ansehen",
-      "secondaryCta": "Preis erhalten",
+      "title": "Websites, die Ihr Unternehmen voranbringen.",
+      "subtitle": "Wir entwickeln und modernisieren schnelle Websites, Online-Shops und Web-Apps für Unternehmen weltweit. Sie erhalten stets einen klaren Fahrplan, feste Preise vor Projektstart und direkten Entwicklerkontakt.",
+      "primaryCta": "Projekt starten",
+      "secondaryCta": "Leistungen & Preise entdecken",
       "imageAlt": "Zwei Designer überprüfen gemeinsam ein Website-Layout auf einem Laptop.",
-      "available": "Freie Kapazitäten für neue Projekte"
+      "available": "Freie Kapazitäten für neue Projekte",
+      "servicesLabel": "Leistungen",
+      "strip": {
+        "fixed": "Feste Preise",
+        "deadlines": "Garantierte Fristen",
+        "fluff": "Kein Agentur-Gerede",
+        "senior": "Direkter Entwicklerkontakt"
+      },
+      "badges": {
+        "rating": "5.0-Sterne-Bewertung",
+        "ownership": "100% Code-Eigentum",
+        "portal": "Direktes Kundenportal"
+      }
     },
     "stats": {
       "launch": "Typischer Launch",

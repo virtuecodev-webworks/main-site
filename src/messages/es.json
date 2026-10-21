@@ -83,12 +83,24 @@
   },
   "Home": {
     "hero": {
-      "title": "Creamos sitios web y experiencias digitales de alto rendimiento.",
-      "subtitle": "Diseñamos, desarrollamos y lanzamos plataformas web a medida, sistemas de comercio y experiencias de marca para empresas, marcas globales y marcas personales.",
-      "primaryCta": "Ver nuestro trabajo",
-      "secondaryCta": "Ver precio",
+      "title": "Sitios web diseñados para hacer crecer tu negocio.",
+      "subtitle": "Diseñamos y renovamos sitios web rápidos y modernos, tiendas online y aplicaciones web para empresas de todo el mundo. Siempre con un plan claro, precio fijo y contacto directo con desarrolladores senior.",
+      "primaryCta": "Iniciar tu proyecto",
+      "secondaryCta": "Explorar servicios y precios",
       "imageAlt": "Dos diseñadores revisando juntos el diseño de un sitio web en un portátil.",
-      "available": "Aceptando nuevos proyectos"
+      "available": "Aceptando nuevos proyectos",
+      "servicesLabel": "Servicios",
+      "strip": {
+        "fixed": "Precios fijos",
+        "deadlines": "Plazos garantizados",
+        "fluff": "Cero rodeos",
+        "senior": "Acceso directo a desarrolladores"
+      },
+      "badges": {
+        "rating": "Calificación 5.0 estrellas",
+        "ownership": "100% Propiedad del código",
+        "portal": "Portal de cliente directo"
+      }
     },
     "stats": {
       "launch": "Lanzamiento típico",

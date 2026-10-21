@@ -83,12 +83,24 @@
   },
   "Home": {
     "hero": {
-      "title": "Your website should look great - and work even better.",
-      "subtitle": "We design and build websites for businesses anywhere: custom-built, WordPress, Wix or an online store. You get a clear plan and a fixed price before any work starts.",
-      "primaryCta": "See our work",
-      "secondaryCta": "Get a price",
+      "title": "Websites designed to grow your business.",
+      "subtitle": "We build and redesign fast, modern websites, online stores, and web apps for businesses worldwide. You always get a clear plan, fixed pricing before we start, and direct contact with senior developers.",
+      "primaryCta": "Start Your Project",
+      "secondaryCta": "Explore Services & Pricing",
       "imageAlt": "Two designers reviewing a website layout together on a laptop.",
-      "available": "Taking on new projects"
+      "available": "Taking on new projects",
+      "servicesLabel": "Services",
+      "strip": {
+        "fixed": "Fixed Prices",
+        "deadlines": "Guaranteed Deadlines",
+        "fluff": "Zero Fluff",
+        "senior": "Direct Senior Access"
+      },
+      "badges": {
+        "rating": "5.0 Star Rating",
+        "ownership": "100% Code Ownership",
+        "portal": "Direct Client Portal"
+      }
     },
     "stats": {
       "launch": "Most projects take",

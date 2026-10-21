@@ -83,12 +83,24 @@
   },
   "Home": {
     "hero": {
-      "title": "Nous concevons des sites web et des expériences digitales à haute performance.",
-      "subtitle": "Nous imaginons, développons et livrons des plateformes web sur mesure, des systèmes de commerce et des expériences de marque pour les entreprises, les marques mondiales et les marques personnelles.",
-      "primaryCta": "Voir nos réalisations",
-      "secondaryCta": "Obtenir un prix",
+      "title": "Des sites web conçus pour développer votre activité.",
+      "subtitle": "Nous concevons et refondons des sites web rapides et modernes, des boutiques en ligne et des applications pour les entreprises du monde entier. Vous bénéficiez d'un plan clair, d'un prix fixe et d'un contact direct avec nos développeurs seniors.",
+      "primaryCta": "Démarrer votre projet",
+      "secondaryCta": "Explorer services & tarifs",
       "imageAlt": "Deux designers examinant ensemble une mise en page web sur ordinateur portable.",
-      "available": "Nouveaux projets acceptés"
+      "available": "Nouveaux projets acceptés",
+      "servicesLabel": "Services",
+      "strip": {
+        "fixed": "Prix fixes",
+        "deadlines": "Délais garantis",
+        "fluff": "Zéro superflu",
+        "senior": "Contact direct développeur"
+      },
+      "badges": {
+        "rating": "Note de 5.0 étoiles",
+        "ownership": "Propriété du code à 100%",
+        "portal": "Espace client dédié"
+      }
     },
     "stats": {
       "launch": "Lancement typique",
