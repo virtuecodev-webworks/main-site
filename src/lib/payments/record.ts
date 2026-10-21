@@ -109,7 +109,7 @@ export async function recordVerifiedTransaction(
   if (status === 'successful' && !alreadySuccessful && verified.customerEmail) {
     const result = await sendEmail({
       to: verified.customerEmail,
-      email: paymentReceiptEmail({
+      email: await paymentReceiptEmail({
         reference: verified.txRef,
         providerTxId: payload.provider_tx_id,
         amount: payload.amount,

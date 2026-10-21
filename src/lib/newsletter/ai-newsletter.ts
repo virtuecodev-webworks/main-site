@@ -75,7 +75,7 @@ export async function dispatchNewsletter({
   issueIndex?: number
 }) {
   const issue = getNewsletterIssue(issueIndex)
-  const rendered = newsletterEmail(issue)
+  const rendered = await newsletterEmail(issue)
 
   const results = await Promise.allSettled(
     recipientEmails.map((to) =>
