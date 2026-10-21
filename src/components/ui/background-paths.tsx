@@ -5,26 +5,26 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 export function FloatingPaths({ position }: { position: number }) {
-  // 12 streamlined high-performance paths per side (24 total instead of 72)
+  // 10 streamlined GPU-accelerated paths per side (20 total) — fully optimized for mobile
   const paths = React.useMemo(
     () =>
-      Array.from({ length: 12 }, (_, i) => ({
+      Array.from({ length: 10 }, (_, i) => ({
         id: i,
-        d: `M-${340 - i * 14 * position} -${160 + i * 14}C-${
-          340 - i * 14 * position
-        } -${160 + i * 14} -${260 - i * 14 * position} ${180 - i * 14} ${
-          140 - i * 14 * position
-        } ${300 - i * 14}C${540 - i * 14 * position} ${420 - i * 14} ${
-          640 - i * 14 * position
-        } ${780 - i * 14} ${640 - i * 14 * position} ${780 - i * 14}`,
-        width: 1 + i * 0.08,
+        d: `M-${340 - i * 16 * position} -${160 + i * 16}C-${
+          340 - i * 16 * position
+        } -${160 + i * 16} -${260 - i * 16 * position} ${180 - i * 16} ${
+          140 - i * 16 * position
+        } ${300 - i * 16}C${540 - i * 16 * position} ${420 - i * 16} ${
+          640 - i * 16 * position
+        } ${780 - i * 16} ${640 - i * 16 * position} ${780 - i * 16}`,
+        width: 0.8 + i * 0.08,
       })),
     [position],
   )
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 overflow-hidden will-change-transform"
+      className="pointer-events-none absolute inset-0 overflow-hidden transform-gpu will-change-transform [contain:paint]"
       aria-hidden="true"
     >
       <svg
@@ -34,23 +34,38 @@ export function FloatingPaths({ position }: { position: number }) {
         preserveAspectRatio="xMidYMid slice"
       >
         <title>Background Paths</title>
-        {paths.map((path) => (
-          <motion.path
-            key={path.id}
-            d={path.d}
-            stroke="currentColor"
-            strokeWidth={path.width}
-            initial={{ opacity: 0.15 }}
-            animate={{
-              opacity: [0.15, 0.45, 0.15],
-            }}
-            transition={{
-              duration: 8 + path.id * 1.5,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: 'easeInOut',
-            }}
-          />
-        ))}
+        <motion.g
+          animate={{
+            x: position > 0 ? [-10, 10, -10] : [10, -10, 10],
+            y: [-7, 7, -7],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: 'easeInOut',
+          }}
+        >
+          {paths.map((path) => (
+            <motion.path
+              key={path.id}
+              d={path.d}
+              stroke="currentColor"
+              strokeWidth={path.width}
+              strokeOpacity={0.12 + path.id * 0.02}
+              initial={{ pathLength: 0.35, pathOffset: 0, opacity: 0.25 }}
+              animate={{
+                pathLength: [0.35, 0.75, 0.35],
+                pathOffset: [0, 1, 0],
+                opacity: [0.25, 0.55, 0.25],
+              }}
+              transition={{
+                duration: 24 + path.id * 2.5,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: 'linear',
+              }}
+            />
+          ))}
+        </motion.g>
       </svg>
     </div>
   )
