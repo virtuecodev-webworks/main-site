@@ -1,8 +1,9 @@
 import 'server-only'
 
 import { after } from 'next/server'
-import { headers } from 'next/headers'
+import { headers, cookies } from 'next/headers'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { isEmailConfigured, leadRecipient, sendMany } from '@/lib/email'
 import { confirmationCopyFor, leadConfirmationEmail, leadNotificationEmail, localeLabel } from '@/lib/email/templates'
 import { clientKey, rateLimit } from '@/lib/rate-limit'
@@ -15,6 +16,7 @@ export interface InquiryResult {
   code: 'ok' | 'validation' | 'rate-limited' | 'error'
   fieldErrors?: Record<string, string[]>
   retryAfterSeconds?: number
+  redirectUrl?: string
 }
 
 /**
@@ -133,5 +135,47 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
     }
   })
 
-  return { ok: true, code: 'ok' }
+  let redirectUrl: string | undefined
+
+  if (input.password && input.password.length >= 8) {
+    try {
+      const serverClient = await createSupabaseServerClient()
+      if (serverClient) {
+        const { data: authData } = await serverClient.auth.signUp({
+          email: input.email.toLowerCase().trim(),
+          password: input.password,
+          options: {
+            data: {
+              full_name: input.name,
+              phone: input.phone ?? undefined,
+              company: input.company ?? undefined,
+            },
+          },
+        })
+        if (!authData.user) {
+          await serverClient.auth.signInWithPassword({
+            email: input.email.toLowerCase().trim(),
+            password: input.password,
+          })
+        }
+      } else {
+        const jar = await cookies()
+        jar.set(
+          'vcw:demo_session',
+          JSON.stringify({
+            userId: 'client-' + Date.now(),
+            email: input.email,
+            name: input.name,
+            role: 'client',
+          }),
+          { path: '/', httpOnly: true, sameSite: 'lax' },
+        )
+      }
+      redirectUrl = `/${input.locale}/portal`
+    } catch (authErr) {
+      console.warn('[inquiries] client account creation skipped:', authErr)
+    }
+  }
+
+  return { ok: true, code: 'ok', redirectUrl }
 }

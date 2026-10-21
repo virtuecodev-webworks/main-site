@@ -24,7 +24,7 @@ function fromAddress() {
 }
 
 export function leadRecipient() {
-  return process.env.LEAD_NOTIFICATION_EMAIL ?? AGENCY.email
+  return process.env.LEAD_NOTIFICATION_EMAIL ?? AGENCY.fallbackEmail ?? AGENCY.email
 }
 
 export interface SendResult {

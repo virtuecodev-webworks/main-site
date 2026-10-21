@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { CheckCircle2, Send } from 'lucide-react'
+import { CheckCircle2, Send, ShieldCheck, Lock } from 'lucide-react'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
 import { toast } from 'sonner'
 import { useLocale, useTranslations } from 'next-intl'
@@ -56,6 +56,7 @@ export function ContactForm({ className }: ContactFormProps) {
     const payload = {
       name: String(data.get('name') ?? ''),
       email: String(data.get('email') ?? ''),
+      password: String(data.get('password') ?? '') || null,
       phone: String(data.get('phone') ?? '') || null,
       company: String(data.get('company') ?? '') || null,
       service: service || null,
@@ -70,6 +71,13 @@ export function ContactForm({ className }: ContactFormProps) {
       const result = await submitInquiry(payload)
 
       if (result.ok) {
+        if (result.redirectUrl) {
+          toast.success('Account created & quote submitted!', {
+            description: 'Redirecting to your client portal...',
+          })
+          window.location.href = result.redirectUrl
+          return
+        }
         setSent(true)
         toast.success(t('successTitle'))
         form.reset()
@@ -206,6 +214,30 @@ export function ContactForm({ className }: ContactFormProps) {
           placeholder={t('messagePlaceholder')}
         />
       </Field>
+
+      {/* Client Portal Account Creation */}
+      <div className="rounded-2xl border border-border/80 bg-muted/40 p-4 sm:p-5">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="size-4 text-emerald-500" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
+            Client Portal Account (Live Quote Tracking)
+          </span>
+        </div>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Set a password to link this quote directly to your private studio dashboard to track scope, updates, and milestone payments.
+        </p>
+        <div className="mt-3">
+          <Input
+            id="cf-password"
+            name="password"
+            type="password"
+            placeholder="Create password (min. 8 characters)"
+            minLength={8}
+            maxLength={120}
+            autoComplete="new-password"
+          />
+        </div>
+      </div>
 
       {/* Honeypot: hidden from humans, irresistible to bots. */}
       <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden>

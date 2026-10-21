@@ -65,35 +65,35 @@ export async function CapabilitiesBand({ className }: CapabilitiesBandProps) {
   const t = await getTranslations('Capabilities')
   const tServices = await getTranslations('Services')
 
-  const disciplines = SERVICES.map((service) => tServices(`items.${service.key}.title`))
+  const singleLineItems = [
+    'Custom Websites',
+    'WordPress Websites',
+    'Wix Websites',
+    'Online Stores',
+    'Website Redesign',
+    'Fast Turnaround',
+  ] as const
 
   return (
     <section
       aria-labelledby="capabilities-heading"
-      className={cn('border-y border-border bg-muted/40', className)}
+      className={cn('border-y border-border bg-muted/40 py-8', className)}
     >
       <p
         id="capabilities-heading"
-        className="mx-auto max-w-7xl px-5 pt-10 text-center font-sans text-[11px] font-medium tracking-[0.28em] text-muted-foreground uppercase sm:px-8"
+        className="mx-auto max-w-7xl px-5 text-center font-sans text-[11px] font-medium tracking-[0.28em] text-muted-foreground uppercase sm:px-8"
       >
         {t('heading')}
       </p>
 
       <Marquee
-        items={disciplines}
+        items={singleLineItems}
         separator
-        className="mt-7"
-        itemClassName="font-display text-2xl font-semibold sm:text-3xl"
+        className="mt-6"
+        itemClassName="font-display text-xl sm:text-2xl font-medium tracking-tight text-foreground"
       />
 
-      <Marquee
-        items={TECH_STACK}
-        reverse
-        className="mt-7"
-        itemClassName="font-mono text-[12.5px] tracking-[0.14em] text-muted-foreground uppercase"
-      />
-
-      <dl className="mx-auto grid max-w-7xl gap-x-8 gap-y-6 px-5 pt-10 pb-11 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
+      <dl className="mx-auto grid max-w-7xl gap-x-8 gap-y-6 px-5 pt-10 pb-4 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
         {PROMISES.map((key) => (
           <div key={key} className="border-t border-border pt-4">
             <dt className="text-[13px] font-semibold">{t(`promises.${key}.title`)}</dt>

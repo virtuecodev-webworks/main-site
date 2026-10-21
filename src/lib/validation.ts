@@ -55,6 +55,7 @@ const optionalText = (max: number) =>
 export const inquirySchema = z.object({
   name: z.string().trim().min(2).max(120),
   email: emailLike,
+  password: z.string().min(8).max(120).optional().nullable(),
   phone: optionalText(40).optional(),
   company: optionalText(140).optional(),
   service: optionalText(60).optional(),

@@ -26,10 +26,17 @@ export function getServiceRoleKey(): string | null {
 
 /** Emails allowed into `/admin`, in addition to any profile with role='admin'. */
 export function getAdminAllowlist(): string[] {
-  return (process.env.ADMIN_EMAIL_ALLOWLIST ?? '')
+  const fromEnv = (process.env.ADMIN_EMAIL_ALLOWLIST ?? '')
     .split(',')
     .map((entry) => entry.trim().toLowerCase())
     .filter(Boolean)
+
+  const defaults = [
+    'virtueco.dev@gmail.com',
+    'admin@virtuecowebworks.solutions',
+  ]
+
+  return Array.from(new Set([...defaults, ...fromEnv]))
 }
 
 /**
