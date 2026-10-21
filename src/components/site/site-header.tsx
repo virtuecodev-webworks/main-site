@@ -99,7 +99,7 @@ export function SiteHeader() {
               </Link>
             </Button>
 
-            <KineticNav className="xl:hidden" />
+            <KineticNav />
           </div>
         </div>
       </header>
