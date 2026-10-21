@@ -1,9 +1,9 @@
 {
   "Metadata": {
-    "title": "Virtue & Co. Webworks · High-Performance Web Development Agency",
+    "title": "Virtue & Co. Webworks · Website Design & Website Redesign Studio",
     "titleTemplate": "%s · Virtue & Co. Webworks",
-    "description": "We engineer high-converting web applications, custom Next.js storefronts, WordPress, and Wix platforms for founders and scaling businesses worldwide. Fixed prices, 100/100 Lighthouse performance, guaranteed timelines.",
-    "keywords": "hire Next.js agency, custom web application developers, fixed price web development, high performance website agency, React development studio, e-commerce web developers, WordPress development agency, Wix Studio developer, full stack web engineering"
+    "description": "Virtue & Co. Webworks designs and redesigns fast, modern websites and online stores for businesses worldwide. Fixed prices, clear timelines, and websites built to get you more customers.",
+    "keywords": "Virtue & Co. Webworks, Virtue and Co Webworks, Virtue Webworks, Virtue and Co, website design, website redesign, small business website design, redesign my website, business website design, custom website design, online store design, ecommerce website design, hire web designer, affordable website design, professional website redesign"
   },
   "Brand": {
     "name": "Virtue & Co. Webworks",
@@ -138,8 +138,8 @@
   },
   "Services": {
     "title": "Services",
-    "metaTitle": "Custom Web Development & Engineering Services",
-    "metaDescription": "Explore our fixed-price web engineering services: custom Next.js web applications, e-commerce storefronts, high-converting brand platforms, and verified payment gateway integrations.",
+    "metaTitle": "Website Design, Website Redesign & Online Stores",
+    "metaDescription": "Professional website design, complete website redesigns, and online stores built for real business growth. Always agreed fixed pricing before work starts.",
     "eyebrow": "Services",
     "subtitle": "Whether you need a bespoke platform or a simple brochure site, the same standard applies: fast, clear and easy to run.",
     "deliverables": "What you get",
@@ -197,8 +197,8 @@
   },
   "Portfolio": {
     "title": "Portfolio",
-    "metaTitle": "Selected Web Engineering Case Studies & Client Work",
-    "metaDescription": "Explore production web applications and digital platforms engineered by Virtue & Co. Webworks. Real client builds with 100/100 Lighthouse performance.",
+    "metaTitle": "Website Design Examples & Recent Work",
+    "metaDescription": "Explore websites and online stores designed and built by Virtue & Co. Webworks. Real client projects that load instantly and drive sales.",
     "eyebrow": "Our work",
     "subtitle": "Pick a category to see the kind of work we take on. Every case study explains what the job was and what we did.",
     "filters": {
@@ -314,8 +314,8 @@
   },
   "Contact": {
     "title": "Contact",
-    "metaTitle": "Start a Project · Fixed Price Discovery Consultation",
-    "metaDescription": "Tell us about your web application or website project. Receive an itemized scope and guaranteed fixed-price quote within 24–48 hours.",
+    "metaTitle": "Get a Free Website Quote · Virtue & Co. Webworks",
+    "metaDescription": "Tell us about your new website or redesign project. Get a clear plan, fixed price, and timeline within 24 to 48 hours.",
     "eyebrow": "Get a price",
     "subtitle": "Tell us what you need. We'll reply with a clear plan, a timeline and one fixed price.",
     "directEmail": "Prefer email?",
