@@ -1,67 +1,219 @@
 'use client'
 
 import * as React from 'react'
-import { ArrowLeft, KeyRound, MailCheck } from 'lucide-react'
-import { Link } from '@/i18n/navigation'
+import { ArrowLeft, CheckCircle2, KeyRound, Lock, MailCheck, ShieldCheck } from 'lucide-react'
+import { Link, useRouter } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
-import { forgotPasswordAction } from '@/lib/actions/auth'
+import { forgotPasswordAction, verifyRecoveryOtpAndUpdatePasswordAction } from '@/lib/actions/auth'
 
 export function ForgotPasswordForm({ locale }: { locale: string }) {
+  const router = useRouter()
+  const [step, setStep] = React.useState<'request' | 'verify' | 'done'>('request')
   const [email, setEmail] = React.useState('')
+  const [token, setToken] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [confirmPassword, setConfirmPassword] = React.useState('')
+
   const [pending, setPending] = React.useState(false)
-  const [sent, setSent] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Step 1: Send 6-digit code
+  const handleRequestCode = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setPending(true)
     setError(null)
-    const formData = new FormData(e.currentTarget)
+    const formData = new FormData()
+    formData.set('email', email)
+    formData.set('locale', locale)
+
     const res = await forgotPasswordAction(formData)
     setPending(false)
     if (res.ok) {
-      setSent(true)
+      setStep('verify')
     } else {
-      setError(res.message ?? 'Failed to send password reset email. Please try again.')
+      setError(res.message ?? 'Failed to send recovery code. Please check your email and try again.')
     }
   }
 
-  if (sent) {
+  // Step 2: Verify 6-digit code & set new password
+  const handleVerifyAndReset = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError(null)
+
+    if (token.trim().length !== 6) {
+      setError('Please enter the 6-digit code sent to your email.')
+      return
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+
+    setPending(true)
+    const formData = new FormData()
+    formData.set('email', email)
+    formData.set('token', token.trim())
+    formData.set('password', password)
+    formData.set('confirmPassword', confirmPassword)
+    formData.set('locale', locale)
+
+    const res = await verifyRecoveryOtpAndUpdatePasswordAction(formData)
+    setPending(false)
+
+    if (res.ok) {
+      setStep('done')
+      setTimeout(() => {
+        router.push('/login?reset=success')
+      }, 2500)
+    } else {
+      setError(res.message ?? 'Invalid code or recovery session expired. Please try again.')
+    }
+  }
+
+  // Step 3: Success state
+  if (step === 'done') {
     return (
       <div className="flex flex-col items-center text-center space-y-4 py-4">
         <div className="size-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
-          <MailCheck className="size-7" />
+          <CheckCircle2 className="size-7" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold tracking-tight text-foreground">Check your inbox</h2>
-          <p className="text-sm text-muted-foreground max-w-sm">
-            We sent a secure password reset link to <span className="font-semibold text-foreground">{email}</span>. Click the link in the email to set your new password.
+          <h2 className="text-xl font-bold tracking-tight text-foreground">Password reset complete</h2>
+          <p className="text-sm text-muted-foreground">
+            Your new password has been secured. Redirecting you to sign in...
           </p>
         </div>
-        <div className="pt-4 flex flex-col gap-3 w-full">
+        <div className="pt-3 w-full">
           <Link href="/login" className="w-full">
-            <Button variant="outline" className="w-full h-11 border-border">
-              <ArrowLeft className="mr-2 size-4" />
-              Back to Sign in
+            <Button className="w-full h-11 bg-emerald-500 font-semibold text-slate-950 hover:bg-emerald-400">
+              Sign In Now
             </Button>
           </Link>
-          <button
-            type="button"
-            onClick={() => setSent(false)}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
-          >
-            Didn't receive the email? Try again
-          </button>
         </div>
       </div>
     )
   }
 
+  // Step 2: Enter 6-digit code + new password
+  if (step === 'verify') {
+    return (
+      <form onSubmit={handleVerifyAndReset} className="flex flex-col gap-5">
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3.5 flex items-start gap-3">
+          <ShieldCheck className="size-5 text-emerald-500 shrink-0 mt-0.5" />
+          <div className="text-xs text-muted-foreground leading-relaxed">
+            A 6-digit recovery code was sent to <span className="font-semibold text-foreground">{email}</span>. Enter the code and your new password below.
+          </div>
+        </div>
+
+        {error && (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="reset-otp" className="text-sm font-medium">
+            6-Digit Verification Code
+          </Label>
+          <Input
+            id="reset-otp"
+            name="token"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]{6}"
+            maxLength={6}
+            autoFocus
+            required
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            placeholder="123456"
+            className="h-12 bg-background/50 border-border text-center font-mono text-2xl tracking-[0.35em] font-bold"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="new-password" className="text-sm font-medium">
+            New Password
+          </Label>
+          <Input
+            id="new-password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••••••"
+            className="h-11 bg-background/50 border-border"
+          />
+          <p className="text-xs text-muted-foreground">Minimum 8 characters.</p>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="confirm-new-password" className="text-sm font-medium">
+            Confirm New Password
+          </Label>
+          <Input
+            id="confirm-new-password"
+            name="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••••••"
+            className="h-11 bg-background/50 border-border"
+          />
+        </div>
+
+        <Button
+          type="submit"
+          disabled={pending}
+          className="h-11 w-full bg-emerald-500 font-semibold text-slate-950 hover:bg-emerald-400 transition-colors shadow-sm"
+        >
+          {pending ? (
+            <span className="flex items-center gap-2">
+              <VirtueSpinner className="size-4 text-slate-950" />
+              Verifying code & saving password...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Lock className="size-4" />
+              Reset Password With Code
+            </span>
+          )}
+        </Button>
+
+        <div className="flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
+          <button
+            type="button"
+            onClick={() => setStep('request')}
+            className="hover:text-foreground transition-colors underline underline-offset-4"
+          >
+            Change email / Resend code
+          </button>
+          <Link href="/login" className="hover:text-foreground transition-colors">
+            Cancel
+          </Link>
+        </div>
+      </form>
+    )
+  }
+
+  // Step 1: Request code
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+    <form onSubmit={handleRequestCode} className="flex flex-col gap-5">
       {error && (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
           {error}
@@ -78,13 +230,14 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
           type="email"
           autoComplete="email"
           required
+          autoFocus
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="alex@acme.com"
           className="h-11 bg-background/50 border-border"
         />
         <p className="text-xs text-muted-foreground">
-          We will send a one-time link and security token to recover your account.
+          We will send a 6-digit verification code to this address. No magic link required.
         </p>
       </div>
 
@@ -96,12 +249,12 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
         {pending ? (
           <span className="flex items-center gap-2">
             <VirtueSpinner className="size-4 text-slate-950" />
-            Sending link...
+            Sending 6-digit code...
           </span>
         ) : (
           <span className="flex items-center gap-2">
             <KeyRound className="size-4" />
-            Send Password Reset Link
+            Send 6-Digit Recovery Code
           </span>
         )}
       </Button>

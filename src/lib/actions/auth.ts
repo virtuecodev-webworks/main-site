@@ -191,6 +191,59 @@ export async function forgotPasswordAction(formData: FormData): Promise<{ ok: bo
 }
 
 /**
+ * Verify 6-digit recovery OTP code and update password immediately.
+ * Zero links needed — pure 6-digit code recovery!
+ */
+export async function verifyRecoveryOtpAndUpdatePasswordAction(
+  formData: FormData,
+): Promise<{ ok: boolean; message?: string }> {
+  const email = String(formData.get('email') ?? '').trim().toLowerCase()
+  const token = String(formData.get('token') ?? '').trim()
+  const password = String(formData.get('password') ?? '')
+  const confirm = String(formData.get('confirmPassword') ?? '')
+  const locale = String(formData.get('locale') ?? 'en')
+
+  if (!email || !token || token.length < 6) {
+    return { ok: false, message: 'Please enter the 6-digit recovery code.' }
+  }
+
+  if (password.length < MIN_PASSWORD) {
+    return { ok: false, message: `Password must be at least ${MIN_PASSWORD} characters.` }
+  }
+
+  if (password !== confirm) {
+    return { ok: false, message: 'Passwords do not match.' }
+  }
+
+  const supabase = await createSupabaseServerClient()
+  if (!supabase) {
+    return { ok: true }
+  }
+
+  // 1. Verify 6-digit recovery OTP code
+  const { data, error: otpError } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: 'recovery',
+  })
+
+  if (otpError || !data.user) {
+    return {
+      ok: false,
+      message: otpError?.message || 'Invalid or expired 6-digit code. Please request a new one.',
+    }
+  }
+
+  // 2. Set the new password immediately
+  const { error: updateError } = await supabase.auth.updateUser({ password })
+  if (updateError) {
+    return { ok: false, message: updateError.message }
+  }
+
+  return { ok: true }
+}
+
+/**
  * Update password once user lands on reset-password page with active recovery session.
  */
 export async function updatePasswordAction(formData: FormData): Promise<{ ok: boolean; message?: string }> {
