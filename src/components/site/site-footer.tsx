@@ -157,8 +157,6 @@ export async function SiteFooter() {
             ))}
           </div>
         </div>
-
-        <p className="mt-6 text-[11px] text-ink-400">{t('builtWith')}</p>
       </div>
     </footer>
   )

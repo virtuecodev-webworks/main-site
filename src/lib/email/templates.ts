@@ -381,3 +381,107 @@ export function localeLabel(locale: string) {
   const meta = (localeMeta as Record<string, { english: string; label: string }>)[locale]
   return meta ? `${meta.english} (${meta.label})` : locale
 }
+
+/* -------------------------------------------------------------------------- */
+/*  4. Branded 6-Digit Verification Code Email (OTP)                          */
+/* -------------------------------------------------------------------------- */
+
+export function verificationCodeEmail({
+  code,
+  name,
+  purpose = 'verification',
+}: {
+  code: string
+  name?: string
+  purpose?: string
+}): RenderedEmail {
+  const subject = `${code} is your ${AGENCY.name} verification code`
+
+  const html = shell({
+    preheader: `Your verification code is ${code}. Valid for 10 minutes.`,
+    body: [
+      heading('Verify your account'),
+      paragraph(
+        name
+          ? `Hello ${escapeHtml(name)}, here is your single-use verification code:`
+          : 'Here is your single-use verification code:',
+      ),
+      `<div style="margin:28px 0;text-align:center;">
+        <div style="display:inline-block;padding:16px 36px;background:#F9F9FB;border:2px dashed ${GOLD};border-radius:14px;letter-spacing:0.35em;font-size:32px;font-weight:800;color:${INK};font-family:monospace;">
+          ${escapeHtml(code)}
+        </div>
+        <p style="margin:12px 0 0;font-size:12px;color:${MUTED};">This security code expires in 10 minutes.</p>
+      </div>`,
+      paragraph(
+        'Enter this code on your screen to complete verification and access your private studio dashboard.',
+      ),
+      divider(),
+      paragraph(
+        `<span style="font-size:12px;color:${MUTED};">If you did not request this verification code, you can safely disregard this email. Your account remains protected.</span>`,
+      ),
+    ].join(''),
+  })
+
+  const text = [
+    `Your ${AGENCY.name} verification code is: ${code}`,
+    '',
+    'This code expires in 10 minutes.',
+    'Enter it on screen to verify your email and access your dashboard.',
+    '',
+    'If you did not request this code, you can safely ignore this email.',
+  ].join('\n')
+
+  return { subject, html, text }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  5. Automated AI Studio Newsletter Email                                   */
+/* -------------------------------------------------------------------------- */
+
+export interface NewsletterIssue {
+  title: string
+  subtitle: string
+  date: string
+  readTime?: string
+  contentHtml: string
+  contentText: string
+  ctaText?: string
+  ctaUrl?: string
+}
+
+export function newsletterEmail(issue: NewsletterIssue): RenderedEmail {
+  const subject = `Virtue & Co. Insights · ${issue.title}`
+
+  const html = shell({
+    preheader: issue.subtitle,
+    body: [
+      `<div style="font-size:11px;font-weight:700;letter-spacing:0.2em;color:${GOLD};text-transform:uppercase;margin-bottom:8px;">
+        STUDIO INSIGHTS &amp; TECH NOTES · ${escapeHtml(issue.date)}
+      </div>`,
+      heading(issue.title),
+      paragraph(`<strong style="font-size:16px;color:${INK};">${escapeHtml(issue.subtitle)}</strong>`),
+      divider(),
+      `<div style="font-size:15px;line-height:1.75;color:#27272A;">${issue.contentHtml}</div>`,
+      divider(),
+      `<div style="background:#FBFBFC;border:1px solid ${BORDER};border-radius:14px;padding:20px;text-align:center;">
+        <h3 style="margin:0 0 8px;font-size:16px;font-weight:700;color:${INK};">Planning a website or web app?</h3>
+        <p style="margin:0 0 16px;font-size:13px;color:${MUTED};">Get an itemized scope and guaranteed fixed price from our senior engineering team.</p>
+        ${button(issue.ctaUrl ?? `https://${AGENCY.domain}/contact`, issue.ctaText ?? 'Start Your Project')}
+      </div>`,
+    ].join(''),
+  })
+
+  const text = [
+    `VIRTUE & CO. INSIGHTS · ${issue.date}`,
+    '='.repeat(40),
+    issue.title,
+    issue.subtitle,
+    '',
+    issue.contentText,
+    '',
+    '-'.repeat(40),
+    `Start your project: ${issue.ctaUrl ?? `https://${AGENCY.domain}/contact`}`,
+  ].join('\n')
+
+  return { subject, html, text }
+}
