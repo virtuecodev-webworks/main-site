@@ -38,64 +38,87 @@ function shell({ preheader, body }: { preheader: string; body: string }) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${AGENCY.name}</title>
   </head>
-  <body style="margin:0;padding:0;background:${BG};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-    <div style="display:none;font-size:1px;color:${BG};max-height:0;overflow:hidden;">${escapeHtml(preheader)}</div>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BG};padding:36px 16px;">
+  <body style="margin:0;padding:0;background:#090D14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+    <div style="display:none;font-size:1px;color:#090D14;max-height:0;overflow:hidden;">${escapeHtml(preheader)}</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#090D14;padding:40px 16px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:${SURFACE};border:1px solid ${BORDER};border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
-            <!-- Branded Header with Logo -->
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#111622;border:1px solid #1E2638;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
+            <!-- Branded Luxury Dark Header with Logo -->
             <tr>
-              <td style="background:${INK};padding:28px 36px;">
+              <td style="background:#0B0F17;padding:30px 36px;border-bottom:1px solid rgba(255,255,255,0.08);">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td style="width:48px;vertical-align:middle;">
-                      <img src="${logoUrl}" width="44" height="44" alt="Virtue &amp; Co." style="display:block;border-radius:11px;border:1px solid rgba(255,255,255,0.18);" />
+                    <td style="width:52px;vertical-align:middle;">
+                      <img src="${logoUrl}" width="48" height="48" alt="Virtue &amp; Co." style="display:block;border-radius:12px;border:1px solid rgba(255,255,255,0.2);box-shadow:0 4px 12px rgba(0,0,0,0.4);" />
                     </td>
                     <td style="padding-left:16px;vertical-align:middle;">
-                      <div style="font-size:20px;font-weight:700;letter-spacing:0.02em;color:#FFFFFF;line-height:1.1;">
-                        VIRTUE <span style="color:${GOLD};font-weight:700;">&amp;</span> CO.
+                      <div style="font-size:20px;font-weight:800;letter-spacing:-0.01em;color:#FFFFFF;line-height:1.1;">
+                        VIRTUE <span style="color:${GOLD};font-weight:800;">&amp;</span> CO.
                       </div>
-                      <div style="font-size:10px;font-weight:600;letter-spacing:0.32em;color:#A1A1AA;margin-top:4px;text-transform:uppercase;">
-                        WEBWORKS
+                      <div style="font-size:10px;font-weight:700;letter-spacing:0.28em;color:#94A3B8;margin-top:4px;text-transform:uppercase;">
+                        WEBWORKS STUDIO
                       </div>
                     </td>
                     <td align="right" style="vertical-align:middle;">
-                      <span style="display:inline-block;padding:4px 10px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:999px;font-size:11px;font-weight:600;color:${EMERALD};letter-spacing:0.04em;">
-                        VERIFIED STUDIO
+                      <span style="display:inline-block;padding:5px 12px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:999px;font-size:11px;font-weight:700;color:${EMERALD};letter-spacing:0.06em;text-transform:uppercase;">
+                        ● OFFICIAL
                       </span>
                     </td>
                   </tr>
                 </table>
               </td>
             </tr>
-            <!-- Architectural Gradient Accent Rule -->
+            <!-- Architectural Accent Border Line -->
             <tr>
-              <td style="height:3px;background:linear-gradient(90deg,${GOLD} 0%,#E6C875 50%,${EMERALD} 100%);"></td>
+              <td style="height:3px;background:linear-gradient(90deg,${GOLD} 0%,#E6C875 40%,${EMERALD} 100%);"></td>
             </tr>
             <!-- Content Area -->
             <tr>
-              <td style="padding:36px 36px 28px;">
+              <td style="padding:38px 36px 32px;color:#E2E8F0;">
                 ${body}
               </td>
             </tr>
-            <!-- Branded Footer -->
+            <!-- Interesting Studio Highlights Grid -->
             <tr>
-              <td style="padding:26px 36px;background:#FAFAFA;border-top:1px solid ${BORDER};">
+              <td style="padding:0 36px 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0D121D;border:1px solid #1E2638;border-radius:16px;overflow:hidden;">
+                  <tr>
+                    <td style="padding:16px;width:33.3%;border-right:1px solid #1E2638;text-align:center;">
+                      <div style="font-size:15px;font-weight:800;color:#FFFFFF;margin-bottom:2px;">95–100</div>
+                      <div style="font-size:10.5px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">PageSpeed Score</div>
+                    </td>
+                    <td style="padding:16px;width:33.3%;border-right:1px solid #1E2638;text-align:center;">
+                      <div style="font-size:15px;font-weight:800;color:${GOLD};margin-bottom:2px;">Fixed Price</div>
+                      <div style="font-size:10.5px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">No Hidden Fees</div>
+                    </td>
+                    <td style="padding:16px;width:33.3%;text-align:center;">
+                      <div style="font-size:15px;font-weight:800;color:${EMERALD};margin-bottom:2px;">100% Owned</div>
+                      <div style="font-size:10.5px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">Clean Next.js Code</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <!-- Branded Luxury Footer -->
+            <tr>
+              <td style="padding:28px 36px;background:#090D14;border-top:1px solid #1E2638;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                   <tr>
                     <td>
-                      <div style="font-size:13px;font-weight:700;color:${INK};">${AGENCY.name}</div>
-                      <div style="font-size:12px;color:${MUTED};margin-top:3px;line-height:1.6;">
-                        Digital Architecture &amp; Web Engineering · Shipped On A Fixed Timeline.<br />
-                        <a href="https://${AGENCY.domain}" style="color:${GOLD};text-decoration:none;font-weight:500;">${AGENCY.domain}</a> · 
-                        <a href="mailto:${AGENCY.email}" style="color:${MUTED};text-decoration:none;">${AGENCY.email}</a> · 
-                        <a href="mailto:${AGENCY.fallbackEmail}" style="color:${MUTED};text-decoration:none;">${AGENCY.fallbackEmail}</a>
+                      <div style="font-size:13px;font-weight:700;color:#FFFFFF;">${AGENCY.name}</div>
+                      <div style="font-size:12px;color:#64748B;margin-top:5px;line-height:1.6;">
+                        High-Performance Web Engineering &amp; Architecture.<br />
+                        <a href="https://${AGENCY.domain}" style="color:${GOLD};text-decoration:none;font-weight:600;">${AGENCY.domain}</a> · 
+                        <a href="mailto:${AGENCY.email}" style="color:#94A3B8;text-decoration:none;">${AGENCY.email}</a>
+                      </div>
+                      <div style="font-size:11px;color:#475569;margin-top:10px;">
+                        © ${new Date().getFullYear()} Virtue &amp; Co. Webworks. All rights reserved.
                       </div>
                     </td>
                     <td align="right" style="vertical-align:top;">
-                      <a href="${GOOGLE_MEET_MAILTO}" style="display:inline-block;padding:7px 14px;background:#FFFFFF;border:1px solid ${BORDER};border-radius:8px;font-size:11.5px;font-weight:600;color:${INK};text-decoration:none;white-space:nowrap;">
-                        Google Meet
+                      <a href="https://${AGENCY.domain}/portal" style="display:inline-block;padding:8px 16px;background:#161D2B;border:1px solid #2B354C;border-radius:10px;font-size:12px;font-weight:600;color:#FFFFFF;text-decoration:none;white-space:nowrap;">
+                        Client Portal →
                       </a>
                     </td>
                   </tr>
@@ -111,27 +134,27 @@ function shell({ preheader, body }: { preheader: string; body: string }) {
 }
 
 function heading(text: string) {
-  return `<h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;font-weight:700;color:${INK};letter-spacing:-0.01em;">${escapeHtml(text)}</h1>`
+  return `<h1 style="margin:0 0 16px;font-size:24px;line-height:1.25;font-weight:800;color:#FFFFFF;letter-spacing:-0.02em;">${escapeHtml(text)}</h1>`
 }
 
 function paragraph(text: string) {
-  return `<p style="margin:0 0 16px;font-size:14.5px;line-height:1.7;color:#3F3F46;">${text}</p>`
+  return `<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#94A3B8;">${text}</p>`
 }
 
 function divider() {
-  return `<div style="height:1px;background:${BORDER};margin:24px 0;"></div>`
+  return `<div style="height:1px;background:#1E2638;margin:24px 0;"></div>`
 }
 
 function detailRows(rows: Array<[string, string | null | undefined]>) {
   const filled = rows.filter(([, value]) => value !== null && value !== undefined && value !== '')
   if (!filled.length) return ''
 
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:12px 0;background:#FBFBFC;border:1px solid ${BORDER};border-radius:12px;overflow:hidden;">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:12px 0;background:#0D121D;border:1px solid #1E2638;border-radius:12px;overflow:hidden;">
     ${filled
       .map(
         ([label, value], idx) => `<tr>
-      <td style="padding:10px 16px;font-size:11.5px;text-transform:uppercase;letter-spacing:0.08em;color:${MUTED};width:34%;vertical-align:middle;${idx > 0 ? `border-top:1px solid ${BORDER};` : ''}">${escapeHtml(label)}</td>
-      <td style="padding:10px 16px;font-size:14px;color:${INK};font-weight:600;vertical-align:middle;${idx > 0 ? `border-top:1px solid ${BORDER};` : ''}">${escapeHtml(String(value))}</td>
+      <td style="padding:10px 16px;font-size:11.5px;text-transform:uppercase;letter-spacing:0.08em;color:#64748B;width:34%;vertical-align:middle;${idx > 0 ? 'border-top:1px solid #1E2638;' : ''}">${escapeHtml(label)}</td>
+      <td style="padding:10px 16px;font-size:14px;color:#E2E8F0;font-weight:600;vertical-align:middle;${idx > 0 ? 'border-top:1px solid #1E2638;' : ''}">${escapeHtml(String(value))}</td>
     </tr>`,
       )
       .join('')}
@@ -139,10 +162,10 @@ function detailRows(rows: Array<[string, string | null | undefined]>) {
 }
 
 function button(href: string, label: string) {
-  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:16px 0 8px;">
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:20px 0 8px;">
     <tr>
-      <td style="background:${GOLD};border-radius:10px;box-shadow:0 2px 8px rgba(197,160,89,0.35);">
-        <a href="${href}" style="display:inline-block;padding:12px 24px;font-size:14.5px;font-weight:700;color:#18181B;text-decoration:none;letter-spacing:0.01em;">${escapeHtml(label)}</a>
+      <td style="background:${GOLD};border-radius:12px;box-shadow:0 4px 16px rgba(197,160,89,0.4);">
+        <a href="${href}" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:700;color:#0B0F17;text-decoration:none;letter-spacing:0.01em;">${escapeHtml(label)} →</a>
       </td>
     </tr>
   </table>`
@@ -395,40 +418,70 @@ export function verificationCodeEmail({
   name?: string
   purpose?: string
 }): RenderedEmail {
-  const subject = `${code} is your ${AGENCY.name} verification code`
+  const subject = `${code} — your ${AGENCY.name} verification code`
+  const firstName = name?.split(' ')[0] ?? ''
 
   const html = shell({
-    preheader: `Your verification code is ${code}. Valid for 10 minutes.`,
+    preheader: `Your ${purpose} code is ${code}. Valid for 10 minutes.`,
     body: [
-      heading('Verify your account'),
-      paragraph(
-        name
-          ? `Hello ${escapeHtml(name)}, here is your single-use verification code:`
-          : 'Here is your single-use verification code:',
-      ),
-      `<div style="margin:28px 0;text-align:center;">
-        <div style="display:inline-block;padding:16px 36px;background:#F9F9FB;border:2px dashed ${GOLD};border-radius:14px;letter-spacing:0.35em;font-size:32px;font-weight:800;color:${INK};font-family:monospace;">
-          ${escapeHtml(code)}
-        </div>
-        <p style="margin:12px 0 0;font-size:12px;color:${MUTED};">This security code expires in 10 minutes.</p>
+      `<div style="margin-bottom:24px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;color:${GOLD};text-transform:uppercase;margin-bottom:10px;">ACCOUNT SECURITY</div>
+        <h1 style="margin:0 0 14px;font-size:26px;line-height:1.2;font-weight:800;color:#FFFFFF;letter-spacing:-0.02em;">
+          ${purpose === 'recovery' ? 'Reset your password' : 'Verify your account'}
+        </h1>
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#94A3B8;">
+          ${firstName ? `Hi <strong style="color:#E2E8F0;">${escapeHtml(firstName)}</strong>, enter` : 'Enter'} the 6-digit code below to ${purpose === 'recovery' ? 'reset your password and regain access to your account' : 'confirm your email and access your private client portal'}.
+        </p>
       </div>`,
-      paragraph(
-        'Enter this code on your screen to complete verification and access your private studio dashboard.',
-      ),
-      divider(),
-      paragraph(
-        `<span style="font-size:12px;color:${MUTED};">If you did not request this verification code, you can safely disregard this email. Your account remains protected.</span>`,
-      ),
+
+      `<div style="margin:32px 0;text-align:center;">
+        <div style="display:inline-block;background:#0D121D;border:1.5px solid ${GOLD};border-radius:20px;padding:28px 44px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.18em;color:${GOLD};text-transform:uppercase;margin-bottom:12px;">
+            ${purpose === 'recovery' ? 'Recovery Code' : 'Verification Code'}
+          </div>
+          <div style="font-family:'Courier New',Courier,monospace;font-size:42px;font-weight:900;letter-spacing:10px;color:#FFFFFF;text-shadow:0 0 30px rgba(197,160,89,0.35);padding-right:10px;">
+            ${escapeHtml(code)}
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:#64748B;font-weight:500;">
+            ⏱ Expires in 10 minutes
+          </div>
+        </div>
+      </div>`,
+
+      `<div style="background:#0D121D;border:1px solid #1E2638;border-radius:14px;padding:18px 20px;margin-bottom:24px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="width:32px;vertical-align:top;padding-top:2px;">
+              <div style="width:24px;height:24px;background:rgba(16,185,129,0.15);border-radius:6px;text-align:center;line-height:24px;font-size:14px;">✓</div>
+            </td>
+            <td style="padding-left:12px;">
+              <div style="font-size:13px;font-weight:600;color:#E2E8F0;margin-bottom:4px;">How to use this code</div>
+              <div style="font-size:13px;color:#64748B;line-height:1.6;">
+                ${purpose === 'recovery'
+                  ? `Go to the <strong style="color:#94A3B8;">Reset Password</strong> page on our site, enter your email, paste this code, and set your new password.`
+                  : `Return to the <strong style="color:#94A3B8;">sign-up screen</strong> on our site and enter these 6 digits to activate your account.`
+                }
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>`,
+
+      `<p style="margin:0 0 8px;font-size:12.5px;line-height:1.7;color:#475569;">
+        🔒 This is an automated security message. If you did not request this code, your account is safe — simply ignore this email. Never share this code with anyone.
+      </p>`,
     ].join(''),
   })
 
   const text = [
-    `Your ${AGENCY.name} verification code is: ${code}`,
+    `Your ${AGENCY.name} ${purpose} code is: ${code}`,
     '',
     'This code expires in 10 minutes.',
-    'Enter it on screen to verify your email and access your dashboard.',
+    `${purpose === 'recovery' ? 'Enter it on the Reset Password screen to set your new password.' : 'Enter it on screen to verify your email and access your dashboard.'}`,
     '',
     'If you did not request this code, you can safely ignore this email.',
+    '',
+    `${AGENCY.name} · ${AGENCY.domain}`,
   ].join('\n')
 
   return { subject, html, text }
@@ -451,36 +504,66 @@ export interface NewsletterIssue {
 
 export function newsletterEmail(issue: NewsletterIssue): RenderedEmail {
   const subject = `Virtue & Co. Insights · ${issue.title}`
+  const issueNum = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 30)) % 100 + 1
 
   const html = shell({
     preheader: issue.subtitle,
     body: [
-      `<div style="font-size:11px;font-weight:700;letter-spacing:0.2em;color:${GOLD};text-transform:uppercase;margin-bottom:8px;">
-        STUDIO INSIGHTS &amp; TECH NOTES · ${escapeHtml(issue.date)}
+      // Hero banner area
+      `<div style="margin:-38px -36px 32px;background:linear-gradient(135deg,#0D1220 0%,#0B1929 50%,#0D1220 100%);border-bottom:1px solid #1E2638;padding:36px 36px 28px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td>
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:0.22em;color:${GOLD};text-transform:uppercase;margin-bottom:14px;">
+                STUDIO INSIGHTS · ISSUE #${issueNum} · ${escapeHtml(issue.date)}
+              </div>
+              <h1 style="margin:0 0 12px;font-size:26px;line-height:1.25;font-weight:800;color:#FFFFFF;letter-spacing:-0.02em;">
+                ${escapeHtml(issue.title)}
+              </h1>
+              <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#94A3B8;">
+                ${escapeHtml(issue.subtitle)}
+              </p>
+              ${issue.readTime ? `<span style="display:inline-block;padding:4px 10px;background:rgba(197,160,89,0.12);border:1px solid rgba(197,160,89,0.25);border-radius:999px;font-size:11px;font-weight:600;color:${GOLD};">📖 ${escapeHtml(issue.readTime)}</span>` : ''}
+            </td>
+          </tr>
+        </table>
       </div>`,
-      heading(issue.title),
-      paragraph(`<strong style="font-size:16px;color:${INK};">${escapeHtml(issue.subtitle)}</strong>`),
+
       divider(),
-      `<div style="font-size:15px;line-height:1.75;color:#27272A;">${issue.contentHtml}</div>`,
+
+      // Article content
+      `<div style="font-size:15px;line-height:1.8;color:#CBD5E1;">${issue.contentHtml}</div>`,
+
       divider(),
-      `<div style="background:#FBFBFC;border:1px solid ${BORDER};border-radius:14px;padding:20px;text-align:center;">
-        <h3 style="margin:0 0 8px;font-size:16px;font-weight:700;color:${INK};">Planning a website or web app?</h3>
-        <p style="margin:0 0 16px;font-size:13px;color:${MUTED};">Get an itemized scope and guaranteed fixed price from our senior engineering team.</p>
+
+      // CTA card
+      `<div style="background:linear-gradient(135deg,#0D1625 0%,#0B1929 100%);border:1px solid #1E2638;border-radius:18px;padding:28px;text-align:center;">
+        <div style="font-size:10.5px;font-weight:700;letter-spacing:0.2em;color:${EMERALD};text-transform:uppercase;margin-bottom:10px;">READY TO BUILD?</div>
+        <h3 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#FFFFFF;letter-spacing:-0.01em;">Planning a website or web app?</h3>
+        <p style="margin:0 0 20px;font-size:14px;color:#64748B;line-height:1.6;">Get a fully itemised scope and guaranteed fixed price from our senior engineering team. No surprises. No hidden fees.</p>
         ${button(issue.ctaUrl ?? `https://${AGENCY.domain}/contact`, issue.ctaText ?? 'Start Your Project')}
       </div>`,
+
+      // Why subscribe note
+      `<p style="margin:24px 0 0;font-size:12px;color:#475569;text-align:center;line-height:1.6;">
+        You're receiving this because you subscribed at <a href="https://${AGENCY.domain}" style="color:${GOLD};text-decoration:none;">${AGENCY.domain}</a>.<br/>
+        <a href="https://${AGENCY.domain}/unsubscribe" style="color:#475569;text-decoration:underline;">Unsubscribe</a> · <a href="https://${AGENCY.domain}/portal" style="color:#475569;text-decoration:underline;">Client Portal</a>
+      </p>`,
     ].join(''),
   })
 
   const text = [
-    `VIRTUE & CO. INSIGHTS · ${issue.date}`,
-    '='.repeat(40),
+    `VIRTUE & CO. INSIGHTS · Issue #${issueNum} · ${issue.date}`,
+    '='.repeat(50),
     issue.title,
     issue.subtitle,
     '',
     issue.contentText,
     '',
-    '-'.repeat(40),
-    `Start your project: ${issue.ctaUrl ?? `https://${AGENCY.domain}/contact`}`,
+    '-'.repeat(50),
+    `${issue.ctaText ?? 'Start your project'}: ${issue.ctaUrl ?? `https://${AGENCY.domain}/contact`}`,
+    '',
+    `Unsubscribe: https://${AGENCY.domain}/unsubscribe`,
   ].join('\n')
 
   return { subject, html, text }
