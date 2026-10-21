@@ -1,31 +1,57 @@
 import 'server-only'
 
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import { AGENCY } from '@/lib/constants'
 import type { RenderedEmail } from './templates'
 
-let client: Resend | null = null
+// ---------------------------------------------------------------------------
+// Transport (Brevo SMTP)
+// ---------------------------------------------------------------------------
 
-export function isEmailConfigured() {
-  const key = process.env.RESEND_API_KEY
-  return Boolean(key && !key.startsWith('re_xxxx'))
+let transport: ReturnType<typeof nodemailer.createTransport> | null = null
+
+export function isEmailConfigured(): boolean {
+  const host = process.env.BREVO_SMTP_HOST ?? process.env.SMTP_HOST
+  const user = process.env.BREVO_SMTP_LOGIN ?? process.env.SMTP_LOGIN
+  const pass = process.env.BREVO_SMTP_KEY ?? process.env.SMTP_KEY
+  return Boolean(host && user && pass)
 }
 
-function resend() {
-  if (client) return client
-  const key = process.env.RESEND_API_KEY
-  if (!key) throw new Error('RESEND_API_KEY is not set')
-  client = new Resend(key)
-  return client
+function getTransport() {
+  if (transport) return transport
+
+  const host = process.env.BREVO_SMTP_HOST ?? process.env.SMTP_HOST ?? 'smtp-relay.brevo.com'
+  const port = Number(process.env.BREVO_SMTP_PORT ?? process.env.SMTP_PORT ?? 587)
+  const user = process.env.BREVO_SMTP_LOGIN ?? process.env.SMTP_LOGIN
+  const pass = process.env.BREVO_SMTP_KEY ?? process.env.SMTP_KEY
+
+  if (!user || !pass) throw new Error('Brevo SMTP credentials not set (BREVO_SMTP_LOGIN / BREVO_SMTP_KEY)')
+
+  transport = nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    auth: { user, pass },
+  })
+
+  return transport
 }
 
-function fromAddress() {
-  return process.env.RESEND_FROM_EMAIL ?? `${AGENCY.name} <onboarding@resend.dev>`
+function fromAddress(): string {
+  return (
+    process.env.BREVO_FROM_EMAIL ??
+    process.env.SMTP_FROM_EMAIL ??
+    `${AGENCY.name} <hello@virtuecowebworks.solutions>`
+  )
 }
 
-export function leadRecipient() {
+export function leadRecipient(): string {
   return process.env.LEAD_NOTIFICATION_EMAIL ?? AGENCY.fallbackEmail ?? AGENCY.email
 }
+
+// ---------------------------------------------------------------------------
+// Send helpers
+// ---------------------------------------------------------------------------
 
 export interface SendResult {
   ok: boolean
@@ -35,8 +61,8 @@ export interface SendResult {
 }
 
 /**
- * Sends one transactional email. Never throws — email failures must not break
- * a contact submission or a payment webhook, so callers get a result object.
+ * Sends one transactional email via Brevo SMTP.
+ * Never throws — email failures must not break contact submissions or webhooks.
  */
 export async function sendEmail({
   to,
@@ -50,35 +76,31 @@ export async function sendEmail({
   bcc?: string | string[]
 }): Promise<SendResult> {
   if (!isEmailConfigured()) {
-    console.warn('[email] RESEND_API_KEY missing - skipping:', email.subject)
-    return { ok: false, skipped: true, error: 'resend-not-configured' }
+    console.warn('[email] Brevo SMTP not configured — skipping:', email.subject)
+    return { ok: false, skipped: true, error: 'brevo-not-configured' }
   }
 
   try {
-    const { data, error } = await resend().emails.send({
+    const mailer = getTransport()
+    const info = await mailer.sendMail({
       from: fromAddress(),
-      to: Array.isArray(to) ? to : [to],
-      bcc: bcc ? (Array.isArray(bcc) ? bcc : [bcc]) : undefined,
+      to: Array.isArray(to) ? to.join(', ') : to,
+      bcc: bcc ? (Array.isArray(bcc) ? bcc.join(', ') : bcc) : undefined,
       replyTo,
       subject: email.subject,
       html: email.html,
       text: email.text,
     })
 
-    if (error) {
-      console.error('[email] Resend rejected the message:', error.message)
-      return { ok: false, error: error.message }
-    }
-
-    return { ok: true, id: data?.id }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'unknown email error'
-    console.error('[email] send failed:', message)
+    return { ok: true, id: info.messageId }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'unknown email error'
+    console.error('[email] Brevo send failed:', message)
     return { ok: false, error: message }
   }
 }
 
-/** Sends both sides of a lead: internal notification + client confirmation. */
+/** Sends multiple emails in parallel. Failures are isolated per-message. */
 export async function sendMany(messages: Array<Parameters<typeof sendEmail>[0]>) {
-  return Promise.allSettled(messages.map((message) => sendEmail(message)))
+  return Promise.allSettled(messages.map((msg) => sendEmail(msg)))
 }
