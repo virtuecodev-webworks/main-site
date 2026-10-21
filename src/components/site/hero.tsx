@@ -29,8 +29,23 @@ export function Hero() {
 
   return (
     <div className="relative isolate min-h-[75vh] sm:min-h-[82vh] flex items-center justify-center overflow-hidden border-b border-border bg-background font-sans max-w-full">
+      {/* Ambient Remotion Brand Video Background (Desktop only: blurred subtle luxury background) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block -z-10" aria-hidden="true">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/media/hero-poster.png"
+          className="w-full h-full object-cover opacity-25 dark:opacity-20 blur-3xl scale-110 transform-gpu"
+        >
+          <source src="/media/hero-loop.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-background/60 dark:bg-background/70 backdrop-blur-xs" />
+      </div>
+
       {/* Floating Animated Kinetic Vector Paths (Desktop only: hidden on mobile so phone scroll never stutters) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden sm:block transform-gpu will-change-transform" aria-hidden="true">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden sm:block transform-gpu will-change-transform -z-10" aria-hidden="true">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>

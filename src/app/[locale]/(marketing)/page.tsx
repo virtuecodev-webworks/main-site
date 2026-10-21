@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { Hero } from '@/components/site/hero'
+import { QuoteMarquee } from '@/components/site/quote-marquee'
 import { CapabilitiesBand } from '@/components/site/capabilities-band'
 import { SectionHeading } from '@/components/site/section-heading'
 import { ServiceShowcase } from '@/components/site/service-showcase'
@@ -11,6 +12,7 @@ import { Faq } from '@/components/site/faq'
 import { CtaBand } from '@/components/site/cta-band'
 import { Button } from '@/components/ui/button'
 import { Reveal } from '@/components/motion/reveal'
+import { GsapSectionReveal } from '@/components/motion/gsap-section-reveal'
 import { getFeaturedProjects } from '@/lib/supabase/queries'
 import { PLACEHOLDER_PROJECTS, toProjectCard } from '@/lib/portfolio'
 import { buildPageMetadata } from '@/lib/seo'
@@ -40,10 +42,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       <Hero />
 
+      <QuoteMarquee />
+
       <CapabilitiesBand />
 
       {/* Services Showcase */}
-      <section className="relative isolate mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
+      <GsapSectionReveal className="relative isolate mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
         <SectionHeading
           eyebrow={t('services.eyebrow')}
           title={t('services.title')}
@@ -58,10 +62,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </Link>
           </Button>
         </Reveal>
-      </section>
+      </GsapSectionReveal>
 
       {/* Proof of Work — Featured Projects */}
-      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24 border-t border-border">
+      <GsapSectionReveal className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24 border-t border-border">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeading
             eyebrow={t('work.eyebrow')}
@@ -76,17 +80,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </Button>
         </div>
         <PortfolioGrid projects={projects} className="mt-12" />
-      </section>
+      </GsapSectionReveal>
 
       {/* Frequently Asked Questions */}
-      <section className="border-t border-border bg-muted/40 py-20 sm:py-24">
+      <GsapSectionReveal className="border-t border-border bg-muted/40 py-20 sm:py-24">
         <Faq />
-      </section>
+      </GsapSectionReveal>
 
       {/* Final Call to Action */}
-      <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
+      <GsapSectionReveal className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
         <CtaBand />
-      </div>
+      </GsapSectionReveal>
     </>
   )
 }
