@@ -4,10 +4,10 @@ import * as React from 'react'
 import { ArrowLeft, CheckCircle2, Lock } from 'lucide-react'
 import { Link, useRouter } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
 import { updatePasswordAction } from '@/lib/actions/auth'
+import { PasswordInput } from '@/components/auth/password-input'
 
 export function ResetPasswordForm({ locale }: { locale: string }) {
   const router = useRouter()
@@ -81,36 +81,32 @@ export function ResetPasswordForm({ locale }: { locale: string }) {
         <Label htmlFor="new-password" className="text-sm font-medium">
           New Password
         </Label>
-        <Input
+        <PasswordInput
           id="new-password"
           name="password"
-          type="password"
           autoComplete="new-password"
           required
           minLength={8}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••••••"
-          className="h-11 bg-background/50 border-border"
+          onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+          placeholder="Create a strong password"
+          showRequirements
         />
-        <p className="text-xs text-muted-foreground">Minimum 8 characters.</p>
       </div>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="confirm-password" className="text-sm font-medium">
           Confirm New Password
         </Label>
-        <Input
+        <PasswordInput
           id="confirm-password"
           name="confirmPassword"
-          type="password"
           autoComplete="new-password"
           required
           minLength={8}
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="••••••••••••"
-          className="h-11 bg-background/50 border-border"
+          onChange={(e) => setConfirmPassword((e.target as HTMLInputElement).value)}
+          placeholder="Repeat your new password"
         />
       </div>
 

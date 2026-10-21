@@ -11,6 +11,8 @@ import { Label } from '@/components/ui/label'
 import { signUpAction, verifyOtpAction } from '@/lib/actions/auth'
 import { SIGN_UP_IDLE } from '@/lib/actions/state'
 import { PwaInstallPrompt } from '@/components/pwa/pwa-install-prompt'
+import { CodeInput } from '@/components/auth/code-input'
+import { PasswordInput } from '@/components/auth/password-input'
 
 type ThemeChoice = 'light' | 'dark' | 'system'
 
@@ -91,19 +93,8 @@ export function SignupForm({ locale }: { locale: string }) {
           <input type="hidden" name="locale" value={locale} />
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="signup-otp">6-Digit Verification Code</Label>
-            <Input
-              id="signup-otp"
-              name="token"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]{6}"
-              maxLength={6}
-              autoFocus
-              placeholder="123456"
-              className="text-center font-mono text-2xl tracking-[0.35em] font-bold"
-              required
-            />
+            <Label className="sr-only">6-Digit Verification Code</Label>
+            <CodeInput name="token" autoFocus />
           </div>
 
           {otpError ? (
@@ -181,29 +172,26 @@ export function SignupForm({ locale }: { locale: string }) {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="signup-password">{t('password')}</Label>
-        <Input
+        <PasswordInput
           id="signup-password"
           name="password"
-          type="password"
           autoComplete="new-password"
           minLength={8}
           required
-          aria-describedby="signup-password-hint"
+          showRequirements
+          placeholder="Create a strong password"
         />
-        <p id="signup-password-hint" className="text-[12px] text-muted-foreground">
-          {t('passwordHint')}
-        </p>
       </div>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="signup-confirm">{t('confirmPassword')}</Label>
-        <Input
+        <PasswordInput
           id="signup-confirm"
           name="confirmPassword"
-          type="password"
           autoComplete="new-password"
           minLength={8}
           required
+          placeholder="Confirm your password"
         />
       </div>
 

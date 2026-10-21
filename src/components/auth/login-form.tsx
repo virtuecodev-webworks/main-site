@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { signInAction } from '@/lib/actions/auth'
 import { AUTH_IDLE } from '@/lib/actions/state'
+import { PasswordInput } from '@/components/auth/password-input'
 
 /**
  * The single sign-in form.
@@ -54,11 +55,18 @@ export function LoginForm({ locale }: { locale: string }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="login-password">{t('password')}</Label>
-        <Input
+        <div className="flex items-center justify-between">
+          <Label htmlFor="login-password">{t('password')}</Label>
+          <Link
+            href="/forgot-password"
+            className="text-[12px] font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+        <PasswordInput
           id="login-password"
           name="password"
-          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
@@ -93,12 +101,6 @@ export function LoginForm({ locale }: { locale: string }) {
           {t('newHere')}{' '}
           <Link href="/signup" className="font-medium text-primary underline-offset-4 hover:underline">
             {t('createAccount')}
-          </Link>
-        </p>
-        <p className="text-muted-foreground">
-          {t('forgot')}{' '}
-          <Link href="/forgot-password" className="font-medium text-primary underline-offset-4 hover:underline">
-            Reset it here
           </Link>
         </p>
       </div>
