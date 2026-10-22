@@ -15,7 +15,7 @@ export async function CtaBand({ className }: { className?: string }) {
   return (
     <Reveal className={className}>
       <section className="relative isolate overflow-hidden rounded-3xl border border-ink-800 bg-ink-950 px-6 py-14 text-white shadow-2xl sm:px-12 lg:py-16">
-        <BorderBeam size={320} duration={16} colorFrom="#dcaa28" colorTo="#14a06c" />
+        <BorderBeam size={320} duration={16} colorFrom="#E8C84A" colorTo="#B8922A" />
         <AmbientBackground size="lg" speed={140} align="top-right" opacity={0.5} />
         <div
           aria-hidden

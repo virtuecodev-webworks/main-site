@@ -236,7 +236,7 @@ export function ProjectEstimator() {
         {/* Live Estimate Summary Card */}
         <div className="lg:sticky lg:top-24">
           <SpotlightCard className="relative flex flex-col justify-between border-primary/40 bg-card shadow-xl">
-            <BorderBeam size={220} duration={10} colorFrom="#dcaa28" colorTo="#14a06c" />
+            <BorderBeam size={220} duration={10} colorFrom="#E8C84A" colorTo="#B8922A" />
 
             <div className="space-y-6">
               <div className="border-b border-border/80 pb-4">

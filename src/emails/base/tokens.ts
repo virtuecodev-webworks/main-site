@@ -4,10 +4,10 @@
  */
 
 /** Brand colors */
-export const GOLD = '#DCAA28'
-export const GOLD_LIGHT = '#F59E0B'
-export const EMERALD = '#14A06C'
-export const SAPPHIRE = '#2563EB'
+export const GOLD = '#D4AF37'
+export const GOLD_LIGHT = '#E8C84A'
+export const GOLD_DARK = '#B8922A'
+export const CHARCOAL = '#0B0B0D'
 
 /** Canvas & Surfaces */
 export const CANVAS_BG = '#080913'           // Outer deep space background

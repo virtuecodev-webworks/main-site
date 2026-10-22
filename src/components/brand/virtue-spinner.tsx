@@ -1,17 +1,19 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
+import { VW_POLYGON } from '@/lib/brand/mark-geometry'
 
 export interface VirtueSpinnerProps {
   className?: string
   /** Accessible label. Pass a title to expose the spinner to assistive tech. */
   label?: string
-  /** Adds the illustrated monogram mark inside. */
+  /** Shows the VW monogram mark inside the spinner rings. */
   showMark?: boolean
 }
 
 /**
- * The studio's signature illustrated loading spinner.
- * Features counter-rotating rings and the illustrated architectural V+W monogram mark.
+ * The studio's signature loading spinner.
+ * Features counter-rotating rings and the VW combined monogram in the centre.
+ * All gold — no green/emerald.
  */
 export function VirtueSpinner({ className, label, showMark = true }: VirtueSpinnerProps) {
   return (
@@ -22,6 +24,13 @@ export function VirtueSpinner({ className, label, showMark = true }: VirtueSpinn
       aria-hidden={label ? undefined : true}
       className={cn('shrink-0 overflow-visible', className)}
     >
+      <defs>
+        <linearGradient id="spin-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#E8C84A" />
+          <stop offset="100%" stopColor="#B8922A" />
+        </linearGradient>
+      </defs>
+
       {/* Track */}
       <circle
         cx="24"
@@ -29,11 +38,11 @@ export function VirtueSpinner({ className, label, showMark = true }: VirtueSpinn
         r="20"
         fill="none"
         stroke="currentColor"
-        strokeOpacity="0.15"
+        strokeOpacity="0.12"
         strokeWidth="2.5"
       />
 
-      {/* Outer sweep */}
+      {/* Outer sweep — gold gradient */}
       <g
         className="animate-spin"
         style={{
@@ -47,7 +56,7 @@ export function VirtueSpinner({ className, label, showMark = true }: VirtueSpinn
           cy="24"
           r="20"
           fill="none"
-          stroke="currentColor"
+          stroke="url(#spin-gold)"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeDasharray="75 45"
@@ -70,22 +79,17 @@ export function VirtueSpinner({ className, label, showMark = true }: VirtueSpinn
           r="14"
           fill="none"
           stroke="currentColor"
-          strokeOpacity="0.45"
+          strokeOpacity="0.25"
           strokeWidth="1.8"
           strokeLinecap="round"
           strokeDasharray="30 55"
         />
       </g>
 
-      {/* Illustrated V+W Monogram Mark */}
+      {/* VW Monogram Mark — mini filled polygon, centered */}
       {showMark ? (
-        <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-          {/* Outer V */}
-          <path d="M 16.5 19 L 24 30 L 31.5 19" strokeWidth="2.5" />
-          {/* Inner W */}
-          <path d="M 20 24 L 24 18 L 28 24" strokeWidth="2.0" strokeOpacity="0.8" />
-          {/* Top anchor */}
-          <path d="M 18.5 18 L 29.5 18" strokeWidth="1.5" strokeOpacity="0.6" />
+        <g transform="translate(24,25.5) scale(0.145) translate(-50,-41)">
+          <polygon points={VW_POLYGON} fill="url(#spin-gold)" />
         </g>
       ) : (
         <circle cx="24" cy="24" r="3" fill="currentColor" />

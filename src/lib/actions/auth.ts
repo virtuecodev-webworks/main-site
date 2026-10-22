@@ -288,7 +288,7 @@ export async function verifyOtpAction(formData: FormData): Promise<{ ok: boolean
   const locale = String(formData.get('locale') ?? 'en')
 
   if (!email || !token || token.length < 6) {
-    return { ok: false, message: 'Please enter the 6-digit verification code.' }
+    return { ok: false, message: 'Please enter the complete 6-digit verification code.' }
   }
 
   const supabase = await createSupabaseServerClient()
@@ -296,15 +296,61 @@ export async function verifyOtpAction(formData: FormData): Promise<{ ok: boolean
     redirect(`/${locale}/portal`)
   }
 
-  const { data, error } = await supabase.auth.verifyOtp({
+  // 1. Try 'signup' verification type
+  let { data, error } = await supabase.auth.verifyOtp({
     email,
     token,
     type: 'signup',
   })
+
+  // 2. Fallback to 'email' if GoTrue expects 'email' OTP type
+  if (error && (error.message.toLowerCase().includes('token') || error.message.toLowerCase().includes('invalid'))) {
+    const emailAttempt = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: 'email',
+    })
+    if (!emailAttempt.error) {
+      data = emailAttempt.data
+      error = null
+    }
+  }
 
   if (error) {
     return { ok: false, message: error.message }
   }
 
   redirect(`/${locale}/portal`)
+}
+
+/**
+ * Resend 6-digit confirmation code (OTP) for signup.
+ */
+export async function resendOtpAction(formData: FormData): Promise<{ ok: boolean; message?: string }> {
+  const email = String(formData.get('email') ?? '').trim().toLowerCase()
+  const locale = String(formData.get('locale') ?? 'en')
+
+  if (!email || !email.includes('@')) {
+    return { ok: false, message: 'Invalid email address.' }
+  }
+
+  const supabase = await createSupabaseServerClient()
+  if (!supabase) {
+    return { ok: true }
+  }
+
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: {
+      emailRedirectTo: absoluteUrl(`/${locale}/portal`),
+    },
+  })
+
+  if (error) {
+    console.warn('[auth] resend OTP failed:', error.message)
+    return { ok: false, message: error.message }
+  }
+
+  return { ok: true }
 }

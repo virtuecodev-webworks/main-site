@@ -27,7 +27,7 @@ export function BentoGrid() {
     <div className="grid grid-cols-1 gap-6 md:grid-cols-3 font-sans">
       {/* 1. Large Feature Card: 100% Lighthouse & Performance Engine */}
       <SpotlightCard className="relative overflow-hidden md:col-span-2">
-        <BorderBeam size={280} duration={14} colorFrom="#dcaa28" colorTo="#14a06c" />
+        <BorderBeam size={280} duration={14} colorFrom="#E8C84A" colorTo="#B8922A" />
         <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-start">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">

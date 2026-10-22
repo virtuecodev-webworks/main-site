@@ -140,8 +140,8 @@ function getCuratedFallback(issueNumber = 0): SynthesizedNewsletter {
       readTime: '3 min read',
       contentHtml: `
         <p style="margin:0 0 14px;">Traditional agencies love hourly billing because the client bears all the financial risk. When a project hits unexpected complexity, the agency invoices for more hours. You end up with an open-ended bill and no recourse.</p>
-        <div style="background:rgba(20,160,108,0.06);border-left:3px solid #14A06C;padding:14px 18px;margin:18px 0;border-radius:0 8px 8px 0;">
-          <strong style="color:#14A06C;">The ${AGENCY_NAME} difference:</strong> Before any code is written, you receive a fully itemised scope of work with a single, binding price and a fixed delivery deadline. If it takes longer, that's our responsibility — not yours.
+        <div style="background:rgba(212,175,55,0.08);border-left:3px solid #D4AF37;padding:14px 18px;margin:18px 0;border-radius:0 8px 8px 0;">
+          <strong style="color:#D4AF37;">The ${AGENCY_NAME} difference:</strong> Before any code is written, you receive a fully itemised scope of work with a single, binding price and a fixed delivery deadline. If it takes longer, that's our responsibility — not yours.
         </div>
         <p style="margin:0;">This model aligns our incentives with yours: we ship fast and clean, because that's how we remain profitable — and you always know exactly what you're paying.</p>
       `,

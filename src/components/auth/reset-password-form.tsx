@@ -49,7 +49,7 @@ export function ResetPasswordForm({ locale }: { locale: string }) {
   if (success) {
     return (
       <div className="flex flex-col items-center text-center space-y-4 py-4">
-        <div className="size-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
+        <div className="size-14 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500">
           <CheckCircle2 className="size-7" />
         </div>
         <div className="space-y-2">
@@ -60,7 +60,7 @@ export function ResetPasswordForm({ locale }: { locale: string }) {
         </div>
         <div className="pt-3 w-full">
           <Link href="/login" className="w-full">
-            <Button className="w-full h-11 bg-emerald-500 font-semibold text-slate-950 hover:bg-emerald-400">
+            <Button variant="gold" size="lg" className="w-full">
               Sign In Now
             </Button>
           </Link>
@@ -112,12 +112,14 @@ export function ResetPasswordForm({ locale }: { locale: string }) {
 
       <Button
         type="submit"
+        variant="gold"
+        size="lg"
         disabled={pending}
-        className="h-11 w-full bg-emerald-500 font-semibold text-slate-950 hover:bg-emerald-400 transition-colors shadow-sm"
+        className="w-full"
       >
         {pending ? (
           <span className="flex items-center gap-2">
-            <VirtueSpinner className="size-4 text-slate-950" />
+            <VirtueSpinner className="size-4" />
             Updating password...
           </span>
         ) : (

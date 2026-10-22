@@ -11,7 +11,7 @@ import {
   SecurityPill,
   Divider,
 } from './base/shell'
-import { TEXT_DARK, TEXT_MUTED_DARK, PORTAL, EMERALD } from './base/tokens'
+import { TEXT_DARK, TEXT_MUTED_DARK, PORTAL, GOLD } from './base/tokens'
 
 export interface PaymentReceiptProps {
   reference: string
@@ -50,7 +50,7 @@ export function PaymentReceiptEmail({
           textAlign: 'center',
         }}
       >
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', color: EMERALD, textTransform: 'uppercase', marginBottom: 6 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', color: GOLD, textTransform: 'uppercase', marginBottom: 6 }}>
           ✓ Verified Payment
         </div>
         <div style={{ fontSize: 36, fontWeight: 800, color: TEXT_DARK, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
@@ -101,3 +101,4 @@ export function PaymentReceiptEmail({
 }
 
 export default PaymentReceiptEmail
+

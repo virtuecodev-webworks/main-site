@@ -5,8 +5,8 @@
 
 /* ==========================================================================
    Virtue & Co. Webworks — Design Tokens
-   Flat, restrained, editorial. One solid gold, one emerald accent, charcoal.
-   No gradients, no glows: depth comes from hairlines and surface steps.
+   Virtue & Co. Webworks — Gold on Charcoal. Crafting Digital Excellence.
+   Primary: gold (#D4AF37). No emerald accent. Depth from hairlines and surface steps.
    ========================================================================== */
 
 :root {
@@ -36,11 +36,11 @@
   --secondary-hover: #26262b;
 
   /* The square mark: charcoal tile, gold "V". Visible on both themes. */
-  --mark-tile: #16161a;
+  --mark-tile: #0B0B0D;
 
-  /* Accent (secondary hue) */
-  --emerald: #14a06c;
-  --emerald-foreground: #ffffff;
+  /* Accent (secondary hue) — maps to gold: emerald is removed from the brand palette */
+  --emerald: #D4AF37;
+  --emerald-foreground: #191308;
 
   /* Structure */
   --border: #e7e7ea;
@@ -81,10 +81,10 @@
   --secondary-foreground: #141416;
   --secondary-hover: #e3e3e6;
 
-  --mark-tile: #1c1c21;
+  --mark-tile: #0B0B0D;
 
-  --emerald: #2fbc86;
-  --emerald-foreground: #06231a;
+  --emerald: #e6bb44;
+  --emerald-foreground: #191308;
 
   /* `gold-700` is the accent colour for text on light surfaces, where it lands
      around 5.3:1 on white. On the near-black page the same value only reaches
@@ -163,17 +163,17 @@
   --color-gold-800: #68500a;
   --color-gold-900: #483807;
 
-  /* Emerald — the single supporting accent. */
-  --color-emerald-50: #edfaf4;
-  --color-emerald-100: #d2f3e3;
-  --color-emerald-200: #a7e6c8;
-  --color-emerald-300: #6ed3a6;
-  --color-emerald-400: #3cba85;
-  --color-emerald-500: #14a06c;
-  --color-emerald-600: #0e7f56;
-  --color-emerald-700: #0c6645;
-  --color-emerald-800: #0b5138;
-  --color-emerald-900: #093f2c;
+  /* Emerald ramp now maps to gold — emerald is removed from the brand palette. */
+  --color-emerald-50: #fdf9ee;
+  --color-emerald-100: #faf0d0;
+  --color-emerald-200: #f4e1a4;
+  --color-emerald-300: #edcd6d;
+  --color-emerald-400: #e8bb3f;
+  --color-emerald-500: #d4af37;
+  --color-emerald-600: #b8860b;
+  --color-emerald-700: #8a6608;
+  --color-emerald-800: #68500a;
+  --color-emerald-900: #483807;
 
   /* Neutral ramp */
   --color-ink-50: #f7f7f8;

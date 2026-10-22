@@ -118,7 +118,14 @@ export async function generateMetadata({
     applicationName: AGENCY.name,
     authors: [{ name: AGENCY.name }],
     creator: AGENCY.name,
-    icons: { icon: '/brand/logo.svg', apple: '/brand/logo.svg' },
+    icons: {
+      icon: [
+        { url: '/brand/favicon.svg', type: 'image/svg+xml' },
+        { url: '/brand/logo.svg', type: 'image/svg+xml' },
+      ],
+      shortcut: '/brand/favicon.svg',
+      apple: '/brand/logo.svg',
+    },
     verification: {
       google: googleVerification,
       other: bingVerification ? { 'msvalidate.01': [bingVerification] } : undefined,

@@ -100,8 +100,8 @@ export async function GET(request: NextRequest) {
           <p style="margin:0 0 16px;">
             Cumulative Layout Shift (CLS) remains the most insidious UX flaw in modern corporate websites. When fonts flash, images load asynchronously without reserved aspect ratios, or dynamic widgets nudge paragraph blocks downward, user engagement drops by up to 28%.
           </p>
-          <div style="border-left:3px solid #14A06C;padding:12px 18px;background:rgba(20,160,108,0.06);border-radius:0 8px 8px 0;margin:20px 0;font-size:14.5px;line-height:1.6;color:#CBD5E1;">
-            <strong style="color:#14A06C;">Key Engineering Takeaway:</strong> Pre-calculating bounding boxes on the server and serving strict CSS aspect-ratio placeholders prevents layout recalculation passes entirely.
+          <div style="border-left:3px solid #D4AF37;padding:12px 18px;background:rgba(212,175,55,0.08);border-radius:0 8px 8px 0;margin:20px 0;font-size:14.5px;line-height:1.6;color:#CBD5E1;">
+            <strong style="color:#D4AF37;">Key Engineering Takeaway:</strong> Pre-calculating bounding boxes on the server and serving strict CSS aspect-ratio placeholders prevents layout recalculation passes entirely.
           </div>
           <p style="margin:0 0 16px;">
             In our latest benchmark across 40 bespoke client builds, moving from generic third-party CMS architectures to clean Next.js 16 server components reduced first-contentful-paint from 1.8s down to 340ms.

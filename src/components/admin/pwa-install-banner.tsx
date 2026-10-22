@@ -132,7 +132,7 @@ export function PwaInstallBanner() {
         style={{ background: 'linear-gradient(145deg, #0F1219 0%, #0A0D14 100%)' }}>
         
         {/* Gold top accent */}
-        <div style={{ height: 3, background: 'linear-gradient(90deg, #DCAA28, #F59E0B, #14A06C)' }} />
+        <div style={{ height: 3, background: 'linear-gradient(90deg, #D4AF37, #E8C84A, #B8922A)' }} />
 
         <div className="p-6 sm:p-8">
           {/* Logo + headline */}
@@ -206,9 +206,9 @@ export function PwaInstallBanner() {
                   disabled={bannerState === 'requesting-permission'}
                   className="w-full rounded-xl py-3 px-6 text-sm font-bold border transition-all disabled:opacity-70"
                   style={{
-                    borderColor: '#14A06C',
-                    color: '#14A06C',
-                    background: 'rgba(20,160,108,0.06)',
+                    borderColor: '#D4AF37',
+                    color: '#D4AF37',
+                    background: 'rgba(212,175,55,0.08)',
                   }}
                 >
                   {bannerState === 'requesting-permission'

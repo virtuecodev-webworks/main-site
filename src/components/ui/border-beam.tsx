@@ -24,8 +24,8 @@ export function BorderBeam({
   duration = 12,
   borderWidth = 1.5,
   anchor = 90,
-  colorFrom = '#dcaa28',
-  colorTo = '#14a06c',
+  colorFrom = '#D4AF37',
+  colorTo = '#E8C84A',
   delay = 0,
 }: BorderBeamProps) {
   return (

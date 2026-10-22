@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { V_PATH, W_PATH, ANCHOR_PATH } from '@/lib/brand/mark-geometry'
+import { VW_PATH } from '@/lib/brand/mark-geometry'
 
 interface AmbientBackgroundProps {
   className?: string
@@ -97,10 +97,10 @@ export function AmbientBackground({
           <line x1="2" y1="48" x2="8" y2="48" strokeWidth="0.75" opacity="0.4" />
           <line x1="88" y1="48" x2="94" y2="48" strokeWidth="0.75" opacity="0.4" />
 
-          {/* Primary Monogram wireframe paths: V + W + Anchor */}
-          <path d={V_PATH} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-          <path d={W_PATH} strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" />
-          <path d={ANCHOR_PATH} strokeWidth="2" strokeLinecap="round" />
+          {/* Primary Monogram wireframe path: VW Monogram */}
+          <g transform="translate(48,50) scale(0.72) translate(-50,-42)">
+            <path d={VW_PATH} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
         </svg>
       </motion.div>
     </div>

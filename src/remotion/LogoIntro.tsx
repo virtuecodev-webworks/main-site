@@ -9,10 +9,10 @@ import {
 import { loadFont } from '@remotion/fonts'
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter'
 import {
-  MARK_STROKES,
   MARK_TILE,
   MARK_V_SCALE,
   MARK_VIEWBOX,
+  VW_POLYGON,
   WORDMARK,
 } from '../lib/brand/mark-geometry'
 import { LOGO_INTRO_DURATION, LOGO_INTRO_FPS, type LogoIntroProps } from './timeline'
@@ -59,12 +59,11 @@ const SUBTITLE_START = 52
 const MOTTO_START = 64
 const MOTTO_END = 88
 
-const GOLD = '#C5A059'
-const BACKDROP = '#0C0C0D'
-const TILE = '#16161A'
+const GOLD = '#D4AF37'
+const BACKDROP = '#0B0B0D'
+const TILE = '#0B0B0D'
 const WHITE = '#F2F2F3'
 const MUTED = '#9A9AA3'
-const EMERALD = '#10B981'
 
 /** Gropled at display size: geometric, rounded, a single Bold weight. */
 const DISPLAY: React.CSSProperties = {
@@ -157,7 +156,7 @@ export function LogoIntro({
             width: (isPortrait ? 800 : 1200) * scale,
             height: (isPortrait ? 800 : 1200) * scale,
             borderRadius: '50%',
-            background: `radial-gradient(circle, rgba(197,160,89,0.18) 0%, rgba(16,185,129,0.08) 35%, transparent 70%)`,
+            background: `radial-gradient(circle, rgba(197,160,89,0.18) 0%, rgba(197,160,89,0.12) 35%, transparent 70%)`,
             opacity: glowOpacity,
             pointerEvents: 'none',
             filter: 'blur(60px)',
@@ -196,29 +195,22 @@ export function LogoIntro({
               stroke="rgba(246,245,243,0.18)"
               strokeWidth={1}
             />
-            <g transform={`translate(48 48) scale(${MARK_V_SCALE}) translate(-48 -48)`}>
-              {MARK_STROKES.map((s, idx) => {
-                const strokeProgress = interpolate(
-                  frame,
-                  [DRAW_START + idx * 7, Math.min(DRAW_END, DRAW_START + 24 + idx * 7)],
-                  [0, 1],
-                  { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
-                )
-                return (
-                  <path
-                    key={s.order}
-                    d={s.d}
-                    fill="none"
-                    stroke={idx === 2 ? EMERALD : GOLD}
-                    strokeWidth={s.width}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    pathLength={1}
-                    strokeDasharray={1}
-                    strokeDashoffset={1 - strokeProgress}
-                  />
-                )
-              })}
+            <defs>
+              <linearGradient id="rmt-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#E8C84A" />
+                <stop offset="100%" stopColor="#B8922A" />
+              </linearGradient>
+            </defs>
+            <g
+              transform={`translate(48 50) scale(${MARK_V_SCALE}) translate(-50 -42)`}
+              style={{
+                opacity: interpolate(frame, [DRAW_START, DRAW_END], [0, 1], {
+                  extrapolateLeft: 'clamp',
+                  extrapolateRight: 'clamp',
+                }),
+              }}
+            >
+              <polygon points={VW_POLYGON} fill="url(#rmt-gold)" />
             </g>
           </svg>
         </div>
