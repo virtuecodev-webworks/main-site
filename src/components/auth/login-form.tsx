@@ -1,7 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { LogIn } from 'lucide-react'
+import { LogIn, CheckCircle2 } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
@@ -21,6 +22,10 @@ import { PasswordInput } from '@/components/auth/password-input'
  */
 export function LoginForm({ locale }: { locale: string }) {
   const t = useTranslations('Login')
+  const searchParams = useSearchParams()
+  const isConfirmed = searchParams.get('confirmed') === 'true'
+  const isReset = searchParams.get('reset') === 'success'
+
   const [state, action, pending] = React.useActionState(signInAction, AUTH_IDLE)
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -37,6 +42,20 @@ export function LoginForm({ locale }: { locale: string }) {
   return (
     <form action={action} className="flex flex-col gap-5 font-sans">
       <input type="hidden" name="locale" value={locale} />
+
+      {isConfirmed ? (
+        <div className="flex items-center gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-800 dark:text-gold-300">
+          <CheckCircle2 className="size-4 shrink-0 text-gold-500" />
+          <p className="font-medium">Account verified successfully! Please sign in with your password.</p>
+        </div>
+      ) : null}
+
+      {isReset ? (
+        <div className="flex items-center gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-800 dark:text-gold-300">
+          <CheckCircle2 className="size-4 shrink-0 text-gold-500" />
+          <p className="font-medium">Password updated! Please sign in with your new password.</p>
+        </div>
+      ) : null}
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="login-email">{t('email')}</Label>

@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
+import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getAdminAllowlist } from '@/lib/supabase/env'
 import type { ProfileRole } from '@/lib/constants'
 import { COUNTRY_COOKIE, GEO_COOKIE } from '@/lib/geo/countries'
@@ -317,6 +318,15 @@ export async function verifyOtpAction(formData: FormData): Promise<{ ok: boolean
   }
 
   if (error) {
+    // Check if user is already confirmed (e.g. verified in another tab or earlier)
+    const admin = createSupabaseAdminClient()
+    if (admin) {
+      const { data: userList } = await admin.auth.admin.listUsers()
+      const existing = userList?.users?.find((u) => u.email === email)
+      if (existing?.email_confirmed_at) {
+        redirect(`/${locale}/login?confirmed=true`)
+      }
+    }
     return { ok: false, message: error.message }
   }
 
