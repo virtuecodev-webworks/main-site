@@ -286,6 +286,12 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
       setTimeLeft(600) // Reset back to 10 minutes
       setResendStatus('A fresh 6-digit code has been sent to your email. You have 10 minutes to enter it.')
       setCodeKey((k) => k + 1) // Clear digit boxes
+    } else if (res.alreadyConfirmed) {
+      setResendStatus(null)
+      setOtpError('Your account is already verified! Redirecting to sign in...')
+      setTimeout(() => {
+        window.location.href = `/${locale}/login?confirmed=true`
+      }, 1200)
     } else {
       setOtpError(res.message ?? 'Failed to resend code. Please wait a moment and try again.')
     }

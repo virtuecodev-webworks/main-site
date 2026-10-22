@@ -288,7 +288,21 @@ export async function verifyOtpAction(formData: FormData): Promise<{ ok: boolean
   const token = String(formData.get('token') ?? '').trim()
   const locale = String(formData.get('locale') ?? 'en')
 
-  if (!email || !token || token.length < 6) {
+  if (!email || !email.includes('@')) {
+    return { ok: false, message: 'Please enter a valid email address.' }
+  }
+
+  // If the user's account is already verified, take them straight to sign-in
+  const admin = createSupabaseAdminClient()
+  if (admin) {
+    const { data: userList } = await admin.auth.admin.listUsers()
+    const existing = userList?.users?.find((u) => u.email === email)
+    if (existing?.email_confirmed_at) {
+      redirect(`/${locale}/login?confirmed=true`)
+    }
+  }
+
+  if (!token || token.length < 6) {
     return { ok: false, message: 'Please enter the complete 6-digit verification code.' }
   }
 
@@ -336,12 +350,26 @@ export async function verifyOtpAction(formData: FormData): Promise<{ ok: boolean
 /**
  * Resend 6-digit confirmation code (OTP) for signup.
  */
-export async function resendOtpAction(formData: FormData): Promise<{ ok: boolean; message?: string }> {
+export async function resendOtpAction(formData: FormData): Promise<{ ok: boolean; alreadyConfirmed?: boolean; message?: string }> {
   const email = String(formData.get('email') ?? '').trim().toLowerCase()
   const locale = String(formData.get('locale') ?? 'en')
 
   if (!email || !email.includes('@')) {
     return { ok: false, message: 'Invalid email address.' }
+  }
+
+  // If the user's account is already confirmed, do not attempt resending signup OTP.
+  const admin = createSupabaseAdminClient()
+  if (admin) {
+    const { data: userList } = await admin.auth.admin.listUsers()
+    const existing = userList?.users?.find((u) => u.email === email)
+    if (existing?.email_confirmed_at) {
+      return {
+        ok: false,
+        alreadyConfirmed: true,
+        message: 'Your account is already verified! You can sign in immediately.',
+      }
+    }
   }
 
   const supabase = await createSupabaseServerClient()
