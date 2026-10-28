@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Image from 'next/image'
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
-import { ArrowLeft, ArrowRight, ArrowUpRight, Star } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Star, LayoutGrid, List } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { VisitorAvailability } from './visitor-availability'
@@ -18,16 +18,24 @@ interface LiveBuild {
   progress: number
   ships: string
   showcaseSlug: string
+  image: string
+  summary: string
+  tags: string[]
+  metric: { label: string; value: string }
 }
 
 const LIVE_BUILDS: LiveBuild[] = [
   {
     client: 'Aurum Capital',
-    discipline: 'Custom Website & Client Portal',
+    discipline: 'Custom Website & Portal',
     phase: 'Live & Ready to Explore',
     progress: 100,
     ships: 'View Case Study ↗',
     showcaseSlug: 'aurum-capital-platform',
+    image: '/work/aurum-hero.jpg',
+    summary: 'Institutional private banking OS with encrypted treasury portal and real-time asset analytics.',
+    tags: ['Next.js 15', 'TypeScript', 'Supabase', 'Tailwind'],
+    metric: { label: 'Speed Score', value: '100/100' },
   },
   {
     client: 'Maison Finery',
@@ -36,6 +44,10 @@ const LIVE_BUILDS: LiveBuild[] = [
     progress: 96,
     ships: 'View Case Study ↗',
     showcaseSlug: 'finery-commerce',
+    image: '/work/finery-hero.jpg',
+    summary: 'Editorial e-commerce experience with multi-currency checkout, dynamic lookbook, and 0.4s transitions.',
+    tags: ['Headless Shopify', 'Next.js', 'Stripe', 'Animation'],
+    metric: { label: 'Checkout', value: '+42% Conv.' },
   },
   {
     client: 'The Meridian Review',
@@ -44,6 +56,10 @@ const LIVE_BUILDS: LiveBuild[] = [
     progress: 98,
     ships: 'View Case Study ↗',
     showcaseSlug: 'meridian-editorial',
+    image: '/work/meridian-hero.jpg',
+    summary: 'Cultural journalism publication featuring full reader mode, continuous audio narration, and member access.',
+    tags: ['Next.js App Router', 'Audio Stream', 'Edge CDN'],
+    metric: { label: 'Load Time', value: '0.38s' },
   },
   {
     client: 'Kinetix AI Cloud',
@@ -52,6 +68,10 @@ const LIVE_BUILDS: LiveBuild[] = [
     progress: 92,
     ships: 'View Case Study ↗',
     showcaseSlug: 'kinetix-ai-cloud',
+    image: '/work/kinetix-hero.jpg',
+    summary: 'Enterprise compute platform featuring an interactive GPU pricing calculator and automated capacity reservation.',
+    tags: ['Next.js', 'Interactive Tools', 'Tailwind', 'Stripe'],
+    metric: { label: 'Availability', value: '99.99%' },
   },
 ]
 
@@ -104,11 +124,12 @@ const TESTIMONIALS: TestimonialItem[] = [
 ]
 
 /**
- * Vantra Section 5: "In the studio right now." (`section#live.section_live`)
+ * Vantra Section 5: "What we are building right now." (`section#live.section_live`)
  */
 export function LiveStudioTracker({ className }: { className?: string }) {
   const t = useTranslations('Capabilities')
   const tLive = useTranslations('Home.live')
+  const [viewMode, setViewMode] = React.useState<'cards' | 'list'>('cards')
 
   return (
     <section
@@ -117,7 +138,7 @@ export function LiveStudioTracker({ className }: { className?: string }) {
       className={cn('section_live padding-global padding-section', className)}
     >
       <div className="container-max">
-        <div className="section_header">
+        <div className="section_header flex flex-col gap-6 md:flex-row md:items-end md:justify-between pb-8">
           <div>
             <span className="label-mono text-primary">
               ( &nbsp;&nbsp;&nbsp;{tLive('eyebrow')}&nbsp;&nbsp;&nbsp; )
@@ -125,53 +146,196 @@ export function LiveStudioTracker({ className }: { className?: string }) {
             <h2 id="live-heading" className="heading-style-h2 mt-2">
               {tLive('title')}
             </h2>
+            <p className="mt-2 text-sm text-muted-foreground max-w-xl">
+              {tLive('subtitle')}
+            </p>
           </div>
-          <div className="section_meta">
-            <VisitorAvailability />
+
+          <div className="flex flex-wrap items-center gap-4">
+            {/* View Mode Toggle Pill */}
+            <div className="flex items-center gap-1 rounded-full border border-border bg-card p-1 text-xs">
+              <button
+                type="button"
+                onClick={() => setViewMode('cards')}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-all duration-200',
+                  viewMode === 'cards'
+                    ? 'bg-primary text-[#0a0a0a] font-semibold shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+                aria-label="View as Cards"
+              >
+                <LayoutGrid className="size-3.5" />
+                <span>Cards</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-all duration-200',
+                  viewMode === 'list'
+                    ? 'bg-primary text-[#0a0a0a] font-semibold shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+                aria-label="View as Table List"
+              >
+                <List className="size-3.5" />
+                <span>Table</span>
+              </button>
+            </div>
+
+            <div className="hidden sm:block">
+              <VisitorAvailability />
+            </div>
           </div>
         </div>
 
-        <div className="live_list border-t border-border">
-          {LIVE_BUILDS.map((item) => (
-            <Link
-              key={item.client}
-              href={`/portfolio/${item.showcaseSlug}`}
-              className="live_row group grid grid-cols-1 items-center gap-6 border-b border-border py-7 transition-colors hover:bg-foreground/[0.025] sm:py-8 lg:grid-cols-2"
-            >
-              <div className="flex items-center gap-3">
-                <h3 className="live_client heading-style-h3 transition-colors group-hover:text-primary">
-                  {item.client}
-                </h3>
-                <ArrowUpRight className="size-5 text-muted-foreground opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary group-hover:opacity-100" />
-              </div>
+        {/* Dynamic View: Cards Grid vs Table List */}
+        {viewMode === 'cards' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 pt-4">
+            {LIVE_BUILDS.map((item) => (
+              <Link
+                key={item.client}
+                href={`/portfolio/${item.showcaseSlug}`}
+                className="group relative flex flex-col overflow-hidden rounded-[24px] border border-border bg-card transition-all duration-300 hover:-translate-y-1.5 hover:border-gold-500/50 hover:shadow-2xl hover:shadow-gold-500/10"
+              >
+                {/* Visual Showcase Preview */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
+                  <Image
+                    src={item.image}
+                    alt={item.client}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
 
-              <div className="live_details grid grid-cols-1 items-center gap-5 sm:grid-cols-3">
-                <div className="live_discipline text-xs font-medium tracking-[0.04em] text-muted-foreground uppercase">
-                  {item.discipline}
-                </div>
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/35" />
 
-                <div className="live_progress flex flex-col gap-2">
-                  <div className="live_progress-top flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">{item.phase}</span>
-                    <span className="font-semibold text-foreground">
-                      {item.progress}%
+                  {/* Floating Badges */}
+                  <div className="absolute top-4 inset-x-4 flex items-center justify-between gap-2">
+                    <span className="rounded-full border border-white/20 bg-black/60 px-3 py-1 text-[11px] font-semibold tracking-wider text-white backdrop-blur-md uppercase">
+                      {item.discipline}
+                    </span>
+
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-3 py-1 text-[11.5px] font-semibold text-white backdrop-blur-md">
+                      <span
+                        className={cn(
+                          'size-2 rounded-full',
+                          item.progress === 100 ? 'bg-emerald-400 animate-pulse' : 'bg-gold-400 animate-pulse',
+                        )}
+                      />
+                      <span>{item.progress}%</span>
                     </span>
                   </div>
-                  <div className="live_track h-1 w-full overflow-hidden rounded-full bg-border">
-                    <div
-                      className="live_bar h-full rounded-full bg-primary transition-all duration-700"
-                      style={{ width: `${item.progress}%` }}
-                    />
+
+                  {/* Hover Explore Pill */}
+                  <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full border border-white/25 bg-black/70 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition-all duration-300 group-hover:bg-primary group-hover:text-[#0a0a0a] group-hover:border-primary">
+                    <span>Explore Build</span>
+                    <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>
                 </div>
 
-                <div className="live_ships text-xs font-medium text-primary sm:text-right">
-                  {tLive('viewCaseStudy')}
+                {/* Card Content */}
+                <div className="flex flex-1 flex-col justify-between p-6 sm:p-7">
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-display text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-gold-700 dark:group-hover:text-gold-300">
+                        {item.client}
+                      </h3>
+                      <span className="font-mono text-xs font-semibold text-gold-700 dark:text-gold-400 bg-gold-500/10 px-2.5 py-1 rounded-md border border-gold-500/20">
+                        {item.metric.label}: {item.metric.value}
+                      </span>
+                    </div>
+
+                    <p className="text-[13.5px] leading-relaxed text-muted-foreground">
+                      {item.summary}
+                    </p>
+                  </div>
+
+                  {/* Milestone Progress Tracker */}
+                  <div className="mt-6 flex flex-col gap-2.5 border-t border-border pt-5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-muted-foreground flex items-center gap-1.5">
+                        <span className="size-1.5 rounded-full bg-gold-500" />
+                        {item.phase}
+                      </span>
+                      <span className="font-mono font-bold text-foreground">
+                        {item.progress === 100 ? 'Live & Launched' : `${item.progress}% Completed`}
+                      </span>
+                    </div>
+
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={cn(
+                          'h-full rounded-full transition-all duration-1000',
+                          item.progress === 100
+                            ? 'bg-gradient-to-r from-gold-500 to-emerald-400'
+                            : 'bg-gradient-to-r from-gold-600 to-gold-400',
+                        )}
+                        style={{ width: `${item.progress}%` }}
+                      />
+                    </div>
+
+                    {/* Tech Stack Chips */}
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {item.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-lg border border-border/80 bg-muted/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="live_list border-t border-border mt-4">
+            {LIVE_BUILDS.map((item) => (
+              <Link
+                key={item.client}
+                href={`/portfolio/${item.showcaseSlug}`}
+                className="live_row group grid grid-cols-1 items-center gap-6 border-b border-border py-7 transition-colors hover:bg-foreground/[0.025] sm:py-8 lg:grid-cols-2"
+              >
+                <div className="flex items-center gap-3">
+                  <h3 className="live_client heading-style-h3 transition-colors group-hover:text-primary">
+                    {item.client}
+                  </h3>
+                  <ArrowUpRight className="size-5 text-muted-foreground opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary group-hover:opacity-100" />
+                </div>
+
+                <div className="live_details grid grid-cols-1 items-center gap-5 sm:grid-cols-3">
+                  <div className="live_discipline text-xs font-medium tracking-[0.04em] text-muted-foreground uppercase">
+                    {item.discipline}
+                  </div>
+
+                  <div className="live_progress flex flex-col gap-2">
+                    <div className="live_progress-top flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">{item.phase}</span>
+                      <span className="font-semibold text-foreground">
+                        {item.progress}%
+                      </span>
+                    </div>
+                    <div className="live_track h-1 w-full overflow-hidden rounded-full bg-border">
+                      <div
+                        className="live_bar h-full rounded-full bg-primary transition-all duration-700"
+                        style={{ width: `${item.progress}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="live_ships text-xs font-medium text-primary sm:text-right">
+                    {tLive('viewCaseStudy')}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
         {/* Operating Promises */}
         <dl className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
