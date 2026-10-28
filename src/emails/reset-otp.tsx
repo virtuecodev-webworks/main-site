@@ -1,37 +1,47 @@
-/**
- * Template 4 — Password Reset Verification Code (6-Digit OTP)
- * Matched 1:1 to the user reference screenshot design.
- */
 import * as React from 'react'
 import {
   Shell,
   DigitBoxes,
   SecurityNotice,
-  SecurityPill,
   CardHeadline,
   CardSubtext,
-  AutomatedMessageNote,
+  Divider,
 } from './base/shell'
+import { IMAGE_AURUM, TEXT_MUTED_DARK } from './base/tokens'
 
 export interface ResetOtpProps {
   code: string
   name?: string
 }
 
-export function ResetOtpEmail({ code }: ResetOtpProps) {
+export function ResetOtpEmail({ code, name }: ResetOtpProps) {
+  const first = name?.split(' ')[0] ?? 'there'
+
   return (
-    <Shell preheader={`Your Password Reset verification Code is: ${code}`} eyebrow="Password Recovery">
-      <CardHeadline>Reset Password Verification Code</CardHeadline>
+    <Shell
+      preheader={`Your 6-digit password reset code is: ${code}`}
+      eyebrow="Password Reset"
+      heroImageUrl={IMAGE_AURUM}
+      heroImageAlt="Virtue & Co. Webworks — Password Reset"
+    >
+      <CardHeadline>Reset your password.</CardHeadline>
+      <CardSubtext>
+        Hi {first}, enter this 6-digit code in your browser to choose a new password.
+      </CardSubtext>
 
       <DigitBoxes code={code} />
 
-      <CardSubtext>Don&apos;t share this code to anyone!</CardSubtext>
+      <div style={{ textAlign: 'center', fontSize: 12.5, color: TEXT_MUTED_DARK, margin: '10px 0 20px', fontWeight: 500 }}>
+        Code is valid for 60 minutes · Never share this code with anyone
+      </div>
 
       <SecurityNotice actionText="ignore this email and keep your current password" />
 
-      <AutomatedMessageNote />
+      <Divider />
 
-      <SecurityPill />
+      <div style={{ fontSize: 12, color: TEXT_MUTED_DARK, textAlign: 'center', lineHeight: 1.6 }}>
+        If you did not request a password reset, you can safely ignore this email.
+      </div>
     </Shell>
   )
 }
