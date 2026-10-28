@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import Image from 'next/image'
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
-import { ArrowLeft, ArrowRight, ArrowUpRight, Star, LayoutGrid, List } from 'lucide-react'
+import { motion, AnimatePresence, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Star, LayoutGrid, List, Quote } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { VisitorAvailability } from './visitor-availability'
@@ -81,6 +81,9 @@ interface TestimonialItem {
   role: string
   company: string
   avatar: string
+  projectSlug: string
+  projectLabel: string
+  verifiedBadge: string
   reverse?: boolean
 }
 
@@ -92,6 +95,9 @@ const TESTIMONIALS: TestimonialItem[] = [
     role: 'Managing Partner',
     company: 'Aurum Capital',
     avatar: '/work/aurum-hero.jpg',
+    projectSlug: 'aurum-capital-platform',
+    projectLabel: 'Aurum Capital Platform',
+    verifiedBadge: 'Institutional Banking OS',
     reverse: false,
   },
   {
@@ -101,6 +107,9 @@ const TESTIMONIALS: TestimonialItem[] = [
     role: 'Head of Digital',
     company: 'Maison Finery',
     avatar: '/work/finery-hero.jpg',
+    projectSlug: 'finery-commerce',
+    projectLabel: 'Maison Finery Store',
+    verifiedBadge: 'Luxury E-Commerce',
     reverse: true,
   },
   {
@@ -110,6 +119,9 @@ const TESTIMONIALS: TestimonialItem[] = [
     role: 'Editorial Director',
     company: 'Meridian Media',
     avatar: '/work/meridian-hero.jpg',
+    projectSlug: 'meridian-editorial',
+    projectLabel: 'The Meridian Review',
+    verifiedBadge: 'Digital Media & Audio',
     reverse: false,
   },
   {
@@ -119,6 +131,9 @@ const TESTIMONIALS: TestimonialItem[] = [
     role: 'Founder',
     company: 'Northline Studio',
     avatar: '/work/northline-hero.jpg',
+    projectSlug: 'northline-blueprint',
+    projectLabel: 'Northline Architecture',
+    verifiedBadge: 'Design Architecture',
     reverse: true,
   },
 ]
@@ -364,7 +379,6 @@ export function LiveStudioTracker({ className }: { className?: string }) {
 export function CultureAndTestimonials({ className }: { className?: string }) {
   const tValues = useTranslations('Home.values')
   const reelContainerRef = React.useRef<HTMLDivElement | null>(null)
-  const sliderRef = React.useRef<HTMLDivElement | null>(null)
   const prefersReducedMotion = useReducedMotion()
 
   const { scrollYProgress } = useScroll({
@@ -384,10 +398,25 @@ export function CultureAndTestimonials({ className }: { className?: string }) {
     prefersReducedMotion ? [1, 1] : [0.94, 1],
   )
 
-  const scrollSlider = (dir: 'prev' | 'next') => {
-    if (!sliderRef.current) return
-    const delta = dir === 'next' ? 420 : -420
-    sliderRef.current.scrollBy({ left: delta, behavior: 'smooth' })
+  const [testimonialIndex, setTestimonialIndex] = React.useState(0)
+  const [direction, setDirection] = React.useState<1 | -1>(1)
+
+  const handleNext = () => {
+    setDirection(1)
+    setTestimonialIndex((prev) => (prev + 1) % TESTIMONIALS.length)
+  }
+
+  const handlePrev = () => {
+    setDirection(-1)
+    setTestimonialIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)
+  }
+
+  const handleDragEnd = (_e: any, info: { offset: { x: number } }) => {
+    if (info.offset.x < -35) {
+      handleNext()
+    } else if (info.offset.x > 35) {
+      handlePrev()
+    }
   }
 
   return (
@@ -455,10 +484,15 @@ export function CultureAndTestimonials({ className }: { className?: string }) {
         className="section_testimonials padding-global padding-section overflow-hidden"
       >
         <div className="container-max">
-          <div className="section_header">
-            <h2 id="testimonials-heading" className="heading-style-h2">
-              What clients say back.
-            </h2>
+          <div className="section_header flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between pb-8">
+            <div>
+              <span className="label-mono text-primary">
+                ( &nbsp;&nbsp;&nbsp;Verified Client Feedback&nbsp;&nbsp;&nbsp; )
+              </span>
+              <h2 id="testimonials-heading" className="heading-style-h2 mt-2">
+                What clients say back.
+              </h2>
+            </div>
             <div className="flex items-center gap-6">
               <div className="section_meta hidden sm:flex">
                 <span className="label-mono text-primary">
@@ -469,17 +503,17 @@ export function CultureAndTestimonials({ className }: { className?: string }) {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => scrollSlider('prev')}
+                  onClick={handlePrev}
                   aria-label="Previous testimonial"
-                  className="flex size-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-colors hover:border-primary hover:text-primary"
+                  className="flex size-11 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-all hover:border-primary hover:text-primary active:scale-95"
                 >
                   <ArrowLeft className="size-4" />
                 </button>
                 <button
                   type="button"
-                  onClick={() => scrollSlider('next')}
+                  onClick={handleNext}
                   aria-label="Next testimonial"
-                  className="flex size-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-colors hover:border-primary hover:text-primary"
+                  className="flex size-11 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-all hover:border-primary hover:text-primary active:scale-95"
                 >
                   <ArrowRight className="size-4" />
                 </button>
@@ -487,96 +521,199 @@ export function CultureAndTestimonials({ className }: { className?: string }) {
             </div>
           </div>
 
-          <div
-            ref={sliderRef}
-            className="testimonial_slider -mx-5 flex gap-2 overflow-x-auto px-5 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0"
-          >
-            {/* Card 1: Vantra Dark Aggregate Score Card (`.testimonial_card.is-score`) with Stacked Avatars */}
-            <article className="testimonial_card is-score flex min-h-[26rem] w-[21rem] shrink-0 flex-col justify-between rounded-[20px] bg-[#0a0a0a] p-7 text-[#f5f4f0] sm:min-h-[28rem] sm:w-[24rem]">
+          {/* Testimonial Showcase Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+            {/* Left 4 Columns: Vantra Dark Aggregate Score Card (`.testimonial_card.is-score`) */}
+            <article className="lg:col-span-4 flex flex-col justify-between rounded-[24px] bg-[#0a0a0a] p-8 text-[#f5f4f0] shadow-xl border border-white/10 min-h-[360px] lg:min-h-[440px]">
               <div>
                 <div className="flex items-baseline gap-1 font-display">
-                  <span className="text-6xl font-semibold tracking-[-0.03em] text-[#f5f4f0] sm:text-7xl">
+                  <span className="text-6xl font-bold tracking-[-0.03em] text-[#f5f4f0] sm:text-7xl">
                     4.9
                   </span>
-                  <span className="text-2xl text-[#f5f4f0]/40">/5</span>
+                  <span className="text-2xl text-[#f5f4f0]/40 font-semibold">/5</span>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-[#f5f4f0]/65">
+                <p className="mt-4 text-sm leading-relaxed text-[#f5f4f0]/70">
                   We have delivered custom websites and online stores that help ambitious businesses grow with confidence.
                 </p>
+
+                {/* Star Row */}
+                <div className="flex items-center gap-1.5 mt-5 text-primary">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="size-4 fill-primary text-primary" />
+                  ))}
+                  <span className="text-xs font-semibold text-[#f5f4f0]/80 ml-2">Perfect 5.0 Rating</span>
+                </div>
               </div>
 
-              <div className="space-y-4 border-t border-[#f5f4f01f] pt-5">
-                {/* Vantra `.testimonial_stack` Overlapping Avatars + Star Row */}
+              <div className="space-y-4 border-t border-white/10 pt-6">
                 <div className="flex items-center justify-between gap-3">
-                  <div className="testimonial_stack flex items-center pl-2">
+                  <div className="flex items-center pl-2">
                     {TESTIMONIALS.map((tItem) => (
                       <div
                         key={tItem.author}
-                        className="-ml-2.5 size-9 overflow-hidden rounded-full border-2 border-[#0a0a0a] bg-[#1b1b1e]"
+                        className="-ml-2.5 size-10 overflow-hidden rounded-full border-2 border-[#0a0a0a] bg-[#1b1b1e]"
                       >
                         <Image
                           src={tItem.avatar}
                           alt={tItem.author}
-                          width={36}
-                          height={36}
+                          width={40}
+                          height={40}
                           className="size-full object-cover"
                         />
                       </div>
                     ))}
                   </div>
-                  <div className="flex items-center gap-0.5 text-primary">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="size-3.5 fill-primary text-primary" />
+
+                  {/* Interactive card counter and dots */}
+                  <div className="flex items-center gap-1.5">
+                    {TESTIMONIALS.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          setDirection(idx > testimonialIndex ? 1 : -1)
+                          setTestimonialIndex(idx)
+                        }}
+                        aria-label={`Go to slide ${idx + 1}`}
+                        className={cn(
+                          'h-2 rounded-full transition-all duration-300',
+                          idx === testimonialIndex ? 'w-6 bg-primary' : 'w-2 bg-white/20 hover:bg-white/40',
+                        )}
+                      />
                     ))}
                   </div>
                 </div>
-                <p className="text-xs font-medium text-[#f5f4f0]/75">
-                  Trusted by clients worldwide
-                </p>
+
+                <div className="flex items-center justify-between text-xs text-[#f5f4f0]/60">
+                  <span>Trusted by clients worldwide</span>
+                  <span className="font-mono text-primary font-semibold">
+                    0{testimonialIndex + 1} / 0{TESTIMONIALS.length}
+                  </span>
+                </div>
               </div>
             </article>
 
-            {/* Cards 2..5: Alternating Top-to-Bottom & Bottom-to-Top Quote Cards */}
-            {TESTIMONIALS.map((item) => (
-              <article
-                key={item.author}
-                className={cn(
-                  'testimonial_card flex min-h-[26rem] w-[21rem] shrink-0 justify-between rounded-[20px] border border-border/70 bg-card p-7 text-foreground sm:min-h-[28rem] sm:w-[24rem]',
-                  item.reverse ? 'flex-col-reverse' : 'flex-col',
-                )}
-              >
-                <div
-                  className={cn(
-                    'flex items-center gap-3.5 border-border',
-                    item.reverse ? 'border-t pt-4' : 'border-b pb-4',
-                  )}
+            {/* Right 8 Columns: Dynamic Swipeable Testimonial Card */}
+            <div className="lg:col-span-8 relative min-h-[360px] lg:min-h-[440px] overflow-hidden flex flex-col">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.article
+                  key={testimonialIndex}
+                  custom={direction}
+                  variants={{
+                    enter: (dir: number) => ({
+                      x: dir > 0 ? 90 : -90,
+                      opacity: 0,
+                      scale: 0.98,
+                    }),
+                    center: {
+                      x: 0,
+                      opacity: 1,
+                      scale: 1,
+                      transition: {
+                        x: { type: 'spring', stiffness: 340, damping: 30 },
+                        opacity: { duration: 0.22 },
+                      },
+                    },
+                    exit: (dir: number) => ({
+                      x: dir > 0 ? -90 : 90,
+                      opacity: 0,
+                      scale: 0.98,
+                      transition: {
+                        x: { type: 'spring', stiffness: 340, damping: 30 },
+                        opacity: { duration: 0.18 },
+                      },
+                    }),
+                  }}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={handleDragEnd}
+                  className="group relative flex size-full flex-1 cursor-grab active:cursor-grabbing flex-col justify-between rounded-[24px] border border-border bg-card p-8 sm:p-10 shadow-sm hover:border-gold-500/40 hover:shadow-xl transition-all duration-300 select-none"
                 >
-                  <div className="size-10 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
-                    <Image
-                      src={item.avatar}
-                      alt={item.author}
-                      width={40}
-                      height={40}
-                      className="size-full object-cover"
-                    />
+                  {/* Watermark Quote Icon */}
+                  <div className="pointer-events-none absolute right-8 top-8 opacity-10 dark:opacity-15">
+                    <Quote className="size-24 text-primary" />
                   </div>
-                  <div>
-                    <div className="font-display text-sm font-semibold text-foreground">
-                      {item.author}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {item.role}, {item.company}
-                    </div>
-                  </div>
-                </div>
 
-                <div className="my-auto py-4">
-                  <blockquote className="text-base leading-relaxed font-medium text-foreground sm:text-[17px]">
-                    &ldquo;{item.quote}&rdquo;
-                  </blockquote>
-                </div>
-              </article>
-            ))}
+                  {/* Top Client Bio Row */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+                    <div className="flex items-center gap-4">
+                      <div className="size-14 shrink-0 overflow-hidden rounded-2xl border-2 border-border bg-muted shadow-xs">
+                        <Image
+                          src={TESTIMONIALS[testimonialIndex].avatar}
+                          alt={TESTIMONIALS[testimonialIndex].author}
+                          width={56}
+                          height={56}
+                          className="size-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-lg font-bold text-foreground">
+                          {TESTIMONIALS[testimonialIndex].author}
+                        </h3>
+                        <p className="text-xs text-muted-foreground font-medium">
+                          {TESTIMONIALS[testimonialIndex].role}, {TESTIMONIALS[testimonialIndex].company}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-semibold text-gold-700 dark:text-gold-300">
+                        {TESTIMONIALS[testimonialIndex].verifiedBadge}
+                      </span>
+                      <div className="hidden sm:flex items-center gap-0.5 text-primary">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className="size-3.5 fill-primary text-primary" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quote Body */}
+                  <div className="my-auto py-6 sm:py-8">
+                    <blockquote className="font-display text-xl sm:text-2xl lg:text-[1.7rem] leading-relaxed font-semibold tracking-[-0.015em] text-foreground">
+                      &ldquo;{TESTIMONIALS[testimonialIndex].quote}&rdquo;
+                    </blockquote>
+                  </div>
+
+                  {/* Bottom Footer Action & Swipe Hint */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
+                    <Link
+                      href={`/portfolio/${TESTIMONIALS[testimonialIndex].projectSlug}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all hover:text-foreground group/link"
+                    >
+                      <span>Explore {TESTIMONIALS[testimonialIndex].projectLabel}</span>
+                      <ArrowUpRight className="size-4 transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+                    </Link>
+
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span className="hidden sm:inline">Drag or swipe left/right</span>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={handlePrev}
+                          className="size-8 rounded-lg border border-border flex items-center justify-center hover:bg-muted transition-colors"
+                          aria-label="Previous testimonial"
+                        >
+                          <ArrowLeft className="size-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleNext}
+                          className="size-8 rounded-lg border border-border flex items-center justify-center hover:bg-muted transition-colors"
+                          aria-label="Next testimonial"
+                        >
+                          <ArrowRight className="size-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.article>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </section>
