@@ -1,11 +1,11 @@
-import {
-  Braces,
-  Blocks,
-  Layers,
-  ShoppingBag,
-  type LucideIcon,
-} from 'lucide-react'
+import type * as React from 'react'
 import type { ProjectCategory } from '@/lib/constants'
+import {
+  NextjsLogo,
+  WordPressLogo,
+  WixLogo,
+  ShopifyLogo,
+} from '@/components/brand/tech-icons'
 
 /**
  * Non-translatable presentation metadata for the four service lines.
@@ -13,7 +13,7 @@ import type { ProjectCategory } from '@/lib/constants'
  */
 export interface ServiceMeta {
   key: ProjectCategory
-  icon: LucideIcon
+  icon: React.ComponentType<{ className?: string }>
   /** Flat chip colours for the icon badge (no gradients, dark-mode aware). */
   accent: string
   /** Representative stack badges, also language-independent. */
@@ -23,25 +23,25 @@ export interface ServiceMeta {
 export const SERVICES: ServiceMeta[] = [
   {
     key: 'custom',
-    icon: Braces,
+    icon: NextjsLogo,
     accent: 'bg-gold-50 text-gold-700 dark:bg-gold-500/12 dark:text-gold-300',
     stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Vercel'],
   },
   {
     key: 'wordpress',
-    icon: Blocks,
+    icon: WordPressLogo,
     accent: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/12 dark:text-emerald-300',
     stack: ['WordPress', 'PHP', 'ACF Pro', 'Gutenberg', 'WooCommerce'],
   },
   {
     key: 'wix',
-    icon: Layers,
+    icon: WixLogo,
     accent: 'bg-ink-100 text-ink-700 dark:bg-ink-800 dark:text-ink-200',
     stack: ['Wix Studio', 'Velo', 'CMS Collections', 'Wix Payments'],
   },
   {
     key: 'ecommerce',
-    icon: ShoppingBag,
+    icon: ShopifyLogo,
     accent: 'bg-gold-50 text-gold-700 dark:bg-gold-500/12 dark:text-gold-300',
     stack: ['Stripe', 'Supabase', 'Resend', 'Apple Pay'],
   },

@@ -6,16 +6,13 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  Laptop,
-  Layers,
-  ShoppingBag,
-  Sparkles,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { StartingPrice } from './starting-price'
 import { SERVICES } from '@/lib/studio'
 import { cn } from '@/lib/utils'
+import { NextjsLogo, WordPressLogo, WixLogo, ShopifyLogo } from '@/components/brand/tech-icons'
 
 const SERVICE_META: Record<
   string,
@@ -28,22 +25,22 @@ const SERVICE_META: Record<
   custom: {
     slug: 'aurum-capital-platform',
     badge: 'Custom Architecture',
-    icon: Laptop,
+    icon: NextjsLogo,
   },
   wordpress: {
     slug: 'meridian-editorial',
     badge: 'Editorial & CMS',
-    icon: Layers,
+    icon: WordPressLogo,
   },
   wix: {
     slug: 'northline-studio',
     badge: 'Rapid Launch',
-    icon: Sparkles,
+    icon: WixLogo,
   },
   ecommerce: {
     slug: 'finery-commerce',
     badge: 'Digital Commerce',
-    icon: ShoppingBag,
+    icon: ShopifyLogo,
   },
 }
 

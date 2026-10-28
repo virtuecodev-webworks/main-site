@@ -23,7 +23,7 @@ interface PaletteItem {
   group: 'pages' | 'services' | 'actions'
   label: string
   hint?: string
-  icon: LucideIcon
+  icon: LucideIcon | React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>
   keywords: string
   run: () => void
 }
