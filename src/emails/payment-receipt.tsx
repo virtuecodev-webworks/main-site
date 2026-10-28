@@ -1,17 +1,23 @@
-/**
- * Template 5 — Payment Receipt
- * Clean high-contrast white card design matching user reference.
- */
 import * as React from 'react'
 import {
   Shell,
   CardHeadline,
   CardSubtext,
   PrimaryButton,
-  SecurityPill,
   Divider,
 } from './base/shell'
-import { TEXT_DARK, TEXT_MUTED_DARK, PORTAL, GOLD, CARD_WELL, BORDER_DIVIDER, DISPLAY_STACK, MONO_STACK } from './base/tokens'
+import {
+  TEXT_DARK,
+  TEXT_MUTED_DARK,
+  PORTAL,
+  GOLD,
+  GOLD_DARK,
+  CARD_WELL,
+  BORDER_DIVIDER,
+  DISPLAY_STACK,
+  MONO_STACK,
+  IMAGE_AURUM,
+} from './base/tokens'
 
 export interface PaymentReceiptProps {
   reference: string
@@ -35,41 +41,46 @@ export function PaymentReceiptEmail({
   const recipient = customerName ?? customerEmail
 
   return (
-    <Shell preheader={`Payment confirmed: ${amount} · Ref ${reference}`} eyebrow="Payment Receipt">
-      <CardHeadline>Payment Confirmed</CardHeadline>
-      <CardSubtext>Thank you, {recipient}. Your transaction was successful.</CardSubtext>
+    <Shell
+      preheader={`Payment confirmed: ${amount} · Ref ${reference}`}
+      eyebrow="Payment Receipt"
+      heroImageUrl={IMAGE_AURUM}
+      heroImageAlt="Virtue & Co. Webworks — Verified Payment"
+    >
+      <CardHeadline>Payment confirmed.</CardHeadline>
+      <CardSubtext>Thank you, {recipient}. Your transaction has been securely processed.</CardSubtext>
 
       {/* Amount Hero Box */}
       <div
         style={{
           background: '#0A0A0A',
           border: '1px solid #1E1E1E',
-          borderRadius: 16,
+          borderRadius: 14,
           padding: '24px 20px',
-          margin: '18px 0 22px',
+          margin: '20px 0 24px',
           textAlign: 'center',
         }}
       >
         <div
           style={{
             fontFamily: MONO_STACK,
-            fontSize: 10.5,
+            fontSize: 10,
             fontWeight: 600,
-            letterSpacing: '0.18em',
+            letterSpacing: '0.16em',
             color: GOLD,
             textTransform: 'uppercase',
             marginBottom: 8,
           }}
         >
-          ( ✓ Verified Payment )
+          ( Verified Payment )
         </div>
         <div
           style={{
             fontFamily: DISPLAY_STACK,
-            fontSize: 36,
-            fontWeight: 500,
+            fontSize: 34,
+            fontWeight: 600,
             color: '#F5F4F0',
-            letterSpacing: '-0.03em',
+            letterSpacing: '-0.025em',
             lineHeight: 1.1,
           }}
         >
@@ -86,25 +97,45 @@ export function PaymentReceiptEmail({
         style={{
           background: CARD_WELL,
           border: `1px solid ${BORDER_DIVIDER}`,
-          borderRadius: 16,
+          borderRadius: 14,
           overflow: 'hidden',
-          fontSize: 13,
-          margin: '0 0 20px',
+          fontSize: 13.5,
+          margin: '18px 0 22px',
         }}
       >
         <tbody>
           {[
-            ['Reference', reference],
-            ['Transaction ID', transactionId ?? 'N/A'],
-            ['Purpose', purpose ?? 'Studio Engineering Milestone'],
+            ['Order Reference', reference],
+            ['Payment Purpose', purpose ?? 'Website Engineering Milestone'],
             ['Date & Time', paidAt],
-            ['Billed To', customerEmail],
+            ['Transaction ID', transactionId ?? reference],
           ].map(([label, val], idx) => (
-            <tr key={label} style={{ borderBottom: idx < 4 ? `1px solid ${BORDER_DIVIDER}` : 'none' }}>
-              <td style={{ padding: '12px 16px', color: TEXT_MUTED_DARK, fontWeight: 500, width: '40%' }}>
+            <tr
+              key={label}
+              style={{
+                borderBottom: idx < 3 ? `1px solid ${BORDER_DIVIDER}` : 'none',
+              }}
+            >
+              <td
+                style={{
+                  padding: '12px 18px',
+                  color: TEXT_MUTED_DARK,
+                  fontWeight: 500,
+                  width: '40%',
+                }}
+              >
                 {label}
               </td>
-              <td style={{ padding: '12px 16px', color: TEXT_DARK, fontWeight: 600, textAlign: 'right' }}>
+              <td
+                style={{
+                  padding: '12px 18px',
+                  color: TEXT_DARK,
+                  fontWeight: 600,
+                  textAlign: 'right',
+                  fontFamily: label === 'Order Reference' || label === 'Transaction ID' ? MONO_STACK : undefined,
+                  fontSize: label === 'Order Reference' || label === 'Transaction ID' ? 12 : 13.5,
+                }}
+              >
                 {val}
               </td>
             </tr>
@@ -112,12 +143,17 @@ export function PaymentReceiptEmail({
         </tbody>
       </table>
 
-      <PrimaryButton href={PORTAL}>Access Your Client Portal</PrimaryButton>
+      <PrimaryButton href={`${PORTAL}/orders/${reference}`}>
+        View Order in Client Workspace
+      </PrimaryButton>
 
-      <SecurityPill ip={`Ref: ${reference}`} />
+      <Divider />
+
+      <div style={{ fontSize: 12, color: TEXT_MUTED_DARK, textAlign: 'center', lineHeight: 1.6 }}>
+        Need an invoice or have billing questions? Simply reply to this email.
+      </div>
     </Shell>
   )
 }
 
 export default PaymentReceiptEmail
-

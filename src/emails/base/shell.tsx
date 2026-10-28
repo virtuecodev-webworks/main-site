@@ -2,41 +2,51 @@ import * as React from 'react'
 import {
   CANVAS_BG,
   CARD_BG,
-  CARD_WELL,
   SQUIRCLE_BG,
   TEXT_DARK,
+  TEXT_MUTED_DARK,
   TEXT_FAINT_DARK,
-  TEXT_MUTED_LIGHT,
+  BORDER_CARD,
+  BORDER_DIVIDER,
+  BORDER_DIGIT,
   ALERT_BG,
   ALERT_BORDER,
   ALERT_TITLE,
   ALERT_TEXT,
-  PILL_BG,
-  PILL_TEXT,
-  BORDER_DIGIT,
-  BORDER_DIVIDER,
   FONT_DISPLAY,
   FONT_SANS,
   FONT_MONO,
   LOGO_URL,
   SITE,
   GOLD,
+  GOLD_DARK,
 } from './tokens'
 import { AGENCY } from '@/lib/constants'
 
 export interface ShellProps {
   preheader: string
   eyebrow?: string
+  heroImageUrl?: string
+  heroImageAlt?: string
   children: React.ReactNode
 }
 
 /**
- * Vantra Studio × Virtue & Co. Webworks Email Shell.
- * - Deep Obsidian (`#0A0A0A`) outer canvas with warm gold radial atmosphere
- * - Architectural Warm Bone (`#F5F4F0`) main container with `20px` radius
- * - Top metadata bar with `#0A0A0A` logo badge and `( VIRTUE & CO. )` mono tag
+ * Virtue & Co. Webworks — Minimalist Architectural Email Shell
+ * Matches the live site:
+ * - Warm bone (#F5F4F0) outer canvas
+ * - Crisp white (#FFFFFF) card with 20px radius and hairline border
+ * - Inter Display headings + Instrument Sans body typography
+ * - Full-width high-resolution imagery from the website
+ * - Signature Vantra gold action pills
  */
-export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: ShellProps) {
+export function Shell({
+  preheader,
+  eyebrow = 'Dispatch',
+  heroImageUrl,
+  heroImageAlt,
+  children,
+}: ShellProps) {
   const year = new Date().getFullYear()
 
   return (
@@ -54,6 +64,7 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
           fontFamily: FONT_SANS,
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale',
+          color: TEXT_DARK,
         }}
       >
         {/* Hidden preview preheader */}
@@ -72,33 +83,34 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
           {preheader}
         </div>
 
-        {/* Outer Obsidian Canvas */}
+        {/* Outer Warm Bone Canvas */}
         <table
           role="presentation"
           width="100%"
           cellPadding={0}
           cellSpacing={0}
           style={{
-            background: `${CANVAS_BG} radial-gradient(circle at 50% 0%, rgba(220, 170, 40, 0.16) 0%, rgba(10, 10, 10, 0) 65%) no-repeat`,
-            padding: '44px 14px 48px',
+            background: CANVAS_BG,
+            padding: '36px 14px 48px',
           }}
         >
           <tbody>
             <tr>
               <td align="center">
-                {/* ── Main Vantra Architectural Card (`#F5F4F0`) ── */}
+                {/* ── Main Architectural Card (`#FFFFFF`) ── */}
                 <table
                   role="presentation"
-                  width={520}
+                  width={580}
                   cellPadding={0}
                   cellSpacing={0}
                   style={{
-                    maxWidth: 520,
+                    maxWidth: 580,
                     width: '100%',
                     background: CARD_BG,
                     borderRadius: 20,
                     overflow: 'hidden',
-                    boxShadow: '0 28px 70px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(245, 244, 240, 0.14)',
+                    border: `1px solid ${BORDER_CARD}`,
+                    boxShadow: '0 8px 30px rgba(10, 10, 10, 0.04)',
                   }}
                 >
                   <tbody>
@@ -106,7 +118,7 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
                     <tr>
                       <td
                         style={{
-                          padding: '24px 32px 20px',
+                          padding: '24px 30px 20px',
                           borderBottom: `1px solid ${BORDER_DIVIDER}`,
                         }}
                       >
@@ -119,8 +131,8 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
                                     <tr>
                                       <td
                                         style={{
-                                          width: 38,
-                                          height: 38,
+                                          width: 36,
+                                          height: 36,
                                           background: SQUIRCLE_BG,
                                           borderRadius: 10,
                                           textAlign: 'center',
@@ -129,13 +141,13 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
                                       >
                                         <img
                                           src={LOGO_URL}
-                                          width={24}
-                                          height={24}
+                                          width={22}
+                                          height={22}
                                           alt="Virtue & Co."
                                           style={{
                                             display: 'inline-block',
-                                            width: 24,
-                                            height: 24,
+                                            width: 22,
+                                            height: 22,
                                             objectFit: 'contain',
                                             verticalAlign: 'middle',
                                           }}
@@ -147,7 +159,7 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
                                             fontFamily: FONT_DISPLAY,
                                             fontSize: 14,
                                             fontWeight: 700,
-                                            letterSpacing: '-0.03em',
+                                            letterSpacing: '-0.02em',
                                             color: TEXT_DARK,
                                             lineHeight: 1.1,
                                           }}
@@ -158,7 +170,7 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
                                           style={{
                                             fontSize: 9.5,
                                             fontWeight: 600,
-                                            letterSpacing: '0.2em',
+                                            letterSpacing: '0.18em',
                                             color: TEXT_FAINT_DARK,
                                             textTransform: 'uppercase',
                                             marginTop: 2,
@@ -175,9 +187,9 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
                                 <span
                                   style={{
                                     fontFamily: FONT_MONO,
-                                    fontSize: 10.5,
+                                    fontSize: 10,
                                     fontWeight: 600,
-                                    letterSpacing: '0.06em',
+                                    letterSpacing: '0.12em',
                                     textTransform: 'uppercase',
                                     color: TEXT_FAINT_DARK,
                                   }}
@@ -191,57 +203,79 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
                       </td>
                     </tr>
 
-                    {/* Main Body */}
+                    {/* Optional Hero Image Banner */}
+                    {heroImageUrl && (
+                      <tr>
+                        <td style={{ padding: '24px 30px 0' }}>
+                          <img
+                            src={heroImageUrl}
+                            alt={heroImageAlt || 'Virtue & Co. Webworks'}
+                            width={520}
+                            style={{
+                              width: '100%',
+                              maxWidth: 520,
+                              height: 'auto',
+                              borderRadius: 14,
+                              display: 'block',
+                              border: `1px solid ${BORDER_DIVIDER}`,
+                              objectFit: 'cover',
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    )}
+
+                    {/* Main Content Area */}
                     <tr>
-                      <td style={{ padding: '36px 32px 34px', textAlign: 'left' }}>
+                      <td style={{ padding: '32px 30px 36px', textAlign: 'left' }}>
                         {children}
                       </td>
                     </tr>
                   </tbody>
                 </table>
 
-                {/* ── Dark Footer Area (`#0A0A0A` Pedestal) ── */}
+                {/* ── Understated Minimalist Footer ── */}
                 <table
                   role="presentation"
-                  width={520}
+                  width={580}
                   cellPadding={0}
                   cellSpacing={0}
-                  style={{ maxWidth: 520, width: '100%', marginTop: 28, textAlign: 'center' }}
+                  style={{ maxWidth: 580, width: '100%', marginTop: 26, textAlign: 'center' }}
                 >
                   <tbody>
                     <tr>
                       <td
                         style={{
                           fontFamily: FONT_MONO,
-                          fontSize: 10.5,
-                          letterSpacing: '0.08em',
+                          fontSize: 10,
+                          letterSpacing: '0.12em',
                           textTransform: 'uppercase',
-                          color: GOLD,
-                          paddingBottom: 10,
+                          color: GOLD_DARK,
+                          paddingBottom: 8,
                         }}
                       >
-                        ( &nbsp;&nbsp;&nbsp;One Team, No Handoffs&nbsp;&nbsp;&nbsp; )
+                        ( &nbsp;&nbsp;&nbsp;Thoughtful design. Built on schedule.&nbsp;&nbsp;&nbsp; )
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, paddingBottom: 6 }}>
+                      <td style={{ fontSize: 12, color: TEXT_FAINT_DARK, paddingBottom: 6 }}>
                         © {year} {AGENCY.name}. All rights reserved.
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ fontSize: 12, color: TEXT_MUTED_LIGHT }}>
+                      <td style={{ fontSize: 12, color: TEXT_FAINT_DARK }}>
                         <a
                           href={`mailto:${AGENCY.email}`}
-                          style={{ color: '#F5F4F0', textDecoration: 'none', fontWeight: 500 }}
+                          style={{ color: TEXT_DARK, textDecoration: 'none', fontWeight: 500 }}
                         >
                           {AGENCY.email}
                         </a>
                         {'   '}·{'   '}
-                        <span style={{ color: '#F5F4F0', fontWeight: 500 }}>{AGENCY.phone}</span>
+                        <span style={{ color: TEXT_DARK, fontWeight: 500 }}>{AGENCY.phone}</span>
                         {'   '}·{'   '}
                         <a
                           href={SITE}
-                          style={{ color: GOLD, textDecoration: 'none', fontWeight: 500 }}
+                          style={{ color: TEXT_DARK, textDecoration: 'none', fontWeight: 500 }}
                         >
                           {AGENCY.domain}
                         </a>
@@ -259,41 +293,121 @@ export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: Shel
 }
 
 /* ------------------------------------------------------------------ */
-/*  Digit Boxes Component: [ 5 ] [ 2 ] [ 5 ] [ 0 ] [ 9 ] [ 8 ]        */
+/*  Email Hero Image Helper                                           */
 /* ------------------------------------------------------------------ */
-export function DigitBoxes({ code }: { code: string }) {
+export function EmailHeroImage({
+  src,
+  alt = 'Virtue & Co. Showcase',
+  caption,
+}: {
+  src: string
+  alt?: string
+  caption?: string
+}) {
+  return (
+    <div style={{ margin: '18px 0 24px' }}>
+      <img
+        src={src}
+        alt={alt}
+        width={520}
+        style={{
+          width: '100%',
+          maxWidth: 520,
+          height: 'auto',
+          borderRadius: 14,
+          display: 'block',
+          border: `1px solid ${BORDER_DIVIDER}`,
+          objectFit: 'cover',
+        }}
+      />
+      {caption && (
+        <div
+          style={{
+            fontFamily: FONT_MONO,
+            fontSize: 10,
+            color: TEXT_FAINT_DARK,
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            marginTop: 8,
+          }}
+        >
+          {caption}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Digit Code Block (for OTPs)                                       */
+/* ------------------------------------------------------------------ */
+export function DigitBlock({ code }: { code: string }) {
   const digits = code.replace(/\s+/g, '').split('')
 
   return (
-    <div style={{ margin: '22px 0 22px', textAlign: 'center' }}>
-      <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: '0 auto' }}>
-        <tbody>
-          <tr>
-            {digits.map((digit, idx) => (
-              <td key={idx} style={{ padding: '0 4px' }}>
-                <div
-                  style={{
-                    width: 46,
-                    height: 56,
-                    lineHeight: '56px',
-                    background: CARD_WELL,
-                    border: `1.5px solid ${BORDER_DIGIT}`,
-                    borderRadius: 12,
-                    fontSize: 24,
-                    fontWeight: 700,
-                    fontFamily: FONT_DISPLAY,
-                    color: TEXT_DARK,
-                    textAlign: 'center',
-                    letterSpacing: '-0.02em',
-                  }}
-                >
-                  {digit}
-                </div>
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+    <table
+      role="presentation"
+      align="center"
+      cellPadding={0}
+      cellSpacing={0}
+      style={{ margin: '24px auto 26px' }}
+    >
+      <tbody>
+        <tr>
+          {digits.map((digit, i) => (
+            <td
+              key={i}
+              style={{
+                width: 48,
+                height: 56,
+                background: '#FAF9F6',
+                border: `1.5px solid ${BORDER_DIGIT}`,
+                borderRadius: 12,
+                textAlign: 'center',
+                verticalAlign: 'middle',
+                fontFamily: FONT_DISPLAY,
+                fontSize: 24,
+                fontWeight: 700,
+                color: TEXT_DARK,
+                padding: 0,
+                marginLeft: i > 0 ? 8 : 0,
+              }}
+            >
+              {digit}
+            </td>
+          ))}
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
+export const DigitBoxes = DigitBlock
+
+/* ------------------------------------------------------------------ */
+/*  Security Metadata Pill                                            */
+/* ------------------------------------------------------------------ */
+export function SecurityPill({ label, ip }: { label?: string; ip?: string }) {
+  const display = label ?? (ip && ip !== '192.135.152' ? ip : 'TLS 1.3 · Verified')
+
+  return (
+    <div style={{ textAlign: 'left', marginTop: 18 }}>
+      <span
+        style={{
+          display: 'inline-block',
+          background: '#0A0A0A',
+          color: '#F5F4F0',
+          fontSize: 10,
+          fontWeight: 600,
+          padding: '5px 12px',
+          borderRadius: 8,
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          fontFamily: FONT_MONO,
+        }}
+      >
+        <span style={{ color: GOLD }}>●</span> &nbsp;{display}
+      </span>
     </div>
   )
 }
@@ -327,9 +441,10 @@ export function SecurityNotice({
     >
       <div
         style={{
-          fontSize: 12,
-          fontWeight: 700,
-          letterSpacing: '0.04em',
+          fontFamily: FONT_MONO,
+          fontSize: 11,
+          fontWeight: 600,
+          letterSpacing: '0.08em',
           textTransform: 'uppercase',
           color: ALERT_TITLE,
           marginBottom: 6,
@@ -337,38 +452,9 @@ export function SecurityNotice({
       >
         Security Notice · {dateStr}
       </div>
-      <div style={{ fontSize: 12.5, color: ALERT_TEXT, lineHeight: 1.6 }}>
-        This single-use verification code was requested for your {AGENCY.name} account. Never share this code with anyone. If you did not initiate this request, you can safely <strong>{actionText}</strong>.
+      <div style={{ fontSize: 13, color: ALERT_TEXT, lineHeight: 1.6 }}>
+        This single-use code was requested for your {AGENCY.name} account. If you did not make this request, you can safely <strong>{actionText}</strong>.
       </div>
-    </div>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/*  Security Metadata Pill                                            */
-/* ------------------------------------------------------------------ */
-export function SecurityPill({ label, ip }: { label?: string; ip?: string }) {
-  const display =
-    label ??
-    (ip && ip !== '192.135.152' ? ip : 'TLS 1.3 · Studio Auth Verified')
-
-  return (
-    <div style={{ textAlign: 'left', marginTop: 18 }}>
-      <span
-        style={{
-          display: 'inline-block',
-          background: PILL_BG,
-          color: PILL_TEXT,
-          fontSize: 10.5,
-          fontWeight: 600,
-          padding: '6px 14px',
-          borderRadius: 8,
-          letterSpacing: '0.06em',
-          textTransform: 'uppercase',
-        }}
-      >
-        <span style={{ color: GOLD }}>●</span> &nbsp;{display}
-      </span>
     </div>
   )
 }
@@ -380,12 +466,12 @@ export function CardHeadline({ children }: { children: React.ReactNode }) {
   return (
     <h1
       style={{
-        fontSize: 28,
-        fontWeight: 700,
+        fontSize: 26,
+        fontWeight: 600,
         color: TEXT_DARK,
-        lineHeight: 1.08,
+        lineHeight: 1.18,
         margin: '0 0 10px',
-        letterSpacing: '-0.03em',
+        letterSpacing: '-0.025em',
         fontFamily: FONT_DISPLAY,
       }}
     >
@@ -398,10 +484,10 @@ export function CardSubtext({ children }: { children: React.ReactNode }) {
   return (
     <p
       style={{
-        fontSize: 14.5,
-        color: TEXT_FAINT_DARK,
+        fontSize: 15,
+        color: TEXT_MUTED_DARK,
         fontWeight: 400,
-        lineHeight: 1.55,
+        lineHeight: 1.65,
         margin: '0 0 18px',
       }}
     >
@@ -413,7 +499,7 @@ export function CardSubtext({ children }: { children: React.ReactNode }) {
 export function AutomatedMessageNote() {
   return (
     <div style={{ fontSize: 12, color: TEXT_FAINT_DARK, margin: '14px 0 4px', textAlign: 'left' }}>
-      Automated studio security dispatch. Need help? Contact{' '}
+      Official message from Virtue &amp; Co. Webworks. Questions? Reply directly or contact{' '}
       <a href={`mailto:${AGENCY.email}`} style={{ color: TEXT_DARK, fontWeight: 600 }}>
         {AGENCY.email}
       </a>
@@ -422,50 +508,60 @@ export function AutomatedMessageNote() {
   )
 }
 
+/* Vantra Signature Gold Pill Action Button (Matches site's .vantra-btn-gold) */
 export function PrimaryButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <div style={{ margin: '24px 0 16px', textAlign: 'left' }}>
+    <div style={{ margin: '26px 0 16px', textAlign: 'left' }}>
       <a
         href={href}
         style={{
           display: 'inline-block',
-          padding: '13px 26px',
-          background: '#0A0A0A',
-          borderRadius: 12,
-          color: '#F5F4F0',
-          fontSize: 13.5,
+          padding: '13px 28px',
+          background: GOLD,
+          borderRadius: 9999,
+          color: '#0A0A0A',
+          fontSize: 13,
           fontWeight: 600,
-          letterSpacing: '-0.01em',
+          fontFamily: FONT_SANS,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
           textDecoration: 'none',
         }}
       >
-        {children} &nbsp;<span style={{ color: GOLD }}>↗</span>
+        {children} &nbsp;→
+      </a>
+    </div>
+  )
+}
+
+/* Secondary Obsidian Action Button */
+export function SecondaryButton({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <div style={{ margin: '14px 0', textAlign: 'left' }}>
+      <a
+        href={href}
+        style={{
+          display: 'inline-block',
+          padding: '12px 24px',
+          background: '#0A0A0A',
+          borderRadius: 9999,
+          color: '#F5F4F0',
+          fontSize: 12.5,
+          fontWeight: 600,
+          fontFamily: FONT_SANS,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          textDecoration: 'none',
+        }}
+      >
+        {children} &nbsp;→
       </a>
     </div>
   )
 }
 
 export function GoldButton({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <div style={{ margin: '24px 0 16px', textAlign: 'left' }}>
-      <a
-        href={href}
-        style={{
-          display: 'inline-block',
-          padding: '13px 26px',
-          background: GOLD,
-          borderRadius: 12,
-          color: '#0A0A0A',
-          fontSize: 13.5,
-          fontWeight: 700,
-          letterSpacing: '-0.01em',
-          textDecoration: 'none',
-        }}
-      >
-        {children} &nbsp;↗
-      </a>
-    </div>
-  )
+  return <PrimaryButton href={href}>{children}</PrimaryButton>
 }
 
 export function Divider() {

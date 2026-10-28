@@ -1,7 +1,3 @@
-/**
- * Template 8 — Weekly Editorial Newsletter ("Studio Dispatch")
- * Clean high-contrast white card design matching user reference.
- */
 import * as React from 'react'
 import {
   Shell,
@@ -10,7 +6,18 @@ import {
   PrimaryButton,
   Divider,
 } from './base/shell'
-import { TEXT_DARK, TEXT_MUTED_DARK, SITE, UNSUBSCRIBE, PRIVACY, GOLD, CARD_WELL, BORDER_DIVIDER, MONO_STACK } from './base/tokens'
+import {
+  TEXT_DARK,
+  TEXT_MUTED_DARK,
+  TEXT_FAINT_DARK,
+  SITE,
+  UNSUBSCRIBE,
+  GOLD,
+  CARD_WELL,
+  BORDER_DIVIDER,
+  MONO_STACK,
+  IMAGE_WORK_BAND,
+} from './base/tokens'
 import { AGENCY } from '@/lib/constants'
 
 export interface NewsletterDispatchProps {
@@ -29,6 +36,7 @@ export interface NewsletterDispatchProps {
   secondaryTitle?: string
   secondaryExcerpt?: string
   secondaryUrl?: string
+  subscriberEmail?: string
 }
 
 export function NewsletterDispatchEmail({
@@ -37,24 +45,37 @@ export function NewsletterDispatchEmail({
   date,
   readTime,
   issueNumber,
+  coverImageUrl,
   contentHtml,
   pullQuote,
   pullQuoteAuthor,
   ctaText,
   ctaUrl,
+  subscriberEmail,
 }: NewsletterDispatchProps) {
-  const issueLabel = issueNumber ? `ISSUE #${String(issueNumber).padStart(3, '0')}` : 'STUDIO DISPATCH'
+  const issueLabel = issueNumber
+    ? `ISSUE #${String(issueNumber).padStart(3, '0')}`
+    : 'DISPATCH'
+  const heroImage = coverImageUrl || IMAGE_WORK_BAND
+  const unsubUrl = subscriberEmail
+    ? `${UNSUBSCRIBE}?email=${encodeURIComponent(subscriberEmail)}`
+    : UNSUBSCRIBE
 
   return (
-    <Shell preheader={subtitle} eyebrow={issueLabel}>
+    <Shell
+      preheader={subtitle}
+      eyebrow={issueLabel}
+      heroImageUrl={heroImage}
+      heroImageAlt={title}
+    >
       {/* Issue Pill */}
       <div
         style={{
           fontFamily: MONO_STACK,
-          fontSize: 10.5,
+          fontSize: 10,
           fontWeight: 600,
-          letterSpacing: '0.18em',
-          color: TEXT_MUTED_DARK,
+          letterSpacing: '0.14em',
+          color: TEXT_FAINT_DARK,
           textTransform: 'uppercase',
           marginBottom: 8,
         }}
@@ -75,9 +96,9 @@ export function NewsletterDispatchEmail({
               border: `1px solid ${BORDER_DIVIDER}`,
               borderRadius: 999,
               fontFamily: MONO_STACK,
-              fontSize: 10.5,
+              fontSize: 10,
               fontWeight: 600,
-              letterSpacing: '0.12em',
+              letterSpacing: '0.1em',
               textTransform: 'uppercase',
               color: TEXT_DARK,
             }}
@@ -91,7 +112,13 @@ export function NewsletterDispatchEmail({
 
       {/* Article Content */}
       <div
-        style={{ fontSize: 14.5, lineHeight: 1.8, color: TEXT_MUTED_DARK, textAlign: 'left', margin: '20px 0' }}
+        style={{
+          fontSize: 15,
+          lineHeight: 1.75,
+          color: TEXT_MUTED_DARK,
+          textAlign: 'left',
+          margin: '22px 0',
+        }}
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />
 
@@ -100,26 +127,29 @@ export function NewsletterDispatchEmail({
         <div
           style={{
             borderLeft: `3px solid ${GOLD}`,
-            padding: '14px 18px',
-            background: CARD_WELL,
-            borderRadius: '0 12px 12px 0',
-            margin: '22px 0',
+            paddingLeft: 18,
+            margin: '28px 0',
             textAlign: 'left',
           }}
         >
-          <div style={{ fontSize: 14.5, color: TEXT_DARK, fontWeight: 500, lineHeight: 1.55 }}>
+          <div
+            style={{
+              fontSize: 17,
+              fontWeight: 500,
+              color: TEXT_DARK,
+              lineHeight: 1.5,
+              fontStyle: 'italic',
+            }}
+          >
             &ldquo;{pullQuote}&rdquo;
           </div>
           {pullQuoteAuthor && (
             <div
               style={{
+                fontSize: 12,
+                color: TEXT_FAINT_DARK,
                 marginTop: 6,
-                fontFamily: MONO_STACK,
-                fontSize: 10.5,
-                letterSpacing: '0.14em',
-                color: TEXT_MUTED_DARK,
-                fontWeight: 600,
-                textTransform: 'uppercase',
+                fontWeight: 500,
               }}
             >
               — {pullQuoteAuthor}
@@ -128,24 +158,27 @@ export function NewsletterDispatchEmail({
         </div>
       )}
 
-      <PrimaryButton href={ctaUrl ?? `${SITE}/contact`}>
-        {ctaText ?? 'Start Your Project'}
-      </PrimaryButton>
+      {/* Action CTA */}
+      {ctaText && ctaUrl && (
+        <PrimaryButton href={ctaUrl}>{ctaText}</PrimaryButton>
+      )}
 
       <Divider />
 
-      <div style={{ fontSize: 11, color: TEXT_MUTED_DARK, textAlign: 'center', lineHeight: 1.6 }}>
-        You received this editorial dispatch because you subscribed at{' '}
-        <a href={SITE} style={{ color: TEXT_DARK, textDecoration: 'none' }}>
-          {AGENCY.domain}
-        </a>.<br />
-        <a href={UNSUBSCRIBE} style={{ color: TEXT_DARK, textDecoration: 'underline' }}>
+      {/* Unsubscribe Footer */}
+      <div
+        style={{
+          fontSize: 12,
+          color: TEXT_FAINT_DARK,
+          textAlign: 'center',
+          lineHeight: 1.6,
+        }}
+      >
+        You received this email because you subscribed to {AGENCY.name}.{' '}
+        <a href={unsubUrl} style={{ color: TEXT_DARK, textDecoration: 'underline' }}>
           Unsubscribe
         </a>{' '}
-        ·{' '}
-        <a href={PRIVACY} style={{ color: TEXT_DARK, textDecoration: 'underline' }}>
-          Privacy Policy
-        </a>
+        at any time.
       </div>
     </Shell>
   )
