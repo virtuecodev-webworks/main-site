@@ -1,9 +1,11 @@
+import * as React from 'react'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { AuthShell } from '@/components/auth/auth-shell'
 import { SignupForm } from '@/components/auth/signup-form'
 import { getSession, landingFor } from '@/lib/supabase/auth'
+import { VirtueSpinner } from '@/components/brand/virtue-spinner'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,7 +31,15 @@ export default async function SignupPage({ params }: { params: Promise<{ locale:
 
   return (
     <AuthShell title={t('title')} subtitle={t('subtitle')}>
-      <SignupForm locale={locale} />
+      <React.Suspense
+        fallback={
+          <div className="flex items-center justify-center py-12">
+            <VirtueSpinner className="size-5" />
+          </div>
+        }
+      >
+        <SignupForm locale={locale} />
+      </React.Suspense>
     </AuthShell>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { LogIn, CheckCircle2 } from 'lucide-react'
+import { LogIn, CheckCircle2, AlertCircle } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { signInAction } from '@/lib/actions/auth'
 import { AUTH_IDLE } from '@/lib/actions/state'
 import { PasswordInput } from '@/components/auth/password-input'
+import { GoogleSignInButton } from '@/components/auth/google-sign-in-button'
 
 /**
  * The single sign-in form.
@@ -25,6 +26,9 @@ export function LoginForm({ locale }: { locale: string }) {
   const searchParams = useSearchParams()
   const isConfirmed = searchParams.get('confirmed') === 'true'
   const isReset = searchParams.get('reset') === 'success'
+  const isOauthError =
+    searchParams.get('error') === 'oauth' || searchParams.get('error') === 'exchange_failed'
+  const oauthMsg = searchParams.get('message')
 
   const [state, action, pending] = React.useActionState(signInAction, AUTH_IDLE)
   const [email, setEmail] = React.useState('')
@@ -43,6 +47,21 @@ export function LoginForm({ locale }: { locale: string }) {
     <form action={action} className="flex flex-col gap-5 font-sans">
       <input type="hidden" name="locale" value={locale} />
 
+      {/* Primary 1-Click Option: Google */}
+      <div className="flex flex-col gap-2">
+        <GoogleSignInButton locale={locale} text="Sign in with Google" />
+      </div>
+
+      {/* Divider */}
+      <div className="relative my-1 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-border" />
+        </div>
+        <div className="relative bg-card px-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          or sign in with email
+        </div>
+      </div>
+
       {isConfirmed ? (
         <div className="flex items-center gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-800 dark:text-gold-300">
           <CheckCircle2 className="size-4 shrink-0 text-gold-500" />
@@ -54,6 +73,15 @@ export function LoginForm({ locale }: { locale: string }) {
         <div className="flex items-center gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-800 dark:text-gold-300">
           <CheckCircle2 className="size-4 shrink-0 text-gold-500" />
           <p className="font-medium">Password updated! Please sign in with your new password.</p>
+        </div>
+      ) : null}
+
+      {isOauthError ? (
+        <div className="flex items-start gap-2.5 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+          <AlertCircle className="size-4 shrink-0 mt-0.5" />
+          <p className="font-medium">
+            {oauthMsg || 'Google sign-in could not be completed. Please try again or sign in with your password below.'}
+          </p>
         </div>
       ) : null}
 

@@ -1,7 +1,21 @@
 'use client'
 
 import * as React from 'react'
-import { MailCheck, UserPlus, Sun, Moon, Laptop, Clock, AlertCircle, RefreshCw, CheckCircle2 } from 'lucide-react'
+import {
+  MailCheck,
+  UserPlus,
+  Sun,
+  Moon,
+  Laptop,
+  Clock,
+  AlertCircle,
+  RefreshCw,
+  CheckCircle2,
+  Mail,
+  ArrowRight,
+  ArrowLeft,
+} from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
@@ -13,17 +27,24 @@ import { SIGN_UP_IDLE } from '@/lib/actions/state'
 import { PwaInstallPrompt } from '@/components/pwa/pwa-install-prompt'
 import { CodeInput } from '@/components/auth/code-input'
 import { PasswordInput } from '@/components/auth/password-input'
+import { GoogleSignInButton } from '@/components/auth/google-sign-in-button'
+import { GoogleIcon } from '@/components/brand/google-icon'
 
 type ThemeChoice = 'light' | 'dark' | 'system'
 
 /**
  * Client sign-up.
  *
- * When creating an account at signup, users choose their preferred interface theme.
- * Upon account creation, prompts for PWA installation and real-time push notifications.
+ * First presents a clear choice between Google Sign-Up and Email Sign-Up.
+ * When choosing email, users configure their preferred interface theme and password.
+ * After email creation, prompts 6-digit verification code with live countdown.
  */
 export function SignupForm({ locale }: { locale: string }) {
   const t = useTranslations('Signup')
+  const searchParams = useSearchParams()
+  const initialMethod = searchParams.get('method') === 'email' ? 'email' : 'choose'
+  const [method, setMethod] = React.useState<'choose' | 'email'>(initialMethod)
+
   const [state, action, pending] = React.useActionState(signUpAction, SIGN_UP_IDLE)
   const [preferredTheme, setPreferredTheme] = React.useState<ThemeChoice>('light')
 
@@ -58,17 +79,123 @@ export function SignupForm({ locale }: { locale: string }) {
     }
   }
 
-  const errorText =
-    state.status === 'error' ? t(`errors.${state.message}`) : null
+  const errorText = state.status === 'error' ? t(`errors.${state.message}`) : null
 
+  // If user has submitted email signup, always stay in the OTP verification view
   if (state.status === 'confirm-email') {
     return <SignupVerificationStep email={state.email} locale={locale} />
   }
 
+  // Initial Choice View: Choose Google or Email
+  if (method === 'choose') {
+    return (
+      <div className="flex flex-col gap-5 font-sans">
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            Sign Up Options
+          </span>
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
+            Choose how you would like to create your client workspace.
+          </p>
+        </div>
+
+        {/* Primary Option: Google */}
+        <div className="flex flex-col gap-2">
+          <GoogleSignInButton
+            locale={locale}
+            text="Sign up with Google"
+            subtext="Fastest · 1 click"
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="relative my-1 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-border" />
+          </div>
+          <div className="relative bg-card px-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+            or continue with
+          </div>
+        </div>
+
+        {/* Secondary Option: Email Card */}
+        <button
+          type="button"
+          onClick={() => setMethod('email')}
+          className="group relative flex w-full items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 text-left transition-all hover:border-foreground/30 hover:bg-muted/40 active:scale-[0.99]"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gold-500/15 text-gold-700 dark:text-gold-300">
+              <Mail className="size-5" />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[14px] font-semibold text-foreground">Sign up with Email</span>
+              </div>
+              <span className="text-[12px] text-muted-foreground">
+                Set a custom password and verify via 6-digit code
+              </span>
+            </div>
+          </div>
+          <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground shrink-0" />
+        </button>
+
+        {/* Legal Disclaimer */}
+        <p className="text-[11.5px] leading-relaxed text-muted-foreground pt-1">
+          {t.rich('legal', {
+            terms: (chunks) => (
+              <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
+                {chunks}
+              </Link>
+            ),
+            privacy: (chunks) => (
+              <Link href="/privacy" className="underline underline-offset-4 hover:text-foreground">
+                {chunks}
+              </Link>
+            ),
+          })}
+        </p>
+
+        {/* Link to Login */}
+        <p className="border-t border-border pt-4 text-[12.5px] text-muted-foreground">
+          {t('haveAccount')}{' '}
+          <Link
+            href="/login"
+            className="font-medium text-gold-700 underline-offset-4 hover:underline dark:text-gold-300"
+          >
+            {t('signIn')}
+          </Link>
+        </p>
+      </div>
+    )
+  }
+
+  // Email Sign Up Form View
   return (
     <form action={action} className="flex flex-col gap-5 font-sans">
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="theme" value={preferredTheme} />
+
+      {/* Back to Options Banner */}
+      <div className="flex items-center justify-between border-b border-border pb-3">
+        <button
+          type="button"
+          onClick={() => setMethod('choose')}
+          className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="size-3.5" />
+          <span>All sign up options</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMethod('choose')}
+          className="inline-flex items-center gap-1.5 text-[12px] font-medium text-gold-700 hover:underline dark:text-gold-300"
+        >
+          <GoogleIcon className="size-3.5" />
+          <span>Use Google instead</span>
+        </button>
+      </div>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="signup-name">{t('name')}</Label>
@@ -90,6 +217,7 @@ export function SignupForm({ locale }: { locale: string }) {
           type="email"
           autoComplete="email"
           required
+          placeholder="you@company.com"
         />
       </div>
 
@@ -252,21 +380,20 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
 
   const minutes = Math.floor(timeLeft / 60)
   const seconds = timeLeft % 60
-  const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+  const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
 
   const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (timeLeft <= 0) {
-      setOtpError('The verification code has expired. Please request a new code below.')
-      return
-    }
     setOtpPending(true)
     setOtpError(null)
+
     const formData = new FormData(e.currentTarget)
     const res = await verifyOtpAction(formData)
+
     if (res && !res.ok) {
-      setOtpError(res.message ?? 'Invalid or expired verification code. Please check and try again.')
+      setOtpError(res.message ?? 'Invalid verification code. Please check and try again.')
       setOtpPending(false)
+      setCodeKey((k) => k + 1)
     }
   }
 
@@ -283,10 +410,10 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
     setResendPending(false)
 
     if (res.ok) {
-      setTimeLeft(600) // Reset back to 10 minutes
+      setTimeLeft(600)
       setResendStatus('A fresh 6-digit code has been sent to your email. You have 10 minutes to enter it.')
-      setCodeKey((k) => k + 1) // Clear digit boxes
-    } else if (res.alreadyConfirmed) {
+      setCodeKey((k) => k + 1)
+    } else if ((res as { alreadyConfirmed?: boolean }).alreadyConfirmed) {
       setResendStatus(null)
       setOtpError('Your account is already verified! Redirecting to sign in...')
       setTimeout(() => {
@@ -298,14 +425,14 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 font-sans">
       <div className="flex items-center gap-3 rounded-xl bg-gold-500/10 p-3.5 text-gold-800 ring-1 ring-gold-500/25 ring-inset dark:text-gold-300">
         <MailCheck aria-hidden="true" className="size-5 shrink-0 text-gold-500" />
         <p className="text-[13px] font-medium">Check your email for your 6-digit verification code</p>
       </div>
 
       <p className="text-sm text-muted-foreground">
-        We sent a branded verification code to <strong className="text-foreground">{email}</strong>. Enter the 6-digit code below to activate your account.
+        We sent a verification code to <strong className="text-foreground">{email}</strong>. Enter the 6-digit code below to activate your client workspace.
       </p>
 
       {/* Countdown timer badge */}
