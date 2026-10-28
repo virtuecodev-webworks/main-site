@@ -138,6 +138,38 @@ const TESTIMONIALS: TestimonialItem[] = [
   },
 ]
 
+function ParallaxCardImage({ src, alt }: { src: string; alt: string }) {
+  const ref = React.useRef<HTMLDivElement | null>(null)
+  const prefersReducedMotion = useReducedMotion()
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  })
+
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    prefersReducedMotion ? ['0%', '0%'] : ['-6%', '6%'],
+  )
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ y }}
+      className="pointer-events-none absolute -inset-y-6 inset-x-0 z-0"
+    >
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(min-width: 768px) 50vw, 100vw"
+        className="work_image object-cover transition-transform duration-700 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:scale-105"
+      />
+    </motion.div>
+  )
+}
+
 /**
  * Vantra Section 5: "What we are building right now." (`section#live.section_live`)
  */
@@ -209,103 +241,97 @@ export function LiveStudioTracker({ className }: { className?: string }) {
         {viewMode === 'cards' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 pt-4">
             {LIVE_BUILDS.map((item) => (
-              <Link
+              <article
                 key={item.client}
-                href={`/portfolio/${item.showcaseSlug}`}
-                className="group relative flex flex-col overflow-hidden rounded-[24px] border border-border bg-card transition-all duration-300 hover:-translate-y-1.5 hover:border-gold-500/50 hover:shadow-2xl hover:shadow-gold-500/10"
+                className="work_card group relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden rounded-2xl bg-[#0a0a0a]"
               >
-                {/* Visual Showcase Preview */}
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-                  <Image
-                    src={item.image}
-                    alt={item.client}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
+                {/* Scroll-linked parallax cover image with hover zoom */}
+                <ParallaxCardImage src={item.image} alt={item.client} />
 
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/35" />
+                {/* Subtle dark vignette for legibility */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/50 via-transparent to-[#0a0a0a]/85 transition-opacity duration-500 group-hover:from-[#0a0a0a]/70"
+                />
 
-                  {/* Floating Badges */}
-                  <div className="absolute top-4 inset-x-4 flex items-center justify-between gap-2">
-                    <span className="rounded-full border border-white/20 bg-black/60 px-3 py-1 text-[11px] font-semibold tracking-wider text-white backdrop-blur-md uppercase">
-                      {item.discipline}
-                    </span>
+                {/* Primary stretch link to case study */}
+                <Link
+                  href={`/portfolio/${item.showcaseSlug}`}
+                  aria-label={`${item.client} — case study`}
+                  className="absolute inset-0 z-10"
+                />
 
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-3 py-1 text-[11.5px] font-semibold text-white backdrop-blur-md">
-                      <span
-                        className={cn(
-                          'size-2 rounded-full',
-                          item.progress === 100 ? 'bg-emerald-400 animate-pulse' : 'bg-gold-400 animate-pulse',
-                        )}
-                      />
-                      <span>{item.progress}%</span>
-                    </span>
-                  </div>
-
-                  {/* Hover Explore Pill */}
-                  <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full border border-white/25 bg-black/70 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition-all duration-300 group-hover:bg-primary group-hover:text-[#0a0a0a] group-hover:border-primary">
-                    <span>Explore Build</span>
-                    <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </div>
-                </div>
-
-                {/* Card Content */}
-                <div className="flex flex-1 flex-col justify-between p-6 sm:p-7">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-display text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-gold-700 dark:group-hover:text-gold-300">
+                {/* Vantra Top-Left Hover-Expanding Frosted Panel (`.work_panel`) */}
+                <div className="work_panel pointer-events-none absolute top-4 left-4 z-20 flex max-h-[5.25rem] w-[84%] flex-col justify-between overflow-hidden rounded-xl border border-[#f5f4f024] bg-[#0a0a0a7a] p-4 text-[#f5f4f0] backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:max-h-[14.5rem] group-hover:w-[calc(100%-2rem)] sm:top-5 sm:left-5 sm:w-[65%] sm:group-hover:w-[calc(100%-2.5rem)]">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="work_client truncate font-display text-base font-semibold tracking-[-0.02em] text-[#f5f4f0] sm:text-lg">
                         {item.client}
                       </h3>
-                      <span className="font-mono text-xs font-semibold text-gold-700 dark:text-gold-400 bg-gold-500/10 px-2.5 py-1 rounded-md border border-gold-500/20">
-                        {item.metric.label}: {item.metric.value}
-                      </span>
+                      <p className="work_tag mt-0.5 truncate text-xs text-[#f5f4f0]/65">
+                        {item.discipline}
+                      </p>
                     </div>
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#f5f4f0] transition-transform duration-300 group-hover:bg-primary group-hover:text-[#0a0a0a]">
+                      <ArrowUpRight className="size-4" />
+                    </span>
+                  </div>
 
-                    <p className="text-[13.5px] leading-relaxed text-muted-foreground">
+                  {/* Hidden CTA / Summary / Progress Row revealed on hover */}
+                  <div className="work_cta-wrap mt-3 flex flex-col justify-between gap-2.5 border-t border-[#f5f4f024] pt-3 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                    <p className="line-clamp-2 text-xs leading-relaxed text-[#f5f4f0]/75">
                       {item.summary}
                     </p>
-                  </div>
 
-                  {/* Milestone Progress Tracker */}
-                  <div className="mt-6 flex flex-col gap-2.5 border-t border-border pt-5">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-muted-foreground flex items-center gap-1.5">
-                        <span className="size-1.5 rounded-full bg-gold-500" />
-                        {item.phase}
-                      </span>
-                      <span className="font-mono font-bold text-foreground">
-                        {item.progress === 100 ? 'Live & Launched' : `${item.progress}% Completed`}
-                      </span>
+                    {/* Progress Bar inside expanding frosted panel */}
+                    <div className="flex flex-col gap-1.5 pt-0.5">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-[#f5f4f0]/65 font-medium">{item.phase}</span>
+                        <span className="font-mono font-bold text-primary">{item.progress}%</span>
+                      </div>
+                      <div className="h-1 w-full overflow-hidden rounded-full bg-white/15">
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-700"
+                          style={{ width: `${item.progress}%` }}
+                        />
+                      </div>
                     </div>
 
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={cn(
-                          'h-full rounded-full transition-all duration-1000',
-                          item.progress === 100
-                            ? 'bg-gradient-to-r from-gold-500 to-emerald-400'
-                            : 'bg-gradient-to-r from-gold-600 to-gold-400',
-                        )}
-                        style={{ width: `${item.progress}%` }}
-                      />
-                    </div>
-
-                    {/* Tech Stack Chips */}
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {item.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-lg border border-border/80 bg-muted/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                    <span className="label-mono-xs text-primary pt-0.5">
+                      Read Case Study ↗
+                    </span>
                   </div>
                 </div>
-              </Link>
+
+                {/* Bottom Floating Tech Tags & Live Status Pill */}
+                <div className="pointer-events-none absolute inset-x-4 bottom-4 z-20 flex flex-wrap items-end justify-between gap-2 sm:inset-x-5 sm:bottom-5">
+                  <ul className="hidden flex-wrap gap-1.5 sm:flex">
+                    {item.tags.map((tag) => (
+                      <li
+                        key={tag}
+                        className="rounded-md border border-[#f5f4f024] bg-[#0a0a0a75] px-2.5 py-1 text-xs font-medium text-[#f5f4f0]/85 backdrop-blur-xs"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#f5f4f024] bg-[#0a0a0a80] px-3 py-1 text-[11px] font-semibold text-[#f5f4f0] backdrop-blur-md">
+                      <span
+                        className={cn(
+                          'size-1.5 rounded-full',
+                          item.progress === 100 ? 'bg-emerald-400' : 'bg-gold-400 animate-pulse',
+                        )}
+                      />
+                      <span>{item.progress === 100 ? '100% Shipped' : `${item.progress}% In Progress`}</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-primary sm:hidden">
+                      Case Study ↗
+                    </span>
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         ) : (
