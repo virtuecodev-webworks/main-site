@@ -13,7 +13,7 @@ import {
   CARD_WELL,
   BORDER_DIVIDER,
   GOLD_DARK,
-  IMAGE_PROCESS,
+  IMAGE_BRAND_BANNER,
   MONO_STACK,
 } from './base/tokens'
 import { AGENCY } from '@/lib/constants'
@@ -34,8 +34,8 @@ export function EnquiryClientEmail({ name, service, budget, timeline }: EnquiryC
     <Shell
       preheader={`Hi ${first}, we received your project brief. You'll hear from us within 2 business days.`}
       eyebrow="Project Brief"
-      heroImageUrl={IMAGE_PROCESS}
-      heroImageAlt="Virtue & Co. Webworks — Design & Engineering"
+      heroImageUrl={IMAGE_BRAND_BANNER}
+      heroImageAlt="Virtue & Co. Webworks"
     >
       <CardHeadline>Brief received.</CardHeadline>
       <CardSubtext>

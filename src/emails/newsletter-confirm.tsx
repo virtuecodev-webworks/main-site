@@ -11,7 +11,7 @@ import {
   TEXT_MUTED_DARK,
   SITE,
   UNSUBSCRIBE,
-  IMAGE_MERIDIAN,
+  IMAGE_BRAND_BANNER,
   CARD_WELL,
   BORDER_DIVIDER,
   MONO_STACK,
@@ -29,8 +29,8 @@ export function NewsletterConfirmEmail({ email }: NewsletterConfirmProps) {
     <Shell
       preheader={`You're subscribed to ${AGENCY.name} Dispatch ✓`}
       eyebrow="Newsletter"
-      heroImageUrl={IMAGE_MERIDIAN}
-      heroImageAlt="The Meridian Review — Selected Work"
+      heroImageUrl={IMAGE_BRAND_BANNER}
+      heroImageAlt="Virtue & Co. Webworks"
     >
       <CardHeadline>Subscription confirmed.</CardHeadline>
       <CardSubtext>

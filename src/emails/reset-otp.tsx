@@ -7,7 +7,7 @@ import {
   CardSubtext,
   Divider,
 } from './base/shell'
-import { IMAGE_AURUM, TEXT_MUTED_DARK } from './base/tokens'
+import { IMAGE_BRAND_BANNER, TEXT_MUTED_DARK } from './base/tokens'
 
 export interface ResetOtpProps {
   code: string
@@ -21,8 +21,8 @@ export function ResetOtpEmail({ code, name }: ResetOtpProps) {
     <Shell
       preheader={`Your 6-digit password reset code is: ${code}`}
       eyebrow="Password Reset"
-      heroImageUrl={IMAGE_AURUM}
-      heroImageAlt="Virtue & Co. Webworks — Password Reset"
+      heroImageUrl={IMAGE_BRAND_BANNER}
+      heroImageAlt="Virtue & Co. Webworks"
     >
       <CardHeadline>Reset your password.</CardHeadline>
       <CardSubtext>

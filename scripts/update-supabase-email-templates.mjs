@@ -57,7 +57,7 @@ function generateConfirmationTemplate() {
             <!-- Hero Work Preview Image -->
             <tr>
               <td style="padding:24px 30px 0;">
-                <img src="https://virtuecowebworks.solutions/work/aurum-hero.jpg" alt="Client Workspace" width="520" style="width:100%;max-width:520px;height:auto;border-radius:14px;display:block;border:1px solid #EAE8E2;object-fit:cover;" />
+                <img src="https://virtuecowebworks.solutions/brand/email-banner.png" alt="Virtue &amp; Co. Webworks" width="520" style="width:100%;max-width:520px;height:auto;border-radius:14px;display:block;border:1px solid #EAE8E2;object-fit:cover;" />
               </td>
             </tr>
 
@@ -185,7 +185,7 @@ function generateRecoveryTemplate() {
             <!-- Hero Work Preview Image -->
             <tr>
               <td style="padding:24px 30px 0;">
-                <img src="https://virtuecowebworks.solutions/work/aurum-hero.jpg" alt="Client Workspace" width="520" style="width:100%;max-width:520px;height:auto;border-radius:14px;display:block;border:1px solid #EAE8E2;object-fit:cover;" />
+                <img src="https://virtuecowebworks.solutions/brand/email-banner.png" alt="Virtue &amp; Co. Webworks" width="520" style="width:100%;max-width:520px;height:auto;border-radius:14px;display:block;border:1px solid #EAE8E2;object-fit:cover;" />
               </td>
             </tr>
 

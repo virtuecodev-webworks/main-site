@@ -13,7 +13,7 @@ import {
   CARD_WELL,
   BORDER_DIVIDER,
   MONO_STACK,
-  IMAGE_AURUM,
+  IMAGE_BRAND_BANNER,
 } from './base/tokens'
 import { AGENCY } from '@/lib/constants'
 
@@ -28,8 +28,8 @@ export function WelcomeEmail({ name }: WelcomeEmailProps) {
     <Shell
       preheader={`Welcome to ${AGENCY.name}, ${first}. Your client workspace is ready.`}
       eyebrow="Client Portal"
-      heroImageUrl={IMAGE_AURUM}
-      heroImageAlt="Aurum Private Treasury — Client Portal"
+      heroImageUrl={IMAGE_BRAND_BANNER}
+      heroImageAlt="Virtue & Co. Webworks"
     >
       <CardHeadline>Welcome, {first}.</CardHeadline>
       <CardSubtext>Your personal client workspace is now active and ready to use.</CardSubtext>

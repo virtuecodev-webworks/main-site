@@ -44,6 +44,7 @@ export const MONO_STACK = FONT_MONO
 /** Brand & Media Assets (from website) */
 export const SITE = 'https://virtuecowebworks.solutions'
 export const LOGO_URL = `${SITE}/brand/logo-mark.png`
+export const IMAGE_BRAND_BANNER = `${SITE}/brand/email-banner.png`
 export const IMAGE_WORK_BAND = `${SITE}/media/photos/work-band.jpg`
 export const IMAGE_MERIDIAN = `${SITE}/work/meridian-hero.jpg`
 export const IMAGE_AURUM = `${SITE}/work/aurum-hero.jpg`

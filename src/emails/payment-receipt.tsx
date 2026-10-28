@@ -16,7 +16,7 @@ import {
   BORDER_DIVIDER,
   DISPLAY_STACK,
   MONO_STACK,
-  IMAGE_AURUM,
+  IMAGE_BRAND_BANNER,
 } from './base/tokens'
 
 export interface PaymentReceiptProps {
@@ -44,8 +44,8 @@ export function PaymentReceiptEmail({
     <Shell
       preheader={`Payment confirmed: ${amount} · Ref ${reference}`}
       eyebrow="Payment Receipt"
-      heroImageUrl={IMAGE_AURUM}
-      heroImageAlt="Virtue & Co. Webworks — Verified Payment"
+      heroImageUrl={IMAGE_BRAND_BANNER}
+      heroImageAlt="Virtue & Co. Webworks"
     >
       <CardHeadline>Payment confirmed.</CardHeadline>
       <CardSubtext>Thank you, {recipient}. Your transaction has been securely processed.</CardSubtext>

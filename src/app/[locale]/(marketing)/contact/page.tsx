@@ -124,7 +124,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
                 <div className="p-6">
                   <div className="flex items-center gap-2">
                     <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="label-mono-xs text-primary">Studio Operations</span>
+                    <span className="label-mono-xs text-primary">Direct Operations</span>
                   </div>
                   <h2 className="heading-style-h4 mt-2 text-foreground">
                     {t('bookingTitle')}

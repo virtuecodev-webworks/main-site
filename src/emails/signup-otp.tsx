@@ -7,7 +7,7 @@ import {
   CardSubtext,
   Divider,
 } from './base/shell'
-import { IMAGE_AURUM, TEXT_MUTED_DARK } from './base/tokens'
+import { IMAGE_BRAND_BANNER, TEXT_MUTED_DARK } from './base/tokens'
 
 export interface SignupOtpProps {
   code: string
@@ -21,8 +21,8 @@ export function SignupOtpEmail({ code, name }: SignupOtpProps) {
     <Shell
       preheader={`Your 6-digit verification code is: ${code}`}
       eyebrow="Verification"
-      heroImageUrl={IMAGE_AURUM}
-      heroImageAlt="Virtue & Co. Webworks — Client Workspace"
+      heroImageUrl={IMAGE_BRAND_BANNER}
+      heroImageAlt="Virtue & Co. Webworks"
     >
       <CardHeadline>Your verification code.</CardHeadline>
       <CardSubtext>
