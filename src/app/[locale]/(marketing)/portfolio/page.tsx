@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PageHero } from '@/components/site/page-hero'
 import { PortfolioGrid } from '@/components/site/portfolio-grid'
-import { StudioShowreelBand } from '@/components/site/studio-showreel-band'
 import { ProjectFolders } from '@/components/site/project-folders'
 import { CtaBand } from '@/components/site/cta-band'
 import { getPublishedProjects } from '@/lib/supabase/queries'
@@ -47,14 +46,6 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
           <PortfolioGrid projects={projects} headingLevel={2} floatingFilter />
         </div>
       </section>
-
-      {/* Cinematic Studio Showreel Section */}
-      <StudioShowreelBand
-        className="border-t border-border"
-        eyebrow="Production Reel · 30 Seconds"
-        title="Experience our client builds in motion."
-        subtitle="See how fluid animations, fast state management, and bespoke typography deliver real commercial traction."
-      />
 
       <section className="padding-global padding-section border-t border-border">
         <div className="container-max">
