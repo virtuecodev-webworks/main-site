@@ -1,3 +1,4 @@
+import * as React from 'react'
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PageHero } from '@/components/site/page-hero'
@@ -29,8 +30,16 @@ export default async function PaymentPage({ params }: { params: Promise<{ locale
     <>
       <PageHero eyebrow={t('eyebrow')} title={t('title')} subtitle={t('subtitle')} />
 
-      <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
-        <PaymentForm />
+      <div className="padding-global padding-section">
+        <div className="container-max">
+          <React.Suspense
+            fallback={
+              <div className="h-[520px] rounded-[20px] border border-border bg-card animate-pulse" />
+            }
+          >
+            <PaymentForm />
+          </React.Suspense>
+        </div>
       </div>
     </>
   )

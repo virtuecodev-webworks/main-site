@@ -111,7 +111,11 @@ export default async function PortalOrderPage({
 
           <section className="surface flex flex-col gap-4 p-6">
             <h2 className="text-base font-semibold">{t('payments')}</h2>
-            <MilestoneList milestones={milestones} locale={locale} />
+            <MilestoneList
+              milestones={milestones}
+              locale={locale}
+              orderReference={order.reference}
+            />
           </section>
 
           <section className="surface flex flex-col gap-4 p-6">

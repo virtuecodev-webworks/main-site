@@ -1,9 +1,7 @@
 'use client'
 
-import { ArrowRight } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
-import { Button } from '@/components/ui/button'
+import { VantraButton } from '@/components/ui/vantra-button'
 import { Reveal } from '@/components/motion/reveal'
 import { useRegion } from './region-provider'
 import { PRICE_FLOOR, PRICE_FLOOR_ANCHOR } from '@/lib/studio'
@@ -11,17 +9,10 @@ import { cn, formatMoney } from '@/lib/utils'
 
 export interface StartingPriceProps {
   className?: string
+  variant?: 'default' | 'pill' | 'inline'
 }
 
-/**
- * What the studio charges, stated plainly — in the visitor's own currency.
- *
- * A single published floor rather than a table of invented tiers. Only currencies
- * with an explicitly published figure are shown locally; everything else falls
- * back to the USD anchor and says so, because a converted price is a number we
- * could not honour on an invoice.
- */
-export function StartingPrice({ className }: StartingPriceProps) {
+export function StartingPrice({ className, variant = 'default' }: StartingPriceProps) {
   const t = useTranslations('Pricing')
   const locale = useLocale()
   const { currency } = useRegion()
@@ -29,33 +20,51 @@ export function StartingPrice({ className }: StartingPriceProps) {
   const local = PRICE_FLOOR[currency]
   const amount = local ?? PRICE_FLOOR[PRICE_FLOOR_ANCHOR]
   const shown = local === undefined ? PRICE_FLOOR_ANCHOR : currency
-  const isAnchor = local === undefined
+
+  const formatted = formatMoney(amount, shown, locale, { decimals: false })
+
+  if (variant === 'pill') {
+    return (
+      <div
+        className={cn(
+          'inline-flex items-center gap-2 rounded-lg border border-border bg-vantra-card-soft px-3 py-1.5 text-xs uppercase',
+          className,
+        )}
+      >
+        <span className="size-1.5 rounded-full bg-primary" />
+        <span className="text-muted-foreground">{t('from')}</span>
+        <span className="font-semibold text-foreground tabular-nums">
+          {formatted} {shown}
+        </span>
+      </div>
+    )
+  }
+
+  if (variant === 'inline') {
+    return (
+      <span className={cn('text-xs uppercase tracking-wider text-muted-foreground tabular-nums', className)}>
+        {t('from')} <strong className="font-semibold text-foreground">{formatted}</strong> {shown}
+      </span>
+    )
+  }
 
   return (
     <Reveal>
       <div className={cn('flex flex-col items-center text-center', className)}>
-        <p className="font-sans text-[11px] font-medium tracking-[0.28em] text-gold-700 uppercase dark:text-gold-300">
-          {t('eyebrow')}
-        </p>
+        <p className="label-mono">(    {t('eyebrow')}    )</p>
 
-        <h2 className="mt-4 max-w-2xl text-2xl leading-tight font-semibold text-balance sm:text-3xl">
-          {t('title')}
-        </h2>
+        <h2 className="heading-style-h2 mt-4 max-w-2xl text-balance">{t('title')}</h2>
 
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
           {t('subtitle')}
         </p>
 
         <p className="mt-9 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
-          <span className="text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
-            {t('from')}
+          <span className="label-mono-xs text-muted-foreground">{t('from')}</span>
+          <span className="font-display text-5xl font-bold tracking-tight text-foreground tabular-nums sm:text-6xl">
+            {formatted}
           </span>
-          <span className="font-sans text-5xl font-bold sm:text-6xl text-foreground">
-            {formatMoney(150, 'USD', 'en-US', { decimals: false })}
-          </span>
-          <span className="text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
-            USD
-          </span>
+          <span className="label-mono-xs text-muted-foreground">{shown}</span>
         </p>
 
         <p className="mt-5 max-w-xl text-[13.5px] leading-relaxed text-muted-foreground">
@@ -63,15 +72,12 @@ export function StartingPrice({ className }: StartingPriceProps) {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button asChild variant="gold" size="lg">
-            <Link href="/contact">
-              {t('cta')}
-              <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="lg">
-            <Link href="/services">{t('secondary')}</Link>
-          </Button>
+          <VantraButton href="/contact" variant="gold">
+            {t('cta')}
+          </VantraButton>
+          <VantraButton href="/services" variant="dark">
+            {t('secondary')}
+          </VantraButton>
         </div>
       </div>
     </Reveal>

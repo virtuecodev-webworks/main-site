@@ -3,7 +3,13 @@
 import * as React from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { MARK_CENTER, MARK_TILE, MARK_V_SCALE, MARK_VIEWBOX, VW_POLYGON } from '@/lib/brand/mark-geometry'
+import {
+  MARK_CENTER,
+  MARK_TILE,
+  MARK_VIEWBOX,
+  VIRTUE_LEFT_WING,
+  VIRTUE_RIGHT_WING,
+} from '@/lib/brand/mark-geometry'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -33,29 +39,35 @@ export function VirtueMark({
       role={title ? 'img' : 'presentation'}
       aria-label={title || undefined}
       aria-hidden={title ? undefined : true}
-      className={cn('overflow-visible', className)}
+      className={cn('overflow-visible select-none', className)}
     >
       <defs>
-        <linearGradient id="vw-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#E8C84A" />
-          <stop offset="100%" stopColor="#B8922A" />
+        <linearGradient id="virtue-gold-l" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f7d863" />
+          <stop offset="100%" stopColor="#c5981d" />
+        </linearGradient>
+        <linearGradient id="virtue-gold-r" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#eabf38" />
+          <stop offset="100%" stopColor="#b58814" />
         </linearGradient>
       </defs>
 
       {bare ? null : (
         <>
+          {/* Obsidian Tile */}
           <motion.rect
             x={MARK_TILE.x}
             y={MARK_TILE.y}
             width={MARK_TILE.size}
             height={MARK_TILE.size}
             rx={MARK_TILE.radius}
-            className="fill-mark-tile"
+            fill="#0a0a0a"
             initial={shouldAnimate ? { opacity: 0, scale: 0.94 } : false}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: shouldAnimate ? delay : 0, ease: EASE }}
             style={{ transformOrigin: `${MARK_CENTER}px ${MARK_CENTER}px` }}
           />
+          {/* Architectural Hairline */}
           <rect
             x={0.5}
             y={0.5}
@@ -64,22 +76,20 @@ export function VirtueMark({
             rx={MARK_TILE.radius}
             fill="none"
             strokeWidth={1}
-            className={tone === 'invert' ? 'stroke-white/25' : 'stroke-transparent dark:stroke-white/15'}
+            className={tone === 'invert' ? 'stroke-white/25' : 'stroke-white/15'}
           />
         </>
       )}
 
+      {/* Redesigned Architectural Dual-Wing Virtue "V" Monogram */}
       <motion.g
-        transform={`translate(${MARK_CENTER} ${MARK_CENTER + 2}) scale(${MARK_V_SCALE}) translate(-50 -42)`}
-        initial={shouldAnimate ? { opacity: 0, scale: 0.88 } : false}
+        initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : false}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: shouldAnimate ? delay + 0.15 : 0, ease: EASE }}
-        style={{ transformOrigin: `50px 42px` }}
+        transition={{ duration: 0.55, delay: shouldAnimate ? delay + 0.1 : 0, ease: EASE }}
+        style={{ transformOrigin: '48px 48px' }}
       >
-        <polygon
-          points={VW_POLYGON}
-          fill="url(#vw-gold)"
-        />
+        <path d={VIRTUE_LEFT_WING} fill="url(#virtue-gold-l)" />
+        <path d={VIRTUE_RIGHT_WING} fill="url(#virtue-gold-r)" />
       </motion.g>
     </svg>
   )

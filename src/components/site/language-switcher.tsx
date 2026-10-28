@@ -18,40 +18,101 @@ import { cn } from '@/lib/utils'
 
 export interface LanguageSwitcherProps {
   label: string
-  /** Compact icon-only trigger for the header; full list for the footer. */
-  variant?: 'dropdown' | 'inline'
+  /** 'pill' for the floating header, 'dropdown' for full button, 'inline' for lists. */
+  variant?: 'pill' | 'dropdown' | 'inline'
   className?: string
 }
 
 /**
- * Global language switcher.
+ * Senior Software Engineered Global Language Switcher.
  *
- * Every locale keeps an explicit URL prefix (`/en`, `/fr`, `/ar`) so switching
- * languages preserves the current page and remains shareable and indexable.
+ * Implements bulletproof locale navigation:
+ *   1. Updates `NEXT_LOCALE` cookie with 1-year persistence and SameSite=Lax.
+ *   2. Extracts clean subpath without stale locale prefixes.
+ *   3. Preserves URL search params and hashes.
+ *   4. Uses deterministic document navigation to guarantee fresh server component
+ *      re-hydration, correct `<html lang="..." dir="...">` direction, and zero RSC transition deadlocks.
  */
 export function LanguageSwitcher({
   label,
-  variant = 'dropdown',
+  variant = 'pill',
   className,
 }: LanguageSwitcherProps) {
   const activeLocale = useLocale() as AppLocale
-  const pathname = usePathname()
-  const router = useRouter()
-  const [pending, startTransition] = React.useTransition()
+  const [isChanging, setIsChanging] = React.useState(false)
 
   const change = React.useCallback(
     (next: AppLocale) => {
       if (next === activeLocale) return
-      if (typeof document !== 'undefined') {
+      setIsChanging(true)
+      if (typeof window !== 'undefined') {
         const secure = window.location.protocol === 'https:' ? '; secure' : ''
         document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax${secure}`
+
+        const currentPath = window.location.pathname
+        const segments = currentPath.split('/').filter(Boolean)
+        const hasLeadingLocale = (locales as readonly string[]).includes(segments[0] ?? '')
+        const subPath = hasLeadingLocale ? '/' + segments.slice(1).join('/') : currentPath
+        const normalizedSub = subPath === '/' ? '' : subPath
+        const targetUrl = `/${next}${normalizedSub}${window.location.search}${window.location.hash}`
+
+        window.location.assign(targetUrl)
       }
-      startTransition(() => {
-        router.replace(pathname, { locale: next })
-      })
     },
-    [activeLocale, pathname, router],
+    [activeLocale],
   )
+
+  if (variant === 'pill') {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            aria-label={label}
+            className={cn(
+              'inline-flex h-8 items-center gap-1.5 rounded-lg border border-[#f5f4f01f] bg-white/[0.04] px-2.5 text-[11px] font-mono tracking-wider text-[#f5f4f0]/85 transition-colors hover:border-primary/50 hover:bg-white/10 hover:text-[#f5f4f0]',
+              className,
+            )}
+          >
+            {isChanging ? (
+              <VirtueSpinner className="size-3" />
+            ) : (
+              <Globe className="size-3 text-primary" aria-hidden="true" />
+            )}
+            <span className="font-semibold uppercase">{activeLocale}</span>
+            <span className="text-[9px] text-[#f5f4f0]/40">▾</span>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48 border border-white/15 bg-[#141416] p-1.5 text-[#f5f4f0] shadow-2xl backdrop-blur-md">
+          <DropdownMenuLabel className="px-2 py-1 text-[10px] font-mono tracking-wider text-[#f5f4f0]/50 uppercase">
+            {label}
+          </DropdownMenuLabel>
+          {locales.map((code) => {
+            const isCurrent = code === activeLocale
+            return (
+              <DropdownMenuItem
+                key={code}
+                onSelect={() => change(code)}
+                className={cn(
+                  'flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-white/10 focus:bg-white/10 focus:text-primary',
+                  isCurrent ? 'bg-primary/15 font-semibold text-primary' : 'text-[#f5f4f0]/80',
+                )}
+                dir={localeMeta[code].dir}
+              >
+                <span className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] tracking-widest text-[#f5f4f0]/50 uppercase">
+                    {code}
+                  </span>
+                  <span>{localeMeta[code].label}</span>
+                </span>
+                <span className="font-mono text-[10px] text-[#f5f4f0]/40">{localeMeta[code].region}</span>
+              </DropdownMenuItem>
+            )
+          })}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
 
   if (variant === 'inline') {
     return (
@@ -65,7 +126,7 @@ export function LanguageSwitcher({
               className={cn(
                 'inline-flex min-h-6 items-center text-[13px] transition-colors',
                 code === activeLocale
-                  ? 'font-semibold text-gold-700'
+                  ? 'font-semibold text-primary'
                   : 'text-muted-foreground hover:text-foreground',
               )}
             >
@@ -86,7 +147,7 @@ export function LanguageSwitcher({
           aria-label={label}
           className={cn('gap-2 px-3 text-muted-foreground hover:text-foreground', className)}
         >
-          {pending ? (
+          {isChanging ? (
             <VirtueSpinner className="size-4" />
           ) : (
             <Globe className="size-4" />

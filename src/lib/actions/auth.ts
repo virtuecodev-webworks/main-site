@@ -10,17 +10,14 @@ import { COUNTRY_COOKIE, GEO_COOKIE } from '@/lib/geo/countries'
 import { landingFor } from '@/lib/supabase/auth'
 import { absoluteUrl } from '@/lib/utils'
 import type { AuthState, SignUpState } from './state'
+import { sendEmail } from '@/lib/email'
+import { welcomeEmail } from '@/lib/email/templates'
 
 /** Minimum password length. Supabase's own floor is 6; the studio asks for more. */
 const MIN_PASSWORD = 8
 
 /**
  * Email + password sign-in.
- *
- * The role is read from the freshly authenticated client (not through React's
- * request cache) so a just-signed-in user is evaluated correctly. An account with
- * no role and no allow-list entry is signed straight back out rather than left
- * holding a session it cannot use anywhere.
  */
 export async function signInAction(
   _prevState: AuthState,
@@ -61,11 +58,6 @@ export async function signInAction(
 
 /**
  * Self-serve client sign-up.
- *
- * The account is always a client — `handle_new_user` pins the role and ignores
- * anything the payload claims about it. If email confirmation is on, Supabase
- * returns no session and we tell the visitor to go and open the message; if it
- * is off, they are signed in and land in the portal immediately.
  */
 export async function signUpAction(
   _prevState: SignUpState,
@@ -88,25 +80,23 @@ export async function signUpAction(
 
   const supabase = await createSupabaseServerClient()
   if (!supabase) {
-    const jar = await cookies()
-    jar.set(
-      'vcw:demo_session',
-      JSON.stringify({
-        userId: 'demo-new-client-id',
-        email,
-        name: fullName || 'Client User',
-        role: 'client',
-      }),
-      { path: '/', httpOnly: true, sameSite: 'lax' },
-    )
-    redirect(`/${locale}/portal`)
+    if (process.env.NODE_ENV !== 'production') {
+      const jar = await cookies()
+      jar.set(
+        'vcw:demo_session',
+        JSON.stringify({
+          userId: 'demo-new-client-id',
+          email,
+          name: fullName || 'Client User',
+          role: 'client',
+        }),
+        { path: '/', httpOnly: true, sameSite: 'lax' },
+      )
+      redirect(`/${locale}/portal`)
+    }
+    return { status: 'error', message: 'not-configured' }
   }
 
-  /*
-   * Region is taken from the cookies the proxy already set, so the account
-   * carries the country the visitor was browsing from without asking again.
-   * Only used for invoicing context — never to gate anything.
-   */
   const jar = await cookies()
   const country = jar.get(COUNTRY_COOKIE)?.value ?? jar.get(GEO_COOKIE)?.value ?? null
 
@@ -136,13 +126,41 @@ export async function signUpAction(
       return { status: 'error', message: 'email-taken' }
     }
     if (message.includes('password')) return { status: 'error', message: 'weak-password' }
-    // Supabase throws "Error sending confirmation email" when no SMTP is configured.
-    // Treat it as a configuration gap, not a user error.
     if (message.includes('sending confirmation email') || message.includes('smtp')) {
       return { status: 'error', message: 'not-configured' }
     }
     console.warn('[auth] sign-up failed:', error.message)
     return { status: 'error', message: 'unknown' }
+  }
+
+  const admin = createSupabaseAdminClient()
+  if (admin) {
+    try {
+      await admin.from('newsletter_subscribers').upsert(
+        {
+          email,
+          status: 'active',
+          source: 'signup',
+          confirmed_at: new Date().toISOString(),
+        },
+        { onConflict: 'email', ignoreDuplicates: false },
+      )
+      await admin.from('subscribers').upsert(
+        { email, locale, source: 'signup' },
+        { onConflict: 'email', ignoreDuplicates: false },
+      )
+    } catch (subErr) {
+      console.warn('[auth] newsletter auto-subscribe failed:', subErr)
+    }
+
+    if (data.session) {
+      try {
+        const rendered = await welcomeEmail({ name: fullName })
+        await sendEmail({ to: email, email: rendered })
+      } catch (emailErr) {
+        console.warn('[auth] welcome email failed:', emailErr)
+      }
+    }
   }
 
   if (data.session) redirect(`/${locale}/portal`)
@@ -152,10 +170,6 @@ export async function signUpAction(
 
 /**
  * Sign out, then land somewhere that makes sense for whoever was signed in.
- *
- * `next` is checked against in-app paths so a crafted form cannot turn the
- * sign-out button into an open redirect: it must be the current locale's root
- * (`/en`) or something beneath it (`/en/portal`).
  */
 export async function signOutAction(formData: FormData): Promise<void> {
   const locale = String(formData.get('locale') ?? 'en')
@@ -200,7 +214,6 @@ export async function forgotPasswordAction(formData: FormData): Promise<{ ok: bo
 
 /**
  * Verify 6-digit recovery OTP code and update password immediately.
- * Zero links needed — pure 6-digit code recovery!
  */
 export async function verifyRecoveryOtpAndUpdatePasswordAction(
   formData: FormData,
@@ -209,7 +222,6 @@ export async function verifyRecoveryOtpAndUpdatePasswordAction(
   const token = String(formData.get('token') ?? '').trim()
   const password = String(formData.get('password') ?? '')
   const confirm = String(formData.get('confirmPassword') ?? '')
-  const locale = String(formData.get('locale') ?? 'en')
 
   if (!email || !token || token.length < 6) {
     return { ok: false, message: 'Please enter the 6-digit recovery code.' }
@@ -228,7 +240,6 @@ export async function verifyRecoveryOtpAndUpdatePasswordAction(
     return { ok: true }
   }
 
-  // 1. Verify 6-digit recovery OTP code
   const { data, error: otpError } = await supabase.auth.verifyOtp({
     email,
     token,
@@ -242,7 +253,6 @@ export async function verifyRecoveryOtpAndUpdatePasswordAction(
     }
   }
 
-  // 2. Set the new password immediately
   const { error: updateError } = await supabase.auth.updateUser({ password })
   if (updateError) {
     return { ok: false, message: updateError.message }
@@ -292,16 +302,6 @@ export async function verifyOtpAction(formData: FormData): Promise<{ ok: boolean
     return { ok: false, message: 'Please enter a valid email address.' }
   }
 
-  // If the user's account is already verified, take them straight to sign-in
-  const admin = createSupabaseAdminClient()
-  if (admin) {
-    const { data: userList } = await admin.auth.admin.listUsers()
-    const existing = userList?.users?.find((u) => u.email === email)
-    if (existing?.email_confirmed_at) {
-      redirect(`/${locale}/login?confirmed=true`)
-    }
-  }
-
   if (!token || token.length < 6) {
     return { ok: false, message: 'Please enter the complete 6-digit verification code.' }
   }
@@ -332,16 +332,20 @@ export async function verifyOtpAction(formData: FormData): Promise<{ ok: boolean
   }
 
   if (error) {
-    // Check if user is already confirmed (e.g. verified in another tab or earlier)
-    const admin = createSupabaseAdminClient()
-    if (admin) {
-      const { data: userList } = await admin.auth.admin.listUsers()
-      const existing = userList?.users?.find((u) => u.email === email)
-      if (existing?.email_confirmed_at) {
-        redirect(`/${locale}/login?confirmed=true`)
-      }
-    }
     return { ok: false, message: error.message }
+  }
+
+  // Send welcome email upon successful OTP confirmation
+  if (data?.user) {
+    try {
+      const fullName =
+        (data.user.user_metadata?.full_name as string | undefined) ??
+        email.split('@')[0]
+      const rendered = await welcomeEmail({ name: fullName })
+      await sendEmail({ to: email, email: rendered })
+    } catch (emailErr) {
+      console.warn('[auth] welcome email after OTP failed:', emailErr)
+    }
   }
 
   redirect(`/${locale}/portal`)
@@ -358,20 +362,6 @@ export async function resendOtpAction(formData: FormData): Promise<{ ok: boolean
     return { ok: false, message: 'Invalid email address.' }
   }
 
-  // If the user's account is already confirmed, do not attempt resending signup OTP.
-  const admin = createSupabaseAdminClient()
-  if (admin) {
-    const { data: userList } = await admin.auth.admin.listUsers()
-    const existing = userList?.users?.find((u) => u.email === email)
-    if (existing?.email_confirmed_at) {
-      return {
-        ok: false,
-        alreadyConfirmed: true,
-        message: 'Your account is already verified! You can sign in immediately.',
-      }
-    }
-  }
-
   const supabase = await createSupabaseServerClient()
   if (!supabase) {
     return { ok: true }
@@ -386,6 +376,14 @@ export async function resendOtpAction(formData: FormData): Promise<{ ok: boolean
   })
 
   if (error) {
+    const msg = error.message.toLowerCase()
+    if (msg.includes('already confirmed') || msg.includes('already registered')) {
+      return {
+        ok: false,
+        alreadyConfirmed: true,
+        message: 'Your account is already verified! You can sign in immediately.',
+      }
+    }
     console.warn('[auth] resend OTP failed:', error.message)
     return { ok: false, message: error.message }
   }

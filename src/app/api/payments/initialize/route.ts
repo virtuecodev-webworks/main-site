@@ -6,17 +6,6 @@ import { clientKey, rateLimit } from '@/lib/rate-limit'
 import { issuesToFieldErrors, paymentSchema } from '@/lib/validation'
 import { createReference } from '@/lib/utils'
 
-/**
- * Opens a payment intent.
- *
- *   1. rate limit + validate the browser's request
- *   2. mint a unique `tx_ref` and record a `pending` transaction
- *   3. hand the browser everything it needs to launch Flutterwave's modal
- *
- * No card data ever reaches this route — Flutterwave's inline script collects
- * it. The record created here is only confirmed by `/api/payments/verify` (or
- * the webhook) once Flutterwave's API has been re-queried.
- */
 export const runtime = 'nodejs'
 
 export async function POST(request: Request) {
@@ -66,13 +55,17 @@ export async function POST(request: Request) {
   const input = parsed.data
   const txRef = createReference('VCW')
 
-  // Keep the client's invoice reference visible for reconciliation.
   const purpose = [input.purpose, input.reference ? `Invoice ${input.reference}` : null]
     .filter(Boolean)
     .join(' · ')
 
   const supabase = createSupabaseAdminClient()
   if (supabase) {
+    const rawMeta: Record<string, unknown> = {}
+    if (input.milestoneId) rawMeta.milestoneId = input.milestoneId
+    if (input.orderReference) rawMeta.orderReference = input.orderReference
+    if (input.reference) rawMeta.invoiceReference = input.reference
+
     const { error } = await supabase.from('transactions').insert({
       reference: txRef,
       provider: 'flutterwave',
@@ -82,9 +75,18 @@ export async function POST(request: Request) {
       customer_email: input.customerEmail,
       customer_name: input.customerName,
       purpose: purpose || null,
+      raw: rawMeta,
     })
 
     if (error) console.warn('[payments] could not record pending intent:', error.message)
+
+    // Link the milestone reference to this txRef so verification marks it paid
+    if (input.milestoneId) {
+      await supabase
+        .from('order_milestones')
+        .update({ reference: txRef })
+        .eq('id', input.milestoneId)
+    }
   }
 
   return NextResponse.json({

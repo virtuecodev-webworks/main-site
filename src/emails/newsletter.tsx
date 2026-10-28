@@ -10,7 +10,7 @@ import {
   PrimaryButton,
   Divider,
 } from './base/shell'
-import { TEXT_DARK, TEXT_MUTED_DARK, SITE, UNSUBSCRIBE, PRIVACY } from './base/tokens'
+import { TEXT_DARK, TEXT_MUTED_DARK, SITE, UNSUBSCRIBE, PRIVACY, GOLD, CARD_WELL, BORDER_DIVIDER, MONO_STACK } from './base/tokens'
 import { AGENCY } from '@/lib/constants'
 
 export interface NewsletterDispatchProps {
@@ -46,10 +46,20 @@ export function NewsletterDispatchEmail({
   const issueLabel = issueNumber ? `ISSUE #${String(issueNumber).padStart(3, '0')}` : 'STUDIO DISPATCH'
 
   return (
-    <Shell preheader={subtitle}>
+    <Shell preheader={subtitle} eyebrow={issueLabel}>
       {/* Issue Pill */}
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: '#B45309', textTransform: 'uppercase', marginBottom: 8 }}>
-        {issueLabel} · {date.toUpperCase()}
+      <div
+        style={{
+          fontFamily: MONO_STACK,
+          fontSize: 10.5,
+          fontWeight: 600,
+          letterSpacing: '0.18em',
+          color: TEXT_MUTED_DARK,
+          textTransform: 'uppercase',
+          marginBottom: 8,
+        }}
+      >
+        ( {issueLabel} · {date.toUpperCase()} )
       </div>
 
       <CardHeadline>{title}</CardHeadline>
@@ -57,8 +67,22 @@ export function NewsletterDispatchEmail({
 
       {readTime && (
         <div style={{ marginBottom: 20 }}>
-          <span style={{ display: 'inline-block', padding: '4px 12px', background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: 999, fontSize: 11, fontWeight: 600, color: '#92400E' }}>
-            ⏱ {readTime}
+          <span
+            style={{
+              display: 'inline-block',
+              padding: '4px 12px',
+              background: CARD_WELL,
+              border: `1px solid ${BORDER_DIVIDER}`,
+              borderRadius: 999,
+              fontFamily: MONO_STACK,
+              fontSize: 10.5,
+              fontWeight: 600,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: TEXT_DARK,
+            }}
+          >
+            {readTime}
           </span>
         </div>
       )}
@@ -73,12 +97,31 @@ export function NewsletterDispatchEmail({
 
       {/* Pull Quote */}
       {pullQuote && (
-        <div style={{ borderLeft: '3px solid #DCAA28', padding: '12px 18px', background: '#FEF9EE', borderRadius: '0 10px 10px 0', margin: '22px 0', textAlign: 'left' }}>
-          <div style={{ fontSize: 14.5, fontStyle: 'italic', color: TEXT_DARK, fontWeight: 600, lineHeight: 1.5 }}>
+        <div
+          style={{
+            borderLeft: `3px solid ${GOLD}`,
+            padding: '14px 18px',
+            background: CARD_WELL,
+            borderRadius: '0 12px 12px 0',
+            margin: '22px 0',
+            textAlign: 'left',
+          }}
+        >
+          <div style={{ fontSize: 14.5, color: TEXT_DARK, fontWeight: 500, lineHeight: 1.55 }}>
             &ldquo;{pullQuote}&rdquo;
           </div>
           {pullQuoteAuthor && (
-            <div style={{ marginTop: 6, fontSize: 11.5, color: '#92400E', fontWeight: 700, textTransform: 'uppercase' }}>
+            <div
+              style={{
+                marginTop: 6,
+                fontFamily: MONO_STACK,
+                fontSize: 10.5,
+                letterSpacing: '0.14em',
+                color: TEXT_MUTED_DARK,
+                fontWeight: 600,
+                textTransform: 'uppercase',
+              }}
+            >
               — {pullQuoteAuthor}
             </div>
           )}
@@ -91,16 +134,16 @@ export function NewsletterDispatchEmail({
 
       <Divider />
 
-      <div style={{ fontSize: 11, color: '#9CA3AF', textAlign: 'center', lineHeight: 1.6 }}>
+      <div style={{ fontSize: 11, color: TEXT_MUTED_DARK, textAlign: 'center', lineHeight: 1.6 }}>
         You received this editorial dispatch because you subscribed at{' '}
-        <a href={SITE} style={{ color: '#4B5563', textDecoration: 'none' }}>
+        <a href={SITE} style={{ color: TEXT_DARK, textDecoration: 'none' }}>
           {AGENCY.domain}
         </a>.<br />
-        <a href={UNSUBSCRIBE} style={{ color: '#6B7280', textDecoration: 'underline' }}>
+        <a href={UNSUBSCRIBE} style={{ color: TEXT_DARK, textDecoration: 'underline' }}>
           Unsubscribe
         </a>{' '}
         ·{' '}
-        <a href={PRIVACY} style={{ color: '#6B7280', textDecoration: 'underline' }}>
+        <a href={PRIVACY} style={{ color: TEXT_DARK, textDecoration: 'underline' }}>
           Privacy Policy
         </a>
       </div>

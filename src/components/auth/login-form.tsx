@@ -67,7 +67,6 @@ export function LoginForm({ locale }: { locale: string }) {
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
           required
-          autoFocus
           placeholder="you@company.com"
           aria-invalid={error ? true : undefined}
         />

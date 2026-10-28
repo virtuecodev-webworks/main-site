@@ -20,7 +20,7 @@ export interface SignupOtpProps {
 
 export function SignupOtpEmail({ code }: SignupOtpProps) {
   return (
-    <Shell preheader={`Your Signup verification Code is: ${code}`}>
+    <Shell preheader={`Your Signup verification Code is: ${code}`} eyebrow="Security Verification">
       <CardHeadline>Your Signup verification Code</CardHeadline>
 
       <DigitBoxes code={code} />

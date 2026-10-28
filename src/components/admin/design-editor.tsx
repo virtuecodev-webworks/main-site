@@ -44,10 +44,10 @@ import { DesignPreview } from "./design-preview";
 import { FontLibrary } from "./font-library";
 
 const GOOGLE_BODY = GOOGLE_FONTS.filter(
-  (font) => font.use !== "display" && font.family !== BRAND_FONT_BODY,
+  (font) => font.use !== "display" && font.family !== BRAND_FONT_BODY && font.family !== BRAND_FONT_DISPLAY,
 );
 const GOOGLE_DISPLAY = GOOGLE_FONTS.filter(
-  (font) => font.use !== "body" && font.family !== BRAND_FONT_BODY,
+  (font) => font.use !== "body" && font.family !== BRAND_FONT_BODY && font.family !== BRAND_FONT_DISPLAY,
 );
 
 /** Which band a measured contrast ratio falls into. */

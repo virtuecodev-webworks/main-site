@@ -31,7 +31,14 @@
     "blog": "Blog",
     "theme": "Cambiar tema",
     "country": "País y moneda",
-    "account": "Tus proyectos"
+    "account": "Tus proyectos",
+    "homeTagline": "Desarrollo web rápido y confiable",
+    "aboutTagline": "Sobre nuestro equipo y estándares",
+    "portfolioTagline": "Trabajos seleccionados, 2024–2026",
+    "servicesTagline": "Cuatro servicios, precios fijos",
+    "blogTagline": "Artículos sobre rendimiento web y diseño",
+    "contactTagline": "Inicia un proyecto con nuestro equipo",
+    "paymentTagline": "Pago seguro por etapas"
   },
   "Region": {
     "label": "País y moneda",
@@ -100,7 +107,9 @@
         "rating": "Calificación 5.0 estrellas",
         "ownership": "100% Propiedad del código",
         "portal": "Portal de cliente directo"
-      }
+      },
+      "statusLabel": "Disponibilidad actual",
+      "statusValue": "Aceptando nuevos proyectos"
     },
     "stats": {
       "launch": "Lanzamiento típico",
@@ -125,7 +134,9 @@
       "title": "Construyamos algo que merezca guardarse en favoritos.",
       "subtitle": "Cuéntanos tu proyecto. Recibirás una propuesta detallada y un precio fijo en dos días hábiles.",
       "primary": "Empezar tu proyecto",
-      "secondary": "Reservar una llamada gratis"
+      "secondary": "Reservar una llamada gratis",
+      "eyebrow": "Iniciar un proyecto",
+      "status": "Aceptando nuevos proyectos"
     },
     "journey": {
       "eyebrow": "Cómo trabajamos",
@@ -147,6 +158,33 @@
       "title": "Te decimos qué construiríamos, cuánto cuesta y cuánto tiempo tomará.",
       "body": "Sin presentaciones interminables ni presupuestos vagos. Recibes una propuesta por escrito antes de comprometerte.",
       "cta": "Obtener presupuesto"
+    },
+    "statement": {
+      "eyebrow": "Nuestro compromiso",
+      "text": "Diseñamos y desarrollamos sitios web rápidos y claros que ayudan a tu negocio a generar confianza y captar más clientes — con precios fijos y fechas de entrega garantizadas.",
+      "pillars": [
+        "Sitios web a medida",
+        "Tiendas online",
+        "Rediseños web",
+        "Diseño móvil",
+        "WordPress y Wix",
+        "Pagos seguros",
+        "Optimizado para SEO",
+        "Precios fijos",
+        "Propiedad 100%"
+      ]
+    },
+    "live": {
+      "eyebrow": "Proyectos en curso",
+      "title": "Lo que estamos construyendo ahora.",
+      "subtitle": "Progreso en tiempo real de proyectos activos. Plazos transparentes desde el inicio hasta el lanzamiento.",
+      "viewCaseStudy": "Ver caso de estudio ↗"
+    },
+    "values": {
+      "eyebrow": "Nuestros estándares",
+      "title": "Diseño cuidadoso. Comunicación clara. Entrega a tiempo.",
+      "services": "Diseño · Desarrollo · Lanzamiento · Soporte continuo",
+      "speed": "Rápido en cualquier móvil y ordenador"
     }
   },
   "Services": {
@@ -158,6 +196,56 @@
     "deliverables": "Qué obtienes",
     "startingAt": "Desde",
     "items": {
+      "custom": {
+        "title": "Sitios codificados a medida",
+        "summary": "Aplicaciones React y Next.js a medida, diseñadas para velocidad, escala y buscadores.",
+        "description": "Cuando las herramientas estándar frenan tu ambición, construimos bien. Front-ends tipados y basados en componentes, con renderizado en servidor, caché en el edge y un design system que es tuyo.",
+        "features": [
+          "Arquitectura Next.js App Router + TypeScript",
+          "Design system propio con tokens de Tailwind CSS",
+          "Presupuestos de Core Web Vitals verificados en CI",
+          "APIs headless, paneles e integraciones"
+        ],
+        "imageAlt": "Un diseñador y un desarrollador revisando el diseño de un sitio web personalizado."
+      },
+      "wordpress": {
+        "title": "Desarrollo WordPress",
+        "summary": "Sitios WordPress cómodos de editar que no sacrifican el rendimiento.",
+        "description": "Temas basados en bloques, tipos de contenido personalizados y editores con ACF para que tu equipo publique con confianza - en headless o en stack clásico, según tu hoja de ruta.",
+        "features": [
+          "Temas de bloques personalizados y patrones Gutenberg",
+          "Tipos de contenido y modelos de datos estructurados",
+          "Optimización de velocidad y seguridad de serie",
+          "Migración y formación editorial incluidas"
+        ],
+        "imageAlt": "Dos personas editando páginas juntas en un gestor de contenidos."
+      },
+      "wix": {
+        "title": "Wix y soluciones no-code",
+        "summary": "Sitios Wix que convierten, lanzados rápido y sin parecer una plantilla.",
+        "description": "Ideal para lanzamientos, campañas y equipos ágiles. Llevamos Wix Studio y Velo al límite para que controles tu contenido sin depender de un desarrollador.",
+        "features": [
+          "Design systems de Wix Studio y breakpoints adaptables",
+          "Lógica propia con Velo y APIs de terceros",
+          "SEO, datos estructurados y analítica",
+          "Listo para lanzar en días, no en meses"
+        ],
+        "imageAlt": "Un ordenador portátil mostrando un sitio web recién publicado."
+      },
+      "ecommerce": {
+        "title": "E-commerce y pagos",
+        "summary": "Vende globalmente con checkouts diseñados para la conversión y la conciliación.",
+        "description": "Tiendas, suscripciones, retainers y anticipos - con integraciones de Paystack y Stripe, y webhooks que mantienen tus cuentas al día.",
+        "features": [
+          "Checkout multidivisa con Stripe y Stripe",
+          "Arquitectura de carrito, catálogo e inventario",
+          "Registro de transacciones verificado por webhook",
+          "Carritos abandonados y correos de ciclo de vida"
+        ],
+        "imageAlt": "Una tienda online abierta junto a un terminal de pago con tarjeta."
+      }
+    },
+    "cards": {
       "custom": {
         "title": "Sitios codificados a medida",
         "summary": "Aplicaciones React y Next.js a medida, diseñadas para velocidad, escala y buscadores.",

@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { revalidatePath } from 'next/cache'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { paymentReceiptEmail } from '@/lib/email/templates'
@@ -18,7 +19,6 @@ export interface RecordResult {
   receiptSent: boolean
 }
 
-/** Maps Flutterwave's vocabulary onto our ledger's status enum. */
 function normaliseStatus(status: string): RecordedStatus {
   const value = status.toLowerCase()
   if (value === 'successful' || value === 'success') return 'successful'
@@ -33,18 +33,12 @@ interface PreviousRow {
   amount: number
   currency: string
   purpose: string | null
+  raw: Record<string, unknown> | null
 }
 
 /**
  * Records a transaction that has *already* been re-verified against the
- * Flutterwave API. Shared by `/api/payments/verify` and the webhook so the two
- * paths can never disagree.
- *
- * Guarantees:
- *   - the amount + currency we quoted are cross-checked against Flutterwave's
- *     response; a mismatch downgrades the charge to `failed`
- *   - the receipt is sent exactly once, only on the transition into `successful`
- *     (webhooks retry, so idempotency matters)
+ * Flutterwave API, and reconciles any linked `order_milestones` row.
  */
 export async function recordVerifiedTransaction(
   verified: VerifiedTransaction,
@@ -57,7 +51,7 @@ export async function recordVerifiedTransaction(
   if (supabase && verified.txRef) {
     const { data } = await supabase
       .from('transactions')
-      .select('id,status,amount,currency,purpose')
+      .select('id,status,amount,currency,purpose,raw')
       .eq('reference', verified.txRef)
       .maybeSingle()
 
@@ -79,6 +73,11 @@ export async function recordVerifiedTransaction(
   const status: RecordedStatus =
     attempted === 'successful' && !mismatch ? 'successful' : attempted
 
+  const mergedRaw: Record<string, unknown> = {
+    ...(previous?.raw ?? {}),
+    ...((verified.raw ?? {}) as Record<string, unknown>),
+  }
+
   const payload = {
     reference: verified.txRef,
     provider: 'flutterwave',
@@ -89,7 +88,7 @@ export async function recordVerifiedTransaction(
     customer_email: verified.customerEmail,
     customer_name: verified.customerName,
     purpose: previous?.purpose ?? null,
-    raw: (verified.raw ?? {}) as Record<string, unknown>,
+    raw: mergedRaw,
     updated_at: new Date().toISOString(),
   }
 
@@ -101,6 +100,32 @@ export async function recordVerifiedTransaction(
 
     if (error) console.error('[payments] recording failed:', error.message)
     else recorded = true
+
+    // Reconcile linked order_milestones row when payment succeeds
+    if (status === 'successful') {
+      try {
+        const milestoneId =
+          typeof mergedRaw.milestoneId === 'string' && mergedRaw.milestoneId
+            ? mergedRaw.milestoneId
+            : null
+
+        if (milestoneId) {
+          await supabase
+            .from('order_milestones')
+            .update({ status: 'paid', reference: verified.txRef })
+            .eq('id', milestoneId)
+        } else {
+          await supabase
+            .from('order_milestones')
+            .update({ status: 'paid' })
+            .eq('reference', verified.txRef)
+        }
+
+        revalidatePath('/', 'layout')
+      } catch (milestoneErr) {
+        console.warn('[payments] milestone sync warning:', milestoneErr)
+      }
+    }
   }
 
   let receiptSent = false

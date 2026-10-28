@@ -31,7 +31,14 @@
     "blog": "Blog",
     "theme": "Design wechseln",
     "country": "Land & Währung",
-    "account": "Deine Projekte"
+    "account": "Deine Projekte",
+    "homeTagline": "Schnelle, verlässliche Webentwicklung",
+    "aboutTagline": "Über unser Team & unsere Standards",
+    "portfolioTagline": "Ausgewählte Arbeiten, 2024–2026",
+    "servicesTagline": "Vier Fachbereiche, feste Preise",
+    "blogTagline": "Artikel zu Web-Performance & Handwerk",
+    "contactTagline": "Starten Sie ein Projekt mit uns",
+    "paymentTagline": "Sichere Meilenstein-Abrechnung"
   },
   "Region": {
     "label": "Land & Währung",
@@ -100,7 +107,9 @@
         "rating": "5.0-Sterne-Bewertung",
         "ownership": "100% Code-Eigentum",
         "portal": "Direktes Kundenportal"
-      }
+      },
+      "statusLabel": "Aktuelle Verfügbarkeit",
+      "statusValue": "Offen für neue Projekte"
     },
     "stats": {
       "launch": "Typischer Launch",
@@ -125,7 +134,9 @@
       "title": "Bauen wir etwas, das man sich merkt.",
       "subtitle": "Erzählen Sie uns von Ihrem Projekt. Sie erhalten innerhalb von zwei Werktagen ein Angebot mit Festpreis.",
       "primary": "Projekt starten",
-      "secondary": "Kostenloses Gespräch buchen"
+      "secondary": "Kostenloses Gespräch buchen",
+      "eyebrow": "Projekt starten",
+      "status": "Offen für neue Projekte"
     },
     "journey": {
       "eyebrow": "So arbeiten wir",
@@ -147,6 +158,33 @@
       "title": "Wir sagen Ihnen genau, was wir bauen, was es kostet und wie lange es dauert.",
       "body": "Keine vagen Schätzungen und keine endlosen Präsentationen. Sie erhalten ein verbindliches, schriftliches Festpreisangebot vor Projektstart.",
       "cta": "Angebot anfordern"
+    },
+    "statement": {
+      "eyebrow": "Unser Versprechen",
+      "text": "Wir gestalten und entwickeln schnelle, klare Websites, die Ihrem Unternehmen Vertrauen und neue Kunden bringen — mit Festpreisen und garantierten Terminen.",
+      "pillars": [
+        "Individuelle Websites",
+        "Online-Shops",
+        "Redesigns",
+        "Mobile-First",
+        "WordPress & Wix",
+        "Sichere Bezahlung",
+        "SEO-optimiert",
+        "Feste Preise",
+        "100% Eigentum"
+      ]
+    },
+    "live": {
+      "eyebrow": "Aktuelle Projekte",
+      "title": "Woran wir gerade arbeiten.",
+      "subtitle": "Echtzeit-Fortschritt bei aktiven Projekten. Transparente Zeitpläne von Start bis Launch.",
+      "viewCaseStudy": "Fallstudie ansehen ↗"
+    },
+    "values": {
+      "eyebrow": "Unsere Maßstäbe",
+      "title": "Durchdachtes Design. Klare Kommunikation. Pünktliche Lieferung.",
+      "services": "Design · Entwicklung · Launch · Laufender Support",
+      "speed": "Schnell auf jedem Smartphone & Computer"
     }
   },
   "Services": {
@@ -158,6 +196,56 @@
     "deliverables": "Das erhalten Sie",
     "startingAt": "Ab",
     "items": {
+      "custom": {
+        "title": "Individuell programmierte Websites",
+        "summary": "Maßgeschneiderte React- und Next.js-Anwendungen für Geschwindigkeit, Skalierung und Sichtbarkeit.",
+        "description": "Wenn Standardwerkzeuge Ihre Ambitionen bremsen, entwickeln wir richtig. Typisierte, komponentenbasierte Frontends mit Server-Rendering, Edge-Caching und einem Designsystem, das Ihnen gehört.",
+        "features": [
+          "Next.js App Router + TypeScript-Architektur",
+          "Eigenes Designsystem mit Tailwind-CSS-Tokens",
+          "Core-Web-Vitals-Budgets in der CI abgesichert",
+          "Headless-APIs, Dashboards und Integrationen"
+        ],
+        "imageAlt": "Designer und Entwickler prüfen ein maßgeschneidertes Website-Design."
+      },
+      "wordpress": {
+        "title": "WordPress-Entwicklung",
+        "summary": "Redaktionsfreundliche WordPress-Projekte ohne Performance-Verlust.",
+        "description": "Blockbasierte Themes, eigene Inhaltstypen und ACF-gestützte Editoren, damit Ihr Team sicher veröffentlicht - headless oder klassisch, je nach Roadmap.",
+        "features": [
+          "Individuelle Block-Themes und Gutenberg-Patterns",
+          "Eigene Inhaltstypen und strukturierte Datenmodelle",
+          "Speed- und Security-Härtung als Standard",
+          "Migration und Redaktionsschulung inklusive"
+        ],
+        "imageAlt": "Zwei Kollegen bearbeiten Inhalte in einem modernen Content-Management-System."
+      },
+      "wix": {
+        "title": "Wix & No-Code-Lösungen",
+        "summary": "Conversion-starke Wix-Websites, schnell gelauncht und ohne Template-Optik.",
+        "description": "Ideal für Launches, Kampagnen und schlanke Teams. Wir reizen Wix Studio und Velo aus, damit Sie Ihre Inhalte ohne Entwickler pflegen können.",
+        "features": [
+          "Wix-Studio-Designsysteme und responsive Breakpoints",
+          "Individuelle Logik mit Velo und Drittanbieter-APIs",
+          "SEO, strukturierte Daten und Analytics",
+          "Launch-bereit in Tagen statt Monaten"
+        ],
+        "imageAlt": "Ein Laptop auf dem Schreibtisch zeigt eine frisch veröffentlichte Website."
+      },
+      "ecommerce": {
+        "title": "E-Commerce & Zahlungen",
+        "summary": "Verkaufen Sie global mit Checkouts, die auf Konversion und Abstimmung ausgelegt sind.",
+        "description": "Shops, Abonnements, Retainer und Anzahlungen - mit Stripe-, Paystack- und Stripe-Integrationen sowie Webhooks, die Ihre Bücher korrekt halten.",
+        "features": [
+          "Multiwährungs-Checkout mit Stripe und Stripe",
+          "Warenkorb-, Katalog- und Bestandsarchitektur",
+          "Webhook-verifiziertes Transaktionsjournal",
+          "Abgebrochene Warenkörbe und Lifecycle-E-Mails"
+        ],
+        "imageAlt": "Ein responsiver Online-Shop auf dem Monitor neben einem Zahlungsterminal."
+      }
+    },
+    "cards": {
       "custom": {
         "title": "Individuell programmierte Websites",
         "summary": "Maßgeschneiderte React- und Next.js-Anwendungen für Geschwindigkeit, Skalierung und Sichtbarkeit.",

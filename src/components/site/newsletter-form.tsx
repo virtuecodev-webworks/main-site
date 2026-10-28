@@ -99,7 +99,7 @@ export function NewsletterForm({
         {t('label')}
       </label>
 
-      <div className="flex flex-col gap-2 sm:flex-row">
+      <div className="grid grid-cols-[1fr_auto] items-end gap-2">
         <input
           id={`newsletter-email-${source}`}
           name="email"
@@ -108,16 +108,15 @@ export function NewsletterForm({
           autoComplete="email"
           placeholder={t('placeholder')}
           className={cn(
-            'h-10 w-full min-w-0 rounded-full border px-4 text-sm outline-none transition-colors',
-            invert
-              ? 'border-ink-700 bg-ink-900 text-ink-100 placeholder:text-ink-400 focus-visible:border-gold-500'
-              : 'border-border bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-gold-400',
+            'vantra-input',
+            invert &&
+              'is-invert !border-b-[#f5f4f0]/30 !text-[#f5f4f0] placeholder:!text-[#f5f4f0]/60 focus:!border-b-primary',
           )}
         />
         <Button
           type="submit"
           variant={invert ? 'gold' : 'default'}
-          className="h-10 shrink-0"
+          className="h-10 shrink-0 rounded-lg px-4 text-[12px] font-medium tracking-[0.04em] uppercase"
           disabled={status === 'loading'}
         >
           {status === 'loading' ? <VirtueSpinner className="size-4" /> : null}
@@ -135,7 +134,16 @@ export function NewsletterForm({
         className="hidden"
       />
 
-      <p className={cn('text-[11.5px]', status === 'error' ? 'text-rose-400 font-medium' : invert ? 'text-ink-400' : 'text-muted-foreground')}>
+      <p
+        className={cn(
+          'text-[11.5px]',
+          status === 'error'
+            ? 'font-medium text-rose-400'
+            : invert
+              ? 'text-[#f5f4f0]/65'
+              : 'text-muted-foreground',
+        )}
+      >
         {status === 'error' ? (errorMessage ?? t('error')) : t('privacy')}
       </p>
     </form>

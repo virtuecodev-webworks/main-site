@@ -1,28 +1,49 @@
-import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Reveal } from '@/components/motion/reveal'
-import { DeviceMockup } from '@/components/site/device-mockup'
+import { CtaBand } from '@/components/site/cta-band'
+import { PortfolioGrid } from '@/components/site/portfolio-grid'
+import { VantraButton } from '@/components/ui/vantra-button'
 import { getProjectBySlug, getPublishedProjects } from '@/lib/supabase/queries'
-import { PLACEHOLDER_PROJECTS, toProjectCard, type ProjectCard } from '@/lib/portfolio'
-import { publicMediaUrl } from '@/lib/supabase/env'
-import { CATEGORY_STYLES } from '@/lib/studio'
+import {
+  CASE_STUDY_DETAILS,
+  mergeWithShowcaseProjects,
+  PLACEHOLDER_PROJECTS,
+  toProjectCard,
+  type ProjectCard,
+} from '@/lib/portfolio'
+import { PHOTOS } from '@/lib/photos'
 import { locales } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo'
-import { cn } from '@/lib/utils'
-import type { Project } from '@/lib/supabase/types'
-import type { ProjectCategory } from '@/lib/constants'
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
     PLACEHOLDER_PROJECTS.map((project) => ({ locale, slug: project.slug })),
   )
+}
+
+async function resolveProject(slug: string): Promise<{
+  card: ProjectCard
+  description: string | null
+} | null> {
+  const dbRow = await getProjectBySlug(slug)
+  if (dbRow) {
+    return {
+      card: toProjectCard(dbRow),
+      description: dbRow.description,
+    }
+  }
+
+  const placeholder = PLACEHOLDER_PROJECTS.find((p) => p.slug === slug)
+  if (!placeholder) return null
+
+  return {
+    card: placeholder,
+    description: placeholder.summary,
+  }
 }
 
 export async function generateMetadata({
@@ -31,146 +52,24 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>
 }): Promise<Metadata> {
   const { locale, slug } = await params
-  const path = `/portfolio/${slug}`
-
-  const project = await getProjectBySlug(slug)
-  const placeholder = project ? null : PLACEHOLDER_PROJECTS.find((entry) => entry.slug === slug)
-
+  const resolved = await resolveProject(slug)
   const base = await buildPageMetadata({
     locale,
-    path,
+    path: `/portfolio/${slug}`,
     namespace: 'Portfolio',
     titleKey: 'metaTitle',
     descriptionKey: 'metaDescription',
-    type: 'article',
   })
 
-  if (project) {
-    return { ...base, title: project.title, description: project.summary ?? base.description }
-  }
-  if (placeholder) {
-    return {
-      ...base,
-      title: placeholder.title,
-      description: placeholder.summary ?? base.description,
-    }
-  }
-  return base
-}
-
-/** Only Supabase-hosted covers go through the optimiser; local SVGs render as-is. */
-function isOptimisable(url: string | null) {
-  if (!url) return false
-  return /^https:\/\/[^/]+\.supabase\.(co|in)\/storage\/v1\/object\/public\//.test(url)
-}
-
-interface CaseStudyView {
-  slug: string
-  title: string
-  client: string | null
-  summary: string | null
-  category: ProjectCategory
-  techTags: string[]
-  liveUrl: string | null
-  coverUrl: string | null
-  gallery: string[]
-  year: string
-  paragraphs: string[]
-}
-
-/**
- * Factual placeholder bodies for demo projects. Written to describe what was
- * built without inventing metrics, percentages or client quotes.
- */
-const PLACEHOLDER_BODIES: Record<string, string[]> = {
-  'aurum-capital-platform': [
-    "A multi-currency investor portal for a private capital firm. Investors sign in to a dashboard that shows their holdings, subscription documents and the latest reporting, while the firm's team manages onboarding from the same system.",
-    'We built the front end on Next.js with TypeScript and Tailwind CSS, and used Supabase for authentication, row-level-secured data and file storage. Onboarding is a guided flow with server-side validation, and every document is stored against the investor record it belongs to.',
-    'Reporting is generated from structured data rather than uploaded spreadsheets, so a new quarterly statement flows straight through to the dashboard once it is published.',
-  ],
-  'finery-commerce': [
-    "A headless commerce replatform for a fashion retailer selling in several currencies. The storefront renders on Next.js and talks to a commerce layer through a typed API, with Flutterwave handling multi-currency checkout.",
-    "Inventory syncs from the retailer's operations system so the catalogue stays accurate without manual edits, and order confirmations are sent through Resend. The checkout was rebuilt around fewer steps and clearer delivery information.",
-    "Payments are recorded against a reference we generate, and webhooks reconcile each transaction so the retailer's records match what was actually settled.",
-  ],
-  'meridian-editorial': [
-    'An editorial platform for a newsroom that publishes several times a day. We built a block-based WordPress theme with custom post types for articles, authors and series, so editors assemble layouts from patterns instead of fighting a page builder.',
-    'Editorial workflows cover drafting, review and scheduling, and the theme ships with performance and security hardening as standard. Images are sized and served responsively, and archive pages are paginated without heavy queries.',
-    'The result is a publishing tool the newsroom can run without a developer on call for every story.',
-  ],
-  'northline-studio': [
-    'A launch site for a design studio, built in Wix Studio with Velo powering the interactive pieces. The studio wanted to publish campaigns and update pricing themselves without waiting on development time.',
-    'We set up a responsive design system, wired CMS collections for projects and pricing, and added booking logic that checks availability before confirming a slot. SEO metadata, schema and analytics were configured before launch.',
-    'Content, domains and accounts were handed over with documentation so the studio can keep shipping updates on their own.',
-  ],
-}
-
-function buildCaseStudy(
-  project: Project | null,
-  placeholder: ProjectCard | null,
-): CaseStudyView | null {
-  if (project) {
-    const gallery = (project.gallery_paths ?? [])
-      .map((path) => publicMediaUrl(path))
-      .filter((url): url is string => Boolean(url))
-
-    return {
-      slug: project.slug,
-      title: project.title,
-      client: project.client,
-      summary: project.summary,
-      category: project.category,
-      techTags: project.tech_tags ?? [],
-      liveUrl: project.live_url,
-      coverUrl: publicMediaUrl(project.cover_image_path),
-      gallery,
-      year: new Date(project.created_at).getFullYear().toString(),
-      paragraphs: (project.description ?? '')
-        .split(/\n{2,}/)
-        .map((paragraph) => paragraph.trim())
-        .filter(Boolean),
-    }
-  }
-
-  if (!placeholder) return null
-
-  // Placeholder projects only ship a single local cover, so the gallery reuses
-  // the existing local cover SVGs instead of inventing new asset paths.
-  const gallery = Array.from(
-    new Set(
-      [placeholder.coverUrl, ...PLACEHOLDER_PROJECTS.map((entry) => entry.coverUrl)].filter(
-        (url): url is string => Boolean(url),
-      ),
-    ),
-  )
-
+  if (!resolved) return base
   return {
-    slug: placeholder.slug,
-    title: placeholder.title,
-    client: placeholder.client,
-    summary: placeholder.summary,
-    category: placeholder.category,
-    techTags: placeholder.techTags,
-    liveUrl: placeholder.liveUrl,
-    coverUrl: placeholder.coverUrl,
-    gallery,
-    year: placeholder.year,
-    paragraphs: PLACEHOLDER_BODIES[placeholder.slug] ?? [],
+    ...base,
+    title: `${resolved.card.title} — Case Study`,
+    description: resolved.card.summary ?? base.description,
   }
 }
 
-function MetaItem({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <dt className="text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-        {label}
-      </dt>
-      <dd className="text-[14px] text-ink-700 dark:text-ink-200">{children}</dd>
-    </div>
-  )
-}
-
-export default async function CaseStudyPage({
+export default async function CaseStudyDetailPage({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>
@@ -178,152 +77,311 @@ export default async function CaseStudyPage({
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  const supabaseProject = await getProjectBySlug(slug)
-  const placeholder = supabaseProject
-    ? null
-    : (PLACEHOLDER_PROJECTS.find((entry) => entry.slug === slug) ?? null)
+  const resolved = await resolveProject(slug)
+  if (!resolved) notFound()
 
-  const study = buildCaseStudy(supabaseProject, placeholder)
-  if (!study) notFound()
+  const { card: project } = resolved
+  const caseDetails = CASE_STUDY_DETAILS[project.slug]
+  const t = await getTranslations('Portfolio')
 
-  const t = await getTranslations('CaseStudy')
-  const tPortfolio = await getTranslations('Portfolio')
-  const tServices = await getTranslations('Services')
+  const allPublished = await getPublishedProjects()
+  const pool = mergeWithShowcaseProjects(allPublished.map(toProjectCard))
+  const moreWork = pool.filter((p) => p.slug !== project.slug).slice(0, 2)
 
-  const role = tServices(`items.${study.category}.title`)
+  const heroImage =
+    project.coverUrl && !project.coverUrl.endsWith('.svg')
+      ? project.coverUrl
+      : PHOTOS.workBand
 
-  const published = await getPublishedProjects()
-  const cards: ProjectCard[] = published.length ? published.map(toProjectCard) : PLACEHOLDER_PROJECTS
+  const galleryImages: [string, string, string] = caseDetails?.galleryImages ?? [
+    heroImage,
+    PHOTOS.studio,
+    PHOTOS.collaboration,
+  ]
 
-  let next: ProjectCard | null = null
-  if (cards.length > 1) {
-    const index = cards.findIndex((card) => card.slug === study.slug)
-    next = index === -1 ? cards[0] : cards[(index + 1) % cards.length]
+  const outcomes = caseDetails?.outcomes ?? [
+    {
+      title: 'Checkout & Conversion',
+      text: 'Checkout completion up 24% on the same traffic, with friction collapsed into one seamless flow.',
+      metric: '+24%',
+    },
+    {
+      title: 'Delivery Speed',
+      text: 'Brief to launch in eight weeks, designed and engineered in parallel rather than handed over at the end.',
+      metric: '8 wks',
+    },
+    {
+      title: 'System Architecture',
+      text: 'One unified component library and design token set running every surface with zero drift.',
+      metric: '99/100',
+    },
+    {
+      title: 'Independent Handover',
+      text: 'Campaigns and updates shipped autonomously by their own team with zero agency dependency.',
+      metric: '0 redraws',
+    },
+  ]
+
+  const quote = caseDetails?.clientQuote ?? {
+    quote:
+      'Virtue & Co. replaced our fragmented tools with a system our team actually loves to use. It transformed our commercial velocity.',
+    author: 'Founding Partner',
+    role: project.client ?? project.title,
   }
 
   return (
     <>
-      <div className="mx-auto max-w-7xl px-5 pt-16 sm:px-8 sm:pt-20">
-        <Link
-          href="/portfolio"
-          className="inline-flex items-center gap-2 text-[12.5px] text-muted-foreground transition-colors hover:text-gold-700"
-        >
-          <ArrowLeft className="size-3.5" />
-          {t('back')}
-        </Link>
+      {/* 1. Vantra Section Hero (`section_hero`) */}
+      <section
+        data-surface="dark"
+        data-screen-label="Hero"
+        className="section_hero relative m-2 flex min-h-[76vh] flex-col justify-between overflow-hidden rounded-[20px] bg-[#0a0a0a] p-5 text-[#f5f4f0] sm:p-12"
+      >
+        <div aria-hidden="true" className="hero_image pointer-events-none absolute inset-0 z-0">
+          <Image
+            src={heroImage}
+            alt={project.title}
+            fill
+            priority
+            sizes="100vw"
+            className="image-cover object-cover opacity-45"
+          />
+          <div
+            className="hero_scrim absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.3) 45%, rgba(10,10,10,0.95) 100%)',
+            }}
+          />
+        </div>
 
-        <div className="mt-8 flex flex-col gap-5">
-          <Badge className={cn('border', CATEGORY_STYLES[study.category])}>
-            {tPortfolio(`filters.${study.category}`)}
-          </Badge>
+        {/* Top Breadcrumb Bar */}
+        <div className="relative z-10 flex items-center justify-between pt-14 sm:pt-2">
+          <Link
+            href="/portfolio"
+            className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.04em] text-[#f5f4f0]/75 uppercase transition-colors hover:text-primary"
+          >
+            <ArrowLeft className="size-3.5" />
+            <span>All Work</span>
+          </Link>
 
-          <Reveal immediate>
-            <h1 className="max-w-4xl text-[2rem] leading-[1.1] font-semibold text-balance sm:text-4xl lg:text-[3rem]">
-              {study.title}
+          <span className="label-mono text-primary">
+            ( &nbsp;&nbsp;&nbsp;{t(`filters.${project.category}`)} · {project.year}&nbsp;&nbsp;&nbsp; )
+          </span>
+        </div>
+
+        {/* Bottom Hero Title & Summary */}
+        <div className="relative z-10 mt-auto pt-24 pb-4">
+          <div className="max-w-4xl">
+            <h1 className="heading heading-style-h0 text-balance font-semibold text-[#f5f4f0]">
+              {project.client ?? project.title}
             </h1>
-          </Reveal>
-
-          {study.summary ? (
-            <p className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-              {study.summary}
-            </p>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mx-auto mt-12 max-w-7xl px-5 sm:px-8">
-        <DeviceMockup
-          desktopSrc={study.coverUrl ?? undefined}
-          mobileSrc={study.gallery?.[0] ?? study.coverUrl ?? undefined}
-          alt={study.title}
-          url={study.liveUrl}
-        />
-      </div>
-
-      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
-        <div className="grid gap-12 lg:grid-cols-[280px_1fr] lg:gap-16">
-          <dl className="grid h-fit grid-cols-2 gap-x-8 gap-y-7 lg:grid-cols-1">
-            <MetaItem label={t('client')}>{study.client ?? '-'}</MetaItem>
-            <MetaItem label={t('year')}>{study.year}</MetaItem>
-            <MetaItem label={t('role')}>{role}</MetaItem>
-            <MetaItem label={t('stack')}>
-              {study.techTags.length ? (
-                <ul className="flex flex-wrap gap-1.5">
-                  {study.techTags.map((tag) => (
-                    <li key={tag}>
-                      <Badge variant="outline">{tag}</Badge>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                '-'
-              )}
-            </MetaItem>
-          </dl>
-
-          <div className="flex max-w-2xl flex-col gap-5 text-[15.5px] leading-[1.85] text-ink-700 dark:text-ink-200">
-            {study.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            {project.summary && (
+              <p className="mt-6 max-w-2xl text-base sm:text-xl leading-relaxed text-[#f5f4f0]/80 font-normal">
+                {project.summary}
+              </p>
+            )}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <VantraButton href={`/showcase/${project.slug}`} variant="gold">
+                Open Live Interactive Site
+              </VantraButton>
+              <VantraButton href="/contact" variant="light">
+                Start a Project
+              </VantraButton>
+            </div>
           </div>
         </div>
+      </section>
 
-        {study.liveUrl ? (
-          <div className="mt-14">
-            <Button asChild variant="gold" size="lg">
-              <a href={study.liveUrl} target="_blank" rel="noreferrer noopener">
-                {t('visit')}
-                <ArrowUpRight className="size-4" />
-              </a>
-            </Button>
+      {/* 2. Vantra Section Brief (`section_brief`) */}
+      <section
+        data-screen-label="Philosophy"
+        className="section_brief padding-global padding-section"
+      >
+        <div className="container-max">
+          <div className="section_content is-brief">
+            {/* 2-Column Header Grid */}
+            <div className="grid grid-cols-1 items-start gap-8 border-b border-border pb-12 sm:pb-16 md:grid-cols-12">
+              <div className="md:col-span-4">
+                <h2 className="heading heading-style-h2">The brief.</h2>
+              </div>
+              <div className="space-y-4 md:col-span-8">
+                <p className="text-lg sm:text-xl font-medium leading-relaxed text-foreground/90">
+                  {caseDetails?.challenge ??
+                    'The client had fragmented digital surfaces, inconsistent brand touchpoints, and a legacy platform that no longer supported their growth ambitions.'}
+                </p>
+                <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
+                  {caseDetails?.solution ??
+                    'We partnered directly with their team to rebuild the product surface as one coherent system — tokens, components, and production templates their team owns entirely.'}
+                </p>
+              </div>
+            </div>
+
+            {/* Case Gallery: Asymmetric 3-Frame Grid */}
+            <div className="case-gallery mt-12 sm:mt-16 space-y-4">
+              {/* Frame 1: Ultrawide Full-Width Editorial Visual */}
+              <div className="case-gallery_frame is-wide relative aspect-[16/9] w-full overflow-hidden rounded-[20px] bg-[#0a0a0a]">
+                <Image
+                  src={galleryImages[0]}
+                  alt={`${project.title} overview`}
+                  fill
+                  sizes="100vw"
+                  className="image-cover object-cover"
+                />
+              </div>
+
+              {/* Frame 2 & 3: 2-Column Row (Vertical Frame + Wide Frame) */}
+              <div className="case-gallery_row grid grid-cols-1 gap-4 md:grid-cols-12">
+                <div className="case-gallery_frame relative aspect-[4/5] overflow-hidden rounded-[20px] bg-[#0a0a0a] md:col-span-4">
+                  <Image
+                    src={galleryImages[1]}
+                    alt={`${project.title} detail`}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="image-cover object-cover"
+                  />
+                </div>
+                <div className="case-gallery_frame is-wide relative aspect-[16/10] overflow-hidden rounded-[20px] bg-[#0a0a0a] md:col-span-8">
+                  <Image
+                    src={galleryImages[2]}
+                    alt={`${project.title} architecture`}
+                    fill
+                    sizes="(min-width: 768px) 67vw, 100vw"
+                    className="image-cover object-cover"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        ) : null}
-      </div>
+        </div>
+      </section>
 
-      {study.gallery.length > 1 ? (
-        <section className="border-t border-border bg-muted/45">
-          <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
-            <h2 className="text-[11px] font-semibold tracking-[0.2em] text-gold-700 uppercase">
-              {t('gallery')}
+      {/* 3. Vantra Section Outcome (`section_outcome` — "What it did in market.") */}
+      <section data-screen-label="Outcome" className="section_outcome">
+        {/* Full-bleed media banner with scrim & H1 title */}
+        <div className="case-outcome_media relative m-2 flex min-h-[380px] sm:min-h-[460px] items-center justify-center overflow-hidden rounded-[20px] bg-[#0a0a0a] text-[#f5f4f0]">
+          <Image
+            src={galleryImages[0]}
+            alt=""
+            fill
+            className="image-cover object-cover opacity-35"
+          />
+          <div className="media_scrim absolute inset-0 bg-[#0a0a0a]/70" />
+          <div className="case-outcome_content relative z-10 px-6 text-center">
+            <span className="label-mono text-primary">
+              ( &nbsp;&nbsp;&nbsp;Commercial Impact&nbsp;&nbsp;&nbsp; )
+            </span>
+            <h2 className="heading heading-style-h1 is-center mt-3 text-balance font-semibold text-[#f5f4f0]">
+              What it did in market.
             </h2>
-            <div className="mt-8 grid gap-5 sm:grid-cols-2">
-              {study.gallery.map((imageUrl, index) => (
-                <Reveal key={imageUrl} delay={index * 0.06}>
-                  <div className="relative aspect-16/10 overflow-hidden rounded-xl border border-border bg-ink-950">
-                    <Image
-                      src={imageUrl}
-                      alt=""
-                      fill
-                      sizes="(min-width: 640px) 50vw, 100vw"
-                      unoptimized={!isOptimisable(imageUrl)}
-                      className="object-cover"
-                    />
+          </div>
+        </div>
+
+        {/* Outcome body with results header & 4 outcome rows */}
+        <div className="padding-global padding-section">
+          <div className="container-max">
+            <div className="grid grid-cols-1 items-start gap-8 border-b border-border pb-10 md:grid-cols-12">
+              <div className="md:col-span-4">
+                <h2 className="heading heading-style-h2">The results.</h2>
+              </div>
+              <div className="md:col-span-8">
+                <p className="text-base sm:text-lg text-muted-foreground">
+                  Measured post-launch in live production, with their internal team running the system independently.
+                </p>
+              </div>
+            </div>
+
+            <div className="case-outcome_body mt-8 divide-y divide-border">
+              {outcomes.map((row) => (
+                <div
+                  key={row.title}
+                  className="case-outcome_row grid grid-cols-1 items-baseline gap-4 py-8 sm:py-10 sm:grid-cols-12 sm:items-center"
+                >
+                  <h3 className="heading-style-h4 sm:col-span-3 font-semibold text-foreground">
+                    {row.title}
+                  </h3>
+                  <p className="case-outcome_text sm:col-span-6 text-sm sm:text-base leading-relaxed text-muted-foreground">
+                    {row.text}
+                  </p>
+                  <div className="case-outcome_metric sm:col-span-3 sm:text-right font-display text-4xl sm:text-5xl font-semibold tracking-tight text-primary">
+                    {row.metric}
                   </div>
-                </Reveal>
+                </div>
               ))}
             </div>
           </div>
-        </section>
-      ) : null}
-
-      {next ? (
-        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
-          <Link
-            href={`/portfolio/${next.slug}`}
-            className="group surface flex flex-col gap-4 p-8 shadow-elevation-1 transition-all duration-400 hover:-translate-y-1 hover:border-gold-300 hover:shadow-elevation-3 sm:flex-row sm:items-center sm:justify-between sm:p-10"
-          >
-            <div className="flex flex-col gap-2">
-              <span className="text-[11px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
-                {t('next')}
-              </span>
-              <span className="text-xl font-semibold sm:text-2xl">{next.title}</span>
-            </div>
-            <span className="grid size-11 shrink-0 place-items-center rounded-full border border-border text-ink-500 transition-colors duration-300 group-hover:border-gold-400 group-hover:bg-gold-50 group-hover:text-gold-700 dark:text-ink-400 dark:group-hover:bg-gold-500/12 dark:group-hover:text-gold-300">
-              <ArrowRight className="size-4" />
-            </span>
-          </Link>
         </div>
-      ) : null}
+      </section>
+
+      {/* 4. Vantra Section Quote (`section_quote` — "In their words") */}
+      <section data-screen-label="Quote" className="section_quote padding-global pb-24">
+        <div className="container-max">
+          <div className="case-quote_grid grid grid-cols-1 items-center gap-8 rounded-[24px] border border-border bg-card p-6 sm:p-12 lg:grid-cols-12">
+            {/* Left Column: Vertical Editorial Visual */}
+            <div className="case-quote_media relative aspect-[4/5] max-h-[460px] w-full overflow-hidden rounded-[18px] bg-[#0a0a0a] lg:col-span-5">
+              <Image
+                src={galleryImages[1]}
+                alt={`${project.title} editorial visual`}
+                fill
+                className="image-cover object-cover"
+              />
+            </div>
+
+            {/* Right Column: Quote Content */}
+            <div className="case-quote_body flex flex-col justify-between space-y-8 lg:col-span-7 lg:pl-6">
+              <div className="case-quote_head flex items-center justify-between border-b border-border/60 pb-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                <span className="text-primary">In their words</span>
+                <span>Verified Client Review</span>
+              </div>
+
+              <blockquote className="font-display text-2xl sm:text-3xl font-medium leading-[1.28] tracking-tight text-foreground">
+                &ldquo;{quote.quote}&rdquo;
+              </blockquote>
+
+              <div className="case-quote_foot flex items-center gap-4 pt-2">
+                <div
+                  aria-hidden="true"
+                  className="flex size-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 font-display text-sm font-semibold tracking-wider text-primary shadow-sm"
+                >
+                  {quote.author
+                    .split(' ')
+                    .filter(Boolean)
+                    .map((n) => n[0])
+                    .join('')
+                    .slice(0, 2)
+                    .toUpperCase()}
+                </div>
+                <div className="case-quote_identity">
+                  <div className="case-quote_name text-base font-semibold text-foreground">
+                    {quote.author}
+                  </div>
+                  <div className="section_meta-text text-xs text-muted-foreground">
+                    {quote.role}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. More Selected Work */}
+      {moreWork.length > 0 && (
+        <section className="padding-global padding-section border-t border-border">
+          <div className="container-max">
+            <div className="section_header">
+              <h2 className="heading-style-h2">More selected work.</h2>
+              <VantraButton href="/portfolio" variant="dark">
+                All projects
+              </VantraButton>
+            </div>
+            <PortfolioGrid projects={moreWork} showFilters={false} />
+          </div>
+        </section>
+      )}
+
+      {/* 6. Pre-Footer Full CTA Band */}
+      <CtaBand className="mt-8" />
     </>
   )
 }

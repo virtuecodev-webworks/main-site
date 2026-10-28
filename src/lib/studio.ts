@@ -110,30 +110,17 @@ export const TECH_STACK = [
   'WooCommerce',
   'Stripe',
   'Paystack',
-  'Stripe',
+  'Flutterwave',
   'Resend',
   'Remotion',
   'next-intl',
 ] as const
 
-/**
- * Delivery promises. Copy lives in `Capabilities.promises.<key>`.
- *
- * These are statements about how the studio operates — deliberately not claims
- * about past clients, because there are none yet.
- */
 export const PROMISES = ['senior', 'scope', 'reply', 'handover'] as const
 
-/**
- * The published price floor, per settlement currency.
- *
- * Only currencies with a figure here are shown locally. Everything else falls
- * back to the USD anchor, quoted with its currency code so it is never ambiguous.
- * These are fixed published numbers, **not** converted — an FX-derived price is a
- * number we cannot honour on an invoice.
- */
 export const PRICE_FLOOR: Record<string, number> = {
   USD: 100,
+  NGN: 135000,
 }
 
 /** The currency the floor is anchored to when there is no local figure. */

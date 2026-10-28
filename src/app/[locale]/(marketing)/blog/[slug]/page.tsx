@@ -4,10 +4,9 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { Badge } from '@/components/ui/badge'
-import { BlogCard } from '@/components/site/blog-card'
-import { SectionHeading } from '@/components/site/section-heading'
-import { Reveal } from '@/components/motion/reveal'
+import { JournalSection } from '@/components/site/journal-section'
+import { CtaBand } from '@/components/site/cta-band'
+import { VirtueMark } from '@/components/brand/virtue-mark'
 import {
   PLACEHOLDER_POSTS,
   getPostBySlug,
@@ -16,6 +15,7 @@ import {
   toPostCard,
   type MarkdownBlock,
 } from '@/lib/content'
+import { PHOTOS } from '@/lib/photos'
 import { locales } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo'
 
@@ -56,17 +56,16 @@ export async function generateMetadata({
   return { ...base, title: post.title, description: post.excerpt }
 }
 
-/** Renders the parsed Markdown body in a readable prose column. */
 function ArticleBody({ blocks }: { blocks: MarkdownBlock[] }) {
   return (
-    <div className="flex flex-col gap-5 text-[15.5px] leading-[1.85] text-ink-700 dark:text-ink-200">
+    <div className="article_prose flex flex-col gap-6 text-[16.5px] leading-[1.78] text-foreground/85">
       {blocks.map((block, index) => {
         if (block.type === 'heading') {
           const Heading = block.level === 3 ? 'h3' : 'h2'
           return (
             <Heading
               key={index}
-              className="font-sans mt-6 text-xl leading-snug font-semibold text-foreground sm:text-2xl"
+              className="heading-style-h3 mt-8 text-foreground"
             >
               {block.text}
             </Heading>
@@ -75,10 +74,10 @@ function ArticleBody({ blocks }: { blocks: MarkdownBlock[] }) {
 
         if (block.type === 'list') {
           return (
-            <ul key={index} className="flex flex-col gap-2.5 pl-1">
+            <ul key={index} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6">
               {block.items.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-gold-500" />
+                <li key={item} className="flex items-start gap-3 text-[15px]">
+                  <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -107,7 +106,7 @@ export default async function BlogPostPage({
 
   const related = (await getPublishedPosts())
     .filter((entry) => entry.slug !== post.slug)
-    .slice(0, 3)
+    .slice(0, 4)
     .map(toPostCard)
 
   const formattedDate = new Intl.DateTimeFormat(locale, {
@@ -117,95 +116,123 @@ export default async function BlogPostPage({
   }).format(new Date(post.publishedAt))
 
   const blocks = parseMarkdown(post.body)
+  const cover = post.coverUrl ?? PHOTOS.blog.performance
 
   return (
     <>
-      <div className="mx-auto max-w-7xl px-5 pt-16 sm:px-8 sm:pt-20">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-[12.5px] text-muted-foreground transition-colors hover:text-gold-700"
-        >
-          <ArrowLeft className="size-3.5" />
-          {t('back')}
-        </Link>
+      {/* 1. Vantra Article Header (`section.section_article-hero`) */}
+      <section className="section_article-hero padding-global pt-28 pb-10 sm:pt-36">
+        <div className="container-max">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.04em] text-muted-foreground uppercase transition-colors hover:text-primary"
+            >
+              <ArrowLeft className="size-3.5" />
+              <span>{t('back')}</span>
+            </Link>
 
-        <div className="mx-auto mt-8 max-w-3xl">
-          {post.tags.length ? (
-            <ul className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap items-center gap-2">
               {post.tags.map((tag) => (
-                <li key={tag}>
-                  <Badge variant="outline">{tag}</Badge>
-                </li>
+                <span key={tag} className="label-mono text-primary">
+                  ( &nbsp;&nbsp;{tag}&nbsp;&nbsp; )
+                </span>
               ))}
-            </ul>
-          ) : null}
+            </div>
+          </div>
 
-          <Reveal immediate>
-            <h1 className="mt-5 text-[2rem] leading-[1.12] font-semibold text-balance sm:text-4xl lg:text-[2.75rem]">
-              {post.title}
-            </h1>
-          </Reveal>
+          <h1 className="heading-style-h1 mt-10 max-w-[18ch] text-balance text-foreground">
+            {post.title}
+          </h1>
 
-          {post.excerpt ? (
-            <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          {post.excerpt && (
+            <p className="mt-6 max-w-[56ch] text-lg leading-relaxed text-muted-foreground sm:text-xl">
               {post.excerpt}
             </p>
-          ) : null}
+          )}
 
-          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-5 text-[12.5px] text-muted-foreground">
-            <span>
-              {t('publishedOn')}{' '}
-              <time dateTime={post.publishedAt} className="font-medium text-ink-700 dark:text-ink-200">
-                {formattedDate}
-              </time>
-            </span>
-            <span aria-hidden className="hidden size-1 rounded-full bg-border sm:block" />
-            <span>{t('readTime', { minutes: post.readingMinutes })}</span>
-            <span aria-hidden className="hidden size-1 rounded-full bg-border sm:block" />
-            <span className="font-medium text-ink-700 dark:text-ink-200">{post.author}</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto mt-12 max-w-5xl px-5 sm:px-8">
-        <div className="relative aspect-16/9 overflow-hidden rounded-2xl border border-border bg-muted">
-          {post.coverUrl ? (
+          {/* 21:9 Panoramic Article Cover */}
+          <div className="relative mt-12 aspect-[16/9] w-full overflow-hidden rounded-[20px] bg-[#0a0a0a] sm:aspect-[21/9]">
             <Image
-              src={post.coverUrl}
+              src={cover}
               alt={post.title}
               fill
               priority
-              sizes="(min-width: 1024px) 1024px, 100vw"
+              sizes="100vw"
               className="object-cover"
             />
-          ) : (
-            <div aria-hidden className="grid size-full place-items-center bg-ink-950">
-              <span className="gold-text font-sans text-5xl font-bold opacity-80">
-                {post.title.slice(0, 2).toUpperCase()}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-2xl px-5 py-16 sm:px-8 sm:py-20">
-        <article>
-          <ArticleBody blocks={blocks} />
-        </article>
-      </div>
-
-      {related.length ? (
-        <section className="border-t border-border bg-muted/45">
-          <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
-            <SectionHeading title={t('relatedTitle')} />
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {related.map((entry, index) => (
-                <BlogCard key={entry.slug} post={entry} delay={index * 0.06} />
-              ))}
-            </div>
           </div>
-        </section>
-      ) : null}
+        </div>
+      </section>
+
+      {/* 2. Vantra 12-Col Sticky Left Author Rail + Right Prose Column */}
+      <section className="padding-global padding-section">
+        <div className="container-max">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
+            {/* Sticky Left Rail (`.article_rail`) */}
+            <aside className="article_rail flex flex-col gap-6 rounded-2xl border border-border bg-card p-6 lg:sticky lg:top-24 lg:col-span-4">
+              <div className="flex items-center gap-3.5 border-b border-border pb-5">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#0a0a0a] p-2">
+                  <VirtueMark className="size-full" animate={false} tone="invert" />
+                </span>
+                <div>
+                  <div className="font-display text-sm font-semibold text-foreground">
+                    {post.author}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Principal Engineering &amp; Design
+                  </div>
+                </div>
+              </div>
+
+              <dl className="space-y-3 text-xs">
+                <div className="flex items-center justify-between">
+                  <dt className="label-mono-xs text-muted-foreground">{t('publishedOn')}</dt>
+                  <dd className="font-medium text-foreground">
+                    <time dateTime={post.publishedAt}>{formattedDate}</time>
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="label-mono-xs text-muted-foreground">Reading time</dt>
+                  <dd className="font-mono text-foreground">
+                    {t('readTime', { minutes: post.readingMinutes })}
+                  </dd>
+                </div>
+              </dl>
+
+              {post.tags.length > 0 && (
+                <div className="border-t border-border pt-4">
+                  <span className="label-mono-xs text-muted-foreground">Topics</span>
+                  <ul className="mt-2.5 flex flex-wrap gap-1.5">
+                    {post.tags.map((tag) => (
+                      <li
+                        key={tag}
+                        className="rounded-md border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-foreground"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </aside>
+
+            {/* Right Prose Column */}
+            <article className="lg:col-span-7 lg:col-start-6">
+              <ArticleBody blocks={blocks} />
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. More Notes from the Studio */}
+      {related.length > 0 && (
+        <div className="border-t border-border">
+          <JournalSection posts={related} />
+        </div>
+      )}
+
+      <CtaBand className="mt-8" />
     </>
   )
 }

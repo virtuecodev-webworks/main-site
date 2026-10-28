@@ -10,7 +10,7 @@ import {
   PrimaryButton,
   SecurityPill,
 } from './base/shell'
-import { TEXT_DARK, TEXT_MUTED_DARK, SITE } from './base/tokens'
+import { TEXT_DARK, TEXT_MUTED_DARK, SITE, CARD_WELL, BORDER_DIVIDER, MONO_STACK } from './base/tokens'
 
 export interface EnquiryAdminProps {
   id: string
@@ -38,13 +38,12 @@ export function EnquiryAdminEmail({
   timeline,
   message,
   locale,
-  submittedAt,
 }: EnquiryAdminProps) {
   const adminUrl = `${SITE}/en/admin/inquiries`
 
   return (
-    <Shell preheader={`New Lead: ${name} · ${service ?? 'General Inquiry'}`}>
-      <CardHeadline>🔔 New Client Lead</CardHeadline>
+    <Shell preheader={`New Lead: ${name} · ${service ?? 'General Inquiry'}`} eyebrow="Admin Lead Alert">
+      <CardHeadline>New Client Lead</CardHeadline>
       <CardSubtext>A prospective client just submitted an enquiry through the website.</CardSubtext>
 
       {/* Details Table */}
@@ -54,9 +53,9 @@ export function EnquiryAdminEmail({
         cellPadding={0}
         cellSpacing={0}
         style={{
-          background: '#F8FAFC',
-          border: '1px solid #E2E8F0',
-          borderRadius: 14,
+          background: CARD_WELL,
+          border: `1px solid ${BORDER_DIVIDER}`,
+          borderRadius: 16,
           overflow: 'hidden',
           fontSize: 13,
           margin: '18px 0 20px',
@@ -73,8 +72,8 @@ export function EnquiryAdminEmail({
             ['Timeline', timeline ?? 'Flexible'],
             ['Locale', locale],
           ].map(([label, val], idx) => (
-            <tr key={label} style={{ borderBottom: idx < 7 ? '1px solid #E2E8F0' : 'none' }}>
-              <td style={{ padding: '10px 14px', color: '#6B7280', fontWeight: 600, width: '35%' }}>
+            <tr key={label} style={{ borderBottom: idx < 7 ? `1px solid ${BORDER_DIVIDER}` : 'none' }}>
+              <td style={{ padding: '10px 14px', color: TEXT_MUTED_DARK, fontWeight: 500, width: '35%' }}>
                 {label}
               </td>
               <td style={{ padding: '10px 14px', color: TEXT_DARK, fontWeight: 600, textAlign: 'right' }}>
@@ -88,18 +87,28 @@ export function EnquiryAdminEmail({
       {/* Message Quote */}
       <div
         style={{
-          background: '#FFFFFF',
-          border: '1.5px solid #E5E7EB',
-          borderRadius: 12,
+          background: CARD_WELL,
+          border: `1px solid ${BORDER_DIVIDER}`,
+          borderRadius: 14,
           padding: '14px 16px',
           textAlign: 'left',
           marginBottom: 20,
         }}
       >
-        <div style={{ fontSize: 11, fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', marginBottom: 6 }}>
-          Client Message:
+        <div
+          style={{
+            fontFamily: MONO_STACK,
+            fontSize: 10.5,
+            fontWeight: 600,
+            letterSpacing: '0.16em',
+            color: TEXT_MUTED_DARK,
+            textTransform: 'uppercase',
+            marginBottom: 6,
+          }}
+        >
+          ( Client Message )
         </div>
-        <div style={{ fontSize: 13, color: TEXT_DARK, lineHeight: 1.6, fontStyle: 'italic' }}>
+        <div style={{ fontSize: 13.5, color: TEXT_DARK, lineHeight: 1.6 }}>
           &ldquo;{message}&rdquo;
         </div>
       </div>

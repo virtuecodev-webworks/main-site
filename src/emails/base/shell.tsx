@@ -1,30 +1,42 @@
 import * as React from 'react'
 import {
-  CANVAS_BG, CARD_BG, SQUIRCLE_BG,
-  TEXT_DARK, TEXT_MUTED_DARK, TEXT_FAINT_DARK,
+  CANVAS_BG,
+  CARD_BG,
+  CARD_WELL,
+  SQUIRCLE_BG,
+  TEXT_DARK,
+  TEXT_FAINT_DARK,
   TEXT_MUTED_LIGHT,
-  ALERT_BG, ALERT_BORDER, ALERT_TITLE, ALERT_TEXT,
-  PILL_BG, PILL_TEXT,
-  BORDER_DIGIT, BORDER_DIVIDER,
-  FONT_SANS, FONT_MONO,
-  LOGO_URL, SITE, CONTACT,
+  ALERT_BG,
+  ALERT_BORDER,
+  ALERT_TITLE,
+  ALERT_TEXT,
+  PILL_BG,
+  PILL_TEXT,
+  BORDER_DIGIT,
+  BORDER_DIVIDER,
+  FONT_DISPLAY,
+  FONT_SANS,
+  FONT_MONO,
+  LOGO_URL,
+  SITE,
   GOLD,
 } from './tokens'
 import { AGENCY } from '@/lib/constants'
 
 export interface ShellProps {
   preheader: string
+  eyebrow?: string
   children: React.ReactNode
 }
 
 /**
- * Luxury Floating Card on Dark Cosmic Pedestal Shell
- * Precisely matched to the screenshot aesthetic:
- * - Deep dark space outer canvas with radiant sapphire spotlight pedestal
- * - Crisp elevated white card with rounded squircle logo
- * - Elegant circular social pills and copyright footer
+ * Vantra Studio × Virtue & Co. Webworks Email Shell.
+ * - Deep Obsidian (`#0A0A0A`) outer canvas with warm gold radial atmosphere
+ * - Architectural Warm Bone (`#F5F4F0`) main container with `20px` radius
+ * - Top metadata bar with `#0A0A0A` logo badge and `( VIRTUE & CO. )` mono tag
  */
-export function Shell({ preheader, children }: ShellProps) {
+export function Shell({ preheader, eyebrow = 'Studio Dispatch', children }: ShellProps) {
   const year = new Date().getFullYear()
 
   return (
@@ -60,161 +72,118 @@ export function Shell({ preheader, children }: ShellProps) {
           {preheader}
         </div>
 
-        {/* Outer Canvas Table */}
+        {/* Outer Obsidian Canvas */}
         <table
           role="presentation"
           width="100%"
           cellPadding={0}
           cellSpacing={0}
           style={{
-            background: `${CANVAS_BG} radial-gradient(circle at 50% 100%, rgba(37, 99, 235, 0.45) 0%, rgba(15, 23, 42, 0) 70%) no-repeat`,
-            padding: '54px 16px 48px',
+            background: `${CANVAS_BG} radial-gradient(circle at 50% 0%, rgba(220, 170, 40, 0.16) 0%, rgba(10, 10, 10, 0) 65%) no-repeat`,
+            padding: '44px 14px 48px',
           }}
         >
           <tbody>
             <tr>
               <td align="center">
-                {/* ── Main Elevated White Card ── */}
+                {/* ── Main Vantra Architectural Card (`#F5F4F0`) ── */}
                 <table
                   role="presentation"
-                  width={460}
+                  width={520}
                   cellPadding={0}
                   cellSpacing={0}
                   style={{
-                    maxWidth: 460,
+                    maxWidth: 520,
                     width: '100%',
                     background: CARD_BG,
-                    borderRadius: 30,
+                    borderRadius: 20,
                     overflow: 'hidden',
-                    boxShadow: '0 25px 70px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+                    boxShadow: '0 28px 70px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(245, 244, 240, 0.14)',
                   }}
                 >
                   <tbody>
+                    {/* Top Architectural Header Bar */}
                     <tr>
-                      <td style={{ padding: '44px 34px 38px', textAlign: 'center' }}>
-                        {/* ── Logo Squircle Badge ── */}
-                        <div style={{ textAlign: 'center', marginBottom: 22 }}>
-                          <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: '0 auto' }}>
-                            <tbody>
-                              <tr>
-                                <td
-                                  align="center"
-                                  style={{
-                                    width: 64,
-                                    height: 64,
-                                    background: SQUIRCLE_BG,
-                                    borderRadius: 18,
-                                    boxShadow: '0 10px 24px rgba(0, 0, 0, 0.15)',
-                                    verticalAlign: 'middle',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  <img
-                                    src={LOGO_URL}
-                                    width={40}
-                                    height={40}
-                                    alt="Virtue &amp; Co."
-                                    style={{
-                                      display: 'inline-block',
-                                      width: 40,
-                                      height: 40,
-                                      objectFit: 'contain',
-                                      verticalAlign: 'middle',
-                                    }}
-                                  />
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-
-                        {/* Card Content Body */}
-                        {children}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* ── Pedestal Footer Area (Outside White Card) ── */}
-                <table
-                  role="presentation"
-                  width={460}
-                  cellPadding={0}
-                  cellSpacing={0}
-                  style={{ maxWidth: 460, width: '100%', marginTop: 32, textAlign: 'center' }}
-                >
-                  <tbody>
-                    {/* Social Media Pill Buttons */}
-                    <tr>
-                      <td align="center" style={{ paddingBottom: 22 }}>
-                        <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: '0 auto' }}>
+                      <td
+                        style={{
+                          padding: '24px 32px 20px',
+                          borderBottom: `1px solid ${BORDER_DIVIDER}`,
+                        }}
+                      >
+                        <table role="presentation" width="100%" cellPadding={0} cellSpacing={0}>
                           <tbody>
                             <tr>
-                              {/* Twitter / X */}
-                              <td style={{ padding: '0 6px' }}>
-                                <a
-                                  href="https://twitter.com"
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  style={{
-                                    display: 'inline-block',
-                                    width: 42,
-                                    height: 42,
-                                    borderRadius: '50%',
-                                    background: '#FFFFFF',
-                                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
-                                    textAlign: 'center',
-                                    lineHeight: '42px',
-                                    textDecoration: 'none',
-                                    fontSize: 16,
-                                  }}
-                                >
-                                  𝕏
-                                </a>
+                              <td align="left" style={{ verticalAlign: 'middle' }}>
+                                <table role="presentation" cellPadding={0} cellSpacing={0}>
+                                  <tbody>
+                                    <tr>
+                                      <td
+                                        style={{
+                                          width: 38,
+                                          height: 38,
+                                          background: SQUIRCLE_BG,
+                                          borderRadius: 10,
+                                          textAlign: 'center',
+                                          verticalAlign: 'middle',
+                                        }}
+                                      >
+                                        <img
+                                          src={LOGO_URL}
+                                          width={24}
+                                          height={24}
+                                          alt="Virtue & Co."
+                                          style={{
+                                            display: 'inline-block',
+                                            width: 24,
+                                            height: 24,
+                                            objectFit: 'contain',
+                                            verticalAlign: 'middle',
+                                          }}
+                                        />
+                                      </td>
+                                      <td style={{ paddingLeft: 12, verticalAlign: 'middle' }}>
+                                        <div
+                                          style={{
+                                            fontFamily: FONT_DISPLAY,
+                                            fontSize: 14,
+                                            fontWeight: 700,
+                                            letterSpacing: '-0.03em',
+                                            color: TEXT_DARK,
+                                            lineHeight: 1.1,
+                                          }}
+                                        >
+                                          VIRTUE <span style={{ color: GOLD }}>&amp;</span> CO.
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: 9.5,
+                                            fontWeight: 600,
+                                            letterSpacing: '0.2em',
+                                            color: TEXT_FAINT_DARK,
+                                            textTransform: 'uppercase',
+                                            marginTop: 2,
+                                          }}
+                                        >
+                                          WEBWORKS
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </td>
-                              {/* Instagram */}
-                              <td style={{ padding: '0 6px' }}>
-                                <a
-                                  href="https://instagram.com"
-                                  target="_blank"
-                                  rel="noreferrer"
+                              <td align="right" style={{ verticalAlign: 'middle' }}>
+                                <span
                                   style={{
-                                    display: 'inline-block',
-                                    width: 42,
-                                    height: 42,
-                                    borderRadius: '50%',
-                                    background: '#FFFFFF',
-                                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
-                                    textAlign: 'center',
-                                    lineHeight: '42px',
-                                    textDecoration: 'none',
-                                    fontSize: 17,
+                                    fontFamily: FONT_MONO,
+                                    fontSize: 10.5,
+                                    fontWeight: 600,
+                                    letterSpacing: '0.06em',
+                                    textTransform: 'uppercase',
+                                    color: TEXT_FAINT_DARK,
                                   }}
                                 >
-                                  📸
-                                </a>
-                              </td>
-                              {/* Studio / Web */}
-                              <td style={{ padding: '0 6px' }}>
-                                <a
-                                  href={SITE}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  style={{
-                                    display: 'inline-block',
-                                    width: 42,
-                                    height: 42,
-                                    borderRadius: '50%',
-                                    background: '#FFFFFF',
-                                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
-                                    textAlign: 'center',
-                                    lineHeight: '42px',
-                                    textDecoration: 'none',
-                                    fontSize: 17,
-                                  }}
-                                >
-                                  🌐
-                                </a>
+                                  ( &nbsp;{eyebrow}&nbsp; )
+                                </span>
                               </td>
                             </tr>
                           </tbody>
@@ -222,26 +191,60 @@ export function Shell({ preheader, children }: ShellProps) {
                       </td>
                     </tr>
 
-                    {/* Legal Copyright */}
+                    {/* Main Body */}
                     <tr>
-                      <td style={{ fontSize: 12.5, color: TEXT_MUTED_LIGHT, paddingBottom: 6 }}>
-                        All rights reserved to {AGENCY.name} © {year}.
+                      <td style={{ padding: '36px 32px 34px', textAlign: 'left' }}>
+                        {children}
                       </td>
                     </tr>
+                  </tbody>
+                </table>
 
-                    {/* Contact & Support */}
+                {/* ── Dark Footer Area (`#0A0A0A` Pedestal) ── */}
+                <table
+                  role="presentation"
+                  width={520}
+                  cellPadding={0}
+                  cellSpacing={0}
+                  style={{ maxWidth: 520, width: '100%', marginTop: 28, textAlign: 'center' }}
+                >
+                  <tbody>
                     <tr>
-                      <td style={{ fontSize: 12, color: 'rgba(255, 255, 255, 0.65)' }}>
-                        Email:{' '}
+                      <td
+                        style={{
+                          fontFamily: FONT_MONO,
+                          fontSize: 10.5,
+                          letterSpacing: '0.08em',
+                          textTransform: 'uppercase',
+                          color: GOLD,
+                          paddingBottom: 10,
+                        }}
+                      >
+                        ( &nbsp;&nbsp;&nbsp;One Team, No Handoffs&nbsp;&nbsp;&nbsp; )
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontSize: 12, color: TEXT_MUTED_LIGHT, paddingBottom: 6 }}>
+                        © {year} {AGENCY.name}. All rights reserved.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontSize: 12, color: TEXT_MUTED_LIGHT }}>
                         <a
-                          href={`mailto:${AGENCY.fallbackEmail}`}
-                          style={{ color: '#FFFFFF', textDecoration: 'none', fontWeight: 600 }}
+                          href={`mailto:${AGENCY.email}`}
+                          style={{ color: '#F5F4F0', textDecoration: 'none', fontWeight: 500 }}
                         >
-                          {AGENCY.fallbackEmail}
+                          {AGENCY.email}
                         </a>
                         {'   '}·{'   '}
-                        Contact Number:{' '}
-                        <span style={{ color: '#FFFFFF', fontWeight: 600 }}>{AGENCY.phone}</span>
+                        <span style={{ color: '#F5F4F0', fontWeight: 500 }}>{AGENCY.phone}</span>
+                        {'   '}·{'   '}
+                        <a
+                          href={SITE}
+                          style={{ color: GOLD, textDecoration: 'none', fontWeight: 500 }}
+                        >
+                          {AGENCY.domain}
+                        </a>
                       </td>
                     </tr>
                   </tbody>
@@ -262,7 +265,7 @@ export function DigitBoxes({ code }: { code: string }) {
   const digits = code.replace(/\s+/g, '').split('')
 
   return (
-    <div style={{ margin: '14px 0 16px', textAlign: 'center' }}>
+    <div style={{ margin: '22px 0 22px', textAlign: 'center' }}>
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: '0 auto' }}>
         <tbody>
           <tr>
@@ -270,18 +273,18 @@ export function DigitBoxes({ code }: { code: string }) {
               <td key={idx} style={{ padding: '0 4px' }}>
                 <div
                   style={{
-                    width: 44,
-                    height: 52,
-                    lineHeight: '52px',
-                    background: '#FFFFFF',
+                    width: 46,
+                    height: 56,
+                    lineHeight: '56px',
+                    background: CARD_WELL,
                     border: `1.5px solid ${BORDER_DIGIT}`,
-                    borderRadius: 11,
+                    borderRadius: 12,
                     fontSize: 24,
                     fontWeight: 700,
-                    fontFamily: FONT_MONO,
+                    fontFamily: FONT_DISPLAY,
                     color: TEXT_DARK,
                     textAlign: 'center',
-                    boxShadow: '0 3px 8px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
+                    letterSpacing: '-0.02em',
                   }}
                 >
                   {digit}
@@ -296,12 +299,10 @@ export function DigitBoxes({ code }: { code: string }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Security Alert Box: "Was this request not made by you?"           */
+/*  Security Notice Box                                               */
 /* ------------------------------------------------------------------ */
 export function SecurityNotice({
   requestDate,
-  browser = 'Chrome browser',
-  os = 'macOS',
   actionText = 'ignore this email',
 }: {
   requestDate?: string
@@ -311,7 +312,7 @@ export function SecurityNotice({
 }) {
   const dateStr =
     requestDate ??
-    new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
 
   return (
     <div
@@ -321,51 +322,52 @@ export function SecurityNotice({
         borderRadius: 14,
         padding: '16px 20px',
         textAlign: 'left',
-        margin: '22px 0 20px',
+        margin: '22px 0 18px',
       }}
     >
       <div
         style={{
-          fontSize: 13,
+          fontSize: 12,
           fontWeight: 700,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
           color: ALERT_TITLE,
           marginBottom: 6,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
         }}
       >
-        <span style={{ fontSize: 15, lineHeight: 1 }}>⚠️</span>
-        <span>Was this request not made by you?</span>
+        Security Notice · {dateStr}
       </div>
-      <div style={{ fontSize: 12, color: ALERT_TEXT, lineHeight: 1.6 }}>
-        This code was generated from a request made using <strong>{browser}</strong> on{' '}
-        <strong>{os}</strong> on <strong>{dateStr}</strong>. If you did not initiate this request,
-        you can safely <strong>{actionText}</strong>.
+      <div style={{ fontSize: 12.5, color: ALERT_TEXT, lineHeight: 1.6 }}>
+        This single-use verification code was requested for your {AGENCY.name} account. Never share this code with anyone. If you did not initiate this request, you can safely <strong>{actionText}</strong>.
       </div>
     </div>
   )
 }
 
 /* ------------------------------------------------------------------ */
-/*  Security IP Pill: "● IP 192.135.152"                              */
+/*  Security Metadata Pill                                            */
 /* ------------------------------------------------------------------ */
-export function SecurityPill({ ip = '192.135.152' }: { ip?: string }) {
+export function SecurityPill({ label, ip }: { label?: string; ip?: string }) {
+  const display =
+    label ??
+    (ip && ip !== '192.135.152' ? ip : 'TLS 1.3 · Studio Auth Verified')
+
   return (
-    <div style={{ textAlign: 'center', marginTop: 16 }}>
+    <div style={{ textAlign: 'left', marginTop: 18 }}>
       <span
         style={{
           display: 'inline-block',
           background: PILL_BG,
           color: PILL_TEXT,
-          fontSize: 11,
+          fontSize: 10.5,
           fontWeight: 600,
-          padding: '5px 14px',
-          borderRadius: 999,
-          letterSpacing: '0.04em',
+          padding: '6px 14px',
+          borderRadius: 8,
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
         }}
       >
-        ● IP {ip}
+        <span style={{ color: GOLD }}>●</span> &nbsp;{display}
       </span>
     </div>
   )
@@ -378,13 +380,13 @@ export function CardHeadline({ children }: { children: React.ReactNode }) {
   return (
     <h1
       style={{
-        fontSize: 22,
+        fontSize: 28,
         fontWeight: 700,
         color: TEXT_DARK,
-        lineHeight: 1.35,
+        lineHeight: 1.08,
         margin: '0 0 10px',
-        letterSpacing: '-0.01em',
-        fontFamily: FONT_SANS,
+        letterSpacing: '-0.03em',
+        fontFamily: FONT_DISPLAY,
       }}
     >
       {children}
@@ -396,10 +398,10 @@ export function CardSubtext({ children }: { children: React.ReactNode }) {
   return (
     <p
       style={{
-        fontSize: 13,
+        fontSize: 14.5,
         color: TEXT_FAINT_DARK,
-        fontWeight: 500,
-        lineHeight: 1.5,
+        fontWeight: 400,
+        lineHeight: 1.55,
         margin: '0 0 18px',
       }}
     >
@@ -410,31 +412,34 @@ export function CardSubtext({ children }: { children: React.ReactNode }) {
 
 export function AutomatedMessageNote() {
   return (
-    <div style={{ fontSize: 12, color: TEXT_FAINT_DARK, margin: '14px 0 4px', textAlign: 'center' }}>
-      This is an automated message. <strong style={{ color: TEXT_DARK }}>Please do not reply.</strong>
+    <div style={{ fontSize: 12, color: TEXT_FAINT_DARK, margin: '14px 0 4px', textAlign: 'left' }}>
+      Automated studio security dispatch. Need help? Contact{' '}
+      <a href={`mailto:${AGENCY.email}`} style={{ color: TEXT_DARK, fontWeight: 600 }}>
+        {AGENCY.email}
+      </a>
+      .
     </div>
   )
 }
 
 export function PrimaryButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <div style={{ margin: '22px 0 16px', textAlign: 'center' }}>
+    <div style={{ margin: '24px 0 16px', textAlign: 'left' }}>
       <a
         href={href}
         style={{
           display: 'inline-block',
-          padding: '13px 32px',
-          background: 'linear-gradient(135deg, #111827 0%, #1F2937 100%)',
-          border: '1px solid #111827',
-          borderRadius: 999,
-          color: '#FFFFFF',
-          fontSize: 14,
-          fontWeight: 700,
+          padding: '13px 26px',
+          background: '#0A0A0A',
+          borderRadius: 12,
+          color: '#F5F4F0',
+          fontSize: 13.5,
+          fontWeight: 600,
+          letterSpacing: '-0.01em',
           textDecoration: 'none',
-          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
         }}
       >
-        {children}
+        {children} &nbsp;<span style={{ color: GOLD }}>↗</span>
       </a>
     </div>
   )
@@ -442,27 +447,27 @@ export function PrimaryButton({ href, children }: { href: string; children: Reac
 
 export function GoldButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <div style={{ margin: '22px 0 16px', textAlign: 'center' }}>
+    <div style={{ margin: '24px 0 16px', textAlign: 'left' }}>
       <a
         href={href}
         style={{
           display: 'inline-block',
-          padding: '13px 32px',
-          background: 'linear-gradient(135deg, #DCAA28 0%, #F59E0B 100%)',
-          borderRadius: 999,
-          color: '#08090C',
-          fontSize: 14,
-          fontWeight: 800,
+          padding: '13px 26px',
+          background: GOLD,
+          borderRadius: 12,
+          color: '#0A0A0A',
+          fontSize: 13.5,
+          fontWeight: 700,
+          letterSpacing: '-0.01em',
           textDecoration: 'none',
-          boxShadow: '0 6px 18px rgba(220, 170, 40, 0.3)',
         }}
       >
-        {children}
+        {children} &nbsp;↗
       </a>
     </div>
   )
 }
 
 export function Divider() {
-  return <div style={{ height: 1, background: BORDER_DIVIDER, margin: '22px 0' }} />
+  return <div style={{ height: 1, background: BORDER_DIVIDER, margin: '24px 0' }} />
 }

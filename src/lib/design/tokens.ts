@@ -38,24 +38,23 @@ export interface SiteDesign {
 }
 
 /**
- * The self-hosted, build-time faces. Selecting either keeps the bundled file
- * that `next/font` already put on `<html>`; anything else is fetched.
+ * The self-hosted, build-time faces matching Vantra Studio's typography:
+ * Instrument Sans for body/UI/mono labels, Inter for display/headings.
  */
-export const BRAND_FONT_BODY = 'Questrial'
-export const BRAND_FONT_DISPLAY = 'Questrial'
+export const BRAND_FONT_BODY = 'Instrument Sans'
+export const BRAND_FONT_DISPLAY = 'Inter'
 
 /**
- * The shipped design. Chosen so the derivation in `palette.ts` reproduces the
- * brand's own tokens - the derivation ratios in that file are tuned against
- * these exact values, and a self-check asserts it.
+ * The shipped design: Vantra Studio's Warm Bone (#f5f4f0) + Deep Ink (#0a0a0a)
+ * architecture paired with Virtue & Co. Webworks' Rich Gold (#dcaa28) accent.
  */
 export const DEFAULT_DESIGN: SiteDesign = {
   accent: '#dcaa28',
-  lightBackground: '#ffffff',
+  lightBackground: '#f5f4f0',
   lightSurface: '#ffffff',
-  darkBackground: '#0c0c0d',
+  darkBackground: '#0a0a0a',
   darkSurface: '#141416',
-  radius: 12,
+  radius: 16,
   fontBody: BRAND_FONT_BODY,
   fontDisplay: BRAND_FONT_DISPLAY,
   fonts: [],
@@ -108,25 +107,30 @@ export function isStoragePath(value: unknown): value is string {
 }
 
 export function isBrandFont(family: string): boolean {
-  return family === BRAND_FONT_BODY || family === BRAND_FONT_DISPLAY
+  return (
+    family === BRAND_FONT_BODY ||
+    family === BRAND_FONT_DISPLAY ||
+    family === 'Gropled' ||
+    family === 'Questrial'
+  )
 }
 
 /**
  * A CSS reference for one of the design's faces.
  *
- * `Inter` and `Gropled` resolve to the variables `next/font` already placed on
- * `<html>`, so choosing them keeps the bundled, preloaded files instead of
- * re-downloading the same family from a CDN under a different name.
+ * `Instrument Sans`, `Inter`, and `Gropled` resolve to the variables `next/font`
+ * already placed on `<html>`, so choosing them keeps the bundled, preloaded files
+ * instead of re-downloading the same family from a CDN under a different name.
  */
 export function familyRef(family: string): string {
-  if (
-    family === BRAND_FONT_BODY ||
-    family === BRAND_FONT_DISPLAY ||
-    family === 'Questrial' ||
-    family === 'Inter' ||
-    family === 'Gropled'
-  ) {
-    return 'var(--font-questrial)'
+  if (family === 'Instrument Sans' || family === 'Questrial') {
+    return 'var(--font-instrument-sans)'
+  }
+  if (family === 'Inter') {
+    return 'var(--font-inter)'
+  }
+  if (family === 'Gropled') {
+    return 'var(--font-gropled)'
   }
   return `'${family}'`
 }
@@ -134,6 +138,8 @@ export function familyRef(family: string): string {
 export function bodyFontStack(design: SiteDesign): string {
   return [
     familyRef(design.fontBody),
+    'var(--font-instrument-sans)',
+    'var(--font-inter)',
     'ui-sans-serif',
     'system-ui',
     '-apple-system',
@@ -146,16 +152,14 @@ export function bodyFontStack(design: SiteDesign): string {
 }
 
 /**
- * The display stack keeps the body face immediately behind the chosen face, for the
- * same reason the brand face does: a glyph the display font lacks - an arrow, a
- * `N`, an ellipsis - is then drawn in the site's own body face rather than in
- * whatever the browser defaults to.
+ * The display stack keeps the body face immediately behind the chosen face, so
+ * any glyph the display font lacks is drawn in the site's own body face.
  */
 export function displayFontStack(design: SiteDesign): string {
   return [
     familyRef(design.fontDisplay),
-    'var(--font-questrial)',
     'var(--font-inter)',
+    'var(--font-instrument-sans)',
     'ui-sans-serif',
     'system-ui',
     'sans-serif',
@@ -227,7 +231,10 @@ export function normalizeDesign(row: Partial<SiteDesign> | null | undefined): Si
   if (!row || typeof row !== 'object') return DEFAULT_DESIGN
 
   const rawBody = isFamilyName(row.fontBody) ? row.fontBody : DEFAULT_DESIGN.fontBody
-  const fontBody = rawBody === 'Inter' ? DEFAULT_DESIGN.fontBody : rawBody
+  const fontBody = rawBody === 'Questrial' ? DEFAULT_DESIGN.fontBody : rawBody
+
+  const rawDisplay = isFamilyName(row.fontDisplay) ? row.fontDisplay : DEFAULT_DESIGN.fontDisplay
+  const fontDisplay = rawDisplay === 'Questrial' ? DEFAULT_DESIGN.fontDisplay : rawDisplay
 
   return {
     accent: isHex(row.accent) ? row.accent : DEFAULT_DESIGN.accent,
@@ -239,7 +246,7 @@ export function normalizeDesign(row: Partial<SiteDesign> | null | undefined): Si
     darkSurface: isHex(row.darkSurface) ? row.darkSurface : DEFAULT_DESIGN.darkSurface,
     radius: clampRadius(row.radius),
     fontBody,
-    fontDisplay: isFamilyName(row.fontDisplay) ? row.fontDisplay : DEFAULT_DESIGN.fontDisplay,
+    fontDisplay,
     fonts: normalizeFonts(row.fonts),
   }
 }

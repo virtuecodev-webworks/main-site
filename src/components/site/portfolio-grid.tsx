@@ -2,21 +2,13 @@
 
 import * as React from 'react'
 import Image from 'next/image'
-import { ArrowUpRight, ExternalLink, Eye, Layers } from 'lucide-react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { ArrowUpRight, Layers } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Link } from '@/i18n/navigation'
 import { Reveal } from '@/components/motion/reveal'
 import { PROJECT_CATEGORIES, type ProjectCategory } from '@/lib/constants'
-import { CATEGORY_STYLES } from '@/lib/studio'
+import { PHOTOS } from '@/lib/photos'
 import type { ProjectCard } from '@/lib/portfolio'
 import { cn } from '@/lib/utils'
 
@@ -24,26 +16,70 @@ type Filter = 'all' | ProjectCategory
 
 export interface PortfolioGridProps {
   projects: ProjectCard[]
-  /** Categories that actually have work, so empty filters are hidden. */
   className?: string
-  /**
-   * Heading level for each project title: `2` on the portfolio index, where the
-   * tiles are the page content and sit under the page `h1`; `3` (default) when
-   * the grid is inside a section that already owns an `h2`.
-   */
   headingLevel?: 2 | 3
+  /** Show category filter controls (default: true). */
+  showFilters?: boolean
+  /** Render the filter bar as Vantra's fixed bottom frosted pill (used on `/portfolio`). */
+  floatingFilter?: boolean
 }
 
-/** Only Supabase-hosted covers go through the optimiser; others render as-is. */
-function isOptimisable(url: string | null) {
-  if (!url) return false
-  return /^https:\/\/[^/]+\.supabase\.(co|in)\/storage\/v1\/object\/public\//.test(url)
+const FALLBACK_COVERS = [
+  PHOTOS.workBand,
+  PHOTOS.services,
+  PHOTOS.collaboration,
+  PHOTOS.studio,
+  PHOTOS.process,
+]
+
+function isOptimisable(src: string): boolean {
+  if (src.startsWith('/media/')) return true
+  if (src.startsWith('/work/')) return true
+  if (src.startsWith('http://') || src.startsWith('https://')) return true
+  return false
 }
 
-export function PortfolioGrid({ projects, className, headingLevel = 3 }: PortfolioGridProps) {
+function ParallaxCoverImage({ src, alt }: { src: string; alt: string }) {
+  const ref = React.useRef<HTMLDivElement | null>(null)
+  const prefersReducedMotion = useReducedMotion()
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  })
+
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    prefersReducedMotion ? ['0%', '0%'] : ['-7%', '7%'],
+  )
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ y }}
+      className="pointer-events-none absolute -inset-y-6 inset-x-0 z-0"
+    >
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(min-width: 768px) 50vw, 100vw"
+        unoptimized={!isOptimisable(src)}
+        className="work_image object-cover transition-transform duration-700 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:scale-105"
+      />
+    </motion.div>
+  )
+}
+
+export function PortfolioGrid({
+  projects,
+  className,
+  headingLevel = 3,
+  showFilters = true,
+  floatingFilter = false,
+}: PortfolioGridProps) {
   const t = useTranslations('Portfolio')
-  const tCommon = useTranslations('Common')
-  const [preview, setPreview] = React.useState<ProjectCard | null>(null)
   const [filter, setFilter] = React.useState<Filter>('all')
 
   const available = React.useMemo(() => {
@@ -58,10 +94,12 @@ export function PortfolioGrid({ projects, className, headingLevel = 3 }: Portfol
     [projects, filter],
   )
 
+  const Heading: 'h2' | 'h3' = headingLevel === 2 ? 'h2' : 'h3'
+
   if (!projects.length) {
     return (
       <div className="surface grid place-items-center gap-3 px-6 py-20 text-center">
-        <Layers className="size-7 text-gold-500" />
+        <Layers className="size-7 text-primary" />
         <p className="text-base font-medium">{t('empty')}</p>
         <p className="max-w-md text-sm text-muted-foreground">{t('emptyAdminHint')}</p>
       </div>
@@ -69,192 +107,152 @@ export function PortfolioGrid({ projects, className, headingLevel = 3 }: Portfol
   }
 
   return (
-    <div className={cn('flex flex-col gap-8', className)}>
-      <Tabs
-        value={filter}
-        onValueChange={(value) => setFilter(value as Filter)}
-        className="flex flex-col gap-8"
-      >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <TabsList aria-label={t('title')}>
-            {filters.map((value) => (
-              <TabsTrigger key={value} value={value}>
-                {t(`filters.${value}`)}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <p className="text-[13px] text-muted-foreground">
-            {t('resultCount', { count: visible.length })}
-          </p>
-        </div>
-
-        {filters.map((value) => (
-          <TabsContent key={value} value={value} className="mt-0">
-            <ProjectTiles
-              projects={value === 'all' ? projects : projects.filter((p) => p.category === value)}
-              onPreview={setPreview}
-              headingLevel={headingLevel}
-            />
-          </TabsContent>
-        ))}
-      </Tabs>
-
-      <Dialog open={preview !== null} onOpenChange={(open) => !open && setPreview(null)}>
-        <DialogContent className="max-w-4xl p-4 sm:p-5">
-          <DialogHeader className="px-1">
-            <DialogTitle>{t('preview')}</DialogTitle>
-            <DialogDescription>
-              {preview?.title} · {t('previewHint')}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="overflow-hidden rounded-xl border border-border bg-muted">
-            {preview?.liveUrl ? (
-              <iframe
-                title={`${t('preview')} - ${preview.title}`}
-                src={preview.liveUrl}
-                className="h-[62vh] w-full bg-white"
-                loading="lazy"
-                referrerPolicy="no-referrer"
-                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-              />
-            ) : (
-              <div className="grid h-64 place-items-center text-sm text-muted-foreground">
-                {t('empty')}
-              </div>
-            )}
+    <div className={cn('flex flex-col gap-6', className)}>
+      {/* Inline Filter Header (when not using the floating bottom pill) */}
+      {showFilters && !floatingFilter && filters.length > 2 && (
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div
+            role="tablist"
+            aria-label={t('title')}
+            className="inline-flex flex-wrap items-center gap-1 rounded-xl border border-border bg-card p-1"
+          >
+            {filters.map((value) => {
+              const active = filter === value
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setFilter(value)}
+                  className={cn(
+                    'rounded-lg px-3.5 py-1.5 text-xs font-medium tracking-[0.02em] transition-all',
+                    active
+                      ? 'bg-[#0a0a0a] text-[#f5f4f0] dark:bg-[#f5f4f0] dark:text-[#0a0a0a]'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  {t(`filters.${value}`)}
+                </button>
+              )
+            })}
           </div>
 
-          {preview?.liveUrl ? (
-            <div className="flex justify-end px-1">
-              <Button asChild variant="outline" size="sm">
-                <a href={preview.liveUrl} target="_blank" rel="noreferrer noopener">
-                  {tCommon('visitSite')}
-                  <ArrowUpRight className="size-3.5" />
-                </a>
-              </Button>
-            </div>
-          ) : null}
-        </DialogContent>
-      </Dialog>
-    </div>
-  )
-}
+          <p className="label-mono text-muted-foreground">
+            ( &nbsp;&nbsp;&nbsp;{t('resultCount', { count: visible.length })}&nbsp;&nbsp;&nbsp; )
+          </p>
+        </div>
+      )}
 
-function ProjectTiles({
-  projects,
-  onPreview,
-  headingLevel,
-}: {
-  projects: ProjectCard[]
-  onPreview: (project: ProjectCard) => void
-  headingLevel: 2 | 3
-}) {
-  const t = useTranslations('Portfolio')
-  const tCommon = useTranslations('Common')
-  const Heading: 'h2' | 'h3' = headingLevel === 2 ? 'h2' : 'h3'
+      {/* Vantra 2-Column Square Work Grid (`.work_grid`) */}
+      <div className="work_grid grid grid-cols-1 gap-2 md:grid-cols-2">
+        {visible.map((project, index) => {
+          const coverSrc =
+            project.coverUrl && !project.coverUrl.endsWith('.svg')
+              ? project.coverUrl
+              : FALLBACK_COVERS[index % FALLBACK_COVERS.length]
 
-  if (!projects.length) {
-    return (
-      <div className="surface grid place-items-center px-6 py-16 text-center text-sm text-muted-foreground">
-        {t('empty')}
-      </div>
-    )
-  }
+          return (
+            <Reveal key={project.id} delay={index * 0.06}>
+              <article className="work_card group relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#0a0a0a] sm:aspect-square">
+                {/* Scroll-linked parallax cover image with 1.05 hover scale */}
+                <ParallaxCoverImage src={coverSrc} alt={project.title} />
 
-  return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-      {projects.map((project, index) => (
-        <Reveal key={project.id} delay={index * 0.06}>
-          <article className="group surface flex h-full flex-col overflow-hidden p-0 shadow-elevation-1 transition-all duration-400 hover:-translate-y-1 hover:border-gold-300 hover:shadow-elevation-3">
-            <div className="relative aspect-16/10 overflow-hidden border-b border-border bg-ink-950">
-              {project.coverUrl ? (
-                <Image
-                  src={project.coverUrl}
-                  alt={project.title}
-                  fill
-                  sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
-                  unoptimized={!isOptimisable(project.coverUrl)}
-                  className="object-cover transition-transform duration-700 ease-[var(--ease-emphasized)] group-hover:scale-[1.04]"
-                />
-              ) : (
+                {/* Subtle dark vignette for legibility */}
                 <div
-                  aria-hidden
-                  className="grid size-full place-items-center bg-ink-900"
-                >
-                  <span className="gold-text font-display text-5xl font-bold opacity-80">
-                    {project.title.slice(0, 2).toUpperCase()}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/45 via-transparent to-[#0a0a0a]/85 transition-opacity duration-500 group-hover:from-[#0a0a0a]/65"
+                />
+
+                {/* Primary stretch link to case study */}
+                <Link
+                  href={`/portfolio/${project.slug}`}
+                  aria-label={`${project.title} — case study`}
+                  className="absolute inset-0 z-10"
+                />
+
+                {/* Vantra Top-Left Hover-Expanding Frosted Panel (`.work_panel`) */}
+                <div className="work_panel pointer-events-none absolute top-4 left-4 z-20 flex max-h-[5.25rem] w-[82%] flex-col justify-between overflow-hidden rounded-xl border border-[#f5f4f024] bg-[#0a0a0a7a] p-4 text-[#f5f4f0] backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:max-h-[12rem] group-hover:w-[calc(100%-2rem)] sm:top-5 sm:left-5 sm:w-[62%] sm:group-hover:w-[calc(100%-2.5rem)]">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <Heading className="work_client truncate font-display text-base font-semibold tracking-[-0.02em] text-[#f5f4f0] sm:text-lg">
+                        {project.client ?? project.title}
+                      </Heading>
+                      <p className="work_tag mt-0.5 truncate text-xs text-[#f5f4f0]/65">
+                        {t(`filters.${project.category}`)} · {project.year}
+                      </p>
+                    </div>
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#f5f4f0] transition-transform duration-300 group-hover:bg-primary group-hover:text-[#0a0a0a]">
+                      <ArrowUpRight className="size-4" />
+                    </span>
+                  </div>
+
+                  {/* Hidden CTA / Summary Row revealed on hover */}
+                  <div className="work_cta-wrap mt-3 flex flex-col justify-between gap-2 border-t border-[#f5f4f024] pt-3 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                    {project.summary && (
+                      <p className="line-clamp-2 text-xs leading-relaxed text-[#f5f4f0]/75">
+                        {project.summary}
+                      </p>
+                    )}
+                    <span className="label-mono-xs text-primary">
+                      Read Case Study ↗
+                    </span>
+                  </div>
+                </div>
+
+                {/* Bottom Tags */}
+                <div className="pointer-events-none absolute inset-x-4 bottom-4 z-20 flex flex-wrap items-end justify-between gap-2 sm:inset-x-5 sm:bottom-5">
+                  <ul className="hidden flex-wrap gap-1.5 sm:flex">
+                    {project.techTags.slice(0, 3).map((tag) => (
+                      <li
+                        key={tag}
+                        className="rounded-md border border-[#f5f4f024] bg-[#0a0a0a75] px-2.5 py-1 text-xs font-medium text-[#f5f4f0]/85 backdrop-blur-xs"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-primary sm:hidden">
+                    Case Study ↗
                   </span>
                 </div>
-              )}
+              </article>
+            </Reveal>
+          )
+        })}
+      </div>
 
-              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink-950/85 to-transparent p-3.5">
-                <Badge className={cn('border', CATEGORY_STYLES[project.category])}>
-                  {t(`filters.${project.category}`)}
-                </Badge>
-                {project.featured ? (
-                  <Badge variant="gold">{tCommon('featured')}</Badge>
-                ) : null}
-              </div>
-            </div>
-
-            <div className="flex flex-1 flex-col p-5">
-              <div className="flex items-start justify-between gap-3">
-                <Heading className="text-base leading-snug font-semibold">
-                  {project.title}
-                </Heading>
-                <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
-                  {project.year}
-                </span>
-              </div>
-
-              {project.client ? (
-                <p className="mt-1 text-[12px] tracking-[0.1em] text-muted-foreground uppercase">
-                  {t('client')}: {project.client}
-                </p>
-              ) : null}
-
-              {project.summary ? (
-                <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground">
-                  {project.summary}
-                </p>
-              ) : null}
-
-              {project.techTags.length ? (
-                <ul className="mt-4 flex flex-wrap gap-1.5">
-                  {project.techTags.slice(0, 5).map((tag) => (
-                    <li key={tag}>
-                      <Badge variant="outline">{tag}</Badge>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-
-              <div className="mt-auto flex items-center gap-2 pt-5">
-                <Button
+      {/* Vantra Fixed Bottom Frosted Filter Bar (`.filter_bar`) for `/portfolio` */}
+      {showFilters && floatingFilter && filters.length > 1 && (
+        <div className="filter_bar fixed bottom-6 left-1/2 z-30 -translate-x-1/2">
+          <div
+            role="tablist"
+            aria-label={t('title')}
+            className="flex items-center gap-1 rounded-xl border border-[#f5f4f029] bg-[#0a0a0ad9] p-1.5 text-[#f5f4f0] shadow-2xl backdrop-blur-md"
+          >
+            {filters.map((value) => {
+              const active = filter === value
+              return (
+                <button
+                  key={value}
                   type="button"
-                  variant="subtle"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => onPreview(project)}
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setFilter(value)}
+                  className={cn(
+                    'filter_btn rounded-lg px-3.5 py-2 text-xs font-medium tracking-[0.02em] whitespace-nowrap transition-all',
+                    active
+                      ? 'bg-[#f5f4f0] text-[#0a0a0a]'
+                      : 'text-[#f5f4f0]/65 hover:text-[#f5f4f0]',
+                  )}
                 >
-                  <Eye className="size-3.5" />
-                  {t('preview')}
-                </Button>
-                {project.liveUrl ? (
-                  <Button asChild variant="outline" size="sm" className="flex-1">
-                    <a href={project.liveUrl} target="_blank" rel="noreferrer noopener">
-                      <ExternalLink className="size-3.5" />
-                      {t('viewLive')}
-                    </a>
-                  </Button>
-                ) : null}
-              </div>
-            </div>
-          </article>
-        </Reveal>
-      ))}
+                  {t(`filters.${value}`)}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

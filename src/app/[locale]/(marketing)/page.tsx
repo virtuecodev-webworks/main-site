@@ -1,20 +1,20 @@
 import type { Metadata } from 'next'
-import { ArrowRight } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { Link } from '@/i18n/navigation'
 import { Hero } from '@/components/site/hero'
 import { QuoteMarquee } from '@/components/site/quote-marquee'
-import { CapabilitiesBand } from '@/components/site/capabilities-band'
-import { SectionHeading } from '@/components/site/section-heading'
+import {
+  CultureAndTestimonials,
+  LiveStudioTracker,
+} from '@/components/site/capabilities-band'
 import { ServiceShowcase } from '@/components/site/service-showcase'
 import { PortfolioGrid } from '@/components/site/portfolio-grid'
 import { Faq } from '@/components/site/faq'
+import { JournalSection } from '@/components/site/journal-section'
 import { CtaBand } from '@/components/site/cta-band'
-import { Button } from '@/components/ui/button'
-import { Reveal } from '@/components/motion/reveal'
-import { GsapSectionReveal } from '@/components/motion/gsap-section-reveal'
+import { VantraButton } from '@/components/ui/vantra-button'
 import { getFeaturedProjects } from '@/lib/supabase/queries'
-import { PLACEHOLDER_PROJECTS, toProjectCard } from '@/lib/portfolio'
+import { mergeWithShowcaseProjects, toProjectCard } from '@/lib/portfolio'
+import { getPublishedPosts, toPostCard } from '@/lib/content'
 import { buildPageMetadata } from '@/lib/seo'
 
 export async function generateMetadata({
@@ -33,64 +33,81 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations('Home')
   const tCommon = await getTranslations('Common')
 
-  const featured = await getFeaturedProjects(3)
-  const projects = featured.length
-    ? featured.map(toProjectCard)
-    : PLACEHOLDER_PROJECTS.filter((project) => project.featured).slice(0, 3)
+  const [featured, rawPosts] = await Promise.all([
+    getFeaturedProjects(4),
+    getPublishedPosts(),
+  ])
+
+  const projects = mergeWithShowcaseProjects(featured.map(toProjectCard)).slice(0, 4)
+
+  const posts = rawPosts.map(toPostCard)
 
   return (
     <>
+      {/* 1. Vantra Full-Bleed Rounded Hero (`section.section_hero`) */}
       <Hero />
 
+      {/* 2. Vantra Statement & Marquee (`section.section_statement`) */}
       <QuoteMarquee />
 
-      <CapabilitiesBand />
+      {/* 3. Vantra Selected Work 2-Column Square Grid (`section#work.section_work`) */}
+      <section id="work" className="section_work padding-global padding-section">
+        <div className="container-max">
+          <div className="section_header">
+            <h2 className="heading-style-h2">{t('work.title')}</h2>
+            <div className="flex items-center gap-6">
+              <div className="section_meta hidden sm:flex">
+                <span className="label-mono text-primary">
+                  ( &nbsp;&nbsp;&nbsp;{t('work.eyebrow')}&nbsp;&nbsp;&nbsp; )
+                </span>
+                <span className="text-muted-foreground">{t('work.subtitle')}</span>
+              </div>
+              <VantraButton href="/portfolio" variant="dark">
+                {tCommon('viewAll')}
+              </VantraButton>
+            </div>
+          </div>
 
-      {/* Services Showcase */}
-      <GsapSectionReveal className="relative isolate mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
-        <SectionHeading
-          eyebrow={t('services.eyebrow')}
-          title={t('services.title')}
-          subtitle={t('services.subtitle')}
-        />
-        <ServiceShowcase className="mt-12" />
-        <Reveal className="mt-10">
-          <Button asChild variant="outline" size="lg" className="rounded-full">
-            <Link href="/services">
-              {t('services.cta')}
-              <ArrowRight className="size-4 ml-2" />
-            </Link>
-          </Button>
-        </Reveal>
-      </GsapSectionReveal>
-
-      {/* Proof of Work — Featured Projects */}
-      <GsapSectionReveal className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24 border-t border-border">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <SectionHeading
-            eyebrow={t('work.eyebrow')}
-            title={t('work.title')}
-            subtitle={t('work.subtitle')}
-          />
-          <Button asChild variant="ghost" size="sm" className="shrink-0">
-            <Link href="/portfolio">
-              {tCommon('viewAll')}
-              <ArrowRight className="size-4 ml-1" />
-            </Link>
-          </Button>
+          <PortfolioGrid projects={projects} showFilters={false} />
         </div>
-        <PortfolioGrid projects={projects} className="mt-12" />
-      </GsapSectionReveal>
+      </section>
 
-      {/* Frequently Asked Questions */}
-      <GsapSectionReveal className="border-t border-border bg-muted/40 py-20 sm:py-24">
-        <Faq />
-      </GsapSectionReveal>
+      {/* 4. Vantra "In the Studio Right Now" Live Build Tracker (`section#live.section_live`) */}
+      <LiveStudioTracker />
 
-      {/* Final Call to Action */}
-      <GsapSectionReveal className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
-        <CtaBand />
-      </GsapSectionReveal>
+      {/* 5. Vantra Services Horizontal Slider (`section#services.section_services`) */}
+      <section id="services" className="section_services padding-global padding-section">
+        <div className="container-max">
+          <div className="section_header">
+            <h2 className="heading-style-h2">{t('services.title')}</h2>
+            <div className="flex items-center gap-6">
+              <div className="section_meta hidden sm:flex">
+                <span className="label-mono text-primary">
+                  ( &nbsp;&nbsp;&nbsp;{t('services.eyebrow')}&nbsp;&nbsp;&nbsp; )
+                </span>
+                <span className="text-muted-foreground">{t('services.subtitle')}</span>
+              </div>
+              <VantraButton href="/services#services-catalog" variant="dark">
+                {t('services.cta')}
+              </VantraButton>
+            </div>
+          </div>
+
+          <ServiceShowcase />
+        </div>
+      </section>
+
+      {/* 6 & 7. Vantra Culture Reel (`section#culture`) & Testimonials Slider (`section#testimonials`) */}
+      <CultureAndTestimonials />
+
+      {/* 8. Vantra 2-Column Sticky FAQ (`section#faq.section_faq`) */}
+      <Faq className="padding-section" />
+
+      {/* 9. Vantra Journal Section (`section#journal.section_more-journal`) */}
+      <JournalSection posts={posts} />
+
+      {/* 10. Vantra Pre-Footer Full-Screen CTA (`section.section_careers`) */}
+      <CtaBand className="mt-8" />
     </>
   )
 }

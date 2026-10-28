@@ -3,6 +3,7 @@ import { SiteFooter } from '@/components/site/site-footer'
 import { CookieConsent } from '@/components/site/cookie-consent'
 import { AiAssistant } from '@/components/site/ai-assistant'
 import { PageTransition } from '@/components/motion/page-transition'
+import { SmoothScroll } from '@/components/motion/smooth-scroll'
 import { RegionProvider } from '@/components/site/region-provider'
 import { NewsletterPopup } from '@/components/site/newsletter-popup'
 
@@ -19,16 +20,17 @@ import { NewsletterPopup } from '@/components/site/newsletter-popup'
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <RegionProvider>
-      <div className="flex min-h-dvh flex-col">
-        <SiteHeader />
-        <main id="main" className="flex-1">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <SiteFooter />
-        <AiAssistant />
-        <CookieConsent />
-        <NewsletterPopup />
-      </div>
+      <SmoothScroll>
+        <div className="flex min-h-dvh flex-col">
+          <SiteHeader />
+          <main id="main" className="flex-1">
+            <PageTransition>{children}</PageTransition>
+          </main>
+          <SiteFooter />
+          <CookieConsent />
+          <NewsletterPopup />
+        </div>
+      </SmoothScroll>
     </RegionProvider>
   )
 }

@@ -32,7 +32,7 @@ export function AiAssistant() {
     {
       role: 'assistant',
       content:
-        'Hello! I am the **Virtue & Co. Webworks Studio AI**. How can I help you today? Ask me anything about our fixed-price web packages, timelines, technology stack, or custom scopes.',
+        'Hello! I am the **Virtue & Co. Webworks Assistant**. How can I help you today? Ask me anything about our fixed prices, timelines, web design, or custom projects.',
     },
   ])
   const [input, setInput] = useState('')
@@ -132,7 +132,7 @@ export function AiAssistant() {
                     <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   </div>
                   <span className="text-[10px] text-muted-foreground block -mt-0.5">
-                    Studio Advisor · Gemini Powered
+                    AI Assistant · Always Online
                   </span>
                 </div>
               </div>
@@ -144,7 +144,7 @@ export function AiAssistant() {
                       {
                         role: 'assistant',
                         content:
-                          'Hello! I am the **Virtue & Co. Webworks Studio AI**. How can I help you today? Ask me anything about our fixed-price web packages, timelines, technology stack, or custom scopes.',
+                          'Hello! I am the **Virtue & Co. Webworks Assistant**. How can I help you today? Ask me anything about our fixed prices, timelines, web design, or custom projects.',
                       },
                     ])
                   }
@@ -242,11 +242,11 @@ export function AiAssistant() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2.5 rounded-full border border-border bg-foreground px-4 py-2.5 text-xs font-semibold text-background shadow-xl hover:opacity-95 transition-all"
-        aria-label="Ask Virtue Studio AI"
+        className="flex items-center gap-2.5 rounded-xl border border-[#f5f4f029] bg-[#0a0a0ac7] px-4 py-2.5 text-[11px] font-medium tracking-[0.04em] text-[#f5f4f0] uppercase shadow-xl backdrop-blur-md transition-all hover:border-primary/50 hover:bg-[#0a0a0a]"
+        aria-label="Ask a question"
       >
-        <Sparkles className="h-4 w-4 text-primary" />
-        <span>Ask Studio AI</span>
+        <Sparkles className="h-3.5 w-3.5 text-primary" />
+        <span>Ask AI</span>
       </button>
     </div>
   )

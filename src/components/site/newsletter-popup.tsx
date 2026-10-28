@@ -2,24 +2,57 @@
 
 import * as React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Mail, CheckCircle2, Sparkles } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/button'
+import { X, ArrowRight, Check } from 'lucide-react'
+import { useLocale } from 'next-intl'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
 
 const STORAGE_DISMISSED_KEY = 'vcw:newsletter_popup_dismissed'
 const STORAGE_SUBSCRIBED_KEY = 'vcw:newsletter_subscribed'
-const DISMISS_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
+const SESSION_DISMISSED_KEY = 'vcw:newsletter_popup_session_dismissed'
+const DISMISS_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000 // 14 days
 
 export function NewsletterPopup() {
+  const locale = useLocale()
   const [isOpen, setIsOpen] = React.useState(false)
   const [email, setEmail] = React.useState('')
   const [status, setStatus] = React.useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
+  const isDismissedRef = React.useRef(false)
 
-  React.useEffect(() => {
-    // Check if already subscribed or recently dismissed
+  const handleDismiss = React.useCallback((e?: React.SyntheticEvent | KeyboardEvent) => {
+    if (e) {
+      e.stopPropagation()
+    }
+    setIsOpen(false)
+    isDismissedRef.current = true
+
     try {
+      localStorage.setItem(STORAGE_DISMISSED_KEY, Date.now().toString())
+      sessionStorage.setItem(SESSION_DISMISSED_KEY, 'true')
+    } catch {
+      // Storage unavailable in restricted mode
+    }
+  }, [])
+
+  // Keyboard accessibility: Close immediately on Escape
+  React.useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleDismiss(e)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, handleDismiss])
+
+  // Scroll and timer trigger logic
+  React.useEffect(() => {
+    // Check if already subscribed or recently dismissed in this session or storage
+    try {
+      if (sessionStorage.getItem(SESSION_DISMISSED_KEY) === 'true') return
       if (localStorage.getItem(STORAGE_SUBSCRIBED_KEY) === 'true') return
 
       const dismissedAt = localStorage.getItem(STORAGE_DISMISSED_KEY)
@@ -28,33 +61,49 @@ export function NewsletterPopup() {
         if (elapsed < DISMISS_COOLDOWN_MS) return
       }
     } catch {
-      // ignore storage blocks
+      // ignore
     }
 
-    let timer: NodeJS.Timeout | null = null
+    let timer: ReturnType<typeof setTimeout> | null = null
+
+    const triggerOpen = () => {
+      if (isDismissedRef.current) return
+
+      // Avoid clashing with the Cookie Consent notice if still unresolved
+      try {
+        const cookieSet = localStorage.getItem('vcw:cookie-consent')
+        if (!cookieSet) {
+          // Recheck in 5 seconds so cookie banner can resolve first
+          timer = setTimeout(triggerOpen, 5000)
+          return
+        }
+      } catch {
+        // proceed
+      }
+
+      setIsOpen(true)
+      window.removeEventListener('scroll', handleScroll)
+      if (timer) clearTimeout(timer)
+    }
 
     const handleScroll = () => {
+      if (isDismissedRef.current) return
       const scrollY = window.scrollY
       const docHeight = document.documentElement.scrollHeight - window.innerHeight
       if (docHeight <= 0) return
 
       const scrollProgress = scrollY / docHeight
 
-      // Trigger popup when user reaches 28% scroll depth
-      if (scrollProgress >= 0.28) {
-        setIsOpen(true)
-        window.removeEventListener('scroll', handleScroll)
-        if (timer) clearTimeout(timer)
+      // Trigger popup when user reaches 32% scroll depth
+      if (scrollProgress >= 0.32) {
+        triggerOpen()
       }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
 
-    // Fallback: Show after 18 seconds of reading even if not deeply scrolled
-    timer = setTimeout(() => {
-      setIsOpen(true)
-      window.removeEventListener('scroll', handleScroll)
-    }, 18000)
+    // Fallback timer: Show after 24 seconds of active engagement
+    timer = setTimeout(triggerOpen, 24000)
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
@@ -62,16 +111,7 @@ export function NewsletterPopup() {
     }
   }, [])
 
-  const handleDismiss = () => {
-    setIsOpen(false)
-    try {
-      localStorage.setItem(STORAGE_DISMISSED_KEY, Date.now().toString())
-    } catch {
-      // ignore
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const cleanEmail = email.trim()
 
@@ -90,7 +130,8 @@ export function NewsletterPopup() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: cleanEmail,
-          source: 'scroll_popup',
+          locale,
+          source: 'scroll_dispatch_card',
         }),
       })
 
@@ -101,14 +142,15 @@ export function NewsletterPopup() {
       setStatus('success')
       try {
         localStorage.setItem(STORAGE_SUBSCRIBED_KEY, 'true')
+        sessionStorage.setItem(SESSION_DISMISSED_KEY, 'true')
       } catch {
         // ignore
       }
 
-      // Auto-close after celebration
+      // Smooth auto-close after confirmation
       setTimeout(() => {
         setIsOpen(false)
-      }, 3500)
+      }, 3200)
     } catch (err) {
       setStatus('error')
       setErrorMessage(err instanceof Error ? err.message : 'Subscription failed. Please try again.')
@@ -118,88 +160,114 @@ export function NewsletterPopup() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        <motion.aside
+          initial={{ opacity: 0, y: 24, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[380px] max-w-full"
+          exit={{ opacity: 0, y: 16, scale: 0.96 }}
+          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-[65] w-[calc(100vw-32px)] sm:w-[380px] max-w-full font-sans"
           role="dialog"
-          aria-labelledby="newsletter-popup-title"
+          aria-modal="false"
+          aria-labelledby="newsletter-dispatch-title"
         >
-          <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-[#0A0D16]/95 p-5 sm:p-6 text-white shadow-2xl backdrop-blur-xl ring-1 ring-white/10 dark:bg-[#070913]/95">
-            {/* Top ambient radial light sheen */}
+          {/* Main Card Surface */}
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.14] bg-[#0c0c0c]/95 p-5 sm:p-6 text-[#f5f4f0] shadow-[0_24px_50px_rgba(0,0,0,0.65),0_0_1px_rgba(255,255,255,0.15)] backdrop-blur-2xl">
+            {/* Top architectural gold hairline accent */}
             <div
-              className="pointer-events-none absolute -top-12 -left-12 size-36 rounded-full bg-blue-500/20 blur-2xl -z-0"
-              aria-hidden="true"
-            />
-            <div
-              className="pointer-events-none absolute -bottom-12 -right-12 size-36 rounded-full bg-gold-500/15 blur-2xl -z-0"
+              className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#dcaa28]/55 to-transparent pointer-events-none"
               aria-hidden="true"
             />
 
-            {/* Close Button */}
+            {/* Direct Close Button: High z-index, large hit area, guaranteed type="button" */}
             <button
+              type="button"
               onClick={handleDismiss}
-              aria-label="Close newsletter popup"
-              className="absolute top-3.5 right-3.5 size-7 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-white hover:bg-white/10 transition-colors"
+              aria-label="Close subscription popup"
+              className="absolute top-3.5 right-3.5 z-30 size-8 sm:size-9 rounded-full bg-white/[0.06] hover:bg-white/[0.15] text-[#f5f4f0]/60 hover:text-[#f5f4f0] border border-white/10 flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dcaa28]"
             >
-              <X className="size-4" />
+              <X className="size-4" strokeWidth={2} />
             </button>
 
             {status === 'success' ? (
-              <div className="flex flex-col items-center text-center py-4 space-y-2.5">
-                <div className="size-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                  <CheckCircle2 className="size-6" />
+              <div className="flex flex-col items-start py-2 space-y-2">
+                <div className="inline-flex items-center gap-2 text-xs font-medium text-[#dcaa28]">
+                  <span className="grid size-6 place-items-center rounded-full bg-[#dcaa28]/15 border border-[#dcaa28]/30">
+                    <Check className="size-3.5 text-[#dcaa28]" strokeWidth={2.5} />
+                  </span>
+                  <span>( Confirmed )</span>
                 </div>
-                <h3 className="text-base font-bold text-white">You're on the list!</h3>
-                <p className="text-xs text-[#94A3B8] max-w-[260px]">
-                  A confirmation email has been sent to your inbox. Welcome to the Studio Dispatch.
+                <h3 className="font-display text-base font-semibold text-[#f5f4f0]">
+                  Welcome to the Dispatch.
+                </h3>
+                <p className="text-xs text-[#f5f4f0]/65 leading-relaxed">
+                  A confirmation note is on its way. Expect quarterly dispatches on software craft,
+                  systems architecture, and design.
                 </p>
               </div>
             ) : (
-              <div className="relative z-10 flex flex-col gap-3.5">
-                {/* Badge & Squircle Header */}
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-xl bg-gradient-to-br from-[#1E2538] to-[#111624] border border-white/10 flex items-center justify-center text-gold-400 shadow-inner">
-                    <Mail className="size-5 text-gold-400" />
-                  </div>
-                  <div>
-                    <span className="inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider text-gold-400">
-                      <Sparkles className="size-3" />
-                      Studio Dispatch
-                    </span>
-                    <h3 id="newsletter-popup-title" className="text-sm sm:text-base font-bold text-white leading-tight">
-                      Architectural insights &amp; notes
-                    </h3>
-                  </div>
+              <div className="relative z-10 flex flex-col gap-3">
+                {/* Brand Eyebrow */}
+                <div className="flex items-center gap-2 pr-8">
+                  <span className="size-1.5 rounded-full bg-[#dcaa28]" />
+                  <span className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#dcaa28]">
+                    ( Newsletter )
+                  </span>
                 </div>
 
-                <p className="text-xs text-[#94A3B8] leading-relaxed">
-                  Join digital founders and technical leaders. We share deep-dives into modern web architecture, bespoke design systems, and software performance.
-                </p>
+                {/* Title & Concise Copy */}
+                <div>
+                  <h3
+                    id="newsletter-dispatch-title"
+                    className="font-display text-base sm:text-[17px] font-semibold text-[#f5f4f0] leading-snug tracking-tight"
+                  >
+                    Architectural notes &amp; software craft.
+                  </h3>
+                  <p className="text-xs text-[#f5f4f0]/65 leading-relaxed mt-1">
+                    Quarterly essays on bespoke systems, high performance, and digital craft. No
+                    promotional noise.
+                  </p>
+                </div>
 
-                {/* Form */}
+                {/* Minimalist Architectural Form */}
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2 pt-1">
-                  <div className="flex gap-2">
+                  {/* Honeypot field */}
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    className="sr-only"
+                    aria-hidden="true"
+                  />
+
+                  {/* Unified Input + Submit Bar */}
+                  <div className="relative flex items-center rounded-xl border border-white/15 bg-white/[0.04] p-1 transition-all duration-200 focus-within:border-[#dcaa28] focus-within:bg-white/[0.07] focus-within:ring-1 focus-within:ring-[#dcaa28]/30">
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your.email@company.com"
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (status === 'error') setStatus('idle')
+                      }}
+                      placeholder="your.email@domain.com"
                       required
                       autoComplete="email"
-                      className="h-10 flex-1 rounded-xl border border-white/15 bg-white/[0.04] px-3.5 text-xs text-white placeholder:text-muted-foreground focus:border-gold-400 focus:outline-hidden focus:ring-2 focus:ring-gold-400/20 transition-all"
+                      className="h-9 sm:h-10 flex-1 bg-transparent px-3 text-xs text-[#f5f4f0] placeholder:text-[#f5f4f0]/35 focus:outline-none"
                     />
-                    <Button
+                    <button
                       type="submit"
-                      variant="gold"
-                      size="sm"
                       disabled={status === 'loading'}
-                      className="h-10 px-4 text-xs font-bold rounded-xl shrink-0"
+                      className="inline-flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-lg bg-[#dcaa28] px-3.5 sm:px-4 text-xs font-semibold text-[#0a0a0a] transition-all hover:bg-[#edd47a] active:scale-95 disabled:opacity-50 cursor-pointer shrink-0 shadow-sm"
                     >
-                      {status === 'loading' ? <VirtueSpinner className="size-3.5" /> : 'Subscribe'}
-                    </Button>
+                      {status === 'loading' ? (
+                        <VirtueSpinner className="size-3.5 text-[#0a0a0a]" />
+                      ) : (
+                        <>
+                          <span>Join</span>
+                          <ArrowRight className="size-3.5" strokeWidth={2} />
+                        </>
+                      )}
+                    </button>
                   </div>
 
                   {status === 'error' && errorMessage && (
@@ -208,21 +276,22 @@ export function NewsletterPopup() {
                     </p>
                   )}
 
-                  <div className="flex items-center justify-between text-[10.5px] text-[#64748B] pt-1">
-                    <span>No marketing spam. Unsubscribe anytime.</span>
+                  {/* Bottom Dismiss & Privacy Row */}
+                  <div className="flex items-center justify-between text-[11px] text-[#f5f4f0]/45 pt-1">
+                    <span>1-click unsubscribe anytime</span>
                     <button
                       type="button"
                       onClick={handleDismiss}
-                      className="text-muted-foreground hover:text-white transition-colors underline underline-offset-2"
+                      className="text-[#f5f4f0]/70 hover:text-[#f5f4f0] underline underline-offset-4 decoration-[#f5f4f0]/30 hover:decoration-[#f5f4f0] transition-colors cursor-pointer font-medium"
                     >
-                      Maybe later
+                      Dismiss
                     </button>
                   </div>
                 </form>
               </div>
             )}
           </div>
-        </motion.div>
+        </motion.aside>
       )}
     </AnimatePresence>
   )

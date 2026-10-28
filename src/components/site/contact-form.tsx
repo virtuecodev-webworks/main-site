@@ -1,12 +1,12 @@
 'use client'
 
 import * as React from 'react'
-import { CheckCircle2, Send, ShieldCheck, Lock } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { CheckCircle2, Send, ShieldCheck } from 'lucide-react'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
 import { toast } from 'sonner'
 import { useLocale, useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
-import { Input, Textarea } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -25,18 +25,11 @@ export interface ContactFormProps {
   className?: string
 }
 
-/**
- * Lead capture form.
- *
- * Submits to the `submitInquiry` Server Action (same pipeline as
- * `/api/contact`), which persists to Supabase and dispatches a Resend
- * notification + auto-confirmation. HTML5 constraints give instant feedback;
- * the server re-validates everything with Zod.
- */
 export function ContactForm({ className }: ContactFormProps) {
   const t = useTranslations('Contact.form')
   const tOptions = useTranslations('Contact.options')
   const locale = useLocale()
+  const searchParams = useSearchParams()
 
   const [pending, setPending] = React.useState(false)
   const [sent, setSent] = React.useState(false)
@@ -44,6 +37,43 @@ export function ContactForm({ className }: ContactFormProps) {
   const [service, setService] = React.useState<string>('')
   const [budget, setBudget] = React.useState<string>('')
   const [timeline, setTimeline] = React.useState<string>('')
+  const [prefilledMessage, setPrefilledMessage] = React.useState<string>('')
+
+  // Sync URL query params from ProjectEstimator / MarketplaceCatalog
+  React.useEffect(() => {
+    const qService = searchParams.get('service')
+    const qPlan = searchParams.get('plan')
+    const qTier = searchParams.get('tier')
+    const qBudget = searchParams.get('budget')
+
+    if (qService && (SERVICE_OPTIONS as readonly string[]).includes(qService)) {
+      setService(qService)
+    } else if (qPlan === 'ecommerce') {
+      setService('ecommerce')
+    } else if (qPlan === 'custom-app' || qPlan === 'corporate' || qPlan === 'landing') {
+      setService('custom')
+    }
+
+    if (qBudget) {
+      const num = Number(qBudget)
+      if (Number.isFinite(num)) {
+        if (num < 1000) setBudget('under-1k')
+        else if (num <= 3000) setBudget('1k-3k')
+        else if (num <= 7000) setBudget('3k-7k')
+        else setBudget('7k-plus')
+      }
+    }
+
+    if (qPlan || qTier || qBudget) {
+      const parts: string[] = []
+      if (qPlan) parts.push(`Selected Scope: ${qPlan}`)
+      if (qTier) parts.push(`Package Tier: ${qTier}`)
+      if (qBudget) parts.push(`Estimated Budget: $${qBudget} USD`)
+      setPrefilledMessage(
+        `${parts.join(' · ')}\n\nProject Overview & Goals:\n`,
+      )
+    }
+  }, [searchParams])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -72,8 +102,8 @@ export function ContactForm({ className }: ContactFormProps) {
 
       if (result.ok) {
         if (result.redirectUrl) {
-          toast.success('Account created & quote submitted!', {
-            description: 'Redirecting to your client portal...',
+          toast.success('Project registered & portal ready!', {
+            description: 'Redirecting to your live order workspace...',
           })
           window.location.href = result.redirectUrl
           return
@@ -106,11 +136,11 @@ export function ContactForm({ className }: ContactFormProps) {
 
   if (sent) {
     return (
-      <div className={cn('surface flex flex-col items-start gap-4 p-8', className)}>
-        <span className="grid size-12 place-items-center rounded-2xl bg-gold-500/14 text-gold-700 ring-1 ring-gold-500/30 ring-inset">
+      <div className={cn('rounded-[20px] border border-border bg-card flex flex-col items-start gap-4 p-8 sm:p-10', className)}>
+        <span className="grid size-12 place-items-center rounded-xl bg-primary/15 text-primary">
           <CheckCircle2 className="size-6" />
         </span>
-        <h3 className="text-xl font-semibold">{t('successTitle')}</h3>
+        <h3 className="heading-style-h3">{t('successTitle')}</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">{t('successBody')}</p>
         <Button variant="outline" size="sm" onClick={() => setSent(false)}>
           {t('sendAnother')}
@@ -123,30 +153,68 @@ export function ContactForm({ className }: ContactFormProps) {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className={cn('surface flex flex-col gap-5 p-6 sm:p-8', className)}
+      className={cn(
+        'rounded-[20px] border border-border bg-card flex flex-col gap-7 p-6 sm:p-10',
+        className,
+      )}
     >
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="flex items-center justify-between border-b border-border pb-5">
+        <span className="label-mono text-primary">
+          ( &nbsp;&nbsp;&nbsp;Project Brief&nbsp;&nbsp;&nbsp; )
+        </span>
+        <span className="label-mono-xs text-muted-foreground">
+          Direct to Principal Engineers
+        </span>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
         <Field label={t('name')} name="name" errors={fieldErrors.name} required>
-          <Input id="cf-name" name="name" autoComplete="name" required minLength={2} maxLength={120} />
+          <input
+            id="cf-name"
+            name="name"
+            autoComplete="name"
+            required
+            minLength={2}
+            maxLength={120}
+            placeholder="Alex Vance"
+            className="vantra-input"
+          />
         </Field>
 
         <Field label={t('email')} name="email" errors={fieldErrors.email} required>
-          <Input
+          <input
             id="cf-email"
             name="email"
             type="email"
             autoComplete="email"
             required
             maxLength={180}
+            placeholder="alex@company.com"
+            className="vantra-input"
           />
         </Field>
 
         <Field label={`${t('phone')} (optional)`} name="phone" errors={fieldErrors.phone}>
-          <Input id="cf-phone" name="phone" type="tel" autoComplete="tel" maxLength={40} />
+          <input
+            id="cf-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            maxLength={40}
+            placeholder="+1 (555) 000-0000"
+            className="vantra-input"
+          />
         </Field>
 
         <Field label={`${t('company')} (optional)`} name="company" errors={fieldErrors.company}>
-          <Input id="cf-company" name="company" autoComplete="organization" maxLength={140} />
+          <input
+            id="cf-company"
+            name="company"
+            autoComplete="organization"
+            maxLength={140}
+            placeholder="Company or Venture"
+            className="vantra-input"
+          />
         </Field>
       </div>
 
@@ -204,30 +272,33 @@ export function ContactForm({ className }: ContactFormProps) {
         required
         hint="Minimum 20 characters."
       >
-        <Textarea
+        <textarea
           id="cf-message"
           name="message"
-          rows={6}
+          rows={5}
           required
           minLength={20}
           maxLength={4000}
+          defaultValue={prefilledMessage}
+          key={prefilledMessage ? 'prefilled' : 'empty'}
           placeholder={t('messagePlaceholder')}
+          className="vantra-input resize-y"
         />
       </Field>
 
       {/* Client Portal Account Creation */}
-      <div className="rounded-2xl border border-border/80 bg-muted/40 p-4 sm:p-5">
+      <div className="rounded-2xl border border-border bg-background/60 p-5">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="size-4 text-emerald-500" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
-            Client Portal Account (Live Quote Tracking)
+          <ShieldCheck className="size-4 text-primary" />
+          <span className="label-mono-xs text-foreground">
+            Instant Client Portal Sync (Optional Password)
           </span>
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Set a password to link this quote directly to your private studio dashboard to track scope, updates, and milestone payments.
+        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+          Set a password to automatically create your client portal account and track this brief, milestones, and live engineer messages in real time.
         </p>
         <div className="mt-3">
-          <Input
+          <input
             id="cf-password"
             name="password"
             type="password"
@@ -235,25 +306,26 @@ export function ContactForm({ className }: ContactFormProps) {
             minLength={8}
             maxLength={120}
             autoComplete="new-password"
+            className="vantra-input"
           />
         </div>
       </div>
 
-      {/* Honeypot: hidden from humans, irresistible to bots. */}
+      {/* Honeypot */}
       <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden>
         <label htmlFor="cf-website">Website</label>
         <input id="cf-website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="flex flex-col gap-4 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+      <div className="flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs leading-relaxed text-muted-foreground">
           {t('consent')}
           <br />
-          <span className="text-muted-foreground">
-            Or email{' '}
+          <span>
+            Direct email:{' '}
             <a
               href={`mailto:${AGENCY.email}`}
-              className="font-medium text-gold-700 underline-offset-2 hover:underline"
+              className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
             >
               {AGENCY.email}
             </a>
@@ -297,15 +369,21 @@ function Field({
 
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={`cf-${name}`} className={cn(invalid && 'text-destructive')}>
+      <Label
+        htmlFor={`cf-${name}`}
+        className={cn(
+          'text-xs font-medium tracking-[0.04em] uppercase text-muted-foreground',
+          invalid && 'text-destructive',
+        )}
+      >
         {label}
-        {required ? <span className="text-gold-600">*</span> : null}
+        {required ? <span className="text-primary ml-1">*</span> : null}
       </Label>
       {children}
       {hint && !invalid ? <p className="text-[11.5px] text-muted-foreground">{hint}</p> : null}
       {invalid ? (
-        <p className="text-[11.5px] text-destructive" role="alert">
-          {errors?.join(' ')}
+        <p className="text-[11.5px] font-medium text-destructive" role="alert">
+          {errors?.[0]}
         </p>
       ) : null}
     </div>

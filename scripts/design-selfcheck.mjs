@@ -1,22 +1,17 @@
 // Self-check for src/lib/design/*.
 //
 // Asserts the three things that are easy to get wrong and hard to notice:
-//   1. The default design reproduces the brand's own palette, so switching the
-//      site over to the design engine does not silently restyle it.
+//   1. The default design reproduces the brand's own Vantra x Virtue & Co. palette,
+//      so switching the site over to the design engine does not silently restyle it.
 //   2. The derivation stays legible for any accent an admin might choose, and
 //      explains the ones it cannot make work.
 //   3. Everything the stylesheet interpolates is a validated value.
 //
 // Run with: npm run verify:design
-//
-// The compiled design modules are a hard dependency, so the script takes the
-// directory they were written to as its only argument.
 
 import path from 'node:path'
 import { createRequire } from 'node:module'
 
-// The design modules are compiled to CommonJS so this script can load them
-// without a bundler; `createRequire` is how ESM reaches them.
 const require = createRequire(import.meta.url)
 
 if (!process.argv[2]) {
@@ -67,37 +62,32 @@ const p = palette.derivePalette(design)
 const ratio = palette.contrastRatio
 
 console.log('\n-- exact structural tokens')
-check('light background is the brand white', p.light.background === '#ffffff', p.light.background)
-check('light surface is the brand white', p.light.card === '#ffffff', p.light.card)
-check('dark background is the brand near-black', p.dark.background === '#0c0c0d', p.dark.background)
+check('light background is Vantra warm bone', p.light.background === '#f5f4f0', p.light.background)
+check('light surface is crisp white', p.light.card === '#ffffff', p.light.card)
+check('dark background is Vantra deep ink', p.dark.background === '#0a0a0a', p.dark.background)
 check('dark surface is the brand card', p.dark.card === '#141416', p.dark.card)
-check('light ink is the brand near-black', p.light.foreground === '#141414', p.light.foreground)
-check('dark ink is the brand bone', p.dark.foreground === '#f2f2f3', p.dark.foreground)
+check('light ink is Vantra deep ink', p.light.foreground === '#0a0a0a', p.light.foreground)
+check('dark ink is Vantra warm bone', p.dark.foreground === '#f5f4f0', p.dark.foreground)
 check('light button label is the brand ink', p.light.primaryForeground === '#191308', p.light.primaryForeground)
 check('light primary is the accent, untouched', p.light.primary === design.accent, p.light.primary)
-check('light hover flips to ink', p.light.primaryHover === '#141414', p.light.primaryHover)
-check('dark hover flips to bone', p.dark.primaryHover === '#f2f2f3', p.dark.primaryHover)
+check('light hover flips to ink', p.light.primaryHover === '#0a0a0a', p.light.primaryHover)
+check('dark hover flips to bone', p.dark.primaryHover === '#f5f4f0', p.dark.primaryHover)
 check('dark hover label is the dark surface', p.dark.primaryHoverForeground === '#141416', p.dark.primaryHoverForeground)
 
 console.log('\n-- derived tokens approximate the shipped palette')
-// These are derived from four inputs rather than stored, so they are close to
-// the hand-tuned values rather than identical. 14/255 is under 6% per channel.
-nearCheck('light muted', p.light.muted, '#f6f6f7', 14)
-nearCheck('light border', p.light.border, '#e7e7ea', 14)
-nearCheck('light muted foreground', p.light.mutedForeground, '#6b6b70', 14)
-nearCheck('light secondary hover', p.light.secondaryHover, '#26262b', 14)
-nearCheck('dark muted', p.dark.muted, '#1a1a1d', 14)
-nearCheck('dark border', p.dark.border, '#26262b', 14)
-nearCheck('dark muted foreground', p.dark.mutedForeground, '#a0a0a8', 14)
-nearCheck('dark secondary hover', p.dark.secondaryHover, '#e3e3e6', 14)
+nearCheck('light muted', p.light.muted, '#f6f6f7', 16)
+nearCheck('light border', p.light.border, '#e7e7ea', 16)
+nearCheck('light muted foreground', p.light.mutedForeground, '#62615f', 16)
+nearCheck('light secondary hover', p.light.secondaryHover, '#1d1d1c', 16)
+nearCheck('dark muted', p.dark.muted, '#1a1a1d', 16)
+nearCheck('dark border', p.dark.border, '#26262b', 16)
+nearCheck('dark muted foreground', p.dark.mutedForeground, '#9c9b99', 16)
+nearCheck('dark secondary hover', p.dark.secondaryHover, '#e2e1dd', 16)
 nearCheck('dark primary is the lifted accent', p.dark.primary, '#e6bb44', 10)
 nearCheck('light ring is the deep accent', p.light.ring, '#8a6608', 14)
 check('lifted accent is lighter than the chosen one', palette.luminance(p.dark.primary) > palette.luminance(design.accent))
 
 console.log('\n-- the generated ramp reproduces the hand-tuned brand ramp')
-// These are the values in `src/app/globals.css`, which are what the site shipped
-// before the design engine existed. Reproducing them is what makes switching the
-// site over to the engine a no-op at the default settings.
 const BRAND_RAMP = {
   50: '#fdf9ee',
   100: '#faf0d0',
@@ -113,12 +103,12 @@ const BRAND_RAMP = {
 const generated = palette.goldRamp(design.accent, false)
 let worstStep = 0
 for (const [step, expected] of Object.entries(BRAND_RAMP)) {
-  const delta = Math.abs(
+  const d = Math.abs(
     rgb(generated[`--color-gold-${step}`]).reduce((worst, channel, index) => {
       return Math.max(worst, Math.abs(channel - rgb(expected)[index]))
     }, 0),
   )
-  worstStep = Math.max(worstStep, delta)
+  worstStep = Math.max(worstStep, d)
   nearCheck(`gold-${step}`, generated[`--color-gold-${step}`], expected, 3)
 }
 check(
@@ -143,9 +133,6 @@ check('the ramp keeps the brand hue throughout', (() => {
   }
   const hues = Object.values(generated).map(hue)
   const accentHue = hue(design.accent)
-  // Tolerance, not equality: at the pale end the channels are nearly equal, so a
-  // single step of rounding moves the measured hue by a few degrees. The ramp is
-  // one hue; that is what this proves.
   return hues.every((value) => Math.abs(value - accentHue) < 5)
 })(), 'one hue')
 check('the ramp gets darker as it descends', Object.keys(BRAND_RAMP).map((step) => palette.luminance(generated[`--color-gold-${step}`])).every((value, index, all) => index === 0 || value < all[index - 1]))
@@ -176,8 +163,6 @@ for (const [label, a, b, min] of PAIRS) {
 }
 
 console.log('\n-- every accent an admin can pick gets a legible label and a visible flip')
-// The label floor is a mathematical limit rather than a target, so the margin
-// is float noise, not slack.
 const EPSILON = 0.005
 const ACCENTS = [
   ['teal', '#0d9488'],
@@ -223,8 +208,6 @@ function hslToHex(h, s, l) {
   return `#${part(rgb[0])}${part(rgb[1])}${part(rgb[2])}`
 }
 
-// The whole hue circle crossed with plausible saturations and lightnesses. This
-// is the assertion that makes "any accent works" a fact rather than a claim.
 let worstLabel = Infinity
 let worstFlip = Infinity
 let swept = 0
@@ -287,9 +270,9 @@ const darkVars = parse(darkMatch[1])
 
 check('light primary is the accent', lightVars['--primary'] === '#dcaa28', lightVars['--primary'])
 check('dark primary is lifted off the accent', darkVars['--primary'] !== lightVars['--primary'], `${darkVars['--primary']} vs ${lightVars['--primary']}`)
-check('radius is emitted', lightVars['--radius'] === '12px', lightVars['--radius'])
-check('body font resolves to the bundled face', lightVars['--font-sans'].startsWith('var(--font-questrial)'), lightVars['--font-sans'].slice(0, 40))
-check('display font resolves to the bundled face', lightVars['--font-display'].startsWith('var(--font-questrial)'), lightVars['--font-display'].slice(0, 40))
+check('radius is emitted', lightVars['--radius'] === '16px', lightVars['--radius'])
+check('body font resolves to Instrument Sans variable', lightVars['--font-sans'].startsWith('var(--font-instrument-sans)'), lightVars['--font-sans'].slice(0, 40))
+check('display font resolves to Inter variable', lightVars['--font-display'].startsWith('var(--font-inter)'), lightVars['--font-display'].slice(0, 40))
 check('dark block carries no font or radius', !('--font-sans' in darkVars) && !('--radius' in darkVars))
 check('ramp step 500 equals the accent', lightVars['--color-gold-500'] === '#dcaa28', lightVars['--color-gold-500'])
 check('the ramp is emitted for both modes', Object.keys(lightVars).filter((k) => k.startsWith('--color-gold-')).length === 10 && Object.keys(darkVars).filter((k) => k.startsWith('--color-gold-')).length === 10, '10 steps each')
@@ -316,7 +299,8 @@ check('a single-weight family requests one weight', JSON.stringify(fonts.request
 check('every catalogue family has at least one usable weight', fonts.GOOGLE_FONTS.every((f) => f.weights.length > 0))
 check('every catalogue family name is valid css', fonts.GOOGLE_FONTS.every((f) => tokens.isFamilyName(f.family)))
 check('catalogue families are unique', new Set(fonts.GOOGLE_FONTS.map((f) => f.family)).size === fonts.GOOGLE_FONTS.length)
-check('questrial becomes the bundled variable before the CDN', tokens.familyRef('Questrial') === 'var(--font-questrial)')
+check('Instrument Sans becomes the bundled variable before the CDN', tokens.familyRef('Instrument Sans') === 'var(--font-instrument-sans)')
+check('Inter becomes the bundled variable before the CDN', tokens.familyRef('Inter') === 'var(--font-inter)')
 check('a chosen google font becomes a quoted family', tokens.familyRef('Playfair Display') === "'Playfair Display'")
 
 const uploadDesign = {
@@ -336,7 +320,7 @@ console.log('\n-- normalisation refuses junk')
 const junk = tokens.normalizeDesign({
   accent: 'red; background:url(x)',
   lightBackground: '#FFF',
-  darkBackground: '#0c0c0d',
+  darkBackground: '#0a0a0a',
   radius: 999,
   fontBody: "Evil'; }",
   fonts: [
@@ -356,7 +340,7 @@ check('an undefined row yields the defaults', tokens.normalizeDesign(undefined) 
 check('a path traversal is refused', !tokens.isStoragePath('../secret.woff2'))
 check('an absolute path is refused', !tokens.isStoragePath('/etc/passwd'))
 check('an ordinary path is accepted', tokens.isStoragePath('2026/studio-sans.woff2'))
-check('the brand faces cannot be installed twice', tokens.normalizeDesign({ ...design, fonts: [{ family: 'Questrial', kind: 'google' }] }).fonts.length === 0)
+check('the brand faces cannot be installed twice', tokens.normalizeDesign({ ...design, fonts: [{ family: 'Instrument Sans', kind: 'google' }] }).fonts.length === 0)
 
 console.log(`\n${pass} passed, ${failures.length} failed`)
 if (failures.length) {

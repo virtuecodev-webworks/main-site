@@ -20,7 +20,7 @@ export interface ResetOtpProps {
 
 export function ResetOtpEmail({ code }: ResetOtpProps) {
   return (
-    <Shell preheader={`Your Password Reset verification Code is: ${code}`}>
+    <Shell preheader={`Your Password Reset verification Code is: ${code}`} eyebrow="Password Recovery">
       <CardHeadline>Reset Password Verification Code</CardHeadline>
 
       <DigitBoxes code={code} />

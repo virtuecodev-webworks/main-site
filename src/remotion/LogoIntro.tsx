@@ -12,7 +12,8 @@ import {
   MARK_TILE,
   MARK_V_SCALE,
   MARK_VIEWBOX,
-  VW_POLYGON,
+  VIRTUE_LEFT_WING,
+  VIRTUE_RIGHT_WING,
   WORDMARK,
 } from '../lib/brand/mark-geometry'
 import { LOGO_INTRO_DURATION, LOGO_INTRO_FPS, type LogoIntroProps } from './timeline'
@@ -202,7 +203,6 @@ export function LogoIntro({
               </linearGradient>
             </defs>
             <g
-              transform={`translate(48 50) scale(${MARK_V_SCALE}) translate(-50 -42)`}
               style={{
                 opacity: interpolate(frame, [DRAW_START, DRAW_END], [0, 1], {
                   extrapolateLeft: 'clamp',
@@ -210,7 +210,8 @@ export function LogoIntro({
                 }),
               }}
             >
-              <polygon points={VW_POLYGON} fill="url(#rmt-gold)" />
+              <path d={VIRTUE_LEFT_WING} fill="url(#rmt-gold)" />
+              <path d={VIRTUE_RIGHT_WING} fill="url(#rmt-gold)" />
             </g>
           </svg>
         </div>

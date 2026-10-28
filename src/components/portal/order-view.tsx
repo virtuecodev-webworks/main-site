@@ -1,4 +1,4 @@
-import { Check, CircleDashed, FileText } from 'lucide-react'
+import { ArrowUpRight, Check, CircleDashed, CreditCard, FileText } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -8,15 +8,6 @@ import { cn, formatMoney } from '@/lib/utils'
 import type { Order, OrderEvent, OrderMilestone } from '@/lib/supabase/types'
 import type { OrderStatus } from '@/lib/constants'
 
-/**
- * Read-only views of an order.
- *
- * These are server components on purpose: the only part of an order that needs
- * JavaScript is the composer, so everything else — the progress bar, the history,
- * the payment schedule — renders to HTML and costs nothing to interact with.
- */
-
-/** Status pill, shared by the portal list and both detail pages. */
 export async function StatusBadge({ status }: { status: OrderStatus }) {
   const t = await getTranslations('Orders.status')
 
@@ -32,13 +23,6 @@ export async function StatusBadge({ status }: { status: OrderStatus }) {
   return <Badge variant={variant}>{t(status)}</Badge>
 }
 
-/**
- * Five steps, mapped from the eight stored statuses.
- *
- * A client does not need to know the difference between "scoping" and "quoted" —
- * both mean the studio is working out the plan. What they need is a glanceable
- * answer to "is this moving?".
- */
 export async function OrderProgress({ status }: { status: OrderStatus }) {
   const t = await getTranslations('Orders.phase')
   const tOrders = await getTranslations('Orders.status')
@@ -47,14 +31,14 @@ export async function OrderProgress({ status }: { status: OrderStatus }) {
   const cancelled = status === 'cancelled'
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-border/60 bg-muted/20 p-3">
+    <div className="flex flex-col gap-3 rounded-xl border border-border bg-background/60 p-4">
       <ol className="flex items-center gap-2">
         {ORDER_PHASES.map((phase, index) => {
           const done = !cancelled && index < currentIndex
           const active = !cancelled && index === currentIndex
 
           return (
-            <li key={phase} className="flex flex-1 flex-col gap-1.5">
+            <li key={phase} className="flex flex-1 flex-col gap-2">
               <div className="flex items-center gap-1.5">
                 <span
                   aria-hidden="true"
@@ -63,10 +47,10 @@ export async function OrderProgress({ status }: { status: OrderStatus }) {
                     cancelled
                       ? 'bg-muted'
                       : done
-                        ? 'bg-emerald'
+                        ? 'bg-emerald-500'
                         : active
-                          ? 'bg-gradient-to-r from-primary to-emerald shadow-[0_0_8px_rgba(220,170,40,0.5)]'
-                          : 'bg-muted',
+                          ? 'bg-primary shadow-[0_0_8px_rgba(220,170,40,0.5)]'
+                          : 'bg-border',
                   )}
                 />
                 {active && (
@@ -78,12 +62,12 @@ export async function OrderProgress({ status }: { status: OrderStatus }) {
               </div>
               <span
                 className={cn(
-                  'text-[10px] leading-tight font-medium tracking-wide uppercase',
+                  'text-[10px] leading-tight font-medium tracking-[0.04em] uppercase',
                   active
                     ? 'font-semibold text-primary'
                     : done
-                      ? 'text-emerald'
-                      : 'text-muted-foreground/80',
+                      ? 'text-foreground'
+                      : 'text-muted-foreground/75',
                 )}
               >
                 {t(phase)}
@@ -93,15 +77,11 @@ export async function OrderProgress({ status }: { status: OrderStatus }) {
         })}
       </ol>
 
-      {/* The five steps are a summary; the exact status is the honest answer. */}
-      <p className="sr-only">
-        {tOrders(status)}
-      </p>
+      <p className="sr-only">{tOrders(status)}</p>
     </div>
   )
 }
 
-/** Append-only history, written by a database trigger on every status change. */
 export async function OrderTimeline({ events }: { events: OrderEvent[] }) {
   const t = await getTranslations('Portal')
   const tStatus = await getTranslations('Orders.status')
@@ -117,7 +97,7 @@ export async function OrderTimeline({ events }: { events: OrderEvent[] }) {
           <div className="flex flex-col items-center">
             <span
               aria-hidden="true"
-              className="mt-1.5 grid size-5 shrink-0 place-items-center rounded-full bg-gold-500/15 text-gold-700 ring-1 ring-gold-500/30 ring-inset dark:text-gold-300"
+              className="mt-1.5 grid size-5 shrink-0 place-items-center rounded-full bg-primary/15 text-primary ring-1 ring-primary/30 ring-inset"
             >
               <Check className="size-3" />
             </span>
@@ -144,20 +124,15 @@ export async function OrderTimeline({ events }: { events: OrderEvent[] }) {
   )
 }
 
-/**
- * Payment schedule.
- *
- * Amounts are shown in the currency the order was quoted in and nothing is
- * converted: inventing an exchange rate to display a friendlier number would be
- * a lie about what is owed.
- */
 export async function MilestoneList({
   milestones,
   locale,
+  orderReference,
   showTotals = true,
 }: {
   milestones: OrderMilestone[]
   locale: string
+  orderReference?: string
   showTotals?: boolean
 }) {
   const t = await getTranslations('Portal')
@@ -172,45 +147,63 @@ export async function MilestoneList({
   return (
     <div className="flex flex-col gap-4">
       <ul className="flex flex-col">
-        {milestones.map((milestone) => (
-          <li
-            key={milestone.id}
-            className="flex flex-wrap items-center justify-between gap-3 border-b border-border py-3 last:border-b-0"
-          >
-            <div className="flex min-w-0 flex-col gap-0.5">
-              <span className="truncate text-[13.5px] font-medium">{milestone.title}</span>
-              {milestone.due_at ? (
-                <span className="text-[12px] text-muted-foreground">
-                  {t('dueOn')}{' '}
-                  {new Date(milestone.due_at).toLocaleDateString(locale, {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                </span>
-              ) : null}
-            </div>
+        {milestones.map((milestone) => {
+          const isPaid = milestone.status === 'paid'
+          return (
+            <li
+              key={milestone.id}
+              className="flex flex-wrap items-center justify-between gap-3 border-b border-border py-3.5 last:border-b-0"
+            >
+              <div className="flex min-w-0 flex-col gap-0.5">
+                <span className="truncate text-[13.5px] font-medium">{milestone.title}</span>
+                {milestone.due_at ? (
+                  <span className="text-[12px] text-muted-foreground">
+                    {t('dueOn')}{' '}
+                    {new Date(milestone.due_at).toLocaleDateString(locale, {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </span>
+                ) : null}
+              </div>
 
-            <div className="flex shrink-0 items-center gap-3">
-              <span className="text-[13.5px] font-semibold tabular-nums">
-                {formatMoney(Number(milestone.amount), milestone.currency, locale)}
-              </span>
-              <Badge variant={milestone.status === 'paid' ? 'success' : 'outline'}>
-                {tMilestone(milestone.status)}
-              </Badge>
-            </div>
-          </li>
-        ))}
+              <div className="flex shrink-0 items-center gap-2.5">
+                <span className="font-mono text-[13.5px] font-semibold tabular-nums">
+                  {formatMoney(Number(milestone.amount), milestone.currency, locale)}
+                </span>
+                <Badge variant={isPaid ? 'success' : 'outline'}>
+                  {tMilestone(milestone.status)}
+                </Badge>
+
+                {!isPaid && orderReference ? (
+                  <Link
+                    href={{
+                      pathname: '/payment',
+                      query: {
+                        amount: String(milestone.amount),
+                        currency: milestone.currency,
+                        purpose: `${milestone.title} (${orderReference})`,
+                        reference: orderReference,
+                        orderReference,
+                        milestoneId: milestone.id,
+                      },
+                    }}
+                    className="inline-flex items-center gap-1 rounded-lg bg-primary px-2.5 py-1 text-[11px] font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90"
+                  >
+                    <CreditCard className="size-3" />
+                    <span>Pay</span>
+                  </Link>
+                ) : null}
+              </div>
+            </li>
+          )
+        })}
       </ul>
 
       {showTotals ? (
         <>
           <Separator />
-          {/*
-            Totals are per currency, and nothing is converted. An order is
-            normally quoted in one currency, but summing across two of them and
-            labelling the result with either one would be a quietly wrong number.
-          */}
           {Object.keys(totals.billed)
             .sort()
             .map((currency) => {
@@ -221,10 +214,10 @@ export async function MilestoneList({
                 <dl key={currency} className="grid gap-3 text-[13px] sm:grid-cols-3">
                   {(['billed', 'paid', 'due'] as const).map((key) => (
                     <div key={key} className="flex flex-col gap-1">
-                      <dt className="text-[11px] tracking-[0.1em] text-muted-foreground uppercase">
+                      <dt className="label-mono-xs text-muted-foreground">
                         {t(`totals.${key}`)}
                       </dt>
-                      <dd className="font-semibold tabular-nums">
+                      <dd className="font-mono font-semibold tabular-nums">
                         {formatMoney(
                           key === 'billed' ? billed : key === 'paid' ? paid : billed - paid,
                           currency,
@@ -242,7 +235,6 @@ export async function MilestoneList({
   )
 }
 
-/** One row in the portal list. */
 export async function OrderCard({
   order,
   unread,
@@ -258,12 +250,14 @@ export async function OrderCard({
     <li>
       <Link
         href={`/portal/orders/${order.reference}`}
-        className="surface flex flex-col gap-4 p-5 transition-colors hover:border-gold-300 dark:hover:border-gold-500/40"
+        className="group flex flex-col gap-4 rounded-[20px] border border-border bg-card p-6 transition-all duration-300 hover:border-primary/60"
       >
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex min-w-0 flex-col gap-1">
-            <span className="truncate text-[15px] font-semibold">{order.title}</span>
-            <span className="text-[12px] text-muted-foreground">
+            <span className="font-display truncate text-lg font-semibold tracking-[-0.02em] text-foreground transition-colors group-hover:text-primary">
+              {order.title}
+            </span>
+            <span className="font-mono text-xs text-muted-foreground">
               {t('reference')} {order.reference}
             </span>
           </div>
@@ -280,7 +274,7 @@ export async function OrderCard({
 
         <OrderProgress status={order.status} />
 
-        <div className="flex items-center justify-between gap-3 text-[12px] text-muted-foreground">
+        <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
           <span>
             {t('updated')}{' '}
             {new Date(order.updated_at).toLocaleDateString(locale, {
@@ -289,9 +283,10 @@ export async function OrderCard({
               year: 'numeric',
             })}
           </span>
-          <span className="inline-flex items-center gap-1.5 font-medium text-gold-700 dark:text-gold-300">
-            <FileText className="size-3.5" />
-            {t('open')}
+          <span className="inline-flex items-center gap-1.5 font-medium text-foreground uppercase tracking-[0.04em] transition-colors group-hover:text-primary">
+            <FileText className="size-3.5 text-primary" />
+            <span>{t('open')}</span>
+            <ArrowUpRight className="size-3.5" />
           </span>
         </div>
       </Link>
@@ -299,19 +294,18 @@ export async function OrderCard({
   )
 }
 
-/** Empty state for a client with nothing on file yet. */
 export async function PortalEmpty() {
   const t = await getTranslations('Portal')
 
   return (
-    <div className="surface flex flex-col items-start gap-3 p-7">
+    <div className="flex flex-col items-start gap-3 rounded-[20px] border border-border bg-card p-8">
       <span
         aria-hidden="true"
-        className="grid size-11 place-items-center rounded-xl bg-gold-500/12 text-gold-700 ring-1 ring-gold-500/25 ring-inset dark:text-gold-300"
+        className="grid size-11 place-items-center rounded-xl bg-primary/15 text-primary"
       >
         <CircleDashed className="size-5" />
       </span>
-      <h3 className="text-base font-semibold">{t('empty.title')}</h3>
+      <h3 className="heading-style-h4">{t('empty.title')}</h3>
       <p className="max-w-prose text-sm text-muted-foreground">{t('empty.body')}</p>
     </div>
   )

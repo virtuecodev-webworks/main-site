@@ -23,28 +23,28 @@ const emailLike = z
   .string()
   .trim()
   .toLowerCase()
-  .min(5)
-  .max(180)
-  .regex(/^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/)
+  .min(1, 'Please enter your email address')
+  .max(180, 'Email address is too long')
+  .regex(/^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/, 'Please enter a valid email address (e.g. name@company.com)')
 
 const urlLike = z
   .string()
   .trim()
-  .max(500)
-  .regex(/^https?:\/\/[^\s]+$/i)
+  .max(500, 'Link is too long')
+  .regex(/^https?:\/\/[^\s]+$/i, 'Please enter a full link starting with https://')
 
 /** Postgres `uuid` text form. Regex keeps this independent of Zod's format APIs. */
 const uuidLike = z
   .string()
   .trim()
-  .regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)
+  .regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, 'Invalid reference format')
 
 /** Empty form fields arrive as `''`; treat them as absent, not invalid. */
 const optionalText = (max: number) =>
   z
     .string()
     .trim()
-    .max(max)
+    .max(max, `Maximum ${max} characters allowed`)
     .transform((value) => (value === '' ? null : value))
     .nullable()
 
@@ -53,15 +53,30 @@ const optionalText = (max: number) =>
 /* -------------------------------------------------------------------------- */
 
 export const inquirySchema = z.object({
-  name: z.string().trim().min(2).max(120),
+  name: z
+    .string()
+    .trim()
+    .min(1, 'Please enter your full name')
+    .min(2, 'Please enter your name (at least 2 characters)')
+    .max(120, 'Name is too long'),
   email: emailLike,
-  password: z.string().min(8).max(120).optional().nullable(),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(120, 'Password is too long')
+    .optional()
+    .nullable(),
   phone: optionalText(40).optional(),
   company: optionalText(140).optional(),
   service: optionalText(60).optional(),
   budget: z.enum(BUDGET_BANDS).nullable().optional(),
   timeline: z.enum(TIMELINES).nullable().optional(),
-  message: z.string().trim().min(20).max(4000),
+  message: z
+    .string()
+    .trim()
+    .min(1, 'Please tell us a little about your project')
+    .min(10, 'Please tell us a little about your project (at least 10 characters)')
+    .max(4000, 'Message is too long (maximum 4000 characters)'),
   locale: z.string().trim().min(2).max(8).default('en'),
   /** Honeypot — real users never fill this, bots usually do. */
   website: z.string().max(0).optional().or(z.literal('')).or(z.null()),
@@ -81,6 +96,8 @@ export const paymentSchema = z.object({
   customerPhone: optionalText(40).optional(),
   purpose: optionalText(200).optional(),
   reference: optionalText(80).optional(),
+  milestoneId: uuidLike.optional().or(z.literal('')).nullable(),
+  orderReference: optionalText(80).optional(),
 })
 
 export type PaymentInput = z.infer<typeof paymentSchema>
@@ -144,13 +161,38 @@ export type NewsletterInput = z.infer<typeof newsletterSchema>
 /*  Helpers                                                                    */
 /* -------------------------------------------------------------------------- */
 
-/** Flattens Zod issues into `{ field: [messages] }` for form display. */
+/** Flattens Zod issues into clean, client-friendly `{ field: [messages] }`. */
 export function issuesToFieldErrors(
   issues: ReadonlyArray<{ path: ReadonlyArray<PropertyKey>; message: string }>,
 ): Record<string, string[]> {
   return issues.reduce<Record<string, string[]>>((acc, issue) => {
     const key = String(issue.path[0] ?? '_form')
-    acc[key] = [...(acc[key] ?? []), issue.message]
+    let msg = issue.message
+
+    // Clean up any remaining technical Zod language
+    if (msg.includes('pattern') || msg.includes('regex') || msg.includes('Invalid string')) {
+      if (key === 'email' || key === 'customerEmail') {
+        msg = 'Please enter a valid email address (e.g. name@company.com)'
+      } else if (key === 'name' || key === 'customerName') {
+        msg = 'Please enter your full name'
+      } else {
+        msg = 'Please check this field and enter a valid value'
+      }
+    } else if (msg.toLowerCase().includes('too small') || msg.toLowerCase().includes('expected string to have >=')) {
+      if (key === 'name' || key === 'customerName') {
+        msg = 'Please enter your name (at least 2 characters)'
+      } else if (key === 'email' || key === 'customerEmail') {
+        msg = 'Please enter your email address'
+      } else if (key === 'message') {
+        msg = 'Please tell us a little about your project'
+      } else if (key === 'password') {
+        msg = 'Password must be at least 8 characters'
+      } else {
+        msg = 'Please fill out this field'
+      }
+    }
+
+    acc[key] = [...(acc[key] ?? []), msg]
     return acc
   }, {})
 }

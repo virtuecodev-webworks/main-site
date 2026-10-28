@@ -4,7 +4,7 @@ import { cache } from 'react'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createSupabaseServerClient } from './server'
-import { getAdminAllowlist } from './env'
+import { getAdminAllowlist, isSupabaseConfigured } from './env'
 import { isStaffRole, type ProfileRole } from '@/lib/constants'
 import type { Profile } from './types'
 
@@ -41,8 +41,12 @@ export async function isAdmin() {
   return (await getAdminSession()) !== null
 }
 
-function parseDemoSession(raw: string | undefined): any | null {
-  if (!raw) return null
+function isDemoCookieAllowed(): boolean {
+  return process.env.NODE_ENV !== 'production' && !isSupabaseConfigured()
+}
+
+function parseDemoSession(raw: string | undefined): Record<string, string> | null {
+  if (!raw || !isDemoCookieAllowed()) return null
   try {
     const text = raw.includes('%') ? decodeURIComponent(raw) : raw
     return JSON.parse(text)
@@ -60,18 +64,20 @@ function parseDemoSession(raw: string | undefined): any | null {
  * state, where React's per-request `cache` may hold a stale result.
  */
 export async function resolveAdminSession(): Promise<AdminSession | null> {
-  try {
-    const jar = await cookies()
-    const parsed = parseDemoSession(jar.get('vcw:demo_session')?.value)
-    if (parsed && parsed.role === 'admin') {
-      return {
-        userId: parsed.userId || 'demo-admin-id',
-        email: parsed.email || 'admin@virtueco.dev',
-        name: parsed.name || 'Studio Administrator',
-        source: 'profile',
+  if (isDemoCookieAllowed()) {
+    try {
+      const jar = await cookies()
+      const parsed = parseDemoSession(jar.get('vcw:demo_session')?.value)
+      if (parsed && parsed.role === 'admin') {
+        return {
+          userId: parsed.userId || 'demo-admin-id',
+          email: parsed.email || 'admin@virtueco.dev',
+          name: parsed.name || 'Studio Administrator',
+          source: 'profile',
+        }
       }
-    }
-  } catch {}
+    } catch {}
+  }
 
   const user = await getCurrentUser()
   if (!user) return null
@@ -118,13 +124,6 @@ export interface Session {
 }
 
 /**
- * The caller's role, resolved once per request.
- *
- * The allow-list is folded in as an *admin* fallback so a brand-new deploy can
- * still be administered before anyone has been promoted in the database — the
- * same two-path rule 0001 established, now expressed as a single role.
- */
-/**
  * Uncached role resolution.
  *
  * Used by Server Actions after a sign-in — where React's per-request `cache`
@@ -132,20 +131,23 @@ export interface Session {
  * route handler, which runs outside a React render.
  */
 export async function resolveSession(): Promise<Session | null> {
-  try {
-    const jar = await cookies()
-    const parsed = parseDemoSession(jar.get('vcw:demo_session')?.value)
-    if (parsed && parsed.role) {
-      return {
-        userId: parsed.userId || (parsed.role === 'admin' ? 'demo-admin-id' : 'demo-client-id'),
-        email: parsed.email || (parsed.role === 'admin' ? 'admin@virtueco.dev' : 'client@virtueco.dev'),
-        name: parsed.name || (parsed.role === 'admin' ? 'Studio Administrator' : 'Alex Vance'),
-        role: parsed.role,
-        isStaff: isStaffRole(parsed.role),
-        isAdmin: parsed.role === 'admin',
+  if (isDemoCookieAllowed()) {
+    try {
+      const jar = await cookies()
+      const parsed = parseDemoSession(jar.get('vcw:demo_session')?.value)
+      if (parsed && parsed.role) {
+        const role = parsed.role as ProfileRole
+        return {
+          userId: parsed.userId || (role === 'admin' ? 'demo-admin-id' : 'demo-client-id'),
+          email: parsed.email || (role === 'admin' ? 'admin@virtueco.dev' : 'client@virtueco.dev'),
+          name: parsed.name || (role === 'admin' ? 'Studio Administrator' : 'Alex Vance'),
+          role,
+          isStaff: isStaffRole(role),
+          isAdmin: role === 'admin',
+        }
       }
-    }
-  } catch {}
+    } catch {}
+  }
 
   const user = await getCurrentUser()
   if (!user) return null
@@ -184,11 +186,6 @@ export const getSession = cache(resolveSession)
 
 /**
  * Where a signed-in account belongs.
- *
- * One rule in one place, because three callers need it: the sign-in action once
- * it has authenticated, and the sign-in and sign-up pages when an already
- * signed-in visitor arrives. Agents land on the orders console rather than the
- * studio overview, which they cannot open.
  */
 export function landingFor(locale: string, role: ProfileRole | null): string {
   if (role === 'admin') return `/${locale}/admin`
@@ -205,9 +202,6 @@ export async function requireSession(locale: string): Promise<Session> {
 
 /**
  * The client half of the site.
- *
- * A staff account visiting `/portal` is sent to the console instead: the portal
- * would render for them, but it is not the surface they work in.
  */
 export async function requireClient(locale: string): Promise<Session> {
   const session = await requireSession(locale)
@@ -223,8 +217,7 @@ export async function requireStaff(locale: string): Promise<Session> {
 }
 
 /**
- * Admin only. An agent is sent to the orders console rather than to the portal,
- * which is what keeps this from bouncing between two redirects.
+ * Admin only.
  */
 export async function requireAdmin(locale: string): Promise<Session> {
   const session = await requireStaff(locale)

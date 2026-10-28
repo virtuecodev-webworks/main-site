@@ -1,13 +1,12 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PageHero } from '@/components/site/page-hero'
-import { PhotoBand } from '@/components/site/photo-band'
 import { PortfolioGrid } from '@/components/site/portfolio-grid'
+import { StudioShowreelBand } from '@/components/site/studio-showreel-band'
 import { ProjectFolders } from '@/components/site/project-folders'
 import { CtaBand } from '@/components/site/cta-band'
 import { getPublishedProjects } from '@/lib/supabase/queries'
-import { PLACEHOLDER_PROJECTS, toProjectCard } from '@/lib/portfolio'
-import { PHOTOS } from '@/lib/photos'
+import { mergeWithShowcaseProjects, toProjectCard } from '@/lib/portfolio'
 import { buildPageMetadata } from '@/lib/seo'
 
 export async function generateMetadata({
@@ -30,36 +29,40 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
   setRequestLocale(locale)
 
   const t = await getTranslations('Portfolio')
-  const tPhotos = await getTranslations('Photos')
 
   const published = await getPublishedProjects()
-  const projects = published.length ? published.map(toProjectCard) : PLACEHOLDER_PROJECTS
+  const projects = mergeWithShowcaseProjects(published.map(toProjectCard))
 
   return (
     <>
-      <PageHero eyebrow={t('eyebrow')} title={t('title')} subtitle={t('subtitle')} />
-
-      <PhotoBand
-        src={PHOTOS.workBand}
-        alt={tPhotos('work.alt')}
-        caption={tPhotos('work.caption')}
-        className="mt-16 sm:mt-20"
-        priority
+      <PageHero
+        eyebrow={t('eyebrow')}
+        title={t('title')}
+        subtitle={t('subtitle')}
+        align="center"
       />
 
-      <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
-        <PortfolioGrid projects={projects} headingLevel={2} />
-      </div>
+      <section className="padding-global pb-20 sm:pb-28">
+        <div className="container-max">
+          <PortfolioGrid projects={projects} headingLevel={2} floatingFilter />
+        </div>
+      </section>
 
-      <div className="border-y border-border bg-muted/45">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
+      {/* Cinematic Studio Showreel Section */}
+      <StudioShowreelBand
+        className="border-t border-border"
+        eyebrow="Production Reel · 30 Seconds"
+        title="Experience our client builds in motion."
+        subtitle="See how fluid animations, fast state management, and bespoke typography deliver real commercial traction."
+      />
+
+      <section className="padding-global padding-section border-t border-border">
+        <div className="container-max">
           <ProjectFolders />
         </div>
-      </div>
+      </section>
 
-      <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-        <CtaBand />
-      </div>
+      <CtaBand className="mt-8" />
     </>
   )
 }

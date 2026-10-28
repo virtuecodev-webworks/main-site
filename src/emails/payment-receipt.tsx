@@ -11,7 +11,7 @@ import {
   SecurityPill,
   Divider,
 } from './base/shell'
-import { TEXT_DARK, TEXT_MUTED_DARK, PORTAL, GOLD } from './base/tokens'
+import { TEXT_DARK, TEXT_MUTED_DARK, PORTAL, GOLD, CARD_WELL, BORDER_DIVIDER, DISPLAY_STACK, MONO_STACK } from './base/tokens'
 
 export interface PaymentReceiptProps {
   reference: string
@@ -35,25 +35,44 @@ export function PaymentReceiptEmail({
   const recipient = customerName ?? customerEmail
 
   return (
-    <Shell preheader={`Payment confirmed: ${amount} · Ref ${reference}`}>
+    <Shell preheader={`Payment confirmed: ${amount} · Ref ${reference}`} eyebrow="Payment Receipt">
       <CardHeadline>Payment Confirmed</CardHeadline>
       <CardSubtext>Thank you, {recipient}. Your transaction was successful.</CardSubtext>
 
       {/* Amount Hero Box */}
       <div
         style={{
-          background: '#F8FAFC',
-          border: '1.5px solid #E2E8F0',
-          borderRadius: 20,
-          padding: '22px 20px',
-          margin: '18px 0 24px',
+          background: '#0A0A0A',
+          border: '1px solid #1E1E1E',
+          borderRadius: 16,
+          padding: '24px 20px',
+          margin: '18px 0 22px',
           textAlign: 'center',
         }}
       >
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', color: GOLD, textTransform: 'uppercase', marginBottom: 6 }}>
-          ✓ Verified Payment
+        <div
+          style={{
+            fontFamily: MONO_STACK,
+            fontSize: 10.5,
+            fontWeight: 600,
+            letterSpacing: '0.18em',
+            color: GOLD,
+            textTransform: 'uppercase',
+            marginBottom: 8,
+          }}
+        >
+          ( ✓ Verified Payment )
         </div>
-        <div style={{ fontSize: 36, fontWeight: 800, color: TEXT_DARK, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+        <div
+          style={{
+            fontFamily: DISPLAY_STACK,
+            fontSize: 36,
+            fontWeight: 500,
+            color: '#F5F4F0',
+            letterSpacing: '-0.03em',
+            lineHeight: 1.1,
+          }}
+        >
           {amount}
         </div>
       </div>
@@ -65,9 +84,9 @@ export function PaymentReceiptEmail({
         cellPadding={0}
         cellSpacing={0}
         style={{
-          background: '#FFFFFF',
-          border: '1px solid #E5E7EB',
-          borderRadius: 14,
+          background: CARD_WELL,
+          border: `1px solid ${BORDER_DIVIDER}`,
+          borderRadius: 16,
           overflow: 'hidden',
           fontSize: 13,
           margin: '0 0 20px',
@@ -81,8 +100,8 @@ export function PaymentReceiptEmail({
             ['Date & Time', paidAt],
             ['Billed To', customerEmail],
           ].map(([label, val], idx) => (
-            <tr key={label} style={{ borderBottom: idx < 4 ? '1px solid #F1F5F9' : 'none' }}>
-              <td style={{ padding: '12px 16px', color: '#6B7280', fontWeight: 600, width: '40%' }}>
+            <tr key={label} style={{ borderBottom: idx < 4 ? `1px solid ${BORDER_DIVIDER}` : 'none' }}>
+              <td style={{ padding: '12px 16px', color: TEXT_MUTED_DARK, fontWeight: 500, width: '40%' }}>
                 {label}
               </td>
               <td style={{ padding: '12px 16px', color: TEXT_DARK, fontWeight: 600, textAlign: 'right' }}>
@@ -95,7 +114,7 @@ export function PaymentReceiptEmail({
 
       <PrimaryButton href={PORTAL}>Access Your Client Portal</PrimaryButton>
 
-      <SecurityPill ip={reference} />
+      <SecurityPill ip={`Ref: ${reference}`} />
     </Shell>
   )
 }

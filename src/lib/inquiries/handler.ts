@@ -14,6 +14,7 @@ import { sendPushToAdmins } from '@/app/api/push/send/route'
 import { clientKey, rateLimit } from '@/lib/rate-limit'
 import type { Inquiry } from '@/lib/supabase/types'
 import { inquirySchema, issuesToFieldErrors } from '@/lib/validation'
+import { COUNTRY_COOKIE, GEO_COOKIE } from '@/lib/geo/countries'
 
 export interface InquiryResult {
   ok: boolean
@@ -22,18 +23,12 @@ export interface InquiryResult {
   fieldErrors?: Record<string, string[]>
   retryAfterSeconds?: number
   redirectUrl?: string
+  orderReference?: string
 }
 
 /**
  * Shared inquiry pipeline used by BOTH the `submitInquiry` Server Action and
  * the `/api/contact` route handler, so behaviour can never drift between them.
- *
- * Order of operations matters:
- *   1. rate limit          — cheapest rejection, stops spam before any I/O
- *   2. validate            — never trust the browser
- *   3. honeypot            — silently accept, but discard
- *   4. persist to Supabase — the record of truth for the admin hub
- *   5. notify + confirm    — email is the fallback if the DB is unreachable
  */
 export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
   const requestHeaders = await headers()
@@ -83,9 +78,9 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
   }
 
   let storedId: string | null = null
-  const supabase = createSupabaseAdminClient()
-  if (supabase) {
-    const { data, error } = await supabase
+  const supabaseAdmin = createSupabaseAdminClient()
+  if (supabaseAdmin) {
+    const { data, error } = await supabaseAdmin
       .from('inquiries')
       .insert({
         name: record.name,
@@ -110,33 +105,146 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
     }
   }
 
-  if (!isEmailConfigured()) {
-    console.warn('[inquiries] Resend not configured - lead received but not emailed.')
-    // Still a success for the visitor; the failure is ours to fix, not theirs.
-    return { ok: true, code: 'ok' }
+  // Handle optional portal account creation or existing signed-in client session
+  let redirectUrl: string | undefined
+  let clientUserId: string | null = null
+
+  try {
+    const serverClient = await createSupabaseServerClient()
+    if (serverClient) {
+      const {
+        data: { user: existingSessionUser },
+      } = await serverClient.auth.getUser()
+
+      if (existingSessionUser) {
+        clientUserId = existingSessionUser.id
+      } else if (input.password && input.password.length >= 8) {
+        const { data: authData } = await serverClient.auth.signUp({
+          email: input.email.toLowerCase().trim(),
+          password: input.password,
+          options: {
+            data: {
+              full_name: input.name,
+              phone: input.phone ?? undefined,
+              company: input.company ?? undefined,
+            },
+          },
+        })
+        if (authData.user) {
+          clientUserId = authData.user.id
+        } else {
+          const { data: signInData } = await serverClient.auth.signInWithPassword({
+            email: input.email.toLowerCase().trim(),
+            password: input.password,
+          })
+          if (signInData.user) {
+            clientUserId = signInData.user.id
+          }
+        }
+        redirectUrl = `/${input.locale}/portal`
+      }
+    } else if (input.password && input.password.length >= 8 && process.env.NODE_ENV !== 'production') {
+      const jar = await cookies()
+      jar.set(
+        'vcw:demo_session',
+        JSON.stringify({
+          userId: 'client-' + Date.now(),
+          email: input.email,
+          name: input.name,
+          role: 'client',
+        }),
+        { path: '/', httpOnly: true, sameSite: 'lax' },
+      )
+      redirectUrl = `/${input.locale}/portal`
+    }
+
+    // Also look up if a client profile already exists with this email even without password
+    if (!clientUserId && supabaseAdmin) {
+      const { data: existingProfile } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('email', input.email.toLowerCase().trim())
+        .maybeSingle<{ id: string }>()
+      if (existingProfile?.id) {
+        clientUserId = existingProfile.id
+      }
+    }
+  } catch (authErr) {
+    console.warn('[inquiries] client account resolution skipped:', authErr)
+  }
+
+  // Create a synced Order in `public.orders` whenever we have a clientUserId
+  let orderReference: string | undefined
+  if (clientUserId && supabaseAdmin) {
+    try {
+      const jar = await cookies()
+      const country = jar.get(COUNTRY_COOKIE)?.value ?? jar.get(GEO_COOKIE)?.value ?? null
+      const titleParts = [
+        input.company || input.name,
+        input.service ? input.service.toUpperCase() : 'Project Brief',
+      ]
+      const orderTitle = titleParts.join(' — ').slice(0, 140)
+
+      const { data: createdOrder, error: orderErr } = await supabaseAdmin
+        .from('orders')
+        .insert({
+          client_id: clientUserId,
+          title: orderTitle,
+          brief: input.message,
+          service: input.service ?? 'custom',
+          scope: input.budget ?? null,
+          status: 'inquiry',
+          currency: country === 'NG' ? 'NGN' : 'USD',
+          locale: input.locale || 'en',
+          country,
+          inquiry_id: storedId,
+        })
+        .select('id, reference')
+        .single<{ id: string; reference: string }>()
+
+      if (!orderErr && createdOrder) {
+        orderReference = createdOrder.reference
+        await supabaseAdmin.from('order_messages').insert({
+          order_id: createdOrder.id,
+          author_id: clientUserId,
+          author_role: 'client',
+          body: input.message,
+          internal: false,
+        })
+        if (redirectUrl) {
+          redirectUrl = `/${input.locale}/portal/orders/${createdOrder.reference}`
+        }
+      }
+    } catch (orderSyncErr) {
+      console.warn('[inquiries] order auto-sync failed:', orderSyncErr)
+    }
   }
 
   const label = localeLabel(input.locale)
 
-  // Dispatch after the response so the form never waits on Resend.
+  // Dispatch emails and push notifications asynchronously after the response
   after(async () => {
     try {
-      const [adminEmailRendered, clientEmailRendered] = await Promise.all([
-        enquiryAdminEmail(record, label),
-        enquiryClientEmail(record),
-      ])
+      if (isEmailConfigured()) {
+        const [adminEmailRendered, clientEmailRendered] = await Promise.all([
+          enquiryAdminEmail(record, label),
+          enquiryClientEmail(record),
+        ])
 
-      await sendMany([
-        {
-          to: leadRecipient(),
-          replyTo: input.email,
-          email: adminEmailRendered,
-        },
-        {
-          to: input.email,
-          email: clientEmailRendered,
-        },
-      ])
+        await sendMany([
+          {
+            to: leadRecipient(),
+            replyTo: input.email,
+            email: adminEmailRendered,
+          },
+          {
+            to: input.email,
+            email: clientEmailRendered,
+          },
+        ])
+      } else {
+        console.warn('[inquiries] SMTP not configured - lead recorded in DB.')
+      }
 
       // Push notification to installed admin devices (PWA / Mobile)
       try {
@@ -153,55 +261,13 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
       console.error('[inquiries] email/push dispatch error:', err)
     }
 
-    if (storedId && supabase) {
-      await supabase
+    if (storedId && supabaseAdmin) {
+      await supabaseAdmin
         .from('inquiries')
         .update({ notified_at: new Date().toISOString() })
         .eq('id', storedId)
     }
   })
 
-  let redirectUrl: string | undefined
-
-  if (input.password && input.password.length >= 8) {
-    try {
-      const serverClient = await createSupabaseServerClient()
-      if (serverClient) {
-        const { data: authData } = await serverClient.auth.signUp({
-          email: input.email.toLowerCase().trim(),
-          password: input.password,
-          options: {
-            data: {
-              full_name: input.name,
-              phone: input.phone ?? undefined,
-              company: input.company ?? undefined,
-            },
-          },
-        })
-        if (!authData.user) {
-          await serverClient.auth.signInWithPassword({
-            email: input.email.toLowerCase().trim(),
-            password: input.password,
-          })
-        }
-      } else {
-        const jar = await cookies()
-        jar.set(
-          'vcw:demo_session',
-          JSON.stringify({
-            userId: 'client-' + Date.now(),
-            email: input.email,
-            name: input.name,
-            role: 'client',
-          }),
-          { path: '/', httpOnly: true, sameSite: 'lax' },
-        )
-      }
-      redirectUrl = `/${input.locale}/portal`
-    } catch (authErr) {
-      console.warn('[inquiries] client account creation skipped:', authErr)
-    }
-  }
-
-  return { ok: true, code: 'ok', redirectUrl }
+  return { ok: true, code: 'ok', redirectUrl, orderReference }
 }

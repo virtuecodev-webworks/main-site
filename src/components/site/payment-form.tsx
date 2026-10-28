@@ -1,15 +1,12 @@
 'use client'
 
 import * as React from 'react'
+import { useSearchParams } from 'next/navigation'
 import {
   CreditCard,
   Lock,
-  ShieldCheck,
   CheckCircle2,
-  Building2,
-  MessageCircle,
   ExternalLink,
-  ShieldAlert,
 } from 'lucide-react'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
 import { VirtueMark } from '@/components/brand/virtue-mark'
@@ -68,21 +65,41 @@ export function PaymentForm({ className }: { className?: string }) {
   const tPresets = useTranslations('Payment.presets')
   const tAssurance = useTranslations('Payment.assurance')
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const [pending, setPending] = React.useState(false)
   const [preset, setPreset] = React.useState<PresetKey>('deposit')
   const [purpose, setPurpose] = React.useState('')
+  const [defaultAmount, setDefaultAmount] = React.useState<string>('')
+  const [defaultRef, setDefaultRef] = React.useState<string>('')
+  const [milestoneId, setMilestoneId] = React.useState<string | null>(null)
+  const [orderReference, setOrderReference] = React.useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string[]>>({})
 
-  /*
-   * The currency is derived, not synced: until the region resolves we show the
-   * default, and once it does we follow the visitor's country — unless they have
-   * already chosen a currency themselves, which always wins. Deriving it avoids
-   * an effect that would overwrite a deliberate selection moments after mount.
-   */
   const { currency: regionCurrency, ready: regionReady } = useRegion()
   const [currencyOverride, setCurrencyOverride] = React.useState<CurrencyCode | null>(null)
   const currency = currencyOverride ?? (regionReady ? regionCurrency : 'USD')
+
+  React.useEffect(() => {
+    const qAmount = searchParams.get('amount')
+    const qCurrency = searchParams.get('currency') as CurrencyCode | null
+    const qPurpose = searchParams.get('purpose')
+    const qRef = searchParams.get('reference')
+    const qMilestone = searchParams.get('milestoneId')
+    const qOrderRef = searchParams.get('orderReference') ?? searchParams.get('reference')
+
+    if (qAmount) setDefaultAmount(qAmount)
+    if (qCurrency && CURRENCIES.some((c) => c.code === qCurrency)) {
+      setCurrencyOverride(qCurrency)
+    }
+    if (qPurpose) {
+      setPurpose(qPurpose)
+      setPreset('custom')
+    }
+    if (qRef) setDefaultRef(qRef)
+    if (qMilestone) setMilestoneId(qMilestone)
+    if (qOrderRef) setOrderReference(qOrderRef)
+  }, [searchParams])
 
   const minimum = MINIMUMS[currency]
 
@@ -123,6 +140,8 @@ export function PaymentForm({ className }: { className?: string }) {
           customerPhone: customerPhone || null,
           purpose: purpose || null,
           reference: reference || null,
+          milestoneId: milestoneId || null,
+          orderReference: orderReference || reference || null,
         }),
       })
 
@@ -209,7 +228,7 @@ export function PaymentForm({ className }: { className?: string }) {
           </div>
           <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald/30 bg-emerald/10 px-3 py-1 text-[11.5px] font-medium text-emerald">
             <span className="size-1.5 rounded-full bg-emerald animate-pulse" />
-            <span>Verified Studio Escrow</span>
+            <span>Verified Escrow Protection</span>
           </div>
         </div>
 
@@ -223,6 +242,8 @@ export function PaymentForm({ className }: { className?: string }) {
               min={minimum}
               step="0.01"
               required
+              defaultValue={defaultAmount}
+              key={defaultAmount ? `amt-${defaultAmount}` : 'amt-empty'}
               placeholder={String(minimum)}
               className="text-lg font-medium"
             />
@@ -294,7 +315,14 @@ export function PaymentForm({ className }: { className?: string }) {
           </Field>
 
           <Field label={`${t('invoiceReference')} (optional)`} name="reference" errors={fieldErrors.reference} hint={t('invoiceHint')}>
-            <Input id="pay-reference" name="reference" maxLength={80} placeholder="e.g. VCW-2026-001" />
+            <Input
+              id="pay-reference"
+              name="reference"
+              maxLength={80}
+              defaultValue={defaultRef}
+              key={defaultRef ? `ref-${defaultRef}` : 'ref-empty'}
+              placeholder="e.g. VCW-2026-001"
+            />
           </Field>
         </div>
 
@@ -395,7 +423,7 @@ export function PaymentForm({ className }: { className?: string }) {
           <div className="flex items-start gap-3">
             <CheckCircle2 className="size-4 text-emerald shrink-0 mt-0.5" />
             <div className="text-[13px] leading-relaxed">
-              <span className="font-semibold text-foreground block">Direct Studio Contact</span>
+              <span className="font-semibold text-foreground block">Direct Contact</span>
               <span className="text-muted-foreground">Need help or a custom wire invoice? You talk directly to the engineers building your platform.</span>
             </div>
           </div>
@@ -404,19 +432,13 @@ export function PaymentForm({ className }: { className?: string }) {
         {/* Official Channels Box */}
         <div className="mt-auto rounded-xl border border-border/70 bg-muted/20 p-4 space-y-2.5">
           <div className="text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Official Studio Support
+            Official Support
           </div>
           <div className="text-[12.5px] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Primary:</span>
-              <a href={`mailto:${AGENCY.email}`} className="font-medium text-foreground hover:text-gold-500 transition-colors">
+              <span className="text-muted-foreground">Support Email:</span>
+              <a href={`mailto:${AGENCY.email}`} className="font-medium text-foreground hover:text-primary transition-colors">
                 {AGENCY.email}
-              </a>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Direct:</span>
-              <a href={`mailto:${AGENCY.fallbackEmail}`} className="font-medium text-foreground hover:text-gold-500 transition-colors">
-                {AGENCY.fallbackEmail}
               </a>
             </div>
             <div className="flex items-center justify-between pt-1">

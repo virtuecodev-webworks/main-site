@@ -1,45 +1,47 @@
 /**
- * Virtue & Co. Webworks — Email Design Tokens
- * Matched precisely to the high-contrast white-card + dark-cosmic pedestal design.
+ * Virtue & Co. Webworks — Vantra Studio Architectural Email Design Tokens
  */
 
 /** Brand colors */
-export const GOLD = '#D4AF37'
-export const GOLD_LIGHT = '#E8C84A'
+export const GOLD = '#DCAA28'
+export const GOLD_LIGHT = '#E6BB44'
 export const GOLD_DARK = '#B8922A'
-export const CHARCOAL = '#0B0B0D'
+export const CHARCOAL = '#0A0A0A'
 
-/** Canvas & Surfaces */
-export const CANVAS_BG = '#080913'           // Outer deep space background
-export const CARD_BG = '#FFFFFF'             // Pure white floating card
-export const CARD_WELL = '#F8FAFC'           // Subtle off-white inner sections
-export const SQUIRCLE_BG = '#111827'         // Dark badge for logo mark
+/** Canvas & Surfaces (Vantra Obsidian + Warm Bone) */
+export const CANVAS_BG = '#0A0A0A'
+export const CARD_BG = '#F5F4F0'
+export const CARD_WELL = '#FFFFFF'
+export const SQUIRCLE_BG = '#0A0A0A'
 
 /** Typography */
-export const TEXT_DARK = '#111827'           // Primary high-contrast text on card
-export const TEXT_MUTED_DARK = '#4B5563'     // Secondary text on card
-export const TEXT_FAINT_DARK = '#9CA3AF'     // Captions & placeholders on card
-export const TEXT_LIGHT = '#F8FAFC'          // Text on dark background
-export const TEXT_MUTED_LIGHT = '#94A3B8'    // Footers on dark background
+export const TEXT_DARK = '#0A0A0A'
+export const TEXT_MUTED_DARK = '#4A4945'
+export const TEXT_FAINT_DARK = '#787670'
+export const TEXT_LIGHT = '#F5F4F0'
+export const TEXT_MUTED_LIGHT = '#9E9C95'
 
-/** Security Alert Box (Warm Amber) */
-export const ALERT_BG = '#FEF9EE'
-export const ALERT_BORDER = '#FDE68A'
-export const ALERT_TITLE = '#92400E'
-export const ALERT_TEXT = '#78350F'
+/** Security / Notice Box (Warm Bone + Gold Hairline) */
+export const ALERT_BG = '#FFFFFF'
+export const ALERT_BORDER = '#E5DFD0'
+export const ALERT_TITLE = '#0A0A0A'
+export const ALERT_TEXT = '#4A4945'
 
-/** Security IP Pill */
-export const PILL_BG = '#374151'
-export const PILL_TEXT = '#F3F4F6'
+/** Security Verification Pill */
+export const PILL_BG = '#0A0A0A'
+export const PILL_TEXT = '#F5F4F0'
 
 /** Borders */
-export const BORDER_CARD = 'rgba(255, 255, 255, 0.12)'
-export const BORDER_DIGIT = '#E5E7EB'
-export const BORDER_DIVIDER = '#F1F5F9'
+export const BORDER_CARD = 'rgba(245, 244, 240, 0.14)'
+export const BORDER_DIGIT = '#DFDDD6'
+export const BORDER_DIVIDER = '#E2E0D8'
 
-/** Typography Stacks */
-export const FONT_SANS = `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`
-export const FONT_MONO = `'SF Mono', Monaco, Consolas, 'Roboto Mono', monospace`
+/** Typography Stacks (Vantra Inter Display + Instrument Sans Body) */
+export const FONT_DISPLAY = `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
+export const FONT_SANS = `'Instrument Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
+export const FONT_MONO = `'Instrument Sans', 'SF Mono', Monaco, Consolas, 'Roboto Mono', monospace`
+export const DISPLAY_STACK = FONT_DISPLAY
+export const MONO_STACK = FONT_MONO
 
 /** Brand Assets */
 export const LOGO_URL = 'https://virtuecowebworks.solutions/brand/logo-mark.png'

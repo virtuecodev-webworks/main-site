@@ -19,7 +19,7 @@ export interface VirtueWordmarkProps {
 
 /**
  * The Virtue & Co. brand lockup.
- * Features the precision illustrated monogram logo icon + Questrial typography.
+ * Features the precision illustrated monogram logo icon + Inter display typography.
  */
 export function VirtueWordmark({
   className,
@@ -53,9 +53,9 @@ export function VirtueWordmark({
       <span className="inline-flex flex-col whitespace-nowrap">
         <span
           className={cn(
-            'font-sans font-bold tracking-tight leading-none',
+            'font-display font-bold tracking-[-0.03em] leading-none',
             isLg ? 'text-xl sm:text-2xl' : 'text-base sm:text-xl',
-            isInvert ? 'text-white' : 'text-foreground',
+            isInvert ? 'text-[#f5f4f0]' : 'text-foreground',
           )}
         >
           {WORDMARK.lead}{' '}
@@ -66,9 +66,9 @@ export function VirtueWordmark({
         {descriptor ? (
           <span
             className={cn(
-              'font-sans leading-none font-semibold tracking-[0.28em] uppercase',
-              isLg ? 'mt-1.5 text-[11px]' : 'mt-1 text-[10px]',
-              isInvert ? 'text-ink-300' : 'text-muted-foreground',
+              'font-sans leading-none font-semibold tracking-[0.22em] uppercase',
+              isLg ? 'mt-1.5 text-[10.5px]' : 'mt-1 text-[9.5px]',
+              isInvert ? 'text-[#f5f4f0]/60' : 'text-muted-foreground',
             )}
           >
             {WORDMARK.descriptor}

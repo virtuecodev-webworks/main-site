@@ -5,21 +5,18 @@ export interface SectionHeadingProps {
   eyebrow?: string
   title: string
   subtitle?: string
-  /** `center` for feature sections, `start` for editorial layouts. */
   align?: 'center' | 'start'
   className?: string
-  /** Render the eyebrow as a gold pill with a leading dot. */
   pill?: boolean
 }
 
-/** Consistent Material-3 section header: eyebrow → title → supporting line. */
+/** Vantra Studio section header: `.label-mono` parenthetical eyebrow -> `.heading-style-h2` -> subtitle. */
 export function SectionHeading({
   eyebrow,
   title,
   subtitle,
   align = 'start',
   className,
-  pill = true,
 }: SectionHeadingProps) {
   const centered = align === 'center'
 
@@ -33,23 +30,16 @@ export function SectionHeading({
     >
       {eyebrow ? (
         <Reveal immediate>
-          {pill ? (
-            <span className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-50 px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.16em] text-gold-800 uppercase dark:bg-gold-500/12 dark:text-gold-300">
-              <span className="size-1.5 rounded-full bg-gold-500" aria-hidden />
-              {eyebrow}
-            </span>
-          ) : (
-            <span className="text-[11px] font-semibold tracking-[0.2em] text-gold-700 uppercase">
-              {eyebrow}
-            </span>
-          )}
+          <span className="label-mono text-primary">
+            ( &nbsp;&nbsp;&nbsp;{eyebrow}&nbsp;&nbsp;&nbsp; )
+          </span>
         </Reveal>
       ) : null}
 
       <Reveal delay={0.06} immediate>
         <h2
           className={cn(
-            'mt-5 text-2xl sm:text-4xl lg:text-[2.75rem] leading-[1.12] font-semibold tracking-tight text-foreground',
+            'heading-style-h2 mt-3 text-balance text-foreground',
             centered && 'mx-auto max-w-3xl',
           )}
         >

@@ -1,20 +1,13 @@
 'use client'
 
-import { LayoutList, LogOut, Plus } from 'lucide-react'
+import { ArrowUpRight, CreditCard, LayoutList, LogOut, Plus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
-import { Button } from '@/components/ui/button'
 import { VirtueWordmark } from '@/components/brand/virtue-wordmark'
+import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { signOutAction } from '@/lib/actions/auth'
 import { cn } from '@/lib/utils'
 
-/**
- * Client portal navigation.
- *
- * Same shape as the studio nav so the two halves of the product feel like one
- * thing, but with only the two places a client needs: their work, and the form
- * for starting something new.
- */
 export function PortalNav({
   locale,
   name,
@@ -33,64 +26,97 @@ export function PortalNav({
   ]
 
   return (
-    <div className="surface flex flex-col gap-6 p-5">
-      <div className="flex items-center justify-between gap-3">
-        <VirtueWordmark className="text-[17px]" />
-      </div>
-
-      <nav className="flex flex-col gap-1" aria-label={t('title')}>
-        {items.map((item) => {
-          const Icon = item.icon
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={item.active ? 'page' : undefined}
-              className={cn(
-                'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium transition-colors',
-                item.active
-                  ? 'bg-gold-50 text-gold-800 dark:bg-gold-500/12 dark:text-gold-300'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-              )}
-            >
-              <Icon className="size-4" />
-              {item.label}
-            </Link>
-          )
-        })}
-
-        {/* A same-page anchor: the new-request form lives on the overview. */}
-        <a
-          href="#new-request"
-          className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        >
-          <Plus className="size-4" />
-          {t('request.title')}
-        </a>
-      </nav>
-
-      <div className="mt-auto flex flex-col gap-2 border-t border-border pt-5">
-        <Button asChild variant="ghost" size="sm" className="justify-start">
-          <Link href="/">{t('backToSite')}</Link>
-        </Button>
-
-        <div className="px-3.5">
-          {name ? <p className="truncate text-[12.5px] font-medium">{name}</p> : null}
-          <p className="truncate text-[11.5px] text-muted-foreground">{email ?? '-'}</p>
-          <p className="mt-0.5 text-[11px] font-medium tracking-[0.12em] text-gold-700 uppercase dark:text-gold-300">
-            {tNav('account')}
-          </p>
+    <aside className="flex flex-col justify-between gap-8 rounded-[20px] bg-[#0a0a0a] p-6 text-[#f5f4f0] lg:sticky lg:top-8 lg:min-h-[calc(100dvh-4rem)]">
+      <div className="flex flex-col gap-8">
+        <div className="flex items-center justify-between gap-3 border-b border-[#f5f4f01f] pb-5">
+          <Link href="/">
+            <VirtueWordmark tone="invert" />
+          </Link>
+          <ThemeToggle
+            label={tNav('theme')}
+            className="size-8 rounded-lg text-[#f5f4f0]/70 hover:bg-white/10 hover:text-[#f5f4f0]"
+          />
         </div>
 
-        <form action={signOutAction}>
-          <input type="hidden" name="locale" value={locale} />
-          <input type="hidden" name="next" value={`/${locale}`} />
-          <Button type="submit" variant="ghost" size="sm" className="w-full justify-start">
-            <LogOut className="size-4" />
-            {t('signOut')}
-          </Button>
-        </form>
+        <div>
+          <span className="label-mono-xs text-primary px-3">
+            ( &nbsp;Client Workspace&nbsp; )
+          </span>
+          <nav className="mt-3 flex flex-col gap-1.5" aria-label={t('title')}>
+            {items.map((item) => {
+              const Icon = item.icon
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={item.active ? 'page' : undefined}
+                  className={cn(
+                    'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium transition-colors',
+                    item.active
+                      ? 'bg-primary text-[#0a0a0a] font-semibold'
+                      : 'text-[#f5f4f0]/70 hover:bg-white/8 hover:text-[#f5f4f0]',
+                  )}
+                >
+                  <Icon className="size-4" />
+                  <span>{item.label}</span>
+                </Link>
+              )
+            })}
+
+            <a
+              href="/portal#new-request"
+              className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium text-[#f5f4f0]/70 transition-colors hover:bg-white/8 hover:text-[#f5f4f0]"
+            >
+              <Plus className="size-4 text-primary" />
+              <span>{t('request.title')}</span>
+            </a>
+
+            <Link
+              href="/payment"
+              className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium text-[#f5f4f0]/70 transition-colors hover:bg-white/8 hover:text-[#f5f4f0]"
+            >
+              <CreditCard className="size-4 text-primary" />
+              <span>Instant Pay</span>
+            </Link>
+          </nav>
+        </div>
       </div>
-    </div>
+
+      <div className="flex flex-col gap-4 border-t border-[#f5f4f01f] pt-5">
+        <div className="rounded-xl border border-[#f5f4f01c] bg-white/[0.04] p-3.5">
+          {name ? (
+            <p className="truncate font-display text-xs font-semibold text-[#f5f4f0]">
+              {name}
+            </p>
+          ) : null}
+          <p className="truncate text-[11.5px] text-[#f5f4f0]/60">{email ?? '-'}</p>
+          <span className="label-mono-xs mt-1.5 inline-block text-primary">
+            {tNav('account')}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-2">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#f5f4f0]/70 transition-colors hover:text-primary"
+          >
+            <span>{t('backToSite')}</span>
+            <ArrowUpRight className="size-3.5" />
+          </Link>
+
+          <form action={signOutAction}>
+            <input type="hidden" name="locale" value={locale} />
+            <input type="hidden" name="next" value={`/${locale}`} />
+            <button
+              type="submit"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-white/8 px-3 py-1.5 text-xs font-medium text-[#f5f4f0]/80 transition-colors hover:bg-white/15 hover:text-[#f5f4f0]"
+            >
+              <LogOut className="size-3.5" />
+              <span>{t('signOut')}</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </aside>
   )
 }

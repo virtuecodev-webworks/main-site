@@ -1,14 +1,17 @@
+import * as React from 'react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { CalendarClock, Clock, Mail, Video } from 'lucide-react'
+import { ArrowUpRight, Mail, Phone, Video } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PageHero } from '@/components/site/page-hero'
 import { ContactForm } from '@/components/site/contact-form'
 import { Faq } from '@/components/site/faq'
-import { Reveal } from '@/components/motion/reveal'
-import { Button } from '@/components/ui/button'
+import { CtaBand } from '@/components/site/cta-band'
+import { VisitorAvailability } from '@/components/site/visitor-availability'
+import { VantraButton } from '@/components/ui/vantra-button'
 import { AGENCY, GOOGLE_MEET_MAILTO } from '@/lib/constants'
 import { PHOTOS } from '@/lib/photos'
+import { OFFICE_HOURS } from '@/lib/studio'
 import { buildPageMetadata } from '@/lib/seo'
 
 export async function generateMetadata({
@@ -38,137 +41,151 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
     <>
       <PageHero eyebrow={t('eyebrow')} title={t('title')} subtitle={t('subtitle')} />
 
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1fr_1.6fr] lg:gap-14">
-        <Reveal>
-          <aside className="flex flex-col gap-8">
-            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-elevation-1">
-              <Image
-                src={PHOTOS.contact}
-                alt={tPhotos('contact.alt')}
-                width={900}
-                height={640}
-                sizes="(max-width: 1024px) 100vw, 420px"
-                className="h-[190px] w-full object-cover sm:h-[230px]"
-              />
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold">{t('directEmail')}</h2>
-              <a
-                href={`mailto:${AGENCY.email}`}
-                className="mt-4 inline-flex min-h-6 items-center gap-3 text-[15px] font-medium text-gold-700 underline-offset-4 hover:underline dark:text-gold-400"
-              >
-                <Mail className="size-4" aria-hidden />
-                {AGENCY.email}
-              </a>
-            </div>
-
-            <div className="flex flex-col gap-4 border-t border-border pt-8 text-sm">
-              <span className="flex items-center gap-3 text-muted-foreground">
-                <Clock className="size-4 shrink-0 text-gold-600" aria-hidden />
-                {t('responseNote')}
-              </span>
-            </div>
-
-            <div className="border-t border-border pt-8">
-              <div className="flex items-center gap-2">
-                <span className="relative flex size-2.5 shrink-0" aria-hidden>
-                  <span className="animate-pulse-ring absolute inline-flex size-full rounded-full bg-emerald-500" />
-                  <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
+      {/* 1. Vantra 2-Column Direct Contact Cards (`.direct_grid`) */}
+      <section className="padding-global pb-12">
+        <div className="container-max">
+          <div className="direct_grid grid grid-cols-1 gap-2 md:grid-cols-2">
+            {/* Direct Email Card */}
+            <a
+              href={`mailto:${AGENCY.email}`}
+              className="direct_card group flex flex-col justify-between rounded-[20px] border border-border bg-card p-7 transition-colors hover:border-primary/60 sm:p-9"
+            >
+              <div className="flex items-center justify-between">
+                <span className="label-mono text-primary">
+                  ( &nbsp;&nbsp;&nbsp;{t('directEmail')}&nbsp;&nbsp;&nbsp; )
                 </span>
-                <h3 className="text-[11px] font-semibold tracking-[0.2em] text-gold-700 uppercase dark:text-gold-400">
-                  Global Availability
-                </h3>
-              </div>
-              <p className="mt-3 text-sm font-medium text-foreground">
-                Available Anytime
-              </p>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                We work flexibly with clients and founders across all global timezones. Message us anytime, 24/7.
-              </p>
-            </div>
-          </aside>
-        </Reveal>
-
-        <Reveal delay={0.08}>
-          <ContactForm />
-        </Reveal>
-      </div>
-
-      {/* Booking + what happens next */}
-      <section id="book" className="border-y border-border bg-muted/40">
-        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-2 lg:gap-14">
-          <Reveal>
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-50 px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-gold-700 uppercase dark:bg-gold-500/12 dark:text-gold-300">
-                <CalendarClock className="size-3.5" aria-hidden />
-                Always Available
-              </span>
-              <h2 className="mt-5 text-3xl font-bold sm:text-4xl">{t('bookingTitle')}</h2>
-              <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
-                {tBooking('body')}
-              </p>
-
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Button asChild variant="gold" size="lg">
-                  <a href={GOOGLE_MEET_MAILTO}>
-                    <Video className="size-4 mr-2" aria-hidden />
-                    Request a Google Meeting
-                  </a>
-                </Button>
-                <Button asChild variant="outline" size="lg">
-                  <a href={`mailto:${AGENCY.email}?subject=Project%20Inquiry`}>
-                    <Mail className="size-4 mr-2" aria-hidden />
-                    Email the Studio
-                  </a>
-                </Button>
+                <span className="flex size-9 items-center justify-center rounded-xl border border-border text-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-[#0a0a0a]">
+                  <Mail className="size-4" />
+                </span>
               </div>
 
-              <p className="mt-4 max-w-lg text-[13px] leading-relaxed text-muted-foreground">
-                {tBooking('note')}
-              </p>
+              <div className="mt-12">
+                <div className="font-display text-xl font-semibold tracking-[-0.03em] text-foreground transition-colors group-hover:text-primary sm:text-3xl break-all">
+                  {AGENCY.email}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">{t('responseNote')}</p>
+              </div>
+            </a>
+
+            {/* Direct Phone & Video Discovery Card */}
+            <div className="direct_card flex flex-col justify-between rounded-[20px] bg-[#0a0a0a] p-7 text-[#f5f4f0] sm:p-9">
+              <div className="flex items-center justify-between">
+                <span className="label-mono text-primary">
+                  ( &nbsp;&nbsp;&nbsp;Direct Line &amp; Discovery&nbsp;&nbsp;&nbsp; )
+                </span>
+                <span className="flex size-9 items-center justify-center rounded-xl border border-[#f5f4f024] bg-white/5 text-primary">
+                  <Phone className="size-4" />
+                </span>
+              </div>
+
+              <div className="mt-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                  <a
+                    href={`tel:${AGENCY.phone}`}
+                    className="font-display text-2xl font-semibold tracking-[-0.03em] text-[#f5f4f0] transition-colors hover:text-primary sm:text-3xl"
+                  >
+                    {AGENCY.phone}
+                  </a>
+                  <div className="mt-2.5">
+                    <VisitorAvailability variant="pill" />
+                  </div>
+                </div>
+
+                <a
+                  href={GOOGLE_MEET_MAILTO}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90 shrink-0"
+                >
+                  <Video className="size-3.5" />
+                  <span>Google Meet</span>
+                  <ArrowUpRight className="size-3.5" />
+                </a>
+              </div>
             </div>
-          </Reveal>
-
-          <Reveal delay={0.08}>
-            <div className="surface flex h-full flex-col gap-6 p-6 sm:p-8">
-              <h3 className="text-lg font-semibold">{t('next.title')}</h3>
-
-              <ol className="flex flex-col gap-6">
-                {(['step1', 'step2', 'step3'] as const).map((step, index) => (
-                  <li key={step} className="flex gap-4">
-                    <span
-                      aria-hidden
-                      className="font-sans grid size-9 shrink-0 place-items-center rounded-full border border-gold-500/40 text-[13px] font-bold text-gold-700 dark:text-gold-300"
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <span className="flex flex-col gap-1.5">
-                      <span className="text-[15px] font-semibold">{t(`next.${step}Title`)}</span>
-                      <span className="text-[13.5px] leading-relaxed text-muted-foreground">
-                        {t(`next.${step}Body`)}
-                      </span>
-                    </span>
-                  </li>
-                ))}
-              </ol>
-
-              <p className="mt-auto border-t border-border pt-5 text-[12.5px] text-muted-foreground">
-                {t('responseNote')}
-              </p>
-            </div>
-          </Reveal>
+          </div>
         </div>
       </section>
 
-      <div className="py-20 sm:py-24">
-        <div className="mb-12">
-          <p className="font-sans text-center text-[11px] font-semibold tracking-[0.18em] text-gold-700 uppercase dark:text-gold-400">
-            {t('beforeYouWrite')}
-          </p>
+      {/* 2. Vantra 2-Column Enquiry Wrapper (`.enquiry_wrapper`) */}
+      <section className="padding-global padding-section">
+        <div className="container-max">
+          <div className="enquiry_wrapper grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
+            {/* Left 5 Columns: Visual, Hours & What Happens Next */}
+            <aside className="flex flex-col gap-6 lg:sticky lg:top-24 lg:col-span-5">
+              <div className="overflow-hidden rounded-[20px] border border-border bg-card">
+                <div className="relative aspect-[16/10] w-full">
+                  <Image
+                    src={PHOTOS.contact}
+                    alt={tPhotos('contact.alt')}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 480px"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="label-mono-xs text-primary">Studio Operations</span>
+                  </div>
+                  <h2 className="heading-style-h4 mt-2 text-foreground">
+                    {t('bookingTitle')}
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {tBooking('body')}
+                  </p>
+
+                  <div className="mt-4">
+                    <VisitorAvailability variant="card" />
+                  </div>
+
+                  <dl className="mt-4 divide-y divide-border border-t border-border text-xs">
+                    {OFFICE_HOURS.map((row) => (
+                      <div key={row.key} className="flex items-center justify-between py-2.5">
+                        <dt className="text-muted-foreground capitalize">{row.key}</dt>
+                        <dd className="font-mono text-foreground">{row.time} Local Desk</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </div>
+
+              {/* 3-Step Process Box */}
+              <div className="rounded-[20px] border border-border bg-card p-6 sm:p-7">
+                <span className="label-mono text-primary">
+                  ( &nbsp;&nbsp;&nbsp;{t('next.title')}&nbsp;&nbsp;&nbsp; )
+                </span>
+                <ol className="mt-6 flex flex-col gap-5">
+                  {(['step1', 'step2', 'step3'] as const).map((step, index) => (
+                    <li key={step} className="flex gap-4 border-t border-border pt-4 first:border-t-0 first:pt-0">
+                      <span className="label-mono-xs mt-1 text-primary">
+                        0{index + 1}
+                      </span>
+                      <div>
+                        <div className="font-display text-sm font-semibold text-foreground">
+                          {t(`next.${step}Title`)}
+                        </div>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                          {t(`next.${step}Body`)}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </aside>
+
+            {/* Right 7 Columns: Vantra Contact Form */}
+            <div className="lg:col-span-7">
+              <React.Suspense fallback={<div className="h-[640px] rounded-[20px] border border-border bg-card animate-pulse" />}>
+                <ContactForm />
+              </React.Suspense>
+            </div>
+          </div>
         </div>
-        <Faq withHeading={false} />
-      </div>
+      </section>
+
+      {/* 3. FAQ & Pre-Footer CTA */}
+      <Faq className="padding-section border-t border-border" />
+      <CtaBand className="mt-8" />
     </>
   )
 }

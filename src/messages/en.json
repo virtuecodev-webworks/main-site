@@ -31,7 +31,14 @@
     "blog": "Blog",
     "theme": "Toggle theme",
     "country": "Country & currency",
-    "account": "Your projects"
+    "account": "Your projects",
+    "homeTagline": "Fast, dependable web development",
+    "aboutTagline": "About our team & standards",
+    "portfolioTagline": "Selected work, 2024–2026",
+    "servicesTagline": "Four practices, fixed pricing",
+    "blogTagline": "Articles on web performance & craft",
+    "contactTagline": "Start a project with our team",
+    "paymentTagline": "Secure milestone settlement"
   },
   "Region": {
     "label": "Country & currency",
@@ -79,14 +86,14 @@
     "search": "Search",
     "toggleTheme": "Toggle theme",
     "readMore": "Read more",
-    "learnAbout": "Learn about the studio"
+    "learnAbout": "About our team"
   },
   "Home": {
     "hero": {
       "title": "Websites designed to grow your business.",
-      "subtitle": "We build and redesign fast, modern websites, online stores, and web apps for businesses worldwide. You always get a clear plan, fixed pricing before we start, and direct contact with senior developers.",
+      "subtitle": "Fast websites, online stores, and web apps. Fixed pricing, guaranteed deadlines, and direct senior access.",
       "primaryCta": "Start Your Project",
-      "secondaryCta": "Explore Services & Pricing",
+      "secondaryCta": "View Live Work",
       "imageAlt": "Two designers reviewing a website layout together on a laptop.",
       "available": "Taking on new projects",
       "servicesLabel": "Services",
@@ -100,7 +107,9 @@
         "rating": "5.0 Star Rating",
         "ownership": "100% Code Ownership",
         "portal": "Direct Client Portal"
-      }
+      },
+      "statusLabel": "Current availability",
+      "statusValue": "Open for new projects"
     },
     "stats": {
       "launch": "Most projects take",
@@ -145,7 +154,36 @@
       "title": "Let's build your website.",
       "subtitle": "Tell us what you need. You'll get a clear plan and a fixed price within two working days.",
       "primary": "Start your project",
-      "secondary": "Book a free call"
+      "secondary": "Book a free call",
+      "eyebrow": "Start a Project",
+      "status": "Accepting new projects"
+    },
+    "statement": {
+      "eyebrow": "Our Promise",
+      "text": "We design and build fast, clear websites that help your business earn trust and win more customers — with fixed prices and guaranteed launch dates.",
+      "pillars": [
+        "Custom Websites",
+        "Online Stores",
+        "Brand Redesigns",
+        "Mobile-First Design",
+        "WordPress & Wix",
+        "Stripe Checkout",
+        "Search Engine Ready",
+        "Fixed Pricing",
+        "100% Ownership"
+      ]
+    },
+    "live": {
+      "eyebrow": "Active Projects",
+      "title": "What we are building right now.",
+      "subtitle": "Live progress on active client projects. Transparent timelines from kickoff to launch.",
+      "viewCaseStudy": "View Case Study ↗"
+    },
+    "values": {
+      "eyebrow": "Our Standards",
+      "title": "Thoughtful design. Clear communication. Delivered on schedule.",
+      "services": "Design · Development · Launch · Ongoing Support",
+      "speed": "Fast on every phone & computer"
     }
   },
   "Services": {
@@ -159,49 +197,99 @@
     "items": {
       "custom": {
         "title": "Custom Websites",
-        "summary": "A website built from scratch, shaped around how your business actually works.",
-        "description": "When ready-made tools start holding you back, we build it properly. You get a fast, modern website with a design of its own - and a system you can extend later without starting again.",
+        "summary": "Bespoke websites and web apps built for speed, security, and scale.",
+        "description": "Custom-engineered from scratch—fast on every device, easy to run, and built to grow with your business.",
         "features": [
-          "A design made for your brand, not a template",
-          "Loads quickly on phones and older laptops",
-          "Easy for your team to update",
-          "Dashboards, logins and integrations when you need them"
+          "Bespoke design, never a template",
+          "Sub-second load times on mobile",
+          "Dashboards, portals & integrations",
+          "100% source code ownership"
         ],
         "imageAlt": "A designer and a developer reviewing a custom website layout on screen."
       },
       "wordpress": {
         "title": "WordPress Websites",
-        "summary": "A WordPress site your team can edit confidently - without the usual slowdown.",
-        "description": "WordPress is a great choice when your team publishes often. We build custom, block-based themes so editing feels simple, and we keep pages fast and secure from day one.",
+        "summary": "Fast, block-based WordPress sites your team can edit in minutes.",
+        "description": "Custom Gutenberg block themes that make publishing simple while keeping pages fast and secure.",
         "features": [
-          "Custom design built as reusable blocks",
-          "Content types that match how you publish",
-          "Speed and security set up properly",
-          "We move your old content across and train your team"
+          "Reusable custom content blocks",
+          "Zero bloated third-party plugins",
+          "Built-in SEO & speed optimization",
+          "Full content migration & training"
         ],
         "imageAlt": "Two people editing pages together in a content management system."
       },
       "wix": {
         "title": "Wix Websites",
-        "summary": "A Wix site that looks hand-made, launched quickly.",
-        "description": "A good fit for launches, campaigns and small teams. We push Wix Studio and Velo as far as they go, so your site looks nothing like a template and you can still edit it yourself.",
+        "summary": "Hand-crafted Wix Studio sites launched in days, not months.",
+        "description": "Custom Wix Studio and Velo builds that look bespoke and stay effortless for your team to update.",
         "features": [
-          "Design built for phone, tablet and desktop",
-          "Custom features with Velo when you need them",
-          "Found on Google, with analytics set up",
-          "Live in days rather than months"
+          "Fluid mobile & desktop layouts",
+          "Custom Velo booking & logic",
+          "Google SEO & analytics ready",
+          "Rapid 2-week launch window"
         ],
         "imageAlt": "A laptop on a desk showing a newly launched website."
       },
       "ecommerce": {
         "title": "Online Stores & Payments",
-        "summary": "Sell online with a checkout that's quick to use and easy to reconcile.",
-        "description": "Storefronts, subscriptions and deposits, with payment providers wired in properly. Every payment is checked against a reference, so your records and your bank always agree.",
+        "summary": "High-converting stores with fast checkout and global payments.",
+        "description": "Storefronts, subscriptions, and milestone checkouts wired with verified multi-currency payments.",
         "features": [
-          "Checkout in your customers' currencies",
-          "Products, stock and orders set up properly",
-          "Every payment verified and recorded",
-          "Recovery emails for abandoned baskets"
+          "Multi-currency global checkout",
+          "Inventory, orders & automated emails",
+          "Verified Stripe & Flutterwave webhooks",
+          "Mobile-first shopping flow"
+        ],
+        "imageAlt": "An online storefront open on a desktop screen beside a card terminal."
+      }
+    },
+    "cards": {
+      "custom": {
+        "title": "Custom Websites",
+        "summary": "Bespoke websites and web apps built for speed, security, and scale.",
+        "description": "Custom-engineered from scratch—fast on every device, easy to run, and built to grow with your business.",
+        "features": [
+          "Bespoke design, never a template",
+          "Sub-second load times on mobile",
+          "Dashboards, portals & integrations",
+          "100% source code ownership"
+        ],
+        "imageAlt": "A designer and a developer reviewing a custom website layout on screen."
+      },
+      "wordpress": {
+        "title": "WordPress Websites",
+        "summary": "Fast, block-based WordPress sites your team can edit in minutes.",
+        "description": "Custom Gutenberg block themes that make publishing simple while keeping pages fast and secure.",
+        "features": [
+          "Reusable custom content blocks",
+          "Zero bloated third-party plugins",
+          "Built-in SEO & speed optimization",
+          "Full content migration & training"
+        ],
+        "imageAlt": "Two people editing pages together in a content management system."
+      },
+      "wix": {
+        "title": "Wix Websites",
+        "summary": "Hand-crafted Wix Studio sites launched in days, not months.",
+        "description": "Custom Wix Studio and Velo builds that look bespoke and stay effortless for your team to update.",
+        "features": [
+          "Fluid mobile & desktop layouts",
+          "Custom Velo booking & logic",
+          "Google SEO & analytics ready",
+          "Rapid 2-week launch window"
+        ],
+        "imageAlt": "A laptop on a desk showing a newly launched website."
+      },
+      "ecommerce": {
+        "title": "Online Stores & Payments",
+        "summary": "High-converting stores with fast checkout and global payments.",
+        "description": "Storefronts, subscriptions, and milestone checkouts wired with verified multi-currency payments.",
+        "features": [
+          "Multi-currency global checkout",
+          "Inventory, orders & automated emails",
+          "Verified Stripe & Flutterwave webhooks",
+          "Mobile-first shopping flow"
         ],
         "imageAlt": "An online storefront open on a desktop screen beside a card terminal."
       }
@@ -392,13 +480,13 @@
     "bookingTitle": "Book a 30-minute intro call"
   },
   "Footer": {
-    "blurb": "A small studio building websites that look great and work even better - for businesses anywhere in the world.",
+    "blurb": "A dedicated team building fast, clear websites that help businesses grow worldwide.",
     "worldwide": "Working with clients worldwide",
     "explore": "Explore",
     "services": "Services",
     "company": "Company",
     "contact": "Get in touch",
-    "about": "About the studio",
+    "about": "About our team",
     "process": "How we work",
     "terms": "Terms of service",
     "privacy": "Privacy policy",
@@ -514,8 +602,8 @@
       "groupBrand": "Brand",
       "groupUploaded": "Uploaded",
       "groupGoogle": "Google Fonts",
-      "brandBody": "Inter (brand)",
-      "brandDisplay": "Gropled (brand)",
+      "brandBody": "Instrument Sans (brand)",
+      "brandDisplay": "Inter (brand)",
       "library": {
         "title": "Custom fonts",
         "hint": "Upload your own files and use them anywhere on the site. Google families need no installing - choosing one is enough.",
@@ -700,27 +788,27 @@
     "items": {
       "timeline": {
         "q": "How long does a project take?",
-        "a": "A simple site usually takes two to four weeks. A custom platform or online store takes six to twelve weeks, depending on what it needs to do and how quickly you can send us content and feedback."
+        "a": "Marketing websites launch in 2–4 weeks. Custom platforms and online stores take 4–8 weeks with weekly live previews."
       },
       "stack": {
         "q": "What do you build with?",
-        "a": "Custom work is built on React and Next.js, with Supabase behind it when you need a database, logins or file storage. We also work in WordPress and Wix when that is genuinely the better choice for you."
+        "a": "Next.js, TypeScript, and Supabase for custom builds; custom block themes for WordPress; and Wix Studio for rapid launches."
       },
       "ownership": {
         "q": "Do we own the website?",
-        "a": "Yes. You own the code, the design files and every account. We hand over the whole thing with notes and a walkthrough recording at the end of the project."
+        "a": "100%. You own the code, design files, domain, and every account upon final payment—with zero lock-in."
       },
       "support": {
         "q": "What happens after launch?",
-        "a": "Every project includes 30 days of support after launch. After that you can take it in-house, or keep us on a light monthly retainer for changes and improvements."
+        "a": "Every project includes 30 days of free post-launch support, plus optional monthly care plans."
       },
       "payments": {
         "q": "How do payments work?",
-        "a": "Projects are split into a deposit and milestone payments. You can pay by card, bank transfer, USSD or mobile money, in your own currency, from the payments page."
+        "a": "50% deposit to start and 50% on delivery (or milestone splits), paid securely in USD, EUR, GBP, or NGN."
       },
       "start": {
         "q": "How do we start?",
-        "a": "Send us a message through the contact form, or book a free intro call. We reply within two working days with a few questions, then a clear plan and a fixed price."
+        "a": "Send a brief via our contact form. You will receive a written plan and fixed price within 48 hours."
       }
     }
   },
@@ -756,8 +844,8 @@
     "metaTitle": "About the Studio · Senior Web Engineering & Craftsmanship",
     "metaDescription": "Learn about Virtue & Co. Webworks — a global web engineering studio dedicated to building lightning-fast digital experiences, clean codebases, and fixed-price client partnerships.",
     "eyebrow": "About us",
-    "title": "A small studio for serious websites.",
-    "intro": "We're a small studio and we keep it that way on purpose. The person who works out your price is the person who builds your site, so nothing gets lost between people.",
+    "title": "A focused team for serious websites.",
+    "intro": "We are a dedicated team and we keep it that way on purpose. The person who plans your project is the senior builder who creates your site, so nothing gets lost in translation.",
     "story": {
       "title": "Why we started",
       "body": "We kept meeting businesses that had paid for a website and ended up with a problem: slow, fragile, impossible to update and locked behind an agency. We started Virtue & Co. Webworks to do the opposite - websites that are properly built, well documented and genuinely fast, that you can run yourself. We're new, and we'd rather say that plainly than pretend to be a big firm."

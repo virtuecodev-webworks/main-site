@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { notFound } from 'next/navigation'
-import { Questrial, Inter } from 'next/font/google'
+import { Instrument_Sans, Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -19,49 +19,25 @@ import '../globals.css'
 /**
  * Root layout, owned by the `[locale]` segment.
  *
- * There is deliberately no `src/app/layout.tsx`: every route in this app is
- * localised, so `[locale]` is the one place that renders `<html>`/`<body>`.
+ * Vantra Studio typography pairing:
+ *   - `Instrument Sans` (`--font-instrument-sans`) for body, UI, buttons, and `.label-mono` tags.
+ *   - `Inter` (`--font-inter`) for display headings (H0 through H6).
+ *   - `Gropled` (`--font-gropled`) retained for wordmark / optional brand display use.
  */
-const questrial = Questrial({
-  weight: '400',
+const instrumentSans = Instrument_Sans({
   subsets: ['latin'],
-  variable: '--font-questrial',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-instrument-sans',
   display: 'swap',
 })
 
 const inter = Inter({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-inter',
   display: 'swap',
 })
 
-/**
- * Gropled — the brand display face, self-hosted from `public/fonts`.
- *
- * Three facts about this face shape decisions elsewhere in the codebase, so they
- * are recorded here rather than rediscovered later:
- *
- *   1. **One weight only.** The file is Bold (700) with no variable axes and no
- *      italic. Display text is therefore pinned to 700, and the wordmark's
- *      ampersand is an upright gold glyph rather than an italic one.
- *   2. **A deliberately small glyph set.** Read straight off the font's own
- *      `cmap`: Latin and Cyrillic complete; Arabic absent; and a handful of
- *      symbols missing — the ellipsis, arrows, `<`, `¿`, `ß`, `œ`, `™` and `₦`.
- *      Anything Gropled cannot draw falls to the next family in the stack, which
- *      is why Inter is pinned as the first fallback below.
- *   3. **Self-hosted, not fetched.** No third-party font request at runtime, and
- *      the same file drives the site, the social card and the preloader video.
- *
- * `fallback` is where the rest of the display stack lives, because Inter has to
- * outrank the generic families in `--font-display` to ever be reached. Putting the
- * site's own body face directly after the display face means a stray `<` or `¿`
- * in a headline is drawn in Inter — on-brand — rather than in whatever the
- * browser's default happens to be. `adjustFontFallback` is off for the same
- * reason: the metric-adjusted face it generates would sit *ahead* of Inter and win
- * those glyphs. Gropled is local and preloaded, so there is no swap to protect
- * against anyway. Arabic is unaffected: neither Gropled nor Inter carries it, so
- * RTL headings correctly resolve to a system Arabic face.
- */
 const gropled = localFont({
   src: '../../../public/fonts/gropled-bold.otf',
   variable: '--font-gropled',
@@ -120,11 +96,15 @@ export async function generateMetadata({
     creator: AGENCY.name,
     icons: {
       icon: [
+        { url: '/favicon.ico', sizes: '32x32' },
         { url: '/brand/favicon.svg', type: 'image/svg+xml' },
         { url: '/brand/logo.svg', type: 'image/svg+xml' },
+        { url: '/brand/icon-192.png', sizes: '192x192', type: 'image/png' },
       ],
-      shortcut: '/brand/favicon.svg',
-      apple: '/brand/logo.svg',
+      shortcut: '/favicon.ico',
+      apple: [
+        { url: '/brand/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      ],
     },
     verification: {
       google: googleVerification,
@@ -160,19 +140,16 @@ export default async function LocaleLayout({
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) notFound()
 
-  // Enables static rendering for this locale segment.
   setRequestLocale(locale)
 
-  const t = await getTranslations({ locale, namespace: 'Brand' })
-  // One cached read, shared with `generateViewport`, and revalidated by the
-  // design actions rather than re-fetched per request.
+  await getTranslations({ locale, namespace: 'Brand' })
   const design = await getSiteDesign()
 
   return (
     <html
       lang={locale}
       dir={getDirection(locale)}
-      className={`${questrial.variable} ${inter.variable} ${gropled.variable} max-w-full overflow-x-clip`}
+      className={`${instrumentSans.variable} ${inter.variable} ${gropled.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
@@ -181,12 +158,6 @@ export default async function LocaleLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Questrial&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body className="min-h-dvh max-w-full overflow-x-clip bg-background font-sans text-foreground antialiased">
         <DesignStyles design={design} />
@@ -199,7 +170,6 @@ export default async function LocaleLayout({
 
         <script
           type="application/ld+json"
-          // JSON-LD is authored from constants only — no user input is interpolated.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd(locale)) }}
         />
       </body>

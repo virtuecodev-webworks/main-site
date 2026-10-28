@@ -48,8 +48,8 @@ export interface Palette {
 
 type Rgb = [number, number, number]
 
-const INK_DEEP = '#141414'
-const INK_LIGHT = '#f2f2f3'
+const INK_DEEP = '#0a0a0a'
+const INK_LIGHT = '#f5f4f0'
 const BUTTON_INK = '#191308'
 const WHITE = '#ffffff'
 const BLACK = '#000000'
