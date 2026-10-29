@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PortalEmpty, OrderCard } from '@/components/portal/order-view'
 import { NewRequestForm } from '@/components/portal/new-request-form'
+import { ClientMobileDashboard } from '@/components/portal/client-mobile-dashboard'
 import { requireClient } from '@/lib/supabase/auth'
 import { listOrders, getUnreadSummary } from '@/lib/supabase/orders'
 import { partitionByLiveness } from '@/lib/orders'
@@ -21,13 +22,23 @@ export default async function PortalPage({ params }: { params: Promise<{ locale:
 
   const [orders, region] = await Promise.all([listOrders(), resolveServerCountry()])
 
-  // The new-request form opens by default only when there is nothing to look at yet.
   const unread = await getUnreadSummary(orders.map((order) => order.id))
   const { live, past } = partitionByLiveness(orders)
 
   return (
     <div className="flex flex-col gap-8">
-      <header className="flex flex-col gap-1.5">
+      {/* 1. Mobile App Dashboard (Mockup Inspired: Hero card & 2x2 Action Tiles) */}
+      <ClientMobileDashboard
+        orders={orders}
+        unreadSummary={unread}
+        clientName={session.name}
+        clientEmail={session.email}
+        locale={locale}
+        currency={region.currency}
+      />
+
+      {/* 2. Desktop Header */}
+      <header className="hidden lg:flex flex-col gap-1.5">
         <h1 className="text-2xl font-semibold">{t('title')}</h1>
         <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
         <p className="mt-1 text-[12.5px] text-muted-foreground">
@@ -36,7 +47,7 @@ export default async function PortalPage({ params }: { params: Promise<{ locale:
       </header>
 
       {unread.total > 0 ? (
-        <p className="surface px-5 py-4 text-[13px] font-medium" role="status">
+        <p className="surface px-5 py-4 text-[13px] font-medium hidden lg:block" role="status">
           {t('newMessages', { count: unread.total })}
         </p>
       ) : null}
@@ -44,10 +55,13 @@ export default async function PortalPage({ params }: { params: Promise<{ locale:
       {orders.length === 0 ? <PortalEmpty /> : null}
 
       {live.length ? (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-            {t('active')}
-          </h2>
+        <section id="active-orders" className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+              {t('active')} ({live.length})
+            </h2>
+            <span className="text-xs text-primary font-mono hidden sm:inline">Active Production</span>
+          </div>
           <ul className="flex flex-col gap-4">
             {live.map((order) => (
               <OrderCard
@@ -61,16 +75,18 @@ export default async function PortalPage({ params }: { params: Promise<{ locale:
         </section>
       ) : null}
 
-      <NewRequestForm
-        locale={locale}
-        currency={region.currency}
-        defaultOpen={orders.length === 0}
-      />
+      <div id="new-request">
+        <NewRequestForm
+          locale={locale}
+          currency={region.currency}
+          defaultOpen={orders.length === 0}
+        />
+      </div>
 
       {past.length ? (
         <section className="flex flex-col gap-4">
           <h2 className="text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-            {t('past')}
+            {t('past')} ({past.length})
           </h2>
           <ul className="flex flex-col gap-4">
             {past.map((order) => (

@@ -4,10 +4,12 @@ import * as React from 'react'
 import {
   ArrowUpRight,
   CreditCard,
+  FileText,
   FolderGit2,
   LayoutList,
   LogOut,
   Menu,
+  MessageSquare,
   Plus,
   User,
   X,
@@ -16,6 +18,7 @@ import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import { VirtueWordmark } from '@/components/brand/virtue-wordmark'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
+import { NotificationBellSheet } from '@/components/portal/notification-bell-sheet'
 import { signOutAction } from '@/lib/actions/auth'
 import { cn } from '@/lib/utils'
 
@@ -23,30 +26,50 @@ export function PortalNav({
   locale,
   name,
   email,
+  unreadCount = 0,
 }: {
   locale: string
   name: string | null
   email: string | null
+  unreadCount?: number
 }) {
   const t = useTranslations('Portal')
   const tNav = useTranslations('Nav')
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
+  const initial = (name?.[0] || email?.[0] || 'C').toUpperCase()
+
   return (
     <>
       {/* ============================================================== */}
-      {/* 1. MOBILE TOP APP BAR (< lg)                                   */}
+      {/* 1. MOBILE TOP APP BAR (Screen 1 Inspiration)                   */}
       {/* ============================================================== */}
       <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border bg-card/95 px-4 py-3 backdrop-blur-md lg:hidden">
-        <Link href="/" className="flex items-center gap-2">
-          <VirtueWordmark tone="default" />
-        </Link>
+        {/* Left: User Avatar with live status dot */}
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open User Account Drawer"
+            className="relative flex size-9 items-center justify-center rounded-full bg-primary/15 font-display text-xs font-bold text-primary border border-primary/25"
+          >
+            <span>{initial}</span>
+            <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-card animate-pulse" />
+          </button>
 
+          <Link href="/" className="flex items-center">
+            <VirtueWordmark tone="default" />
+          </Link>
+        </div>
+
+        {/* Center/Right Controls: Notification Bell, Theme & Drawer Menu */}
         <div className="flex items-center gap-2">
+          <NotificationBellSheet unreadCount={unreadCount} />
+
           <ThemeToggle
             label={tNav('theme')}
-            className="size-8 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="size-9 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
           />
 
           <button
@@ -161,16 +184,17 @@ export function PortalNav({
       )}
 
       {/* ============================================================== */}
-      {/* 3. MOBILE BOTTOM APP DOCK (< lg)                               */}
+      {/* 3. MOBILE BOTTOM APP DOCK WITH ELEVATED '+' (Mockup Inspired)   */}
       {/* ============================================================== */}
       <nav
         aria-label="Mobile Dashboard Navigation"
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-border bg-card/95 px-3 py-2.5 backdrop-blur-lg lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-border bg-card/95 px-3 py-2 backdrop-blur-lg lg:hidden"
       >
+        {/* Tab 1: Workspace */}
         <Link
           href="/portal"
           className={cn(
-            'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors',
+            'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors w-14',
             pathname === '/portal' ? 'text-primary font-bold' : 'text-muted-foreground',
           )}
         >
@@ -178,20 +202,29 @@ export function PortalNav({
           <span>Projects</span>
         </Link>
 
+        {/* Tab 2: Updates */}
         <a
-          href="/portal#new-request"
-          className="flex flex-col items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors"
+          href="/portal#active-orders"
+          className="flex flex-col items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors w-14"
         >
-          <div className="flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
-            <Plus className="size-4" />
-          </div>
-          <span>New Build</span>
+          <MessageSquare className="size-5" />
+          <span>Updates</span>
         </a>
 
+        {/* CENTER ELEVATED ACTION BUTTON (+) — Directly matches the uploaded mockup */}
+        <a
+          href="/portal#new-request"
+          aria-label="Create New Project Request"
+          className="-mt-6 flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-[#0a0a0a] shadow-lg shadow-gold-500/25 ring-4 ring-background transition-transform active:scale-95"
+        >
+          <Plus className="size-6 stroke-[2.5]" />
+        </a>
+
+        {/* Tab 3: Instant Pay */}
         <Link
           href="/payment"
           className={cn(
-            'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors',
+            'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors w-14',
             pathname === '/payment' ? 'text-primary font-bold' : 'text-muted-foreground',
           )}
         >
@@ -199,10 +232,11 @@ export function PortalNav({
           <span>Pay</span>
         </Link>
 
+        {/* Tab 4: Account / Menu */}
         <button
           type="button"
           onClick={() => setMobileMenuOpen(true)}
-          className="flex flex-col items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors"
+          className="flex flex-col items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors w-14"
         >
           <User className="size-5" />
           <span>Account</span>
