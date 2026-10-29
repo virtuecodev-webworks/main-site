@@ -53,6 +53,7 @@ export async function saveProject(
     description: String(formData.get('description') ?? ''),
     category: (String(formData.get('category')) || 'custom') as ProjectCategory,
     techTags: list(formData, 'techTags'),
+    showLiveSite: bool(formData, 'showLiveSite'),
     liveUrl: String(formData.get('liveUrl') ?? ''),
     repoUrl: String(formData.get('repoUrl') ?? ''),
     coverImagePath: String(formData.get('coverImagePath') ?? ''),
@@ -79,6 +80,15 @@ export async function saveProject(
   const supabase = await writeClient()
   if (!supabase) return { status: 'error', message: 'not-configured' }
 
+  // If live site button is enabled, use provided custom URL or default to /showcase/[slug].
+  // If disabled, store 'hidden' so the public site never displays the button.
+  let resolvedLiveUrl: string | null = null
+  if (input.showLiveSite) {
+    resolvedLiveUrl = input.liveUrl ? input.liveUrl : `/showcase/${slug}`
+  } else {
+    resolvedLiveUrl = 'hidden'
+  }
+
   const payload = {
     slug,
     title: input.title,
@@ -87,7 +97,7 @@ export async function saveProject(
     description: input.description || null,
     category: input.category,
     tech_tags: input.techTags,
-    live_url: input.liveUrl || null,
+    live_url: resolvedLiveUrl,
     repo_url: input.repoUrl || null,
     cover_image_path: input.coverImagePath || null,
     gallery_paths: input.galleryPaths,

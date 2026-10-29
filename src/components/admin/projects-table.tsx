@@ -72,11 +72,22 @@ export async function ProjectsTable({
                         </span>
                       )}
                     </span>
-                    <span className="flex min-w-0 flex-col">
+                    <span className="flex min-w-0 flex-col gap-0.5">
                       <span className="truncate text-sm font-medium">{project.title}</span>
-                      <span className="truncate font-mono text-[11px] text-muted-foreground">
-                        /{project.slug}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="truncate font-mono text-[11px] text-muted-foreground">
+                          /{project.slug}
+                        </span>
+                        {project.live_url && project.live_url !== 'hidden' ? (
+                          <span className="inline-flex items-center gap-1 rounded-md bg-gold-500/10 px-1.5 py-0.5 text-[10.5px] font-semibold text-gold-700 dark:text-gold-300">
+                            Live Button Visible
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 text-[10.5px] font-medium text-muted-foreground">
+                            Live Button Hidden
+                          </span>
+                        )}
+                      </div>
                     </span>
                   </div>
                 </TableCell>

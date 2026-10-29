@@ -34,7 +34,7 @@
     "account": "Vos projets",
     "homeTagline": "Développement web rapide et fiable",
     "aboutTagline": "À propos de notre équipe et nos standards",
-    "portfolioTagline": "Projets sélectionnés, 2024–2026",
+    "portfolioTagline": "Projets sélectionnés, 2024-2026",
     "servicesTagline": "Quatre expertises, prix fixes",
     "blogTagline": "Articles sur la performance web et le design",
     "contactTagline": "Démarrez un projet avec notre équipe",
@@ -161,7 +161,7 @@
     },
     "statement": {
       "eyebrow": "Notre engagement",
-      "text": "Nous concevons et développons des sites web rapides et clairs qui renforcent la confiance et attirent de nouveaux clients — avec des prix fixes et des délais garantis.",
+      "text": "Nous concevons et développons des sites web rapides et clairs qui renforcent la confiance et attirent de nouveaux clients - avec des prix fixes et des délais garantis.",
       "pillars": [
         "Sites sur mesure",
         "Boutiques en ligne",
@@ -758,7 +758,7 @@
     "cta": "Obtenir un prix",
     "eyebrow": "Tarifs",
     "title": "Des tarifs simples et transparents.",
-    "subtitle": "Pas de forfaits opaques ni de paliers inventés — chaque projet est tarifé selon ses besoins réels.",
+    "subtitle": "Pas de forfaits opaques ni de paliers inventés - chaque projet est tarifé selon ses besoins réels.",
     "from": "Projets à partir de",
     "note": "C'est notre tarif plancher. Les projets réels sont chiffrés après un court échange, avec un montant garanti par écrit avant le début des travaux.",
     "secondary": "Découvrir ce qui est inclus"
@@ -971,7 +971,7 @@
     "label": "Adresse email",
     "placeholder": "vous@entreprise.com",
     "submit": "S'abonner",
-    "success": "Vous êtes bien inscrit — merci.",
+    "success": "Vous êtes bien inscrit - merci.",
     "error": "Une erreur s'est produite. Veuillez réessayer.",
     "invalid": "Veuillez saisir une adresse email valide.",
     "privacy": "Zéro spam. Nous ne partageons jamais votre adresse."
@@ -994,7 +994,7 @@
   },
   "About": {
     "metaTitle": "À propos du studio · Ingénierie web et savoir-faire d'excellence",
-    "metaDescription": "Découvrez Virtue & Co. Webworks — un studio d'ingénierie web dédié à la création d'expériences ultra-rapides, au code irréprochable et aux prix fixes garantis.",
+    "metaDescription": "Découvrez Virtue & Co. Webworks - un studio d'ingénierie web dédié à la création d'expériences ultra-rapides, au code irréprochable et aux prix fixes garantis.",
     "eyebrow": "À propos",
     "title": "Un studio indépendant pour des sites web exigeants.",
     "intro": "Nous sommes un studio à taille humaine et nous tenons à le rester. L'ingénieur qui chiffre votre projet est celui qui le conçoit et le code, pour une communication fluide sans déperdition.",
@@ -1015,7 +1015,7 @@
         },
         "clear": {
           "title": "Périmètre fixe, prix fixe",
-          "body": "Tout est cadré par écrit avant de commencer. Les évolutions éventuelles font l'objet d'un devis préalable — jamais de surprise."
+          "body": "Tout est cadré par écrit avant de commencer. Les évolutions éventuelles font l'objet d'un devis préalable - jamais de surprise."
         },
         "owned": {
           "title": "Pleine propriété",
@@ -1039,7 +1039,7 @@
       "button": "Obtenir un tarif"
     },
     "bandAlt": "Membres du studio travaillant ensemble autour d'une table avec des ordinateurs portables.",
-    "bandCaption": "Une équipe senior resserrée — vous collaborez directement avec les artisans de votre site."
+    "bandCaption": "Une équipe senior resserrée - vous collaborez directement avec les artisans de votre site."
   },
   "Blog": {
     "metaTitle": "Articles & Notes Techniques",

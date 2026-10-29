@@ -22,7 +22,7 @@ export async function generateMetadata({
   const project = PLACEHOLDER_PROJECTS.find((p) => p.slug === slug)
   return {
     title: project
-      ? `${project.title} — Live Interactive Showcase | Virtue & Co. Webworks`
+      ? `${project.title} - Live Interactive Showcase | Virtue & Co. Webworks`
       : 'Live Interactive Showcase | Virtue & Co. Webworks',
     description:
       project?.summary ??

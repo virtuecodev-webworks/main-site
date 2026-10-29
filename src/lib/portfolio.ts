@@ -64,7 +64,7 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-1',
     slug: 'aurum-capital-platform',
-    title: 'Aurum Private Treasury — Corporate Banking & Yield OS',
+    title: 'Aurum Private Treasury - Corporate Banking & Yield OS',
     client: 'Aurum Private Treasury',
     summary:
       'Corporate banking platform with live T-Bill yield vaults (5.28% APY), multi-currency wire transfers, and programmable Visa Infinite corporate cards.',
@@ -78,7 +78,7 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-2',
     slug: 'finery-commerce',
-    title: 'Maison Finery — Paris & Milan Luxury Flagship Store',
+    title: 'Maison Finery - Paris & Milan Luxury Flagship Store',
     client: 'Maison Finery Paris',
     summary:
       'Luxury ready-to-wear and leather goods store with real-time 4-currency conversion, quick-view product modal, and working slide-out checkout bag.',
@@ -92,7 +92,7 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-3',
     slug: 'meridian-editorial',
-    title: 'The Meridian Review — Global Affairs & Audio Magazine',
+    title: 'The Meridian Review - Global Affairs & Audio Magazine',
     client: 'The Meridian Review',
     summary:
       'Global print and digital journal featuring a full-article reader modal, 24/7 narrated audio essay player, and interactive global infrastructure charts.',
@@ -106,7 +106,7 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-4',
     slug: 'northline-studio',
-    title: 'Northline — Nordic Architectural Prefab & Cabin Configurator',
+    title: 'Northline - Nordic Architectural Prefab & Cabin Configurator',
     client: 'Northline Architectural Prefab',
     summary:
       'Precision timber modular residences with an interactive 4-step cabin configurator, clickable SVG floorplan blueprints, and monthly financing calculator.',
@@ -120,7 +120,7 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-5',
     slug: 'kinetix-ai-cloud',
-    title: 'Kinetix AI Cloud — Bare-Metal B200 GPU Clusters & Inference',
+    title: 'Kinetix AI Cloud - Bare-Metal B200 GPU Clusters & Inference',
     client: 'Kinetix AI Cloud',
     summary:
       'AI developer platform with a live token-streaming inference playground, B200/H100 GPU cluster price calculator, and global fiber region map.',
@@ -134,7 +134,7 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-6',
     slug: 'solace-health-portal',
-    title: 'Solace Health — 110+ Biomarker & Whole-Body MRI Longevity Clinic',
+    title: 'Solace Health - 110+ Biomarker & Whole-Body MRI Longevity Clinic',
     client: 'Solace Longevity & Diagnostics',
     summary:
       'Preventative medicine and longevity portal with an interactive 110+ biomarker lab report explorer, biological age calculator, and clinic appointment booking.',

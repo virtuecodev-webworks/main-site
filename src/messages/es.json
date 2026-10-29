@@ -34,7 +34,7 @@
     "account": "Tus proyectos",
     "homeTagline": "Desarrollo web rápido y confiable",
     "aboutTagline": "Sobre nuestro equipo y estándares",
-    "portfolioTagline": "Trabajos seleccionados, 2024–2026",
+    "portfolioTagline": "Trabajos seleccionados, 2024-2026",
     "servicesTagline": "Cuatro servicios, precios fijos",
     "blogTagline": "Artículos sobre rendimiento web y diseño",
     "contactTagline": "Inicia un proyecto con nuestro equipo",
@@ -161,7 +161,7 @@
     },
     "statement": {
       "eyebrow": "Nuestro compromiso",
-      "text": "Diseñamos y desarrollamos sitios web rápidos y claros que ayudan a tu negocio a generar confianza y captar más clientes — con precios fijos y fechas de entrega garantizadas.",
+      "text": "Diseñamos y desarrollamos sitios web rápidos y claros que ayudan a tu negocio a generar confianza y captar más clientes - con precios fijos y fechas de entrega garantizadas.",
       "pillars": [
         "Sitios web a medida",
         "Tiendas online",
@@ -758,7 +758,7 @@
     "cta": "Ver precio",
     "eyebrow": "Precios",
     "title": "Precios transparentes y directos.",
-    "subtitle": "Sin paquetes genéricos ni costes ocultos — presupuestamos según las necesidades reales de tu proyecto.",
+    "subtitle": "Sin paquetes genéricos ni costes ocultos - presupuestamos según las necesidades reales de tu proyecto.",
     "from": "Proyectos desde",
     "note": "Este es nuestro proyecto mínimo. Cada trabajo se cotiza tras una breve charla, con un precio final por escrito antes de empezar.",
     "secondary": "Ver qué incluye"
@@ -971,7 +971,7 @@
     "label": "Correo electrónico",
     "placeholder": "tu@empresa.com",
     "submit": "Suscribirse",
-    "success": "Te has suscrito con éxito — gracias.",
+    "success": "Te has suscrito con éxito - gracias.",
     "error": "Ha ocurrido un error. Inténtalo de nuevo.",
     "invalid": "Introduce un correo electrónico válido.",
     "privacy": "Cero spam. Jamás compartiremos tu dirección."
@@ -994,7 +994,7 @@
   },
   "About": {
     "metaTitle": "Sobre el estudio · Ingeniería web y artesanía digital de alto nivel",
-    "metaDescription": "Conoce Virtue & Co. Webworks — un estudio de ingeniería web enfocado en sitios ultrarrápidos, código impecable y precios fijos garantizados.",
+    "metaDescription": "Conoce Virtue & Co. Webworks - un estudio de ingeniería web enfocado en sitios ultrarrápidos, código impecable y precios fijos garantizados.",
     "eyebrow": "Sobre nosotros",
     "title": "Un estudio boutique para proyectos web exigentes.",
     "intro": "Somos un estudio pequeño y nos mantenemos así deliberadamente. Quien calcula tu presupuesto es quien programa tu web, asegurando comunicación directa sin pérdidas.",
@@ -1039,7 +1039,7 @@
       "button": "Obtener presupuesto"
     },
     "bandAlt": "Miembros del estudio trabajando juntos frente a ordenadores portátiles.",
-    "bandCaption": "Un equipo senior y cercano — trabajas directamente con los artífices de tu sitio."
+    "bandCaption": "Un equipo senior y cercano - trabajas directamente con los artífices de tu sitio."
   },
   "Blog": {
     "metaTitle": "Artículos y Notas de Ingeniería",

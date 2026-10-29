@@ -34,7 +34,7 @@
     "account": "Deine Projekte",
     "homeTagline": "Schnelle, verlässliche Webentwicklung",
     "aboutTagline": "Über unser Team & unsere Standards",
-    "portfolioTagline": "Ausgewählte Arbeiten, 2024–2026",
+    "portfolioTagline": "Ausgewählte Arbeiten, 2024-2026",
     "servicesTagline": "Vier Fachbereiche, feste Preise",
     "blogTagline": "Artikel zu Web-Performance & Handwerk",
     "contactTagline": "Starten Sie ein Projekt mit uns",
@@ -161,7 +161,7 @@
     },
     "statement": {
       "eyebrow": "Unser Versprechen",
-      "text": "Wir gestalten und entwickeln schnelle, klare Websites, die Ihrem Unternehmen Vertrauen und neue Kunden bringen — mit Festpreisen und garantierten Terminen.",
+      "text": "Wir gestalten und entwickeln schnelle, klare Websites, die Ihrem Unternehmen Vertrauen und neue Kunden bringen - mit Festpreisen und garantierten Terminen.",
       "pillars": [
         "Individuelle Websites",
         "Online-Shops",
@@ -339,7 +339,7 @@
         },
         "build": {
           "title": "Entwicklung",
-          "caption": "Die fertige Website – blitzschnell geladen und mit sauberem Quellcode übergeben.",
+          "caption": "Die fertige Website - blitzschnell geladen und mit sauberem Quellcode übergeben.",
           "files": [
             "Vollständiger Quellcode",
             "Einfaches Redaktionssystem für Ihr Team",
@@ -359,7 +359,7 @@
         },
         "handover": {
           "title": "Übergabe",
-          "caption": "Damit Sie Ihre Website eigenständig pflegen können – ohne ständige Agenturabhängigkeit.",
+          "caption": "Damit Sie Ihre Website eigenständig pflegen können - ohne ständige Agenturabhängigkeit.",
           "files": [
             "Schriftliche Schritt-für-Schritt-Anleitung",
             "Aufgezeichnete Video-Einweisung",
@@ -474,7 +474,7 @@
     "hoursNote": "Wir arbeiten remote mit Kunden aus aller Welt. Sie können uns jederzeit rund um die Uhr erreichen.",
     "beforeYouWrite": "Vor Ihrer Anfrage",
     "days": {
-      "weekdays": "Montag – Freitag",
+      "weekdays": "Montag - Freitag",
       "saturday": "Samstag",
       "sunday": "Sonntag"
     },
@@ -750,7 +750,7 @@
       },
       "handover": {
         "title": "Volles Eigentum",
-        "body": "Code, Design-Dateien und Accounts gehören vollständig Ihnen – sauber dokumentiert."
+        "body": "Code, Design-Dateien und Accounts gehören vollständig Ihnen - sauber dokumentiert."
       }
     }
   },
@@ -758,9 +758,9 @@
     "cta": "Preis erhalten",
     "eyebrow": "Preise",
     "title": "Einfache, transparente Preisgestaltung.",
-    "subtitle": "Keine versteckten Gebühren oder künstlichen Tarife – jedes Projekt wird nach tatsächlichem Bedarf kalkuliert.",
+    "subtitle": "Keine versteckten Gebühren oder künstlichen Tarife - jedes Projekt wird nach tatsächlichem Bedarf kalkuliert.",
     "from": "Projekte ab",
-    "note": "Dies ist unser Einstiegspreis. Jedes Projekt wird nach kurzem Austausch kalkuliert – mit garantiertem Festpreis vor Projektstart.",
+    "note": "Dies ist unser Einstiegspreis. Jedes Projekt wird nach kurzem Austausch kalkuliert - mit garantiertem Festpreis vor Projektstart.",
     "secondary": "Leistungsumfang ansehen"
   },
   "Login": {
@@ -971,7 +971,7 @@
     "label": "E-Mail-Adresse",
     "placeholder": "name@unternehmen.de",
     "submit": "Abonnieren",
-    "success": "Vielen Dank – Sie sind erfolgreich eingetragen.",
+    "success": "Vielen Dank - Sie sind erfolgreich eingetragen.",
     "error": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
     "invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
     "privacy": "Kein Spam. Wir geben Ihre Daten niemals weiter."
@@ -994,10 +994,10 @@
   },
   "About": {
     "metaTitle": "Über das Studio · Web-Engineering und digitale Handwerkskunst",
-    "metaDescription": "Lernen Sie Virtue & Co. Webworks kennen – ein Web-Engineering-Studio für blitzschnelle Ladezeiten, sauberen Code und feste Preise.",
+    "metaDescription": "Lernen Sie Virtue & Co. Webworks kennen - ein Web-Engineering-Studio für blitzschnelle Ladezeiten, sauberen Code und feste Preise.",
     "eyebrow": "Über uns",
     "title": "Ein spezialisiertes Studio für erstklassige Websites.",
-    "intro": "Wir sind ein bewusst kompaktes Studio. Die Person, die Ihr Projekt kalkuliert, setzt es auch technisch um – so geht keine Information verloren.",
+    "intro": "Wir sind ein bewusst kompaktes Studio. Die Person, die Ihr Projekt kalkuliert, setzt es auch technisch um - so geht keine Information verloren.",
     "story": {
       "title": "Unsere Motivation",
       "body": "Wir trafen immer wieder Unternehmen mit langsamen, fehleranfälligen Websites, die kaum zu pflegen und von Agenturen abhängig waren. Wir haben Virtue & Co. Webworks gegründet, um das Gegenteil zu liefern: robuste, extrem schnelle Websites mit voller Eigenständigkeit."
@@ -1015,7 +1015,7 @@
         },
         "clear": {
           "title": "Fester Umfang, fester Preis",
-          "body": "Fahrplan und Kosten stehen vor Beginn schriftlich fest. Zusatzwünsche werden vorab kalkuliert – niemals überraschende Rechnungen."
+          "body": "Fahrplan und Kosten stehen vor Beginn schriftlich fest. Zusatzwünsche werden vorab kalkuliert - niemals überraschende Rechnungen."
         },
         "owned": {
           "title": "100% Ihr Eigentum",
@@ -1039,7 +1039,7 @@
       "button": "Angebot anfordern"
     },
     "bandAlt": "Studio-Team arbeitet konzentriert an Laptops zusammen.",
-    "bandCaption": "Ein eingespieltes Senior-Team – Sie arbeiten direkt mit den Machern Ihrer Website."
+    "bandCaption": "Ein eingespieltes Senior-Team - Sie arbeiten direkt mit den Machern Ihrer Website."
   },
   "Blog": {
     "metaTitle": "Einblicke und technische Fachartikel",

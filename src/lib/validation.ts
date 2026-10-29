@@ -106,6 +106,12 @@ export type PaymentInput = z.infer<typeof paymentSchema>
 /*  Portfolio CMS                                                              */
 /* -------------------------------------------------------------------------- */
 
+const projectUrlLike = z
+  .string()
+  .trim()
+  .max(500, 'Link is too long')
+  .regex(/^(?:https?:\/\/[^\s]+|\/[^\s]*|hidden)$/i, 'Please enter a valid link starting with https:// or /')
+
 export const projectSchema = z.object({
   id: uuidLike.optional().or(z.literal('')),
   title: z.string().trim().min(3).max(160),
@@ -121,7 +127,8 @@ export const projectSchema = z.object({
   description: optionalText(6000).optional(),
   category: z.enum(PROJECT_CATEGORIES),
   techTags: z.array(z.string().trim().min(1).max(40)).max(24).default([]),
-  liveUrl: urlLike.optional().or(z.literal('')),
+  showLiveSite: z.boolean().default(true),
+  liveUrl: projectUrlLike.optional().or(z.literal('')),
   repoUrl: urlLike.optional().or(z.literal('')),
   coverImagePath: optionalText(400).optional(),
   galleryPaths: z.array(z.string().trim().max(400)).max(12).default([]),

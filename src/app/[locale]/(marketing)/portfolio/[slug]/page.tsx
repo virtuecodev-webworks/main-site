@@ -181,10 +181,17 @@ export default async function CaseStudyDetailPage({
                 {project.summary}
               </p>
             )}
+            {/* Action buttons */}
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <VantraButton href={`/showcase/${project.slug}`} variant="gold">
-                Open Live Interactive Site
-              </VantraButton>
+              {project.liveUrl && project.liveUrl !== 'hidden' ? (
+                <VantraButton
+                  href={project.liveUrl}
+                  variant="gold"
+                  external={project.liveUrl.startsWith('http')}
+                >
+                  Open Live Interactive Site
+                </VantraButton>
+              ) : null}
               <VantraButton href="/contact" variant="light">
                 Start a Project
               </VantraButton>

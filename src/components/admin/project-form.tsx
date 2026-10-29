@@ -38,11 +38,15 @@ export function ProjectForm({ project, className }: ProjectFormProps) {
 
   const [state, action, pending] = React.useActionState(saveProject, IDLE_STATE)
 
+  const isNew = !project?.id
+  const isLiveInitial = isNew
+    ? true
+    : Boolean(project?.live_url && project.live_url !== 'hidden')
+  const [showLiveSite, setShowLiveSite] = React.useState(isLiveInitial)
+
   const [category, setCategory] = React.useState<ProjectCategory>(project?.category ?? 'custom')
   const [featured, setFeatured] = React.useState(project?.featured ?? false)
   const [published, setPublished] = React.useState(project?.published ?? false)
-
-  const isNew = !project?.id
   const handled = React.useRef<unknown>(null)
 
   React.useEffect(() => {
@@ -145,18 +149,44 @@ export function ProjectForm({ project, className }: ProjectFormProps) {
       </section>
 
       <section className="surface flex flex-col gap-5 p-6">
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field label={t('liveUrl')} name="liveUrl" errors={fieldErrors.liveUrl}>
-            <Input
-              id="pf-liveUrl"
-              name="liveUrl"
-              type="url"
-              defaultValue={project?.live_url ?? ''}
-              placeholder="https://"
-              maxLength={500}
-            />
-          </Field>
+        <h2 className="text-base font-semibold">Live Preview &amp; Links</h2>
 
+        {/* Live Site Visibility Toggle */}
+        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-muted/30 p-5">
+          <ToggleRow
+            id="pf-showLiveSite"
+            label="Show 'Open Live Interactive Site' Button"
+            checked={showLiveSite}
+            onChange={setShowLiveSite}
+            name="showLiveSite"
+          />
+          <p className="text-[12.5px] text-muted-foreground leading-relaxed">
+            {showLiveSite
+              ? 'Active: The gold "Open Live Interactive Site ↗" button will be visible to visitors on this portfolio project page.'
+              : 'Hidden: The live interactive site button will be completely hidden from visitors on the public portfolio page.'}
+          </p>
+
+          {showLiveSite && (
+            <div className="mt-2 border-t border-border pt-4">
+              <Field
+                label="Custom Live Website URL (Optional)"
+                name="liveUrl"
+                hint="Leave empty to automatically launch the built-in interactive showcase (/showcase/[slug]), or provide a custom client website URL (https://...)."
+                errors={fieldErrors.liveUrl}
+              >
+                <Input
+                  id="pf-liveUrl"
+                  name="liveUrl"
+                  defaultValue={project?.live_url === 'hidden' ? '' : (project?.live_url ?? '')}
+                  placeholder="https://example.com or /showcase/your-slug"
+                  maxLength={500}
+                />
+              </Field>
+            </div>
+          )}
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2">
           <Field label={t('repoUrl')} name="repoUrl" errors={fieldErrors.repoUrl}>
             <Input
               id="pf-repoUrl"
@@ -167,15 +197,15 @@ export function ProjectForm({ project, className }: ProjectFormProps) {
               maxLength={500}
             />
           </Field>
-        </div>
 
-        <Field label={t('techTags')} name="techTags" hint={t('techTagsHint')} errors={fieldErrors.techTags}>
-          <Input
-            id="pf-techTags"
-            name="techTags"
-            defaultValue={(project?.tech_tags ?? []).join(', ')}
-          />
-        </Field>
+          <Field label={t('techTags')} name="techTags" hint={t('techTagsHint')} errors={fieldErrors.techTags}>
+            <Input
+              id="pf-techTags"
+              name="techTags"
+              defaultValue={(project?.tech_tags ?? []).join(', ')}
+            />
+          </Field>
+        </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
           <MediaUploader

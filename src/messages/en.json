@@ -34,7 +34,7 @@
     "account": "Your projects",
     "homeTagline": "Fast, dependable web development",
     "aboutTagline": "About our team & standards",
-    "portfolioTagline": "Selected work, 2024–2026",
+    "portfolioTagline": "Selected work, 2024-2026",
     "servicesTagline": "Four practices, fixed pricing",
     "blogTagline": "Articles on web performance & craft",
     "contactTagline": "Start a project with our team",
@@ -160,7 +160,7 @@
     },
     "statement": {
       "eyebrow": "Our Promise",
-      "text": "We design and build fast, clear websites that help your business earn trust and win more customers — with fixed prices and guaranteed launch dates.",
+      "text": "We design and build fast, clear websites that help your business earn trust and win more customers - with fixed prices and guaranteed launch dates.",
       "pillars": [
         "Custom Websites",
         "Online Stores",
@@ -198,7 +198,7 @@
       "custom": {
         "title": "Custom Websites",
         "summary": "Bespoke websites and web apps built for speed, security, and scale.",
-        "description": "Custom-engineered from scratch—fast on every device, easy to run, and built to grow with your business.",
+        "description": "Custom-engineered from scratch - fast on every device, easy to run, and built to grow with your business.",
         "features": [
           "Bespoke design, never a template",
           "Sub-second load times on mobile",
@@ -248,7 +248,7 @@
       "custom": {
         "title": "Custom Websites",
         "summary": "Bespoke websites and web apps built for speed, security, and scale.",
-        "description": "Custom-engineered from scratch—fast on every device, easy to run, and built to grow with your business.",
+        "description": "Custom-engineered from scratch - fast on every device, easy to run, and built to grow with your business.",
         "features": [
           "Bespoke design, never a template",
           "Sub-second load times on mobile",
@@ -788,7 +788,7 @@
     "items": {
       "timeline": {
         "q": "How long does a project take?",
-        "a": "Marketing websites launch in 2–4 weeks. Custom platforms and online stores take 4–8 weeks with weekly live previews."
+        "a": "Marketing websites launch in 2-4 weeks. Custom platforms and online stores take 4-8 weeks with weekly live previews."
       },
       "stack": {
         "q": "What do you build with?",
@@ -796,7 +796,7 @@
       },
       "ownership": {
         "q": "Do we own the website?",
-        "a": "100%. You own the code, design files, domain, and every account upon final payment—with zero lock-in."
+        "a": "100%. You own the code, design files, domain, and every account upon final payment - with zero lock-in."
       },
       "support": {
         "q": "What happens after launch?",
@@ -842,7 +842,7 @@
   },
   "About": {
     "metaTitle": "About the Studio · Senior Web Engineering & Craftsmanship",
-    "metaDescription": "Learn about Virtue & Co. Webworks — a global web engineering studio dedicated to building lightning-fast digital experiences, clean codebases, and fixed-price client partnerships.",
+    "metaDescription": "Learn about Virtue & Co. Webworks - a global web engineering studio dedicated to building lightning-fast digital experiences, clean codebases, and fixed-price client partnerships.",
     "eyebrow": "About us",
     "title": "A focused team for serious websites.",
     "intro": "We are a dedicated team and we keep it that way on purpose. The person who plans your project is the senior builder who creates your site, so nothing gets lost in translation.",
