@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 /**
  * Global Top Loading Progress Bar.
@@ -25,7 +25,6 @@ export function stopTopProgress() {
 
 export function RouteProgress() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   const [progress, setProgress] = React.useState(0)
   const [visible, setVisible] = React.useState(false)
@@ -82,7 +81,7 @@ export function RouteProgress() {
   // Route change completion listener
   React.useEffect(() => {
     complete()
-  }, [pathname, searchParams, complete])
+  }, [pathname, complete])
 
   // Global instantaneous click / tap interceptor (responds in 0ms)
   React.useEffect(() => {

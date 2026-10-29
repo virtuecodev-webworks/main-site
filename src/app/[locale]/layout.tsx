@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import type { Metadata, Viewport } from 'next'
 import { notFound } from 'next/navigation'
 import { Instrument_Sans, Inter } from 'next/font/google'
@@ -163,7 +164,9 @@ export default async function LocaleLayout({
         <DesignStyles design={design} />
         <ThemeScript />
         <NextIntlClientProvider locale={locale}>
-          <RouteProgress />
+          <Suspense fallback={null}>
+            <RouteProgress />
+          </Suspense>
           {children}
           <Toaster />
         </NextIntlClientProvider>
