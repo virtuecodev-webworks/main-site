@@ -12,7 +12,7 @@ import {
   type OrderStatus,
 } from '@/lib/constants'
 import { DEMO_THREAD } from '@/lib/supabase/orders'
-import { notifyOrderMessage } from '@/lib/orders/notifications'
+import { notifyOrderMessage, notifyNewOrderRequest } from '@/lib/orders/notifications'
 import type { ActionState } from './state'
 
 /**
@@ -106,6 +106,20 @@ export async function createOrderRequest(
   }
 
   revalidateOrder(locale, data.reference)
+
+  // Dispatch email & push notifications to Admin and confirmation to Client
+  notifyNewOrderRequest({
+    orderReference: data.reference,
+    orderTitle: title,
+    brief,
+    service,
+    scope,
+    clientUserId: session.userId,
+    locale,
+  }).catch((err) => {
+    console.warn('[orders] notifyNewOrderRequest background failed:', err)
+  })
+
   return { status: 'success', message: 'created', reference: data.reference }
 }
 

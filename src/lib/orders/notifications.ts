@@ -2,9 +2,15 @@ import 'server-only'
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { sendEmail, leadRecipient } from '@/lib/email'
-import { orderMessageNotificationEmail } from '@/lib/email/templates'
+import {
+  orderMessageNotificationEmail,
+  enquiryAdminEmail,
+  enquiryClientEmail,
+} from '@/lib/email/templates'
+import { sendPushToAdmins } from '@/app/api/push/send/route'
 import { absoluteUrl } from '@/lib/utils'
 import { AGENCY } from '@/lib/constants'
+import type { Inquiry } from '@/lib/supabase/types'
 
 export interface NotifyOrderMessageParams {
   orderId: string
@@ -169,3 +175,117 @@ export async function notifyOrderMessage({
     return { sent: false, error: message }
   }
 }
+
+export interface NotifyNewOrderRequestParams {
+  orderReference: string
+  orderTitle: string
+  brief: string
+  service?: string | null
+  scope?: string | null
+  clientUserId: string
+  locale?: string
+}
+
+/**
+ * Sends an email notification to Admin whenever an existing client submits
+ * a new project request from their portal dashboard.
+ */
+export async function notifyNewOrderRequest({
+  orderReference,
+  orderTitle,
+  brief,
+  service,
+  scope,
+  clientUserId,
+  locale = 'en',
+}: NotifyNewOrderRequestParams): Promise<{ sent: boolean; error?: string }> {
+  try {
+    const supabase = createSupabaseAdminClient()
+    if (!supabase) return { sent: false, error: 'supabase-unavailable' }
+
+    // Fetch client profile
+    let clientEmail = ''
+    let clientName = 'Client'
+    let clientCompany = ''
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('email, full_name, company')
+      .eq('id', clientUserId)
+      .maybeSingle<{ email: string | null; full_name: string | null; company: string | null }>()
+
+    if (profile?.email) {
+      clientEmail = profile.email
+      clientName = profile.full_name || clientName
+      clientCompany = profile.company || ''
+    } else {
+      const { data: userData } = await supabase.auth.admin.getUserById(clientUserId)
+      if (userData?.user?.email) {
+        clientEmail = userData.user.email
+        clientName = (userData.user.user_metadata?.full_name as string) || clientName
+      }
+    }
+
+    const actionUrl = absoluteUrl(`/${locale}/admin/orders/${orderReference}`)
+    const adminEmail = leadRecipient()
+
+    // 1. Send Admin Email Notification
+    const mockInquiry: Inquiry = {
+      id: orderReference,
+      name: clientName,
+      email: clientEmail || AGENCY.fallbackEmail,
+      phone: null,
+      company: clientCompany || null,
+      service: service || 'Custom Architecture',
+      budget: scope || 'Standard',
+      timeline: '2-4 weeks',
+      message: `Project: ${orderTitle}\nReference: ${orderReference}\n\nBrief:\n${brief}`,
+      locale,
+      status: 'new',
+      source: 'portal_order_request',
+      notified_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+    }
+
+    const adminMail = await enquiryAdminEmail(mockInquiry, locale)
+    adminMail.subject = `🚀 New Project Brief: ${orderTitle} · [${orderReference}]`
+
+    const sendRes = await sendEmail({
+      to: adminEmail,
+      email: adminMail,
+      replyTo: clientEmail || undefined,
+    })
+
+    // 2. Push Notification to Admin devices
+    try {
+      await sendPushToAdmins({
+        title: `🚀 New Project: ${orderTitle}`,
+        body: `${clientName} submitted brief [${orderReference}]`,
+        url: `/${locale}/admin/orders/${orderReference}`,
+        tag: `order-${orderReference}`,
+      })
+    } catch (pushErr) {
+      console.warn('[notifications] admin push failed:', pushErr)
+    }
+
+    // 3. Client confirmation email if clientEmail is known
+    if (clientEmail) {
+      try {
+        const clientMail = await enquiryClientEmail(mockInquiry)
+        await sendEmail({
+          to: clientEmail,
+          email: clientMail,
+        })
+      } catch (clientMailErr) {
+        console.warn('[notifications] client confirmation email failed:', clientMailErr)
+      }
+    }
+
+    return { sent: sendRes.ok, error: sendRes.error }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'unknown notification error'
+    console.error('[notifications] notifyNewOrderRequest failed:', message)
+    return { sent: false, error: message }
+  }
+}
+
