@@ -16,8 +16,11 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { Badge } from '@/components/ui/badge'
 import { getStudioMetrics, listInquiries } from '@/lib/supabase/queries'
+import { listOrdersWithClients } from '@/lib/supabase/orders'
+import { getNewsletterDashboardData } from '@/lib/supabase/newsletter-queries'
 import { formatMoney } from '@/lib/utils'
 import { requireAdmin } from '@/lib/supabase/auth'
+import { AdminDesktopDashboard } from '@/components/admin/admin-desktop-dashboard'
 
 export default async function AdminOverviewPage({
   params,
@@ -27,48 +30,22 @@ export default async function AdminOverviewPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  await requireAdmin(locale)
+  const session = await requireAdmin(locale)
 
   const t = await getTranslations('Admin.overview')
   const tStatus = await getTranslations('Admin.status')
 
-  const [metrics, inquiries] = await Promise.all([getStudioMetrics(), listInquiries(6)])
-
-  const cards = [
-    {
-      key: 'publishedProjects',
-      value: String(metrics.published),
-      icon: Images,
-      href: '/admin/portfolio' as const,
-      index: '001',
-    },
-    {
-      key: 'draftProjects',
-      value: String(metrics.drafts),
-      icon: FileText,
-      href: '/admin/portfolio' as const,
-      index: '002',
-    },
-    {
-      key: 'newInquiries',
-      value: String(metrics.newInquiries),
-      icon: Inbox,
-      href: '/admin/inquiries' as const,
-      index: '003',
-    },
-    {
-      key: 'collectedValue',
-      value: formatMoney(metrics.collected, metrics.collectedCurrency, locale),
-      icon: BadgeDollarSign,
-      href: '/admin/orders' as const,
-      index: '004',
-    },
-  ]
+  const [metrics, inquiries, orders, newsletterData] = await Promise.all([
+    getStudioMetrics(),
+    listInquiries(6),
+    listOrdersWithClients(10),
+    getNewsletterDashboardData(),
+  ])
 
   return (
     <div className="flex flex-col gap-6 sm:gap-8">
       {/* ============================================================== */}
-      {/* 1. MOBILE HERO CARD (Mockup Screen 1 Inspiration)               */}
+      {/* 1. MOBILE HERO & ACTIONS (< lg)                                */}
       {/* ============================================================== */}
       <div className="flex flex-col gap-5 lg:hidden">
         <div className="relative overflow-hidden rounded-[26px] border border-border bg-[#0a0a0a] p-6 text-[#f5f4f0] shadow-xl">
@@ -118,12 +95,12 @@ export default async function AdminOverviewPage({
                 href="/admin/orders"
                 className="flex items-center justify-center gap-1.5 rounded-xl bg-primary py-2.5 text-xs font-bold text-[#0a0a0a] shadow-sm active:scale-95 transition-transform"
               >
-                <span>Orders Console</span>
-                <ArrowUpRight className="size-3.5" />
+                <span>Orders Desk</span>
+                <ArrowRight className="size-3.5" />
               </Link>
               <Link
                 href="/admin/portfolio/new"
-                className="flex items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 py-2.5 text-xs font-semibold text-[#f5f4f0] hover:bg-white/15 active:scale-95 transition-all"
+                className="flex items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-white/5 py-2.5 text-xs font-semibold text-[#f5f4f0] hover:bg-white/10 active:scale-95 transition-transform"
               >
                 <Plus className="size-3.5 text-primary" />
                 <span>Add Project</span>
@@ -132,7 +109,7 @@ export default async function AdminOverviewPage({
           </div>
         </div>
 
-        {/* 2. Quick Action Category Tiles (2x2 Grid) */}
+        {/* Quick Action Category Tiles (2x2 Grid) */}
         <div className="flex flex-col gap-2.5">
           <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase px-1">
             Studio Workspaces
@@ -201,59 +178,20 @@ export default async function AdminOverviewPage({
       </div>
 
       {/* ============================================================== */}
-      {/* 2. DESKTOP HEADER & METRIC CARDS (>= lg)                        */}
+      {/* 2. DESKTOP WORKSPACE DASHBOARD (>= lg) (Mockup Replica)         */}
       {/* ============================================================== */}
-      <header className="hidden lg:flex flex-col justify-between gap-4 border-b border-border pb-6 sm:flex-row sm:items-end">
-        <div>
-          <span className="label-mono text-primary">
-            ( &nbsp;&nbsp;&nbsp;Command Overview&nbsp;&nbsp;&nbsp; )
-          </span>
-          <h1 className="heading-style-h3 mt-2 text-foreground">{t('title')}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
-        </div>
-
-        <Link
-          href="/admin/orders"
-          className="inline-flex items-center gap-2 rounded-xl bg-[#0a0a0a] px-4 py-2.5 text-xs font-medium tracking-[0.04em] text-[#f5f4f0] uppercase transition-colors hover:bg-primary hover:text-[#0a0a0a] dark:bg-[#f5f4f0] dark:text-[#0a0a0a]"
-        >
-          <span>Open Orders Console</span>
-          <ArrowUpRight className="size-3.5" />
-        </Link>
-      </header>
-
-      <div className="hidden lg:grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {cards.map((card) => {
-          const Icon = card.icon
-          return (
-            <Link
-              key={card.key}
-              href={card.href}
-              className="group flex flex-col justify-between gap-8 rounded-[20px] border border-border bg-card p-6 transition-colors hover:border-primary/60"
-            >
-              <div className="flex items-center justify-between">
-                <span className="label-mono-xs text-muted-foreground">
-                  ( &nbsp;{card.index}&nbsp; )
-                </span>
-                <span className="grid size-9 place-items-center rounded-xl bg-primary/15 text-primary">
-                  <Icon className="size-4" />
-                </span>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <span className="font-display text-3xl font-semibold tracking-[-0.03em] text-foreground transition-colors group-hover:text-primary">
-                  {card.value}
-                </span>
-                <span className="label-mono-xs text-muted-foreground">
-                  {t(card.key)}
-                </span>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
+      <AdminDesktopDashboard
+        metrics={metrics}
+        inquiries={inquiries}
+        orders={orders}
+        subscribersCount={newsletterData.subscribersCount}
+        adminName={session.name}
+        adminEmail={session.email}
+        locale={locale}
+      />
 
       {/* ============================================================== */}
-      {/* 3. RECENT INQUIRIES LIST (Both Mobile & Desktop)                */}
+      {/* 3. RECENT INQUIRIES LIST                                       */}
       {/* ============================================================== */}
       <section className="rounded-[24px] border border-border bg-card p-5 sm:p-8 shadow-xs">
         <div className="flex items-center justify-between gap-4 border-b border-border pb-5">
