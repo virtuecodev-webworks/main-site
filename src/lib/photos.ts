@@ -15,7 +15,7 @@ export const PHOTOS = {
   collaboration: '/media/photos/collaboration.jpg',
   services: '/media/photos/services.jpg',
   workBand: '/media/photos/work-band.jpg',
-  contact: '/media/photos/contact.jpg',
+  contact: '/media/photos/workstation.jpg',
   process: '/media/photos/process.jpg',
   heroAlt: '/media/photos/hero-alt.jpg',
   blog: {
