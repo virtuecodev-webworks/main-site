@@ -193,6 +193,7 @@ export function PortalNav({
         {/* Tab 1: Workspace */}
         <Link
           href="/portal"
+          prefetch={true}
           className={cn(
             'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors w-14',
             pathname === '/portal' ? 'text-primary font-bold' : 'text-muted-foreground',
@@ -223,6 +224,7 @@ export function PortalNav({
         {/* Tab 3: Instant Pay */}
         <Link
           href="/payment"
+          prefetch={true}
           className={cn(
             'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors w-14',
             pathname === '/payment' ? 'text-primary font-bold' : 'text-muted-foreground',
@@ -265,6 +267,7 @@ export function PortalNav({
             <nav className="mt-3 flex flex-col gap-1.5" aria-label={t('title')}>
               <Link
                 href="/portal"
+                prefetch={true}
                 aria-current={pathname === '/portal' ? 'page' : undefined}
                 className={cn(
                   'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium transition-colors',
@@ -287,6 +290,7 @@ export function PortalNav({
 
               <Link
                 href="/payment"
+                prefetch={true}
                 className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium text-[#f5f4f0]/70 transition-colors hover:bg-white/8 hover:text-[#f5f4f0]"
               >
                 <CreditCard className="size-4 text-primary" />

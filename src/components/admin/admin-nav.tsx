@@ -185,6 +185,7 @@ export function AdminNav({
         {/* Tab 1: Overview */}
         <Link
           href="/admin"
+          prefetch={true}
           className={cn(
             'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors w-14',
             pathname === '/admin' ? 'text-primary font-bold' : 'text-muted-foreground',
@@ -197,6 +198,7 @@ export function AdminNav({
         {/* Tab 2: Orders */}
         <Link
           href="/admin/orders"
+          prefetch={true}
           className={cn(
             'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors w-14',
             pathname.startsWith('/admin/orders') ? 'text-primary font-bold' : 'text-muted-foreground',
@@ -209,6 +211,7 @@ export function AdminNav({
         {/* CENTER ELEVATED ACTION BUTTON (+) — Quickly Add Portfolio Project */}
         <Link
           href="/admin/portfolio/new"
+          prefetch={true}
           aria-label="Add New Showcase Project"
           className="-mt-6 flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-[#0a0a0a] shadow-lg shadow-gold-500/25 ring-4 ring-background transition-transform active:scale-95"
         >
@@ -218,6 +221,7 @@ export function AdminNav({
         {/* Tab 3: Inquiries */}
         <Link
           href="/admin/inquiries"
+          prefetch={true}
           className={cn(
             'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors w-14',
             pathname.startsWith('/admin/inquiries') ? 'text-primary font-bold' : 'text-muted-foreground',
@@ -230,6 +234,7 @@ export function AdminNav({
         {/* Tab 4: Portfolio */}
         <Link
           href="/admin/portfolio"
+          prefetch={true}
           className={cn(
             'flex flex-col items-center gap-1 text-[11px] font-medium transition-colors w-14',
             pathname.startsWith('/admin/portfolio') ? 'text-primary font-bold' : 'text-muted-foreground',
@@ -268,6 +273,7 @@ export function AdminNav({
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={true}
                     aria-current={active ? 'page' : undefined}
                     className={cn(
                       'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium transition-colors',
