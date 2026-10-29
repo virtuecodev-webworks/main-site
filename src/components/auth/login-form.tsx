@@ -122,7 +122,25 @@ export function LoginForm({ locale }: { locale: string }) {
         />
       </div>
 
-      {error ? (
+      {state.status === 'error' && state.message === 'not-registered' ? (
+        <div className="rounded-2xl border border-gold-500/30 bg-gold-500/10 p-4 flex flex-col gap-2.5">
+          <div className="flex items-start gap-2.5">
+            <AlertCircle className="size-4 text-gold-500 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs font-semibold text-foreground">Account Not Found</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                The email <strong className="text-foreground">{email}</strong> has not been registered yet. Please create an account to get started.
+              </p>
+            </div>
+          </div>
+          <Link
+            href={`/signup?email=${encodeURIComponent(email)}`}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-obsidian font-semibold py-2 text-xs transition-colors"
+          >
+            Create Your Account Now →
+          </Link>
+        </div>
+      ) : error ? (
         <p className="text-[12.5px] text-destructive" role="alert">
           {error}
         </p>

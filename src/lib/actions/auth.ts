@@ -35,7 +35,21 @@ export async function signInAction(
   if (!supabase) return { status: 'error', message: 'not-configured' }
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error || !data.user) return { status: 'error', message: 'invalid' }
+  if (error || !data.user) {
+    const admin = createSupabaseAdminClient()
+    if (admin) {
+      try {
+        const { data: usersData } = await admin.auth.admin.listUsers()
+        const userExists = usersData?.users.some((u) => u.email?.toLowerCase() === email)
+        if (!userExists) {
+          return { status: 'error', message: 'not-registered' }
+        }
+      } catch {
+        // ignore and fallback to 'invalid'
+      }
+    }
+    return { status: 'error', message: 'invalid' }
+  }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -187,12 +201,32 @@ export async function signOutAction(formData: FormData): Promise<void> {
 /**
  * Request a password reset link/code to the user's email.
  */
-export async function forgotPasswordAction(formData: FormData): Promise<{ ok: boolean; message?: string }> {
+export async function forgotPasswordAction(
+  formData: FormData,
+): Promise<{ ok: boolean; notRegistered?: boolean; message?: string }> {
   const email = String(formData.get('email') ?? '').trim().toLowerCase()
   const locale = String(formData.get('locale') ?? 'en')
 
   if (!email || !email.includes('@')) {
     return { ok: false, message: 'Please enter a valid email address.' }
+  }
+
+  // Pre-flight check: verify account exists before attempting password reset
+  const admin = createSupabaseAdminClient()
+  if (admin) {
+    try {
+      const { data: usersData } = await admin.auth.admin.listUsers()
+      const user = usersData?.users.find((u) => u.email?.toLowerCase() === email)
+      if (!user) {
+        return {
+          ok: false,
+          notRegistered: true,
+          message: `No account exists for "${email}". You haven't created an account yet! Please sign up first.`,
+        }
+      }
+    } catch (err) {
+      console.warn('[auth] admin check failed:', err)
+    }
   }
 
   const supabase = await createSupabaseServerClient()

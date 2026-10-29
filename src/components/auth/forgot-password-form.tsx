@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { ArrowLeft, CheckCircle2, KeyRound, Lock, MailCheck, ShieldCheck } from 'lucide-react'
+import { AlertCircle, ArrowLeft, CheckCircle2, KeyRound, Lock, MailCheck, ShieldCheck, UserPlus } from 'lucide-react'
 import { Link, useRouter } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,12 +19,14 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
 
   const [pending, setPending] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
+  const [isNotRegistered, setIsNotRegistered] = React.useState(false)
 
   // Step 1: Send 6-digit code
   const handleRequestCode = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setPending(true)
     setError(null)
+    setIsNotRegistered(false)
     const formData = new FormData()
     formData.set('email', email)
     formData.set('locale', locale)
@@ -34,6 +36,9 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
     if (res.ok) {
       setStep('verify')
     } else {
+      if (res.notRegistered) {
+        setIsNotRegistered(true)
+      }
       setError(res.message ?? 'Failed to send recovery code. Please check your email and try again.')
     }
   }
@@ -216,11 +221,30 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
   // Step 1: Request code
   return (
     <form onSubmit={handleRequestCode} className="flex flex-col gap-5">
-      {error && (
+      {isNotRegistered ? (
+        <div className="rounded-2xl border border-gold-500/30 bg-gold-500/10 p-5 flex flex-col gap-3">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="size-5 text-gold-500 shrink-0 mt-0.5" />
+            <div>
+              <h3 className="text-sm font-bold text-foreground">No Account Found</h3>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                The email <strong className="text-foreground">{email}</strong> has not signed up yet. Why reset a password when you haven&apos;t created an account?
+              </p>
+            </div>
+          </div>
+          <Link
+            href={`/signup?email=${encodeURIComponent(email)}`}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500 hover:bg-gold-600 text-obsidian font-semibold py-2.5 text-xs transition-colors mt-1"
+          >
+            <UserPlus className="size-4" />
+            Create Your Account Now
+          </Link>
+        </div>
+      ) : error ? (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
           {error}
         </div>
-      )}
+      ) : null}
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="forgot-email" className="text-sm font-medium">

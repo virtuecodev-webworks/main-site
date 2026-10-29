@@ -13,7 +13,7 @@ export const IDLE_STATE: ActionState = { status: 'idle' }
 
 export interface AuthState {
   status: 'idle' | 'error'
-  message?: 'invalid' | 'not-authorised' | 'not-configured'
+  message?: 'invalid' | 'not-authorised' | 'not-configured' | 'not-registered'
 }
 
 export const AUTH_IDLE: AuthState = { status: 'idle' }

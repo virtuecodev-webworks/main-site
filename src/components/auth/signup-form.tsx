@@ -42,7 +42,8 @@ type ThemeChoice = 'light' | 'dark' | 'system'
 export function SignupForm({ locale }: { locale: string }) {
   const t = useTranslations('Signup')
   const searchParams = useSearchParams()
-  const initialMethod = searchParams.get('method') === 'email' ? 'email' : 'choose'
+  const paramEmail = searchParams.get('email') || ''
+  const initialMethod = searchParams.get('method') === 'email' || Boolean(paramEmail) ? 'email' : 'choose'
   const [method, setMethod] = React.useState<'choose' | 'email'>(initialMethod)
 
   const [state, action, pending] = React.useActionState(signUpAction, SIGN_UP_IDLE)
@@ -217,6 +218,7 @@ export function SignupForm({ locale }: { locale: string }) {
           type="email"
           autoComplete="email"
           required
+          defaultValue={paramEmail}
           placeholder="you@company.com"
         />
       </div>
