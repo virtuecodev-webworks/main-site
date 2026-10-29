@@ -17,6 +17,7 @@ import { PaymentReceiptEmail } from '@/emails/payment-receipt'
 import { EnquiryClientEmail } from '@/emails/enquiry-client'
 import { EnquiryAdminEmail } from '@/emails/enquiry-admin'
 import { NewsletterDispatchEmail, type NewsletterDispatchProps } from '@/emails/newsletter'
+import { OrderMessageEmail, type OrderMessageEmailProps } from '@/emails/order-message'
 
 export interface RenderedEmail {
   subject: string
@@ -166,6 +167,19 @@ export async function newsletterEmail(issue: NewsletterDispatchProps): Promise<R
     subject: `${AGENCY.name} Studio Dispatch · ${issue.title}`,
     html,
     text: `${AGENCY.name} Studio Dispatch\n${'='.repeat(50)}\n${issue.title}\n${issue.subtitle}\n\n${stripHtml(issue.contentHtml)}\n\n${issue.ctaText ?? 'Start your project'}: ${issue.ctaUrl ?? `https://${AGENCY.domain}/contact`}\n\nUnsubscribe: https://${AGENCY.domain}/unsubscribe`,
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  9.  Order Thread Message Notification                              */
+/* ------------------------------------------------------------------ */
+export async function orderMessageNotificationEmail(props: OrderMessageEmailProps): Promise<RenderedEmail> {
+  const html = await render(React.createElement(OrderMessageEmail, props))
+  const cleanBody = props.messageBody.split('<!--VCW_CHAT_PAYLOAD_START-->')[0].trim()
+  return {
+    subject: `💬 New message on ${props.orderTitle} · [${props.orderReference}]`,
+    html,
+    text: `New message on ${props.orderTitle} (${props.orderReference})\nFrom: ${props.senderName} (${props.senderRole})\n\n${cleanBody}\n\nReply in Dashboard: ${props.actionUrl}\n(Or reply directly to this email)`,
   }
 }
 

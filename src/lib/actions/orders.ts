@@ -12,6 +12,7 @@ import {
   type OrderStatus,
 } from '@/lib/constants'
 import { DEMO_THREAD } from '@/lib/supabase/orders'
+import { notifyOrderMessage } from '@/lib/orders/notifications'
 import type { ActionState } from './state'
 
 /**
@@ -200,6 +201,21 @@ export async function postMessage(
   }
 
   revalidateOrder(locale, reference)
+
+  if (!internal) {
+    // Dispatch transactional email notification to recipient asynchronously
+    notifyOrderMessage({
+      orderId,
+      reference,
+      body,
+      authorRole,
+      authorId: session.userId,
+      locale,
+    }).catch((err) => {
+      console.warn('[orders] notifyOrderMessage background failed:', err)
+    })
+  }
+
   return { status: 'success', message: 'sent' }
 }
 
