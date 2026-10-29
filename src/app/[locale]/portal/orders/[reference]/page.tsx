@@ -13,6 +13,7 @@ import {
   OrderTimeline,
   StatusBadge,
 } from '@/components/portal/order-view'
+import { OrderInteractiveView } from '@/components/portal/order-interactive-view'
 import { requireClient } from '@/lib/supabase/auth'
 import { getOrderByReference, getOrderThread } from '@/lib/supabase/orders'
 
@@ -80,50 +81,50 @@ export default async function PortalOrderPage({
         <OrderProgress status={order.status} />
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <section className="surface flex flex-col gap-5 p-6">
-          <h2 className="text-base font-semibold">{t('conversation')}</h2>
+      <OrderInteractiveView
+        conversationNode={
+          <section className="surface flex flex-col gap-5 p-6">
+            <h2 className="text-base font-semibold">{t('conversation')}</h2>
+            <MessageList messages={messages} viewerId={session.userId} locale={locale} />
+            <Separator />
+            <MessageComposer locale={locale} orderId={order.id} reference={order.reference} />
+          </section>
+        }
+        detailsNode={
+          <>
+            <section className="surface flex flex-col gap-4 p-6">
+              <h2 className="text-base font-semibold">{t('brief')}</h2>
+              <p className="text-[13.5px] leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                {order.brief ?? '-'}
+              </p>
 
-          <MessageList messages={messages} viewerId={session.userId} locale={locale} />
+              {order.status === 'inquiry' ? (
+                <EditBrief
+                  locale={locale}
+                  orderId={order.id}
+                  reference={order.reference}
+                  title={order.title}
+                  brief={order.brief ?? ''}
+                />
+              ) : null}
+            </section>
 
-          <Separator />
-
-          <MessageComposer locale={locale} orderId={order.id} reference={order.reference} />
-        </section>
-
-        <div className="flex flex-col gap-6">
-          <section className="surface flex flex-col gap-4 p-6">
-            <h2 className="text-base font-semibold">{t('brief')}</h2>
-            <p className="text-[13.5px] leading-relaxed whitespace-pre-wrap text-muted-foreground">
-              {order.brief ?? '-'}
-            </p>
-
-            {order.status === 'inquiry' ? (
-              <EditBrief
+            <section className="surface flex flex-col gap-4 p-6">
+              <h2 className="text-base font-semibold">{t('payments')}</h2>
+              <MilestoneList
+                milestones={milestones}
                 locale={locale}
-                orderId={order.id}
-                reference={order.reference}
-                title={order.title}
-                brief={order.brief ?? ''}
+                orderReference={order.reference}
               />
-            ) : null}
-          </section>
+            </section>
 
-          <section className="surface flex flex-col gap-4 p-6">
-            <h2 className="text-base font-semibold">{t('payments')}</h2>
-            <MilestoneList
-              milestones={milestones}
-              locale={locale}
-              orderReference={order.reference}
-            />
-          </section>
-
-          <section className="surface flex flex-col gap-4 p-6">
-            <h2 className="text-base font-semibold">{t('history')}</h2>
-            <OrderTimeline events={events} />
-          </section>
-        </div>
-      </div>
+            <section className="surface flex flex-col gap-4 p-6">
+              <h2 className="text-base font-semibold">{t('history')}</h2>
+              <OrderTimeline events={events} />
+            </section>
+          </>
+        }
+      />
     </div>
   )
 }

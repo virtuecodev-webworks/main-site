@@ -35,19 +35,20 @@ export function toProjectCard(project: Project): ProjectCard {
   const fallbackMatch = PLACEHOLDER_PROJECTS.find((p) => p.slug === project.slug)
   const resolvedCover = publicMediaUrl(project.cover_image_path)
   const coverUrl =
-    fallbackMatch?.coverUrl ??
-    (resolvedCover && !resolvedCover.endsWith('.svg') ? resolvedCover : PHOTOS.workBand)
+    (resolvedCover && !resolvedCover.endsWith('.svg'))
+      ? resolvedCover
+      : (fallbackMatch?.coverUrl ?? PHOTOS.workBand)
 
-  const liveUrl = `/portfolio/${project.slug}`
+  const liveUrl = project.live_url || `/portfolio/${project.slug}`
 
   return {
     id: project.id,
     slug: project.slug,
-    title: fallbackMatch?.title ?? project.title,
-    client: fallbackMatch?.client ?? project.client,
-    summary: fallbackMatch?.summary ?? project.summary,
-    category: fallbackMatch?.category ?? project.category,
-    techTags: fallbackMatch?.techTags ?? project.tech_tags ?? [],
+    title: project.title || fallbackMatch?.title || 'Untitled Project',
+    client: project.client || fallbackMatch?.client || null,
+    summary: project.summary || fallbackMatch?.summary || null,
+    category: project.category || fallbackMatch?.category || 'custom',
+    techTags: (project.tech_tags && project.tech_tags.length > 0) ? project.tech_tags : (fallbackMatch?.techTags ?? []),
     liveUrl,
     coverUrl,
     featured: project.featured,
@@ -483,12 +484,14 @@ export const CASE_STUDY_DETAILS: Record<string, CaseStudyDetails> = {
  */
 export function mergeWithShowcaseProjects(dbProjects: ProjectCard[]): ProjectCard[] {
   const bySlug = new Map<string, ProjectCard>()
-  for (const showcase of PLACEHOLDER_PROJECTS) {
-    bySlug.set(showcase.slug, showcase)
-  }
+  // Database projects take absolute priority so Admin edits & newly added projects reflect immediately
   for (const item of dbProjects) {
-    if (!bySlug.has(item.slug)) {
-      bySlug.set(item.slug, item)
+    bySlug.set(item.slug, item)
+  }
+  // Fallback to placeholder definitions only for items not yet in the database
+  for (const showcase of PLACEHOLDER_PROJECTS) {
+    if (!bySlug.has(showcase.slug)) {
+      bySlug.set(showcase.slug, showcase)
     }
   }
   return Array.from(bySlug.values())

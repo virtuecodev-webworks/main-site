@@ -25,7 +25,7 @@ import type {
  * or not there" and never as "something broke".
  */
 
-const DEMO_ORDERS: Order[] = [
+export const DEMO_ORDERS: Order[] = [
   {
     id: 'demo-order-1',
     reference: 'VCW-2026-DEV001',

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PortalNav } from '@/components/portal/portal-nav'
+import { PwaInstallPrompt } from '@/components/pwa/pwa-install-prompt'
 import { requireClient } from '@/lib/supabase/auth'
 
 // Reads the session cookie on every request.
@@ -36,9 +37,12 @@ export default async function PortalLayout({
 
   return (
     <div className="min-h-dvh bg-muted/40">
-      <div className="mx-auto grid max-w-6xl gap-6 px-5 py-8 sm:px-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8 lg:py-10">
+      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-4 sm:px-8 sm:py-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8 lg:py-10 pb-28 lg:pb-10">
         <PortalNav locale={locale} name={session.name} email={session.email} />
-        <main className="min-w-0">{children}</main>
+        <main className="min-w-0 flex flex-col gap-6">
+          <PwaInstallPrompt className="w-full" />
+          {children}
+        </main>
       </div>
     </div>
   )

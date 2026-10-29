@@ -8,6 +8,7 @@ import { MessageComposer } from '@/components/portal/message-composer'
 import { MessageList } from '@/components/portal/message-list'
 import { MarkOrderRead } from '@/components/portal/mark-order-read'
 import { OrderProgress, OrderTimeline, StatusBadge } from '@/components/portal/order-view'
+import { OrderInteractiveView } from '@/components/portal/order-interactive-view'
 import { requireStaff } from '@/lib/supabase/auth'
 import { getOrderThread, getOrderWithClient } from '@/lib/supabase/orders'
 
@@ -71,105 +72,108 @@ export default async function AdminOrderPage({
         <OrderProgress status={order.status} />
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <section className="surface flex flex-col gap-5 p-6">
-          <h2 className="text-base font-semibold">{t('thread')}</h2>
+      <OrderInteractiveView
+        conversationNode={
+          <section className="surface flex flex-col gap-5 p-6">
+            <h2 className="text-base font-semibold">{t('thread')}</h2>
 
-          <MessageList
-            messages={messages}
-            viewerId={session.userId}
-            clientName={order.client?.full_name ?? order.client?.email ?? null}
-            locale={locale}
-          />
+            <MessageList
+              messages={messages}
+              viewerId={session.userId}
+              clientName={order.client?.full_name ?? order.client?.email ?? null}
+              locale={locale}
+            />
 
-          <Separator />
+            <Separator />
 
-          <MessageComposer
-            locale={locale}
-            orderId={order.id}
-            reference={order.reference}
-            canPostInternal
-          />
-        </section>
-
-        <div className="flex flex-col gap-6">
-          <section className="surface flex flex-col gap-3 p-6">
-            <h2 className="text-base font-semibold">{t('client')}</h2>
-            <dl className="flex flex-col gap-2 text-[13px]">
-              <div className="flex flex-col gap-0.5">
-                <dt className="text-[11px] tracking-[0.1em] text-muted-foreground uppercase">
-                  {t('client')}
-                </dt>
-                <dd>{order.client?.full_name ?? '-'}</dd>
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <dt className="text-[11px] tracking-[0.1em] text-muted-foreground uppercase">
-                  {t('contact')}
-                </dt>
-                <dd className="break-all">{order.client?.email ?? '-'}</dd>
-              </div>
-              {order.client?.company ? (
-                <div className="flex flex-col gap-0.5">
-                  <dt className="text-[11px] tracking-[0.1em] text-muted-foreground uppercase">
-                    {t('company')}
-                  </dt>
-                  <dd>{order.client.company}</dd>
-                </div>
-              ) : null}
-            </dl>
-          </section>
-
-          <section className="surface flex flex-col gap-4 p-6">
-            <h2 className="text-base font-semibold">{t('brief')}</h2>
-            <div className="flex flex-wrap gap-2 text-[12px] text-muted-foreground">
-              <span>{order.currency}</span>
-              {order.service ? <span>· {order.service}</span> : null}
-              {order.scope ? <span>· {order.scope}</span> : null}
-            </div>
-            <p className="text-[13.5px] leading-relaxed whitespace-pre-wrap text-muted-foreground">
-              {order.brief ?? '-'}
-            </p>
-          </section>
-
-          <section className="surface flex flex-col gap-4 p-6">
-            <h2 className="text-base font-semibold">{t('updateStatus')}</h2>
-            <StatusForm
+            <MessageComposer
               locale={locale}
               orderId={order.id}
               reference={order.reference}
-              status={order.status}
+              canPostInternal
             />
           </section>
+        }
+        detailsNode={
+          <>
+            <section className="surface flex flex-col gap-3 p-6">
+              <h2 className="text-base font-semibold">{t('client')}</h2>
+              <dl className="flex flex-col gap-2 text-[13px]">
+                <div className="flex flex-col gap-0.5">
+                  <dt className="text-[11px] tracking-[0.1em] text-muted-foreground uppercase">
+                    {t('client')}
+                  </dt>
+                  <dd>{order.client?.full_name ?? '-'}</dd>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <dt className="text-[11px] tracking-[0.1em] text-muted-foreground uppercase">
+                    {t('contact')}
+                  </dt>
+                  <dd className="break-all">{order.client?.email ?? '-'}</dd>
+                </div>
+                {order.client?.company ? (
+                  <div className="flex flex-col gap-0.5">
+                    <dt className="text-[11px] tracking-[0.1em] text-muted-foreground uppercase">
+                      {t('company')}
+                    </dt>
+                    <dd>{order.client.company}</dd>
+                  </div>
+                ) : null}
+              </dl>
+            </section>
 
-          {session.isAdmin ? (
             <section className="surface flex flex-col gap-4 p-6">
-              <h2 className="text-base font-semibold">{t('assignment')}</h2>
-              <AssignForm
+              <h2 className="text-base font-semibold">{t('brief')}</h2>
+              <div className="flex flex-wrap gap-2 text-[12px] text-muted-foreground">
+                <span>{order.currency}</span>
+                {order.service ? <span>· {order.service}</span> : null}
+                {order.scope ? <span>· {order.scope}</span> : null}
+              </div>
+              <p className="text-[13.5px] leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                {order.brief ?? '-'}
+              </p>
+            </section>
+
+            <section className="surface flex flex-col gap-4 p-6">
+              <h2 className="text-base font-semibold">{t('updateStatus')}</h2>
+              <StatusForm
                 locale={locale}
                 orderId={order.id}
                 reference={order.reference}
-                agentEmail={order.agent?.email ?? null}
+                status={order.status}
               />
             </section>
-          ) : null}
 
-          <section className="surface flex flex-col gap-4 p-6">
-            <h2 className="text-base font-semibold">{t('milestones')}</h2>
-            <MilestoneEditor
-              locale={locale}
-              orderId={order.id}
-              reference={order.reference}
-              milestones={milestones}
-              currency={order.currency}
-            />
-          </section>
+            {session.isAdmin ? (
+              <section className="surface flex flex-col gap-4 p-6">
+                <h2 className="text-base font-semibold">{t('assignment')}</h2>
+                <AssignForm
+                  locale={locale}
+                  orderId={order.id}
+                  reference={order.reference}
+                  agentEmail={order.agent?.email ?? null}
+                />
+              </section>
+            ) : null}
 
-          <section className="surface flex flex-col gap-4 p-6">
-            <h2 className="text-base font-semibold">{t('history')}</h2>
-            <OrderTimeline events={events} />
-          </section>
-        </div>
-      </div>
+            <section className="surface flex flex-col gap-4 p-6">
+              <h2 className="text-base font-semibold">{t('milestones')}</h2>
+              <MilestoneEditor
+                locale={locale}
+                orderId={order.id}
+                reference={order.reference}
+                milestones={milestones}
+                currency={order.currency}
+              />
+            </section>
+
+            <section className="surface flex flex-col gap-4 p-6">
+              <h2 className="text-base font-semibold">{t('history')}</h2>
+              <OrderTimeline events={events} />
+            </section>
+          </>
+        }
+      />
     </div>
   )
 }

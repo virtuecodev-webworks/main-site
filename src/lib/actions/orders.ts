@@ -200,6 +200,20 @@ export async function postMessage(
       created_at: new Date().toISOString(),
     })
     revalidateOrder(locale, reference)
+
+    if (!internal) {
+      notifyOrderMessage({
+        orderId,
+        reference,
+        body,
+        authorRole,
+        authorId: session.userId,
+        locale,
+      }).catch((err) => {
+        console.warn('[orders] notifyOrderMessage fallback failed:', err)
+      })
+    }
+
     return { status: 'success', message: 'sent' }
   }
 
