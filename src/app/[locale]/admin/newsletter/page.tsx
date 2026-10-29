@@ -3,6 +3,9 @@ import { requireAdmin } from '@/lib/supabase/auth'
 import { getNewsletterDashboardData } from '@/lib/supabase/newsletter-queries'
 import { NewsletterConsole } from '@/components/admin/newsletter-console'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function AdminNewsletterPage({
   params,
 }: {
@@ -28,6 +31,7 @@ export default async function AdminNewsletterPage({
         subscribersCount={data.subscribersCount}
         dispatchesCount={data.dispatchesCount}
         recentDispatches={data.recentDispatches}
+        initialSubscribersList={data.subscribers}
       />
     </div>
   )

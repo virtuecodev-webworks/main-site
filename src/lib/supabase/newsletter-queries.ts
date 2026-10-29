@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { createSupabaseAdminClient } from './admin'
-import type { NewsletterDispatch } from './types'
+import type { NewsletterDispatch, NewsletterSubscriber } from './types'
 
 export async function getNewsletterDashboardData() {
   const supabase = createSupabaseAdminClient()
@@ -10,11 +10,17 @@ export async function getNewsletterDashboardData() {
       subscribersCount: 0,
       dispatchesCount: 0,
       recentDispatches: [] as NewsletterDispatch[],
+      subscribers: [] as NewsletterSubscriber[],
     }
   }
 
-  const [subscribersRes, dispatchesRes, countRes] = await Promise.all([
+  const [subscribersCountRes, subscribersListRes, dispatchesRes, countRes] = await Promise.all([
     supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+    supabase
+      .from('newsletter_subscribers')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .returns<NewsletterSubscriber[]>(),
     supabase
       .from('newsletter_dispatches')
       .select('*')
@@ -25,8 +31,9 @@ export async function getNewsletterDashboardData() {
   ])
 
   return {
-    subscribersCount: subscribersRes.count ?? 0,
+    subscribersCount: subscribersCountRes.count ?? 0,
     dispatchesCount: countRes.count ?? 0,
     recentDispatches: dispatchesRes.data ?? [],
+    subscribers: subscribersListRes.data ?? [],
   }
 }
