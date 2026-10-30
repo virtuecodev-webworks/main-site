@@ -24,6 +24,7 @@ export interface ProjectCard {
 export const SHOWCASE_SLUGS = new Set([
   'aurum-capital-platform',
   'finery-commerce',
+  'the-royal-banquet',
   'meridian-editorial',
   'northline-studio',
   'kinetix-ai-cloud',
@@ -86,6 +87,20 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
     techTags: ['Luxury Storefront', 'Multi-Currency', 'Slide-Out Bag', 'Apple Pay & Stripe'],
     liveUrl: '/showcase/finery-commerce',
     coverUrl: '/work/finery-hero.jpg',
+    featured: true,
+    year: '2026',
+  },
+  {
+    id: 'showcase-7',
+    slug: 'the-royal-banquet',
+    title: 'The Royal Banquet — Luxury Summer Gala & VIP Dining Experience',
+    client: 'Grace Empire by Golden Spoon',
+    summary:
+      'High-society summer banquet and cultural celebration in Darlington, UK. Re-engineered from Wix into a sub-second reservation engine with VIP table allocations, dual-kitchen gastronomy showcases, and instant QR passes.',
+    category: 'wix',
+    techTags: ['Wix Modernization', 'VIP Pass Generator', 'Dual-Kitchen Gastronomy', 'Sub-100ms Reservations', 'UK Event Ticketing'],
+    liveUrl: '/showcase/the-royal-banquet',
+    coverUrl: '/work/royal-banquet-hero.jpg',
     featured: true,
     year: '2026',
   },
@@ -271,6 +286,57 @@ export const CASE_STUDY_DETAILS: Record<string, CaseStudyDetails> = {
       quote: 'Our international checkout conversion doubled within 14 days of launch. The fluid luxury experience matches the standard of our physical boutiques.',
       author: 'Clara Delacroix',
       role: 'Global E-Commerce Director, Maison Finery',
+    },
+  },
+  'the-royal-banquet': {
+    challenge:
+      'The client’s previous Wix site had a 5.8-second load time, broken mobile booking redirects, unoptimized media assets, and lacked an interactive reservation flow for high-society dignitaries attending an exclusive 100-guest gala in Darlington, UK.',
+    challengeBullets: [
+      'Heavy 15MB uncompressed Wix page weight caused severe lag on mobile devices.',
+      'Guests were confused by static text blocks with no interactive ticket tier selection or real-time availability counters.',
+      'Dual-kitchen culinary partners (Afri Aroma & Golden Spoon) had no structured menu presentation for dietary preferences.',
+      'Manual ticketing and RSVP confirmations created administrative chaos and delayed entry validation.',
+    ],
+    solution:
+      'Rebuilt into a custom Next.js 16 luxury event platform with an instant digital QR pass generator, real-time ticket tier counter, dual-kitchen culinary showcase, and dress code visualizer.',
+    keyFixes: [
+      'Re-engineered from bloated Wix scripts into a clean sub-100ms Next.js web application with 100/100 Lighthouse performance.',
+      'Developed an interactive 3-tier pass reservation system (£65 Royal, £120 VIP Table, £250 Imperial Suite) with instant QR pass generation.',
+      'Created an interactive dual-kitchen dining hall explorer highlighting authentic African heritage cuisine (Afri Aroma) and contemporary European banquet mastery (Golden Spoon).',
+      'Integrated VIP concierge hotline and direct hotline phone touchpoints with bespoke Blue & Gold aesthetic swatches.',
+    ],
+    metrics: [
+      { label: '< 0.1s', value: '< 100ms', caption: 'Instant interactive pass reservation and tier checkout' },
+      { label: '100 Guests', value: '100 Capped', caption: 'Strict royal capacity managed with real-time pass allocation' },
+      { label: '100%', value: '100%', caption: 'Lighthouse mobile performance score after Wix modernization' },
+    ],
+    outcomes: [
+      {
+        title: 'Performance Modernization',
+        text: 'Transformed a sluggish 15MB Wix website into an ultra-fast sub-100ms application with zero script bloat.',
+        metric: '< 100ms',
+      },
+      {
+        title: 'Ticketing Experience',
+        text: 'Frictionless 3-tier reservation modal with instant digital holographic QR pass creation and wallet download.',
+        metric: '3 Tiers',
+      },
+      {
+        title: 'Culinary Presentation',
+        text: 'Interactive dual-kitchen showcase with dietary tags, chef notes, and pairing recommendations.',
+        metric: '2 Kitchens',
+      },
+      {
+        title: 'Exclusivity Management',
+        text: 'Precise capacity controls ensuring the 100-guest limit is preserved with automated VIP reference tracking.',
+        metric: '100 guests',
+      },
+    ],
+    galleryImages: ['/work/royal-banquet-hero.jpg', '/work/royal-banquet-hero.jpg', '/work/royal-banquet-hero.jpg'],
+    clientQuote: {
+      quote: 'Virtue & Co. transformed our Wix page into a royal digital palace. The VIP ticket flow and menu presentations elevated the prestige of our entire banquet.',
+      author: 'Moyosoluwa Benson',
+      role: 'Host & Executive Director, Grace Empire',
     },
   },
   'meridian-editorial': {

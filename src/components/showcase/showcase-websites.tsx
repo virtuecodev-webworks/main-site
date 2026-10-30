@@ -9,10 +9,12 @@ import { MeridianEditorialSite } from './sites/meridian-site'
 import { NorthlineStudioSite } from './sites/northline-site'
 import { KinetixAiCloudSite } from './sites/kinetix-site'
 import { SolaceHealthPortalSite } from './sites/solace-site'
+import { RoyalBanquetSite } from './sites/royal-banquet-site'
 
 const SHOWCASE_DIRECTORY = [
   { slug: 'aurum-capital-platform', name: 'Aurum Private Treasury', tag: 'FinTech' },
   { slug: 'finery-commerce', name: 'Maison Finery Paris', tag: 'Luxury Store' },
+  { slug: 'the-royal-banquet', name: 'The Royal Banquet UK', tag: 'Luxury Event' },
   { slug: 'meridian-editorial', name: 'The Meridian Review', tag: 'Editorial' },
   { slug: 'northline-studio', name: 'Northline Prefab', tag: 'Architecture' },
   { slug: 'kinetix-ai-cloud', name: 'Kinetix AI Cloud', tag: 'AI Cloud' },
@@ -97,7 +99,7 @@ function FloatingStudioDock({ slug }: { slug: string }) {
           className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
         >
           <Sparkles className="size-3.5 text-[#dcaa28]" />
-          <span className="hidden sm:inline">Switch Site (6)</span>
+          <span className="hidden sm:inline">Switch Site (7)</span>
         </button>
 
         <Link
@@ -118,6 +120,7 @@ export function ShowcaseWebsiteRenderer({ slug }: { slug: string }) {
       <FloatingStudioDock slug={slug} />
       {slug === 'aurum-capital-platform' && <AurumCapitalSite />}
       {slug === 'finery-commerce' && <MaisonFinerySite />}
+      {slug === 'the-royal-banquet' && <RoyalBanquetSite />}
       {slug === 'meridian-editorial' && <MeridianEditorialSite />}
       {slug === 'northline-studio' && <NorthlineStudioSite />}
       {slug === 'kinetix-ai-cloud' && <KinetixAiCloudSite />}
@@ -125,6 +128,7 @@ export function ShowcaseWebsiteRenderer({ slug }: { slug: string }) {
       {![
         'aurum-capital-platform',
         'finery-commerce',
+        'the-royal-banquet',
         'meridian-editorial',
         'northline-studio',
         'kinetix-ai-cloud',
