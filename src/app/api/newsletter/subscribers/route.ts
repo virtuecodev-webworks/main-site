@@ -2,7 +2,19 @@ import 'server-only'
 
 import { NextResponse, type NextRequest } from 'next/server'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { resolveAdminSession } from '@/lib/supabase/auth'
+import type { NewsletterSubscriber } from '@/lib/supabase/types'
+
+async function getDbClient() {
+  const adminClient = createSupabaseAdminClient()
+  if (adminClient) return adminClient
+  try {
+    return await createSupabaseServerClient()
+  } catch {
+    return null
+  }
+}
 
 export async function GET() {
   const adminSession = await resolveAdminSession()
@@ -10,7 +22,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = createSupabaseAdminClient()
+  const supabase = await getDbClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database unavailable' }, { status: 503 })
   }
@@ -24,13 +36,35 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const activeCount = subscribers?.filter((s) => s.status === 'active').length ?? 0
+  let finalSubscribers: NewsletterSubscriber[] = subscribers ?? []
+
+  // Fallback: if newsletter_subscribers is empty, populate from legacy subscribers table
+  if (finalSubscribers.length === 0) {
+    const { data: legacyData } = await supabase
+      .from('subscribers')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (legacyData && legacyData.length > 0) {
+      finalSubscribers = legacyData.map((row: any) => ({
+        id: row.id || `legacy-${row.email}`,
+        email: row.email,
+        status: (row.status || 'active') as 'active' | 'unsubscribed',
+        confirmed_at: row.created_at || null,
+        unsubscribed_at: null,
+        source: row.source || 'website',
+        created_at: row.created_at || new Date().toISOString(),
+      }))
+    }
+  }
+
+  const activeCount = finalSubscribers.filter((s) => s.status === 'active' || !s.status).length
 
   return NextResponse.json({
     ok: true,
-    subscribers: subscribers ?? [],
+    subscribers: finalSubscribers,
     activeCount,
-    totalCount: subscribers?.length ?? 0,
+    totalCount: finalSubscribers.length,
   })
 }
 
@@ -40,7 +74,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = createSupabaseAdminClient()
+  const supabase = await getDbClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database unavailable' }, { status: 503 })
   }
@@ -51,7 +85,13 @@ export async function POST(request: NextRequest) {
   if (action === 'sync_users') {
     // 1. Collect all emails from profiles and auth.users
     const { data: profiles } = await supabase.from('profiles').select('email')
-    const { data: users } = await supabase.auth.admin.listUsers()
+    let usersList: any[] = []
+    try {
+      const { data: users } = await supabase.auth.admin.listUsers()
+      if (users?.users) usersList = users.users
+    } catch {
+      // admin api might not be available on server client
+    }
 
     const emailsToSync = new Set<string>()
     if (profiles) {
@@ -59,10 +99,8 @@ export async function POST(request: NextRequest) {
         if (p.email) emailsToSync.add(p.email.toLowerCase().trim())
       }
     }
-    if (users?.users) {
-      for (const u of users.users) {
-        if (u.email) emailsToSync.add(u.email.toLowerCase().trim())
-      }
+    for (const u of usersList) {
+      if (u.email) emailsToSync.add(u.email.toLowerCase().trim())
     }
 
     // Include primary administrator & known client addresses
@@ -109,6 +147,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: delErr.message }, { status: 500 })
     }
 
+    await supabase.from('subscribers').delete().ilike('email', '%@example.com')
+
     return NextResponse.json({
       ok: true,
       message: `Cleaned ${removed?.length ?? 0} dummy test emails`,
@@ -153,7 +193,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = createSupabaseAdminClient()
+  const supabase = await getDbClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database unavailable' }, { status: 503 })
   }
@@ -163,6 +203,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 })
   }
 
+  const cleanEmail = email.toLowerCase().trim()
   const updateData =
     status === 'unsubscribed'
       ? { status, unsubscribed_at: new Date().toISOString() }
@@ -171,13 +212,13 @@ export async function PATCH(request: NextRequest) {
   const { error } = await supabase
     .from('newsletter_subscribers')
     .update(updateData)
-    .eq('email', email.toLowerCase().trim())
+    .eq('email', cleanEmail)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ ok: true, email, status })
+  return NextResponse.json({ ok: true, email: cleanEmail, status })
 }
 
 export async function DELETE(request: NextRequest) {
@@ -186,7 +227,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = createSupabaseAdminClient()
+  const supabase = await getDbClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database unavailable' }, { status: 503 })
   }
@@ -196,14 +237,19 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Email is required' }, { status: 400 })
   }
 
+  const cleanEmail = email.toLowerCase().trim()
+
   const { error } = await supabase
     .from('newsletter_subscribers')
     .delete()
-    .eq('email', email.toLowerCase().trim())
+    .eq('email', cleanEmail)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ ok: true, message: `Removed ${email}` })
+  // Also prune from subscribers table
+  await supabase.from('subscribers').delete().eq('email', cleanEmail)
+
+  return NextResponse.json({ ok: true, message: `Removed ${cleanEmail}` })
 }

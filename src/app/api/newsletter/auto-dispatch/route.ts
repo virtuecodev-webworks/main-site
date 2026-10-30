@@ -2,11 +2,22 @@ import 'server-only'
 
 import { NextResponse, type NextRequest } from 'next/server'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { resolveAdminSession } from '@/lib/supabase/auth'
 import { crawlSiteContent } from '@/lib/newsletter/site-crawler'
 import { synthesizeNewsletter } from '@/lib/newsletter/ai-synthesizer'
 import { newsletterEmail } from '@/lib/email/templates'
 import { sendMany } from '@/lib/email'
+
+async function getDbClient() {
+  const adminClient = createSupabaseAdminClient()
+  if (adminClient) return adminClient
+  try {
+    return await createSupabaseServerClient()
+  } catch {
+    return null
+  }
+}
 
 async function isAuthorizedDispatch(request: NextRequest): Promise<boolean> {
   const authHeader = request.headers.get('authorization')
@@ -25,19 +36,21 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = createSupabaseAdminClient()
+  const supabase = await getDbClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database unreachable' }, { status: 503 })
   }
 
-  const { data: subscribers, error: subError } = await supabase
+  let { data: subscribers, error: subError } = await supabase
     .from('newsletter_subscribers')
     .select('email')
     .eq('status', 'active')
 
-  if (subError) {
-    console.error('[auto-dispatch] Failed to fetch subscribers:', subError.message)
-    return NextResponse.json({ error: 'DB error' }, { status: 500 })
+  if (!subscribers || subscribers.length === 0) {
+    const { data: legacySubs } = await supabase.from('subscribers').select('email')
+    if (legacySubs && legacySubs.length > 0) {
+      subscribers = legacySubs
+    }
   }
 
   if (!subscribers || subscribers.length === 0) {
@@ -56,7 +69,7 @@ export async function GET(request: NextRequest) {
     issueNumber: (issueCount ?? 0) + 1,
   })
 
-  const emails = subscribers.map((s) => ({
+  const emails = subscribers.map((s: { email: string }) => ({
     to: s.email,
     email: rendered,
   }))
@@ -91,15 +104,22 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => ({}))
-  const supabase = createSupabaseAdminClient()
+  const supabase = await getDbClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database unreachable' }, { status: 503 })
   }
 
-  const { data: subscribers } = await supabase
+  let { data: subscribers } = await supabase
     .from('newsletter_subscribers')
     .select('email')
     .eq('status', 'active')
+
+  if (!subscribers || subscribers.length === 0) {
+    const { data: legacySubs } = await supabase.from('subscribers').select('email')
+    if (legacySubs && legacySubs.length > 0) {
+      subscribers = legacySubs
+    }
+  }
 
   if (!subscribers?.length) {
     return NextResponse.json({ ok: true, message: 'No active subscribers', sent: 0 })

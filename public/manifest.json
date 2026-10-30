@@ -2,7 +2,7 @@
   "name": "Virtue & Co. Webworks",
   "short_name": "VirtueWeb",
   "description": "Bespoke high-performance web applications, productized services, and client portal tracker.",
-  "start_url": "/en/admin",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -37,35 +37,26 @@
       "purpose": "maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/brand/screenshot-desktop.png",
-      "sizes": "1280x800",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Admin Dashboard — Virtue & Co. Webworks"
-    },
-    {
-      "src": "/brand/screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Mobile Client Portal"
-    }
-  ],
   "shortcuts": [
     {
-      "name": "New Enquiry",
-      "short_name": "Enquiry",
-      "description": "View latest client enquiries",
-      "url": "/en/admin/inquiries",
+      "name": "Services & Pricing",
+      "short_name": "Services",
+      "description": "Explore web design packages and fixed pricing",
+      "url": "/en/services",
       "icons": [{ "src": "/brand/logo-mark.png", "sizes": "96x96" }]
     },
     {
-      "name": "Orders",
-      "short_name": "Orders",
-      "description": "Manage client orders and payments",
-      "url": "/en/admin/orders",
+      "name": "Portfolio & Showcase",
+      "short_name": "Portfolio",
+      "description": "View live client websites and design case studies",
+      "url": "/en/portfolio",
+      "icons": [{ "src": "/brand/logo-mark.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Get a Price",
+      "short_name": "Contact",
+      "description": "Start a website design or redesign project",
+      "url": "/en/contact",
       "icons": [{ "src": "/brand/logo-mark.png", "sizes": "96x96" }]
     }
   ],

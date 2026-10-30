@@ -67,23 +67,29 @@ export default async function AdminOverviewPage({
               </h2>
             </div>
 
-            {/* 3 Stat Chips */}
-            <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white/[0.06] p-3 text-center border border-white/10">
+            {/* 4 Stat Chips */}
+            <div className="grid grid-cols-4 gap-1.5 rounded-2xl bg-white/[0.06] p-2.5 text-center border border-white/10">
               <div className="flex flex-col">
-                <span className="text-[10.5px] text-[#f5f4f0]/60 uppercase tracking-wider">Inquiries</span>
-                <span className="font-display text-sm font-bold text-primary mt-0.5">
+                <span className="text-[10px] text-[#f5f4f0]/60 uppercase tracking-wider">Inquiries</span>
+                <span className="font-display text-xs sm:text-sm font-bold text-primary mt-0.5">
                   {metrics.newInquiries} New
                 </span>
               </div>
-              <div className="flex flex-col border-x border-white/10">
-                <span className="text-[10.5px] text-[#f5f4f0]/60 uppercase tracking-wider">Portfolio</span>
-                <span className="font-display text-sm font-bold text-[#f5f4f0] mt-0.5">
+              <div className="flex flex-col border-l border-white/10">
+                <span className="text-[10px] text-[#f5f4f0]/60 uppercase tracking-wider">Subscribers</span>
+                <span className="font-display text-xs sm:text-sm font-bold text-emerald-400 mt-0.5">
+                  {newsletterData.subscribersCount}
+                </span>
+              </div>
+              <div className="flex flex-col border-l border-white/10">
+                <span className="text-[10px] text-[#f5f4f0]/60 uppercase tracking-wider">Portfolio</span>
+                <span className="font-display text-xs sm:text-sm font-bold text-[#f5f4f0] mt-0.5">
                   {metrics.published} Live
                 </span>
               </div>
-              <div className="flex flex-col">
-                <span className="text-[10.5px] text-[#f5f4f0]/60 uppercase tracking-wider">Drafts</span>
-                <span className="font-display text-sm font-bold text-[#f5f4f0] mt-0.5">
+              <div className="flex flex-col border-l border-white/10">
+                <span className="text-[10px] text-[#f5f4f0]/60 uppercase tracking-wider">Drafts</span>
+                <span className="font-display text-xs sm:text-sm font-bold text-[#f5f4f0] mt-0.5">
                   {metrics.drafts}
                 </span>
               </div>
@@ -158,6 +164,24 @@ export default async function AdminOverviewPage({
               <div>
                 <p className="font-display text-sm font-bold text-foreground">Lead Intake</p>
                 <p className="text-[11px] text-muted-foreground mt-0.5">Briefs &amp; proposals</p>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/newsletter"
+              className="flex flex-col justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary active:scale-95"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Sparkles className="size-5" />
+                </div>
+                <span className="flex items-center justify-center rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                  {newsletterData.subscribersCount} Active
+                </span>
+              </div>
+              <div>
+                <p className="font-display text-sm font-bold text-foreground">Studio Dispatch</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">Newsletter &amp; roster</p>
               </div>
             </Link>
 

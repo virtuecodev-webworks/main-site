@@ -2,6 +2,7 @@ import 'server-only'
 import { NextResponse, type NextRequest } from 'next/server'
 import webpush from 'web-push'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { resolveSession } from '@/lib/supabase/auth'
 
 if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
@@ -24,7 +25,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid subscription object' }, { status: 400 })
   }
 
-  const supabase = createSupabaseAdminClient()
+  let supabase: any = createSupabaseAdminClient()
+  if (!supabase) {
+    try {
+      supabase = await createSupabaseServerClient()
+    } catch {
+      supabase = null
+    }
+  }
   if (!supabase) {
     return NextResponse.json({ error: 'Database unreachable' }, { status: 503 })
   }

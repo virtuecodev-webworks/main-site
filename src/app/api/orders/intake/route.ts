@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/supabase/auth'
 import { isEmailConfigured, leadRecipient, sendMany } from '@/lib/email'
 import { enquiryAdminEmail, enquiryClientEmail } from '@/lib/email/templates'
@@ -37,7 +38,14 @@ export async function POST(req: Request) {
     const serviceSlug = packageId ? String(packageId).split('-')[0] : 'custom'
     const formattedMessage = `[Package Order: ${serviceTitle} — ${String(tier ?? 'starter').toUpperCase()}]\nReference: ${reference}\nProject: ${projectName}\nTarget Audience: ${targetAudience || 'N/A'}\nReference Links: ${referenceUrls || 'N/A'}\n\nProject Brief:\n${description}`
 
-    const supabase = createSupabaseAdminClient()
+    let supabase: any = createSupabaseAdminClient()
+    if (!supabase) {
+      try {
+        supabase = await createSupabaseServerClient()
+      } catch {
+        supabase = null
+      }
+    }
     let inquiryId: string | null = null
     let portalUrl = '/portal'
 
@@ -57,9 +65,9 @@ export async function POST(req: Request) {
           source: 'package_intake_modal',
         })
         .select('id')
-        .maybeSingle<{ id: string }>()
+        .maybeSingle()
 
-      inquiryId = inquiryRow?.id ?? null
+      inquiryId = (inquiryRow as { id: string } | null)?.id ?? null
 
       // 2. Resolve client account (active session OR matching profile by email)
       let clientUserId: string | null = null
@@ -71,9 +79,9 @@ export async function POST(req: Request) {
           .from('profiles')
           .select('id')
           .eq('email', normalizedEmail)
-          .maybeSingle<{ id: string }>()
-        if (existingProfile?.id) {
-          clientUserId = existingProfile.id
+          .maybeSingle()
+        if ((existingProfile as { id: string } | null)?.id) {
+          clientUserId = (existingProfile as { id: string }).id
         }
       }
 
@@ -94,13 +102,14 @@ export async function POST(req: Request) {
             inquiry_id: inquiryId,
           })
           .select('id, reference')
-          .maybeSingle<{ id: string; reference: string }>()
+          .maybeSingle()
 
-        if (createdOrder) {
-          reference = createdOrder.reference
-          portalUrl = `/portal/orders/${createdOrder.reference}`
+        const typedOrder = createdOrder as { id: string; reference: string } | null
+        if (typedOrder) {
+          reference = typedOrder.reference
+          portalUrl = `/portal/orders/${typedOrder.reference}`
           await supabase.from('order_messages').insert({
-            order_id: createdOrder.id,
+            order_id: typedOrder.id,
             author_id: clientUserId,
             author_role: 'client',
             body: formattedMessage,

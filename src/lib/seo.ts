@@ -115,6 +115,12 @@ export function organizationJsonLd(locale: string) {
           'Virtue and Co',
           'Virtueweb & Co Webworks',
           'Virtue & Co. Webworks Solutions',
+          'Virtue Co Webworks',
+          'Virtue Web Works',
+          'Virtueweb',
+          'VirtueWeb',
+          'virtuecowebworks',
+          'virtuecowebworks.solutions',
         ],
         slogan: 'Professional Website Design, Website Redesign & Online Stores',
         description:

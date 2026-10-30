@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { clientKey, rateLimit } from '@/lib/rate-limit'
 import { newsletterSchema } from '@/lib/validation'
 import { sendEmail } from '@/lib/email'
@@ -47,7 +48,14 @@ export async function POST(request: Request) {
   const source = parsed.data.source || 'website'
   const locale = parsed.data.locale || 'en'
 
-  const supabase = createSupabaseAdminClient()
+  let supabase: any = createSupabaseAdminClient()
+  if (!supabase) {
+    try {
+      supabase = await createSupabaseServerClient()
+    } catch {
+      supabase = null
+    }
+  }
 
   if (supabase) {
     // 1. Upsert into newsletter_subscribers (primary table for admin dispatch)

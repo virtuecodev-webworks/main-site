@@ -78,6 +78,11 @@ export function NewsletterConsole({
     }
   }, [])
 
+  // Auto-fetch on mount so roster is guaranteed up to date with database
+  React.useEffect(() => {
+    refreshSubscribers()
+  }, [refreshSubscribers])
+
   // Sync registered user accounts into newsletter subscribers
   async function handleSyncUsers() {
     setIsSyncingUsers(true)

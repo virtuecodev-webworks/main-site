@@ -284,12 +284,16 @@ export function AdminDesktopDashboard({
             </span>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-card border border-border text-xs text-muted-foreground">
+          <Link
+            href="/admin/newsletter"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-card border border-border text-xs text-muted-foreground hover:border-gold-500/50 hover:text-foreground transition-all active:scale-95"
+            title="Manage subscribers & studio dispatches"
+          >
             <Users className="size-3.5 text-blue-500" />
             <span>
               <strong className="text-foreground font-semibold">{subscribersCount}</strong> Active Subscribers
             </span>
-          </div>
+          </Link>
         </div>
       </div>
 

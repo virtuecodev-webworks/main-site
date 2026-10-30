@@ -7,17 +7,16 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        // Keep the CMS, auth screens, client portal and API out of search index across every locale.
+        // Keep private consoles and backend API endpoints out of crawler scope.
+        // Public auth screens (/login, /signup) use <meta name="robots" content="noindex" />
+        // so Googlebot can see the noindex tag cleanly without triggering robots.txt blocks.
         disallow: [
           '/api/',
-          '/admin',
-          '/*/admin',
-          '/portal',
-          '/*/portal',
-          '/login',
-          '/*/login',
-          '/signup',
-          '/*/signup',
+          '/*/api/',
+          '/admin/',
+          '/*/admin/',
+          '/portal/',
+          '/*/portal/',
         ],
       },
     ],

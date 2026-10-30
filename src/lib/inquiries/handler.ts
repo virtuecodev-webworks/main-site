@@ -78,7 +78,14 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
   }
 
   let storedId: string | null = null
-  const supabaseAdmin = createSupabaseAdminClient()
+  let supabaseAdmin: any = createSupabaseAdminClient()
+  if (!supabaseAdmin) {
+    try {
+      supabaseAdmin = await createSupabaseServerClient()
+    } catch {
+      supabaseAdmin = null
+    }
+  }
   if (supabaseAdmin) {
     const { data, error } = await supabaseAdmin
       .from('inquiries')
@@ -164,9 +171,9 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
         .from('profiles')
         .select('id')
         .eq('email', input.email.toLowerCase().trim())
-        .maybeSingle<{ id: string }>()
-      if (existingProfile?.id) {
-        clientUserId = existingProfile.id
+        .maybeSingle()
+      if ((existingProfile as { id: string } | null)?.id) {
+        clientUserId = (existingProfile as { id: string }).id
       }
     }
   } catch (authErr) {
@@ -200,19 +207,20 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
           inquiry_id: storedId,
         })
         .select('id, reference')
-        .single<{ id: string; reference: string }>()
+        .single()
 
-      if (!orderErr && createdOrder) {
-        orderReference = createdOrder.reference
+      const typedCreatedOrder = createdOrder as { id: string; reference: string } | null
+      if (!orderErr && typedCreatedOrder) {
+        orderReference = typedCreatedOrder.reference
         await supabaseAdmin.from('order_messages').insert({
-          order_id: createdOrder.id,
+          order_id: typedCreatedOrder.id,
           author_id: clientUserId,
           author_role: 'client',
           body: input.message,
           internal: false,
         })
         if (redirectUrl) {
-          redirectUrl = `/${input.locale}/portal/orders/${createdOrder.reference}`
+          redirectUrl = `/${input.locale}/portal/orders/${typedCreatedOrder.reference}`
         }
       }
     } catch (orderSyncErr) {
