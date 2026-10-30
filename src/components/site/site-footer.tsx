@@ -5,7 +5,6 @@ import { VirtueWordmark } from '@/components/brand/virtue-wordmark'
 import { CountrySwitcher } from './country-switcher'
 import { LanguageSwitcher } from './language-switcher'
 import { NewsletterForm } from './newsletter-form'
-import { VisitorAvailability } from './visitor-availability'
 import { AGENCY } from '@/lib/constants'
 import { FOOTER_LEGAL, PRIMARY_NAV, SERVICES } from '@/lib/studio'
 
@@ -64,7 +63,6 @@ export async function SiteFooter() {
                   <Globe className="size-3.5 text-primary" aria-hidden="true" />
                   <span>{t('worldwide')}</span>
                 </span>
-                <VisitorAvailability variant="footer" />
               </div>
             </div>
           </div>
