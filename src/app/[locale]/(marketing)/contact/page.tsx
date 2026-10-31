@@ -38,11 +38,11 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const tPhotos = await getTranslations('Photos')
 
   return (
-    <>
+    <div className="flex flex-col">
       <PageHero eyebrow={t('eyebrow')} title={t('title')} subtitle={t('subtitle')} />
 
-      {/* 1. Vantra 2-Column Direct Contact Cards (`.direct_grid`) */}
-      <section className="padding-global pb-12">
+      {/* 1. Vantra 2-Column Direct Contact Cards (Top on Desktop, Follows Form on Mobile) */}
+      <section className="order-2 lg:order-1 padding-global pt-4 pb-12 lg:pt-0 lg:pb-12">
         <div className="container-max">
           <div className="direct_grid grid grid-cols-1 gap-2 md:grid-cols-2">
             {/* Direct Email Card */}
@@ -105,12 +105,12 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         </div>
       </section>
 
-      {/* 2. Vantra 2-Column Enquiry Wrapper (`.enquiry_wrapper`) */}
-      <section className="padding-global padding-section">
+      {/* 2. Vantra Enquiry Section (Form Comes First on Mobile) */}
+      <section className="order-1 lg:order-2 padding-global pt-6 pb-12 lg:pt-0 lg:padding-section">
         <div className="container-max">
           <div className="enquiry_wrapper grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
-            {/* Left 5 Columns: Visual, Hours & What Happens Next */}
-            <aside className="flex flex-col gap-6 lg:sticky lg:top-24 lg:col-span-5">
+            {/* Left 5 Columns on Desktop: Visual, Hours & What Happens Next (Order-2 on Mobile) */}
+            <aside className="order-2 lg:order-1 flex flex-col gap-6 lg:sticky lg:top-24 lg:col-span-5">
               <div className="overflow-hidden rounded-[20px] border border-border bg-card">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
@@ -173,8 +173,8 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               </div>
             </aside>
 
-            {/* Right 7 Columns: Vantra Contact Form */}
-            <div className="lg:col-span-7">
+            {/* Right 7 Columns on Desktop: Vantra Contact Form (Order-1 on Mobile: Displays First) */}
+            <div className="order-1 lg:order-2 lg:col-span-7">
               <React.Suspense fallback={<div className="h-[640px] rounded-[20px] border border-border bg-card animate-pulse" />}>
                 <ContactForm />
               </React.Suspense>
@@ -184,8 +184,10 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* 3. FAQ & Pre-Footer CTA */}
-      <Faq className="padding-section border-t border-border" />
-      <CtaBand className="mt-8" />
-    </>
+      <div className="order-3">
+        <Faq className="padding-section border-t border-border" />
+        <CtaBand className="mt-8" />
+      </div>
+    </div>
   )
 }
