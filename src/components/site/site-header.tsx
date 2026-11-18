@@ -143,11 +143,11 @@ export function SiteHeader() {
         )}
       </AnimatePresence>
 
-      {/* Vantra Floating Pill Header */}
-      <header className="header pointer-events-none fixed inset-x-0 top-0 z-50 px-3 pt-4 sm:px-5">
-        <div className="nav_shell pointer-events-auto relative mx-auto w-full max-w-[30rem] sm:max-w-[32rem] overflow-hidden rounded-xl border border-[#f5f4f029] bg-[#0a0a0ac7] px-3.5 py-2 text-[#f5f4f0] shadow-[0_24px_60px_-15px_rgba(0,0,0,0.65)] backdrop-blur-md">
+      {/* Vantra Wider High-Visibility Floating Pill Header */}
+      <header className="header pointer-events-none fixed inset-x-0 top-0 z-50 px-3 pt-3.5 sm:px-5 sm:pt-4">
+        <div className="nav_shell pointer-events-auto relative mx-auto w-full max-w-[38rem] lg:max-w-[68rem] overflow-hidden rounded-2xl border border-[#f5f4f038] bg-[#0a0a0ae8] px-3.5 py-2 text-[#f5f4f0] shadow-[0_24px_60px_-15px_rgba(0,0,0,0.75)] ring-1 ring-primary/20 backdrop-blur-xl">
           {/* Top Bar */}
-          <div className="nav_bar flex min-h-[2.25rem] items-center justify-between gap-3">
+          <div className="nav_bar flex min-h-[2.35rem] items-center justify-between gap-2.5 lg:gap-4">
             <Link
               href="/"
               onClick={() => setOpen(false)}
@@ -162,7 +162,36 @@ export function SiteHeader() {
               </span>
             </Link>
 
-            <div className="nav_page-title truncate text-center font-sans text-[11px] font-medium tracking-[0.04em] text-[#f5f4f0]/80 uppercase">
+            {/* Desktop Direct Navigation Links */}
+            <nav aria-label="Quick navigation" className="hidden lg:flex items-center gap-1">
+              {[
+                { label: t('portfolio'), href: '/portfolio' },
+                { label: t('services'), href: '/services' },
+                { label: t('about'), href: '/about' },
+                { label: t('blog'), href: '/blog' },
+                { label: 'Portal', href: '/portal' },
+              ].map((item) => {
+                const active = isActive(item.href)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'rounded-lg px-3 py-1.5 text-xs font-medium tracking-[0.01em] transition-all',
+                      active
+                        ? 'bg-white/12 text-primary font-semibold'
+                        : 'text-[#f5f4f0]/80 hover:bg-white/[0.08] hover:text-[#f5f4f0]',
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </nav>
+
+            {/* Mobile / Tablet Page Tagline */}
+            <div className="nav_page-title lg:hidden truncate text-center font-sans text-[11px] font-medium tracking-[0.04em] text-[#f5f4f0]/85 uppercase">
               {pageTitle}
             </div>
 
@@ -174,8 +203,17 @@ export function SiteHeader() {
 
               <ThemeToggle
                 label={t('theme')}
-                className="size-8 rounded-lg text-[#f5f4f0]/75 hover:bg-white/10 hover:text-[#f5f4f0]"
+                className="size-8 rounded-lg text-[#f5f4f0]/80 hover:bg-white/10 hover:text-[#f5f4f0]"
               />
+
+              <Link
+                href="/contact"
+                onClick={() => setOpen(false)}
+                className="hidden sm:inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-[#0a0a0a] shadow-sm transition-all hover:opacity-90 active:scale-95"
+              >
+                <span>{t('quote')}</span>
+                <ArrowUpRight className="size-3.5" />
+              </Link>
 
               <button
                 type="button"
@@ -183,13 +221,14 @@ export function SiteHeader() {
                 aria-expanded={open}
                 aria-controls="vantra-nav-panel"
                 aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
-                className="nav_toggle group flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-white/10"
+                className="nav_toggle group inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.06] px-2.5 text-[11px] font-medium text-[#f5f4f0] transition-colors hover:border-primary/50 hover:bg-white/12"
               >
+                <span className="lg:hidden">{open ? 'Close' : 'Menu'}</span>
                 <span
                   aria-hidden="true"
                   className={cn(
                     'nav_menu-glyph relative block transition-all duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)]',
-                    open ? 'size-4 rotate-45' : 'size-3 group-hover:size-4',
+                    open ? 'size-3.5 rotate-45' : 'size-3 group-hover:size-3.5',
                   )}
                 >
                   <span className="absolute top-0 left-0 size-[3px] rounded-[0.5px] bg-[#f5f4f0] transition-colors group-hover:bg-primary" />

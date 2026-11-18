@@ -1,10 +1,11 @@
 'use client'
 
 import * as React from 'react'
-import { Mail } from 'lucide-react'
+import { ArrowRight, Mail } from 'lucide-react'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -22,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { updateInquiryStatus } from '@/lib/actions/admin-inquiries'
+import { convertInquiryToOrder, updateInquiryStatus } from '@/lib/actions/admin-inquiries'
 import { INQUIRY_STATUSES, type InquiryStatus } from '@/lib/constants'
 import type { Inquiry } from '@/lib/supabase/types'
 import { cn } from '@/lib/utils'
@@ -37,7 +38,26 @@ const STATUS_STYLES: Record<InquiryStatus, string> = {
 export function InquiriesTable({ inquiries, locale }: { inquiries: Inquiry[]; locale: string }) {
   const t = useTranslations('Admin.inquiries')
   const tStatus = useTranslations('Admin.status')
+  const router = useRouter()
   const [pendingId, setPendingId] = React.useState<string | null>(null)
+  const [convertingId, setConvertingId] = React.useState<string | null>(null)
+
+  async function handleConvert(id: string) {
+    setConvertingId(id)
+    try {
+      const formData = new FormData()
+      formData.set('id', id)
+      const result = await convertInquiryToOrder(formData)
+      if (result.ok && result.reference) {
+        toast.success(`Converted to Order ${result.reference}`)
+        router.push(`/admin/orders/${result.reference}`)
+      } else {
+        toast.error(result.message || 'Could not convert inquiry')
+      }
+    } finally {
+      setConvertingId(null)
+    }
+  }
 
   async function changeStatus(id: string, status: string) {
     setPendingId(id)
@@ -159,6 +179,20 @@ export function InquiriesTable({ inquiries, locale }: { inquiries: Inquiry[]; lo
                         <Mail className="size-3.5" />
                         Reply
                       </a>
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={convertingId === inquiry.id}
+                      onClick={() => handleConvert(inquiry.id)}
+                      className="gap-1.5 bg-primary text-[#0a0a0a] font-semibold hover:opacity-90"
+                    >
+                      {convertingId === inquiry.id ? (
+                        <VirtueSpinner className="size-3.5" />
+                      ) : (
+                        <ArrowRight className="size-3.5" />
+                      )}
+                      <span>Convert to Order</span>
                     </Button>
                   </div>
                 </details>

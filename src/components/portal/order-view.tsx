@@ -143,9 +143,29 @@ export async function MilestoneList({
   }
 
   const totals = summariseMilestones(milestones)
+  const paidCount = milestones.filter((m) => m.status === 'paid').length
+  const progressPct = Math.round((paidCount / milestones.length) * 100)
 
   return (
     <div className="flex flex-col gap-4">
+      {/* Visual Milestone Progress Stepper */}
+      <div className="rounded-xl border border-border bg-muted/20 p-3.5 space-y-2">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-mono uppercase text-muted-foreground tracking-wider">
+            Milestone Completion
+          </span>
+          <span className="font-mono font-bold text-primary">
+            {paidCount} / {milestones.length} ({progressPct}%)
+          </span>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-border">
+          <div
+            style={{ width: `${progressPct}%` }}
+            className="h-full rounded-full bg-gradient-to-r from-gold-500 to-emerald-500 transition-all duration-500"
+          />
+        </div>
+      </div>
+
       <ul className="flex flex-col">
         {milestones.map((milestone) => {
           const isPaid = milestone.status === 'paid'

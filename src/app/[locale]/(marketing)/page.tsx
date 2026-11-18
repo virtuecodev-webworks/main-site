@@ -7,6 +7,9 @@ import { QuoteMarquee } from '@/components/site/quote-marquee'
 import { LiveStudioTracker } from '@/components/site/capabilities-band'
 import { ServiceShowcase } from '@/components/site/service-showcase'
 import { PortfolioGrid } from '@/components/site/portfolio-grid'
+import { SpeedComparisonSlider } from '@/components/site/speed-comparison-slider'
+import { SocialProofStrip } from '@/components/site/social-proof-strip'
+import { ProjectEstimator } from '@/components/site/project-estimator'
 import { Faq } from '@/components/site/faq'
 import { CtaBand } from '@/components/site/cta-band'
 import { VantraButton } from '@/components/ui/vantra-button'
@@ -86,10 +89,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* 4. Live Build Tracker */}
+      {/* 4. Interactive Wix-to-Next.js Speed & Performance Comparison */}
+      <SpeedComparisonSlider />
+
+      {/* 5. Live Build Tracker */}
       <LiveStudioTracker />
 
-      {/* 5. Services Showcase */}
+      {/* 6. Verified Client Outcomes & Social Proof */}
+      <SocialProofStrip />
+
+      {/* 7. Services Showcase */}
       <section id="services" className="section_services padding-global padding-section">
         <div className="container-max">
           <div className="section_header">
@@ -108,6 +117,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
 
           <ServiceShowcase />
+
+          {/* Live Interactive Price & Timeline Estimator */}
+          <div className="mt-16">
+            <ProjectEstimator />
+          </div>
         </div>
       </section>
 

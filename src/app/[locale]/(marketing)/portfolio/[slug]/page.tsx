@@ -17,7 +17,7 @@ import {
 } from '@/lib/portfolio'
 import { PHOTOS } from '@/lib/photos'
 import { locales } from '@/i18n/routing'
-import { buildPageMetadata } from '@/lib/seo'
+import { breadcrumbsJsonLd, buildPageMetadata, creativeWorkJsonLd } from '@/lib/seo'
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -59,13 +59,27 @@ export async function generateMetadata({
     namespace: 'Portfolio',
     titleKey: 'metaTitle',
     descriptionKey: 'metaDescription',
+    image: resolved?.card.coverUrl,
+    imageAlt: resolved?.card.title,
   })
 
   if (!resolved) return base
+  const caseTitle = `${resolved.card.title} — Case Study`
+  const caseDescription = resolved.card.summary ?? base.description ?? ''
   return {
     ...base,
-    title: `${resolved.card.title} — Case Study`,
-    description: resolved.card.summary ?? base.description,
+    title: caseTitle,
+    description: caseDescription,
+    openGraph: {
+      ...base.openGraph,
+      title: caseTitle,
+      description: caseDescription,
+    },
+    twitter: {
+      ...base.twitter,
+      title: caseTitle,
+      description: caseDescription,
+    },
   }
 }
 
@@ -129,8 +143,33 @@ export default async function CaseStudyDetailPage({
     role: project.client ?? project.title,
   }
 
+  const workLd = creativeWorkJsonLd({
+    title: project.title,
+    description: project.summary ?? '',
+    slug: project.slug,
+    locale,
+    image: heroImage,
+    keywords: project.techTags,
+  })
+  const crumbLd = breadcrumbsJsonLd(
+    [
+      { name: 'Home', path: '/' },
+      { name: 'Portfolio', path: '/portfolio' },
+      { name: project.client ?? project.title, path: `/portfolio/${project.slug}` },
+    ],
+    locale,
+  )
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(workLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbLd) }}
+      />
       {/* 1. Vantra Section Hero (`section_hero`) */}
       <section
         data-surface="dark"

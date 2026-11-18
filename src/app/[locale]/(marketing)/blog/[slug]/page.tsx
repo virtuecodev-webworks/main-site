@@ -51,9 +51,25 @@ export async function generateMetadata({
     titleKey: 'metaTitle',
     descriptionKey: 'metaDescription',
     type: 'article',
+    image: post.coverUrl,
+    imageAlt: post.title,
   })
 
-  return { ...base, title: post.title, description: post.excerpt }
+  return {
+    ...base,
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      ...base.openGraph,
+      title: post.title,
+      description: post.excerpt,
+    },
+    twitter: {
+      ...base.twitter,
+      title: post.title,
+      description: post.excerpt,
+    },
+  }
 }
 
 function ArticleBody({ blocks }: { blocks: MarkdownBlock[] }) {

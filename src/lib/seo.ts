@@ -14,6 +14,9 @@ interface PageMetadataOptions {
   descriptionKey?: string
   namespace?: string
   type?: 'website' | 'article'
+  /** Optional custom OpenGraph/Twitter image URL or local path. */
+  image?: string | null
+  imageAlt?: string
 }
 
 /**
@@ -27,6 +30,8 @@ export async function buildPageMetadata({
   descriptionKey = 'description',
   namespace = 'Metadata',
   type = 'website',
+  image,
+  imageAlt,
 }: PageMetadataOptions): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace })
   const tMeta = await getTranslations({ locale, namespace: 'Metadata' })
@@ -54,6 +59,13 @@ export async function buildPageMetadata({
     process.env.BING_SITE_VERIFICATION ||
     undefined
 
+  const resolvedImage = image
+    ? /^https?:\/\//i.test(image)
+      ? image
+      : absoluteUrl(image)
+    : absoluteUrl('/brand/logo-mark.png')
+  const resolvedAlt = imageAlt || `${AGENCY.name} - Web Engineering Studio`
+
   return {
     title: isRoot ? { absolute: title } : title,
     description,
@@ -75,10 +87,10 @@ export async function buildPageMetadata({
       locale: localeMeta[locale as AppLocale]?.tag ?? 'en_US',
       images: [
         {
-          url: absoluteUrl('/brand/logo-mark.png'),
+          url: resolvedImage,
           width: 1200,
           height: 630,
-          alt: `${AGENCY.name} - Web Engineering Studio`,
+          alt: resolvedAlt,
         },
       ],
     },
@@ -86,7 +98,7 @@ export async function buildPageMetadata({
       card: 'summary_large_image',
       title: socialTitle,
       description,
-      images: [absoluteUrl('/brand/logo-mark.png')],
+      images: [resolvedImage],
     },
   }
 }
@@ -321,5 +333,38 @@ export function breadcrumbsJsonLd(
       name: item.name,
       item: absoluteUrl(`/${locale}${item.path === '/' ? '' : item.path}`),
     })),
+  }
+}
+
+/** Case study / portfolio CreativeWork JSON-LD generator. */
+export function creativeWorkJsonLd(options: {
+  title: string
+  description: string
+  slug: string
+  locale: string
+  image?: string | null
+  keywords?: string[]
+  dateCreated?: string
+}) {
+  const imageUrl = options.image
+    ? /^https?:\/\//i.test(options.image)
+      ? options.image
+      : absoluteUrl(options.image)
+    : absoluteUrl('/brand/logo-mark.png')
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: options.title,
+    description: options.description,
+    url: absoluteUrl(`/${options.locale}/portfolio/${options.slug}`),
+    image: imageUrl,
+    keywords: options.keywords?.join(', '),
+    dateCreated: options.dateCreated ?? '2026-01-01',
+    creator: {
+      '@type': 'Organization',
+      name: AGENCY.name,
+      url: absoluteUrl('/'),
+    },
   }
 }

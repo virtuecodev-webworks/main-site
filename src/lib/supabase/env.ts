@@ -46,6 +46,7 @@ export function getAdminAllowlist(): string[] {
 export function publicStorageUrl(bucket: string, path: string | null | undefined): string | null {
   if (!path) return null
   if (/^https?:\/\//i.test(path)) return path
+  if (/^\/(work|media|brand|images|icons)\//i.test(path)) return path
 
   const env = getSupabaseEnv()
   if (!env) return null

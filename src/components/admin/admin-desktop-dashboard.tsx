@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatMoney } from '@/lib/utils'
 import { toast } from 'sonner'
+import { AdminPowerSuite } from './admin-power-suite'
 import type { Inquiry, OrderWithClient } from '@/lib/supabase/types'
 
 interface AdminDesktopDashboardProps {
@@ -576,6 +577,16 @@ export function AdminDesktopDashboard({
           </div>
         </div>
       </div>
+
+      {/* ============================================================== */}
+      {/* 5. STUDIO POWER SUITE (Analytics, Payment Links, SEO Audit)    */}
+      {/* ============================================================== */}
+      <AdminPowerSuite
+        metrics={metrics}
+        orders={orders}
+        inquiries={inquiries}
+        locale={locale}
+      />
     </div>
   )
 }

@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { routing } from '@/i18n/routing'
 import { absoluteUrl } from '@/lib/utils'
-import { PLACEHOLDER_PROJECTS } from '@/lib/portfolio'
+import { mergeWithShowcaseProjects, toProjectCard } from '@/lib/portfolio'
+import { getPublishedProjects } from '@/lib/supabase/queries'
 import { PLACEHOLDER_POSTS } from '@/lib/content'
 
 /** Public core marketing routes that belong in the index. */
@@ -17,11 +18,14 @@ const CORE_PATHS = [
   '/terms',
 ] as const
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date()
 
-  const projectPaths = PLACEHOLDER_PROJECTS.map((project) => `/portfolio/${project.slug}`)
-  const showcasePaths = PLACEHOLDER_PROJECTS.map((project) => `/showcase/${project.slug}`)
+  const publishedProjects = await getPublishedProjects().catch(() => [])
+  const mergedProjects = mergeWithShowcaseProjects(publishedProjects.map(toProjectCard))
+
+  const projectPaths = mergedProjects.map((project) => `/portfolio/${project.slug}`)
+  const showcasePaths = mergedProjects.map((project) => `/showcase/${project.slug}`)
   const blogPaths = PLACEHOLDER_POSTS.map((post) => `/blog/${post.slug}`)
 
   const allEntries = [

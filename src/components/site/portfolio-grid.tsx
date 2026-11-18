@@ -42,6 +42,11 @@ function isOptimisable(src: string): boolean {
 function ParallaxCoverImage({ src, alt }: { src: string; alt: string }) {
   const ref = React.useRef<HTMLDivElement | null>(null)
   const prefersReducedMotion = useReducedMotion()
+  const [imgSrc, setImgSrc] = React.useState(src)
+
+  React.useEffect(() => {
+    setImgSrc(src)
+  }, [src])
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -61,11 +66,14 @@ function ParallaxCoverImage({ src, alt }: { src: string; alt: string }) {
       className="pointer-events-none absolute -inset-y-6 inset-x-0 z-0"
     >
       <Image
-        src={src}
+        src={imgSrc}
         alt={alt}
         fill
         sizes="(min-width: 768px) 50vw, 100vw"
-        unoptimized={!isOptimisable(src)}
+        unoptimized={!isOptimisable(imgSrc)}
+        onError={() => {
+          if (imgSrc !== PHOTOS.workBand) setImgSrc(PHOTOS.workBand)
+        }}
         className="work_image object-cover transition-transform duration-700 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:scale-105"
       />
     </motion.div>
