@@ -2,6 +2,7 @@ import { ArrowUpRight, Globe, Mail, Phone } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { VirtueWordmark } from '@/components/brand/virtue-wordmark'
+import { LaunchBadge } from '@/components/site/launch-badge'
 import { CountrySwitcher } from './country-switcher'
 import { LanguageSwitcher } from './language-switcher'
 import { NewsletterForm } from './newsletter-form'
@@ -64,6 +65,17 @@ export async function SiteFooter() {
                   <span>{t('worldwide')}</span>
                 </span>
               </div>
+            </div>
+
+            {/* Public Launch Certification */}
+            <div className="mt-8 flex flex-col gap-3 border-t border-[#f5f4f01f] pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-0.5">
+                <span className="label-mono-xs text-[#f5f4f0]/45">Public Launch Record</span>
+                <span className="text-xs text-[#f5f4f0]/75">
+                  Independently established &amp; verified online.
+                </span>
+              </div>
+              <LaunchBadge theme="dark" variant="compact" />
             </div>
           </div>
 

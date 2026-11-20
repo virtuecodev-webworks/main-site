@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { CtaBand } from '@/components/site/cta-band'
 import { VantraButton } from '@/components/ui/vantra-button'
 import { Reveal } from '@/components/motion/reveal'
+import { LaunchBadge } from '@/components/site/launch-badge'
 import { PHOTOS } from '@/lib/photos'
 import { STATS } from '@/lib/studio'
 import { buildPageMetadata } from '@/lib/seo'
@@ -193,6 +194,19 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 </div>
               ))}
             </dl>
+
+            {/* Verified Public Provenance */}
+            <div className="mt-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-5">
+              <div className="flex flex-col gap-1">
+                <span className="font-display text-sm font-semibold text-[#f5f4f0]">
+                  Public Studio Launch Record
+                </span>
+                <span className="text-xs text-[#f5f4f0]/70">
+                  Established and verified online on WebsiteLaunches.com
+                </span>
+              </div>
+              <LaunchBadge theme="dark" variant="compact" />
+            </div>
           </div>
         </div>
       </section>

@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { Award, CheckCircle2, Globe2, ShieldCheck, Star, Zap } from 'lucide-react'
+import { LaunchBadge } from '@/components/site/launch-badge'
 
 const PROOF_METRICS = [
   {
@@ -71,7 +72,7 @@ export function SocialProofStrip() {
         </div>
 
         {/* 4 Telemetry Metrics */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           {PROOF_METRICS.map((item) => {
             const Icon = item.icon
             return (
@@ -95,6 +96,11 @@ export function SocialProofStrip() {
               </div>
             )
           })}
+        </div>
+
+        {/* Official Public Launch Record & Verification Banner */}
+        <div className="mb-8">
+          <LaunchBadge theme="auto" variant="card" showLiveBeacon />
         </div>
 
         {/* 3 Verified Client Quotes */}

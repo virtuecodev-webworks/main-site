@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { VantraButton } from '@/components/ui/vantra-button'
+import { LaunchBadge } from '@/components/site/launch-badge'
 import { PHOTOS } from '@/lib/photos'
 
 const HERO_EASE = [0.215, 0.61, 0.355, 1] as const
@@ -127,7 +128,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.2, ease: HERO_EASE }}
-            className="mt-8 flex flex-wrap items-center gap-3.5"
+            className="mt-8 flex flex-wrap items-center gap-4"
           >
             <VantraButton href="/contact" variant="gold">
               {t('primaryCta')}
@@ -135,6 +136,9 @@ export function Hero() {
             <VantraButton href="/portfolio" variant="light">
               {t('secondaryCta')}
             </VantraButton>
+            <div className="pt-1 sm:pt-0">
+              <LaunchBadge theme="dark" variant="hero" />
+            </div>
           </motion.div>
         </div>
       </motion.div>
