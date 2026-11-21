@@ -60,6 +60,14 @@ export interface SendResult {
   error?: string
 }
 
+export interface SendEmailInput {
+  to: string | string[]
+  email: RenderedEmail
+  replyTo?: string
+  bcc?: string | string[]
+  headers?: Record<string, string>
+}
+
 /**
  * Sends one transactional email via Brevo SMTP.
  * Never throws — email failures must not break contact submissions or webhooks.
@@ -69,12 +77,8 @@ export async function sendEmail({
   email,
   replyTo,
   bcc,
-}: {
-  to: string | string[]
-  email: RenderedEmail
-  replyTo?: string
-  bcc?: string | string[]
-}): Promise<SendResult> {
+  headers,
+}: SendEmailInput): Promise<SendResult> {
   if (!isEmailConfigured()) {
     console.warn('[email] Brevo SMTP not configured — skipping:', email.subject)
     return { ok: false, skipped: true, error: 'brevo-not-configured' }
@@ -90,6 +94,7 @@ export async function sendEmail({
       subject: email.subject,
       html: email.html,
       text: email.text,
+      ...(headers ? { headers } : {}),
     })
 
     return { ok: true, id: info.messageId }
@@ -101,6 +106,6 @@ export async function sendEmail({
 }
 
 /** Sends multiple emails in parallel. Failures are isolated per-message. */
-export async function sendMany(messages: Array<Parameters<typeof sendEmail>[0]>) {
+export async function sendMany(messages: SendEmailInput[]) {
   return Promise.allSettled(messages.map((msg) => sendEmail(msg)))
 }

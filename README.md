@@ -63,6 +63,9 @@ features incrementally:
 - `NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY` / `FLUTTERWAVE_SECRET_KEY` /
   `FLUTTERWAVE_WEBHOOK_HASH` — payments
 - `ADMIN_EMAIL_ALLOWLIST` — extra gate on top of `profiles.role = 'admin'`
+- `GEMINI_API_KEY` — AI-personalized outreach pitch generation (deterministic fallback when omitted)
+- `GOOGLE_PLACES_API_KEY` / `SERPER_API_KEY` — optional discovery providers (`osm` OpenStreetMap Overpass/Nominatim works out-of-the-box with zero key)
+- `CRON_SECRET` / `OUTREACH_UNSUBSCRIBE_SECRET` — daily Vercel cron authentication (`/api/cron/daily-outreach`) and one-click unsubscribe token signing (see [`docs/OUTREACH.md`](./docs/OUTREACH.md))
 
 ### Database
 

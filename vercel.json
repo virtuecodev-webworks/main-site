@@ -10,12 +10,19 @@
     },
     "src/app/api/newsletter/auto-dispatch/route.ts": {
       "maxDuration": 60
+    },
+    "src/app/api/cron/daily-outreach/route.ts": {
+      "maxDuration": 60
     }
   },
   "crons": [
     {
       "path": "/api/newsletter/auto-dispatch",
       "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/daily-outreach",
+      "schedule": "0 9 * * *"
     }
   ]
 }

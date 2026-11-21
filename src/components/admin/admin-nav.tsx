@@ -12,6 +12,7 @@ import {
   Menu,
   Palette,
   Plus,
+  Radar,
   User,
   X,
 } from 'lucide-react'
@@ -29,6 +30,7 @@ const ITEMS = [
   { href: '/admin/portfolio', labelKey: 'portfolio', icon: Images, exact: false, adminOnly: true },
   { href: '/admin/inquiries', labelKey: 'inquiries', icon: Inbox, exact: false, adminOnly: true },
   { href: '/admin/newsletter', labelKey: 'newsletter', icon: Mail, exact: false, adminOnly: true },
+  { href: '/admin/outreach', labelKey: 'outreach', icon: Radar, exact: false, adminOnly: true },
   { href: '/admin/design', labelKey: 'design', icon: Palette, exact: false, adminOnly: true },
 ] as const
 

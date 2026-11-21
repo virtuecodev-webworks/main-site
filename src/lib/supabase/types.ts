@@ -14,6 +14,14 @@ import type {
   ProfileRole,
   ProjectCategory,
 } from '@/lib/constants'
+import type {
+  DiscoveryProvider,
+  OutreachDispatchStatus,
+  OutreachRunMode,
+  OutreachRunStatus,
+  ProspectStatus,
+  SiteIssue,
+} from '@/lib/outreach/types'
 
 export interface Project {
   id: string
@@ -206,4 +214,98 @@ export interface PushSubscriptionRecord {
   user_agent: string | null
   created_at: string
   updated_at: string
+}
+
+/* -------------------------------------------------------------------------- */
+/*  AI Scouting & Daily Outreach                                               */
+/* -------------------------------------------------------------------------- */
+
+export interface OutreachSettingsRow {
+  id: boolean
+  is_paused: boolean
+  daily_send_cap: number
+  industries: string[]
+  locations: string[]
+  keywords: string[]
+  discovery_provider: DiscoveryProvider
+  min_issue_score: number
+  dry_run_default: boolean
+  test_recipient_email: string | null
+  updated_at: string
+}
+
+export interface OutreachProspectRow {
+  id: string
+  business_name: string
+  normalized_domain: string | null
+  website_url: string | null
+  industry: string | null
+  location: string | null
+  contact_email: string | null
+  phone: string | null
+  source_provider: string
+  source_external_id: string | null
+  dedup_key: string
+  evaluation_status: string
+  has_website: boolean
+  issue_score: number
+  issues: SiteIssue[]
+  http_status: number | null
+  ttfb_ms: number | null
+  site_title: string | null
+  evaluation_notes: string | null
+  pitch_subject: string | null
+  pitch_preview: string | null
+  status: ProspectStatus
+  last_evaluated_at: string | null
+  last_pitched_at: string | null
+  last_error: string | null
+  raw_metadata: Record<string, unknown> | null
+  created_at: string
+  updated_at: string
+}
+
+export interface OutreachRunRow {
+  id: string
+  run_date: string
+  mode: OutreachRunMode
+  status: OutreachRunStatus
+  triggered_by: string | null
+  scouted_count: number
+  qualified_count: number
+  sent_count: number
+  skipped_count: number
+  failed_count: number
+  daily_cap_snapshot: number
+  sent_today_before_run: number
+  error_summary: string | null
+  details: Record<string, unknown>
+  started_at: string
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface OutreachDispatchRow {
+  id: string
+  run_id: string | null
+  prospect_id: string | null
+  business_name: string
+  recipient_email: string
+  is_dry_run: boolean
+  subject: string
+  body_preview: string | null
+  status: OutreachDispatchStatus
+  message_id: string | null
+  error: string | null
+  sent_at: string
+  created_at: string
+}
+
+export interface OutreachOptOutRow {
+  email: string
+  reason: string | null
+  source: string
+  prospect_id: string | null
+  created_at: string
 }

@@ -18,6 +18,8 @@ import { EnquiryClientEmail } from '@/emails/enquiry-client'
 import { EnquiryAdminEmail } from '@/emails/enquiry-admin'
 import { NewsletterDispatchEmail, type NewsletterDispatchProps } from '@/emails/newsletter'
 import { OrderMessageEmail, type OrderMessageEmailProps } from '@/emails/order-message'
+import { OutreachPitchEmail, type OutreachPitchEmailProps } from '@/emails/outreach-pitch'
+import { CONTACT } from '@/emails/base/tokens'
 
 export interface RenderedEmail {
   subject: string
@@ -180,6 +182,46 @@ export async function orderMessageNotificationEmail(props: OrderMessageEmailProp
     subject: `💬 New message on ${props.orderTitle} · [${props.orderReference}]`,
     html,
     text: `New message on ${props.orderTitle} (${props.orderReference})\nFrom: ${props.senderName} (${props.senderRole})\n\n${cleanBody}\n\nReply in Dashboard: ${props.actionUrl}\n(Or reply directly to this email)`,
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  10. Outreach Cold Pitch                                            */
+/* ------------------------------------------------------------------ */
+export async function renderOutreachPitchEmail(
+  props: OutreachPitchEmailProps,
+): Promise<RenderedEmail> {
+  const html = await render(React.createElement(OutreachPitchEmail, props))
+  const rawSubject = props.pitch.subject.trim()
+  const subject =
+    props.isDryRun && !rawSubject.startsWith('[DRY RUN]')
+      ? `[DRY RUN] ${rawSubject}`
+      : rawSubject
+
+  const bulletsText = props.pitch.auditBullets.map((b) => `- ${b}`).join('\n')
+  const ctaLink = props.ctaUrl ?? CONTACT
+
+  return {
+    subject,
+    html,
+    text: [
+      props.pitch.headline,
+      '',
+      props.pitch.greeting,
+      '',
+      props.pitch.opening,
+      '',
+      `What we spotted${props.websiteUrl ? ` (${props.websiteUrl})` : ''}:`,
+      bulletsText,
+      '',
+      `Recommended solution: ${props.pitch.recommendedPackage}`,
+      '',
+      `${props.pitch.ctaText}: ${ctaLink}`,
+      '',
+      props.pitch.closing,
+      '',
+      `Unsubscribe: ${props.unsubscribeUrl}`,
+    ].join('\n'),
   }
 }
 
