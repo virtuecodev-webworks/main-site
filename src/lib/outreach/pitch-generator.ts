@@ -17,7 +17,7 @@ export interface GeneratePitchOptions {
   fetchImpl?: typeof fetch
 }
 
-const DEFAULT_MODEL = 'gemini-1.5-flash'
+const DEFAULT_MODEL = 'gemini-3.8-flash'
 const DEFAULT_TIMEOUT_MS = 12_000
 
 const geminiPitchSchema = z.object({
