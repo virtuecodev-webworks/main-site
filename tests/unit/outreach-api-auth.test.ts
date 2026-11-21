@@ -433,7 +433,7 @@ describe('Outreach Auth Guards & API Route Handlers (M3)', () => {
       expect(cronBody.ok).toBe(true)
       expect(mockRunDailyOutreach).toHaveBeenCalledWith({
         mode: 'cron',
-        triggeredBy: 'cron',
+        triggeredBy: null,
       })
     })
   })

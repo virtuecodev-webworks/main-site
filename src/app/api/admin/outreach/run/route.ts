@@ -47,10 +47,14 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    auth.session.userId ?? '',
+  )
+
   try {
     const summary = await runDailyOutreach({
       mode: parsed.data.mode,
-      triggeredBy: auth.session.email ?? auth.session.userId,
+      triggeredBy: isUuid ? auth.session.userId : null,
       testRecipientEmail: parsed.data.testRecipientEmail,
       overrideCriteria: parsed.data.overrideCriteria,
       seedCandidates: parsed.data.seedCandidates,

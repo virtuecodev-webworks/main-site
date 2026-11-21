@@ -546,6 +546,20 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
 
       sentCount++
 
+      const fullEmailPreview = [
+        pitch.greeting,
+        '',
+        pitch.opening,
+        '',
+        'Key Website Audit Findings:',
+        ...pitch.auditBullets.map((b) => `• ${b}`),
+        '',
+        `Recommended Package: ${pitch.recommendedPackage}`,
+        `Next Step: ${pitch.ctaText} (https://virtuecowebworks.solutions/contact)`,
+        '',
+        pitch.closing,
+      ].join('\n')
+
       const dispatchStatus = isDryRun ? 'dry_run' : 'sent'
       await repository.logDispatch({
         run_id: run.id,
@@ -554,7 +568,7 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
         recipient_email: recipientEmail,
         is_dry_run: isDryRun,
         subject: attemptedSubject,
-        body_preview: pitch.opening.slice(0, 240),
+        body_preview: fullEmailPreview,
         status: dispatchStatus,
         message_id: sendResult?.messageId ?? null,
       })
@@ -563,14 +577,14 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
         await repository.updateProspect(prospect.id, {
           status: 'pitched',
           pitch_subject: attemptedSubject,
-          pitch_preview: pitch.opening.slice(0, 300),
+          pitch_preview: fullEmailPreview,
           last_pitched_at: new Date().toISOString(),
           last_error: null,
         })
       } else {
         await repository.updateProspect(prospect.id, {
           pitch_subject: attemptedSubject,
-          pitch_preview: pitch.opening.slice(0, 300),
+          pitch_preview: fullEmailPreview,
           last_error: null,
         })
       }

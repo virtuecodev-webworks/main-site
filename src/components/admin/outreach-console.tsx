@@ -103,6 +103,24 @@ export function OutreachConsole({
   const [newLocation, setNewLocation] = React.useState('')
   const [newContactEmail, setNewContactEmail] = React.useState('')
   const [isAddingProspect, setIsAddingProspect] = React.useState(false)
+  const [expandedDispatchId, setExpandedDispatchId] = React.useState<string | null>(null)
+  const [expandedProspectId, setExpandedProspectId] = React.useState<string | null>(null)
+
+  const prospectById = React.useMemo(() => {
+    const map = new Map<string, OutreachProspect>()
+    for (const p of prospects) {
+      map.set(p.id, p)
+    }
+    return map
+  }, [prospects])
+
+  const prospectByBusinessName = React.useMemo(() => {
+    const map = new Map<string, OutreachProspect>()
+    for (const p of prospects) {
+      map.set(p.business_name.toLowerCase(), p)
+    }
+    return map
+  }, [prospects])
 
   const syncFormFromSettings = React.useCallback((next: OutreachSettings) => {
     setSettings(next)
@@ -361,7 +379,7 @@ export function OutreachConsole({
             <span className="text-xs font-medium text-muted-foreground">Engine State</span>
             <Radar className="size-4 text-primary" />
           </div>
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <span
               className="text-xl font-semibold"
               data-testid="outreach-engine-status"
@@ -542,6 +560,66 @@ export function OutreachConsole({
         >
           <div className="flex flex-col gap-4">
             <h2 className="text-base font-semibold">Scouting &amp; Targeting Criteria</h2>
+
+            <div className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-muted-foreground">
+                Quick High-Converting Scouting Presets (1-Click Fill)
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIndustriesInput('dental clinic, medspa, cosmetic dentistry, dermatology')
+                    setLocationsInput('Austin TX, Houston TX, Miami FL')
+                    setKeywordsInput('appointment, clinic, aesthetics')
+                    setMinIssueScore(25)
+                  }}
+                >
+                  Clinics &amp; Medspas
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIndustriesInput('law firm, family lawyer, accounting firm, tax consultant')
+                    setLocationsInput('Chicago IL, Atlanta GA, London UK')
+                    setKeywordsInput('attorney, cpa, practice')
+                    setMinIssueScore(25)
+                  }}
+                >
+                  Law &amp; Accounting
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIndustriesInput('roofing contractor, hvac company, solar installer, remodeling')
+                    setLocationsInput('Dallas TX, Phoenix AZ, Manchester UK')
+                    setKeywordsInput('contractors, repair, installation')
+                    setMinIssueScore(25)
+                  }}
+                >
+                  Home Services
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIndustriesInput('real estate agency, boutique hotel, interior design studio')
+                    setLocationsInput('Lagos NG, London UK, Austin TX')
+                    setKeywordsInput('luxury, bookings, properties')
+                    setMinIssueScore(25)
+                  }}
+                >
+                  Real Estate &amp; Hospitality
+                </Button>
+              </div>
+            </div>
 
             <div className="flex flex-col gap-1.5">
               <label htmlFor="outreach-industries" className="text-xs font-medium">
@@ -831,7 +909,29 @@ export function OutreachConsole({
                       </td>
                       <td className="max-w-xs px-4 py-3">
                         {prospect.pitch_subject ? (
-                          <div className="truncate font-medium">{prospect.pitch_subject}</div>
+                          <div className="flex flex-col gap-1">
+                            <div className="truncate font-medium">{prospect.pitch_subject}</div>
+                            {prospect.pitch_preview ? (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setExpandedProspectId(
+                                    expandedProspectId === prospect.id ? null : prospect.id,
+                                  )
+                                }
+                                className="w-fit text-[11px] font-medium text-primary hover:underline"
+                              >
+                                {expandedProspectId === prospect.id
+                                  ? 'Hide Email Content'
+                                  : 'View Sent Email Content'}
+                              </button>
+                            ) : null}
+                            {expandedProspectId === prospect.id && prospect.pitch_preview ? (
+                              <pre className="mt-1 max-h-56 overflow-y-auto whitespace-pre-wrap rounded-xl border border-border bg-muted/40 p-2.5 font-sans text-[11px] leading-relaxed text-foreground">
+                                {prospect.pitch_preview}
+                              </pre>
+                            ) : null}
+                          </div>
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
@@ -915,32 +1015,88 @@ export function OutreachConsole({
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-5">
-            <h3 className="text-sm font-semibold">Recent Email Dispatches</h3>
+            <h3 className="text-sm font-semibold">
+              Sent Emails, Recipients, Websites &amp; Full Pitch Content ({dispatches.length})
+            </h3>
             <div className="mt-3 flex flex-col gap-2.5">
               {dispatches.length === 0 ? (
                 <p className="py-6 text-center text-xs text-muted-foreground">
                   No email dispatches logged yet.
                 </p>
               ) : (
-                dispatches.map((d) => (
-                  <div
-                    key={d.id}
-                    className="flex flex-col gap-1 rounded-xl border border-border p-3 text-xs"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold">{d.business_name}</span>
-                      <Badge variant={d.is_dry_run ? 'muted' : 'default'}>
-                        {d.is_dry_run ? 'DRY RUN' : d.status.toUpperCase()}
-                      </Badge>
+                dispatches.map((d) => {
+                  const linkedProspect =
+                    (d.prospect_id ? prospectById.get(d.prospect_id) : undefined) ??
+                    prospectByBusinessName.get(d.business_name.toLowerCase())
+                  const websiteUrl = linkedProspect?.website_url ?? null
+                  const websiteDomain = linkedProspect?.normalized_domain ?? websiteUrl
+                  const isExpanded = expandedDispatchId === d.id
+
+                  return (
+                    <div
+                      key={d.id}
+                      className="flex flex-col gap-1.5 rounded-xl border border-border p-3.5 text-xs"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-semibold text-foreground">{d.business_name}</span>
+                        <Badge variant={d.is_dry_run ? 'muted' : 'default'}>
+                          {d.is_dry_run ? 'DRY RUN' : d.status.toUpperCase()}
+                        </Badge>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+                        <span className="inline-flex items-center gap-1">
+                          <Mail className="size-3 text-primary" />
+                          <span>
+                            To: <strong className="text-foreground">{d.recipient_email}</strong>
+                          </span>
+                        </span>
+
+                        <span className="inline-flex items-center gap-1">
+                          <Globe className="size-3 text-primary" />
+                          {websiteUrl ? (
+                            <a
+                              href={websiteUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+                            >
+                              <span>{websiteDomain}</span>
+                              <ExternalLink className="size-3" />
+                            </a>
+                          ) : (
+                            <span className="text-amber-500">No website listed</span>
+                          )}
+                        </span>
+
+                        <span>{new Date(d.sent_at).toLocaleString()}</span>
+                      </div>
+
+                      <div className="font-medium text-foreground">
+                        Subject: <span className="text-primary">{d.subject}</span>
+                      </div>
+
+                      {d.body_preview ? (
+                        <div className="mt-1">
+                          <button
+                            type="button"
+                            onClick={() => setExpandedDispatchId(isExpanded ? null : d.id)}
+                            className="text-[11px] font-semibold text-primary hover:underline"
+                          >
+                            {isExpanded ? 'Hide Full Email Content ▲' : 'View Full Email Content ▼'}
+                          </button>
+                          {isExpanded ? (
+                            <pre className="mt-2 max-h-72 overflow-y-auto whitespace-pre-wrap rounded-xl border border-border bg-muted/40 p-3 font-sans text-xs leading-relaxed text-foreground">
+                              {d.body_preview}
+                            </pre>
+                          ) : null}
+                        </div>
+                      ) : null}
+
+                      {d.error ? <div className="text-destructive">{d.error}</div> : null}
                     </div>
-                    <div className="truncate font-medium text-foreground">{d.subject}</div>
-                    <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                      <span>To: {d.recipient_email}</span>
-                      <span>{new Date(d.sent_at).toLocaleString()}</span>
-                    </div>
-                    {d.error ? <div className="text-destructive">{d.error}</div> : null}
-                  </div>
-                ))
+                  )
+                })
               )}
             </div>
           </div>

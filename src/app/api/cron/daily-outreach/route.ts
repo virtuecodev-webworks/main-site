@@ -14,10 +14,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: false, error: auth.error }, { status: auth.status })
   }
 
-  const triggeredBy =
-    auth.session.source === 'cron'
-      ? 'cron'
-      : (auth.session.email ?? auth.session.userId ?? 'admin')
+  const rawUserId = auth.session.source === 'cron' ? '' : (auth.session.userId ?? '')
+  const triggeredBy = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    rawUserId,
+  )
+    ? rawUserId
+    : null
 
   try {
     const summary = await runDailyOutreach({
