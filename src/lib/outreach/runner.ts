@@ -25,6 +25,126 @@ import type {
 } from './types'
 
 export const DRY_RUN_MAX_DISPATCHES = 3
+export const DEFAULT_OUTREACH_REPORT_EMAIL = 'adeniranglory129@gmail.com'
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+export async function sendDailyOutreachReportEmail(
+  summary: RunOutreachSummary,
+  criteria: OutreachCriteriaSnapshot,
+  reportRecipientOverride?: string | null,
+): Promise<void> {
+  const reportEmail =
+    normalizeEmail(reportRecipientOverride) ??
+    normalizeEmail(process.env.OUTREACH_REPORT_EMAIL) ??
+    DEFAULT_OUTREACH_REPORT_EMAIL
+
+  const dateLabel = new Date().toUTCString()
+  const subject = `[Virtue & Co. Outreach Report] ${summary.mode.toUpperCase()} (${summary.status}) — ${summary.sentCount} Pitched / ${summary.qualifiedCount} Qualified / ${summary.scoutedCount} Scouted`
+
+  const dispatchRowsHtml =
+    summary.dispatches.length > 0
+      ? summary.dispatches
+          .map(
+            (d, idx) => `
+        <tr>
+          <td style="padding:8px 10px;border-bottom:1px solid #262626;">${idx + 1}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #262626;font-weight:600;">${escapeHtml(d.businessName)}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #262626;">${escapeHtml(d.recipientEmail)}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #262626;">${escapeHtml(d.subject || '—')}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #262626;">${escapeHtml(d.status.toUpperCase())}${d.error ? ` — ${escapeHtml(d.error)}` : ''}</td>
+        </tr>`,
+          )
+          .join('')
+      : `<tr><td colspan="5" style="padding:12px;text-align:center;color:#a3a3a3;">No email dispatches in this run.</td></tr>`
+
+  const html = `
+  <div style="font-family:Inter,system-ui,-apple-system,sans-serif;background:#0a0a0a;color:#f5f4f0;padding:28px;border-radius:16px;max-width:720px;margin:0 auto;">
+    <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#d4af37;margin:0 0 6px;">Virtue &amp; Co. Webworks · Autonomous Client Acquisition</p>
+    <h1 style="font-size:20px;margin:0 0 12px;color:#ffffff;">Daily AI Scouting &amp; Pitching Report</h1>
+    <p style="font-size:13px;color:#a3a3a3;margin:0 0 20px;">Completed at ${escapeHtml(dateLabel)} · Run ID: <code>${escapeHtml(summary.runId)}</code></p>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;background:#141414;border-radius:12px;overflow:hidden;font-size:13px;">
+      <tr>
+        <td style="padding:10px 14px;border-bottom:1px solid #262626;color:#a3a3a3;">Mode / Status</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #262626;font-weight:600;">${escapeHtml(summary.mode.toUpperCase())} · ${escapeHtml(summary.status.toUpperCase())}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #262626;color:#a3a3a3;">Daily Quota</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #262626;font-weight:600;">${summary.sentTodayBeforeRun + (summary.mode === 'dry_run' ? 0 : summary.sentCount)} / ${summary.dailyCap}</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 14px;border-bottom:1px solid #262626;color:#a3a3a3;">Scouted / Qualified</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #262626;font-weight:600;">${summary.scoutedCount} scouted · ${summary.qualifiedCount} qualified</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #262626;color:#a3a3a3;">Pitched / Skipped / Failed</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #262626;font-weight:600;">${summary.sentCount} sent · ${summary.skippedCount} skipped · ${summary.failedCount} failed</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 14px;color:#a3a3a3;">Targeting Criteria</td>
+        <td colspan="3" style="padding:10px 14px;">
+          Industries: ${escapeHtml(criteria.industries.join(', ') || 'Default')} ·
+          Locations: ${escapeHtml(criteria.locations.join(', ') || 'Default')} ·
+          Provider: ${escapeHtml(criteria.discovery_provider.toUpperCase())} ·
+          Min Score: ${criteria.min_issue_score}/100
+        </td>
+      </tr>
+    </table>
+
+    <h2 style="font-size:15px;margin:20px 0 10px;color:#d4af37;">Pitching Details (${summary.dispatches.length})</h2>
+    <table style="width:100%;border-collapse:collapse;background:#141414;border-radius:12px;overflow:hidden;font-size:12px;text-align:left;">
+      <thead>
+        <tr style="background:#1f1f1f;color:#d4af37;">
+          <th style="padding:8px 10px;">#</th>
+          <th style="padding:8px 10px;">Business</th>
+          <th style="padding:8px 10px;">Recipient</th>
+          <th style="padding:8px 10px;">Pitch Subject</th>
+          <th style="padding:8px 10px;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${dispatchRowsHtml}
+      </tbody>
+    </table>
+
+    <p style="margin:22px 0 0;font-size:12px;color:#a3a3a3;">
+      Manage outreach settings, pause/resume, or inspect prospects at
+      <a href="https://virtuecowebworks.solutions/en/admin/outreach" style="color:#d4af37;">https://virtuecowebworks.solutions/en/admin/outreach</a>
+    </p>
+  </div>`.trim()
+
+  const textLines = [
+    'Virtue & Co. Webworks — Daily AI Scouting & Pitching Report',
+    `Completed: ${dateLabel}`,
+    `Run ID: ${summary.runId}`,
+    `Mode: ${summary.mode.toUpperCase()} | Status: ${summary.status.toUpperCase()}`,
+    `Scouted: ${summary.scoutedCount} | Qualified: ${summary.qualifiedCount} | Sent: ${summary.sentCount} | Skipped: ${summary.skippedCount} | Failed: ${summary.failedCount}`,
+    `Industries: ${criteria.industries.join(', ') || 'Default'} | Locations: ${criteria.locations.join(', ') || 'Default'}`,
+    '',
+    'Pitching Details:',
+    ...(summary.dispatches.length > 0
+      ? summary.dispatches.map(
+          (d, idx) =>
+            `${idx + 1}. ${d.businessName} <${d.recipientEmail}> — [${d.status.toUpperCase()}] ${d.subject}${d.error ? ` (Error: ${d.error})` : ''}`,
+        )
+      : ['No email dispatches in this run.']),
+    '',
+    'Admin Console: https://virtuecowebworks.solutions/en/admin/outreach',
+  ]
+
+  await sendEmail({
+    to: reportEmail,
+    email: {
+      subject,
+      html,
+      text: textLines.join('\n'),
+    },
+  })
+}
 
 async function defaultSendPitchEmail(
   params: Parameters<OutreachRunnerDeps['sendPitchEmail']>[0],
@@ -518,7 +638,7 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
     },
   })
 
-  return {
+  const summary: RunOutreachSummary = {
     runId: run.id,
     mode: options.mode,
     status: finalStatus,
@@ -531,4 +651,22 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
     sentTodayBeforeRun,
     dispatches,
   }
+
+  const shouldSendAdminReport =
+    options.deps?.sendPitchEmail === undefined &&
+    !process.env.VITEST &&
+    !process.env.E2E_SMTP_PORT
+
+  if (shouldSendAdminReport) {
+    try {
+      await sendDailyOutreachReportEmail(summary, criteria)
+    } catch (err) {
+      console.warn(
+        '[outreach/runner] Failed to send daily outreach report email:',
+        err instanceof Error ? err.message : err,
+      )
+    }
+  }
+
+  return summary
 }
