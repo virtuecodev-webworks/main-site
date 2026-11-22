@@ -96,6 +96,15 @@ export function createOutreachRepository(
     if (patch.gemini_api_key !== undefined) {
       payload.gemini_api_key = patch.gemini_api_key?.trim() || null
     }
+    if (patch.brevo_smtp_login !== undefined) {
+      payload.brevo_smtp_login = patch.brevo_smtp_login?.trim() || null
+    }
+    if (patch.brevo_smtp_key !== undefined) {
+      payload.brevo_smtp_key = patch.brevo_smtp_key?.trim() || null
+    }
+    if (patch.brevo_from_email !== undefined) {
+      payload.brevo_from_email = patch.brevo_from_email?.trim() || null
+    }
 
     const { data, error } = await client
       .from('outreach_settings')

@@ -10,6 +10,10 @@ import type { RenderedEmail } from './templates'
 
 let transport: ReturnType<typeof nodemailer.createTransport> | null = null
 
+export function resetEmailTransport() {
+  transport = null
+}
+
 export function isEmailConfigured(): boolean {
   const host = process.env.BREVO_SMTP_HOST ?? process.env.SMTP_HOST
   const user = process.env.BREVO_SMTP_LOGIN ?? process.env.SMTP_LOGIN

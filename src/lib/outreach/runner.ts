@@ -238,6 +238,16 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
     ...(settings.gemini_api_key ? { GEMINI_API_KEY: settings.gemini_api_key } : {}),
   }
 
+  if (settings.brevo_smtp_login && !process.env.BREVO_SMTP_LOGIN) {
+    process.env.BREVO_SMTP_LOGIN = settings.brevo_smtp_login
+  }
+  if (settings.brevo_smtp_key && !process.env.BREVO_SMTP_KEY) {
+    process.env.BREVO_SMTP_KEY = settings.brevo_smtp_key
+  }
+  if (settings.brevo_from_email && !process.env.BREVO_FROM_EMAIL) {
+    process.env.BREVO_FROM_EMAIL = settings.brevo_from_email
+  }
+
   const run = await repository.createRun({
     mode: options.mode,
     status: 'running',

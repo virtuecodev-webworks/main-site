@@ -588,7 +588,7 @@ export function OutreachConsole({
                     setIndustriesInput('dental clinic, medspa, cosmetic dentistry, dermatology')
                     setLocationsInput('Austin TX, Houston TX, Miami FL')
                     setKeywordsInput('appointment, clinic, aesthetics')
-                    setMinIssueScore(25)
+                    setMinIssueScore(10)
                   }}
                 >
                   Clinics &amp; Medspas
@@ -601,7 +601,7 @@ export function OutreachConsole({
                     setIndustriesInput('law firm, family lawyer, accounting firm, tax consultant')
                     setLocationsInput('Chicago IL, Atlanta GA, London UK')
                     setKeywordsInput('attorney, cpa, practice')
-                    setMinIssueScore(25)
+                    setMinIssueScore(10)
                   }}
                 >
                   Law &amp; Accounting
@@ -614,7 +614,7 @@ export function OutreachConsole({
                     setIndustriesInput('roofing contractor, hvac company, solar installer, remodeling')
                     setLocationsInput('Dallas TX, Phoenix AZ, Manchester UK')
                     setKeywordsInput('contractors, repair, installation')
-                    setMinIssueScore(25)
+                    setMinIssueScore(10)
                   }}
                 >
                   Home Services
@@ -627,7 +627,7 @@ export function OutreachConsole({
                     setIndustriesInput('real estate agency, boutique hotel, interior design studio')
                     setLocationsInput('Lagos NG, London UK, Austin TX')
                     setKeywordsInput('luxury, bookings, properties')
-                    setMinIssueScore(25)
+                    setMinIssueScore(10)
                   }}
                 >
                   Real Estate &amp; Hospitality

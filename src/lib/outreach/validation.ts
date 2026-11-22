@@ -76,6 +76,9 @@ export const outreachSettingsUpdateSchema = z
     test_recipient_email: nullableEmail.optional(),
     serper_api_key: z.string().trim().max(200).nullable().optional(),
     gemini_api_key: z.string().trim().max(200).nullable().optional(),
+    brevo_smtp_login: z.string().trim().max(200).nullable().optional(),
+    brevo_smtp_key: z.string().trim().max(200).nullable().optional(),
+    brevo_from_email: z.string().trim().max(200).nullable().optional(),
   })
   .strict()
   .refine((data) => Object.values(data).some((value) => value !== undefined), {

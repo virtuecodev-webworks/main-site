@@ -89,6 +89,9 @@ export interface OutreachSettings {
   test_recipient_email: string | null
   serper_api_key?: string | null
   gemini_api_key?: string | null
+  brevo_smtp_login?: string | null
+  brevo_smtp_key?: string | null
+  brevo_from_email?: string | null
   updated_at: string
 }
 
@@ -105,6 +108,9 @@ export const DEFAULT_OUTREACH_SETTINGS: OutreachSettings = {
   test_recipient_email: null,
   serper_api_key: null,
   gemini_api_key: null,
+  brevo_smtp_login: null,
+  brevo_smtp_key: null,
+  brevo_from_email: null,
   updated_at: new Date(0).toISOString(),
 }
 
@@ -230,6 +236,9 @@ export type OutreachSettingsPatch = Partial<
     | 'test_recipient_email'
     | 'serper_api_key'
     | 'gemini_api_key'
+    | 'brevo_smtp_login'
+    | 'brevo_smtp_key'
+    | 'brevo_from_email'
   >
 >
 
