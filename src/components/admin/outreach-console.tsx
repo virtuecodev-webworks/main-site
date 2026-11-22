@@ -366,12 +366,40 @@ export function OutreachConsole({
       isDryRun: boolean
     }> = []
 
-    const fallbackNiches = [
-      settings.industries.join(', ') || 'Configured Target Sectors',
-      'Architectural Design Studios (UK & US)',
-      'Cosmetic Dental Clinics & Medical Practices',
-      'Luxury Interior Design & Furnishing Studios',
-      'Commercial Litigation & Corporate Law Firms',
+    const fallbackSectors: Array<{
+      name: string
+      industries: string[]
+      locations: string[]
+    }> = [
+      {
+        name: settings.industries.join(', ') || 'Configured Target Sectors',
+        industries:
+          settings.industries.length > 0
+            ? settings.industries
+            : ['architectural design studio', 'luxury real estate agency'],
+        locations:
+          settings.locations.length > 0 ? settings.locations : ['London UK', 'Austin TX', 'Miami FL'],
+      },
+      {
+        name: 'Architectural Design & Luxury Builders (London & New York)',
+        industries: ['architectural design studio', 'luxury residential architect'],
+        locations: ['London UK', 'New York NY'],
+      },
+      {
+        name: 'Cosmetic Dental & Aesthetic Medical Practices (Miami & Austin)',
+        industries: ['cosmetic dental clinic', 'aesthetic medical spa'],
+        locations: ['Miami FL', 'Austin TX'],
+      },
+      {
+        name: 'High-End Interior Design & Decor Studios (Los Angeles & Chicago)',
+        industries: ['luxury interior designer', 'high end interior design studio'],
+        locations: ['Los Angeles CA', 'Chicago IL'],
+      },
+      {
+        name: 'Commercial Litigation & Corporate Law Firms (London & Manchester)',
+        industries: ['boutique law firm', 'commercial litigation solicitors'],
+        locations: ['London UK', 'Manchester UK'],
+      },
     ]
 
     let sentSoFar = 0
@@ -383,8 +411,8 @@ export function OutreachConsole({
     try {
       while (sentSoFar < targetCount && !stopRequestedRef.current) {
         setTerminalCycle(cycle)
-        const currentNicheName = fallbackNiches[(cycle - 1) % fallbackNiches.length]
-        setTerminalNiche(currentNicheName)
+        const currentSector = fallbackSectors[(cycle - 1) % fallbackSectors.length]
+        setTerminalNiche(currentSector.name)
 
         const remainingNeeded = targetCount - sentSoFar
         // Snappy batching: request up to 3 emails per cycle.
@@ -396,12 +424,12 @@ export function OutreachConsole({
         addAgentLog(
           'cycle',
           `Cycle ${cycle} active: Scouting for ${batchTarget} high-converting leads (${sentSoFar}/${targetCount} sent).`,
-          `Niche focus: ${currentNicheName}`,
+          `Sector: ${currentSector.name} (${currentSector.locations.join(', ')})`,
         )
 
         addAgentLog(
           'scout',
-          `Querying Google Places & verified business directories for "${currentNicheName}"...`,
+          `Querying Google Places & verified registries for "${currentSector.industries.join(', ')}" in ${currentSector.locations.join(', ')}...`,
         )
 
         // Give operator visual feedback of autonomous scouting
@@ -417,6 +445,11 @@ export function OutreachConsole({
         const payload: Record<string, unknown> = {
           mode,
           targetCount: batchTarget,
+          overrideCriteria: {
+            industries: currentSector.industries,
+            locations: currentSector.locations,
+            min_issue_score: settings.min_issue_score,
+          },
         }
         if (mode === 'dry_run' && testRecipientEmail.trim()) {
           payload.testRecipientEmail = testRecipientEmail.trim()
@@ -471,9 +504,14 @@ export function OutreachConsole({
         setTerminalTotalScouted(scoutedSoFar)
         setTerminalTotalQualified(qualifiedSoFar)
 
+        const noEmailNote =
+          summary.qualifiedCount > 0 && summary.sentCount === 0
+            ? ` (Note: ${summary.qualifiedCount} qualified businesses had no public contact email listed on their site)`
+            : ''
+
         addAgentLog(
           'evaluate',
-          `Evaluation complete: ${summary.scoutedCount} discovered, ${summary.qualifiedCount} qualified for pitch criteria.`,
+          `Evaluation complete: ${summary.scoutedCount} discovered, ${summary.qualifiedCount} qualified for pitch criteria.${noEmailNote}`,
         )
 
         // Process newly dispatched emails
@@ -526,10 +564,10 @@ export function OutreachConsole({
 
         if (summary.sentCount === 0) {
           consecutiveZeroSends += 1
-          if (consecutiveZeroSends >= 3) {
+          if (consecutiveZeroSends >= fallbackSectors.length) {
             addAgentLog(
               'safeguard',
-              `Exhausted unique available leads across 3 consecutive cycles. Halting loop to prevent duplicate prospect contacts.`,
+              `Completed search across all ${fallbackSectors.length} sector profiles without finding new deliverable leads. Halting loop to prevent duplicate contacts.`,
             )
             setAgentTerminalStatus('completed')
             break
