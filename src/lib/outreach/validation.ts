@@ -142,6 +142,7 @@ export const outreachTriggerSchema = z
   .object({
     mode: z.enum(['manual', 'dry_run']).default('dry_run'),
     testRecipientEmail: emptyToUndefined(emailLike.optional()),
+    targetCount: z.number().int().min(1).max(50).optional(),
     overrideCriteria: z
       .object({
         industries: z.array(z.string().trim().min(1).max(80)).max(25).optional(),

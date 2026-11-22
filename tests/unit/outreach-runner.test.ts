@@ -576,6 +576,57 @@ describe('runDailyOutreach', () => {
       min_issue_score: 50,
     })
   })
+
+  it('respects explicit targetCount option in manual run', async () => {
+    const repo = createInMemoryRepository({
+      daily_send_cap: 30,
+    })
+    const candidates: DiscoveredBusiness[] = [
+      {
+        businessName: 'Firm 1',
+        websiteUrl: 'https://firm1.com',
+        contactEmail: 'contact@firm1.com',
+        sourceProvider: 'serper',
+      },
+      {
+        businessName: 'Firm 2',
+        websiteUrl: 'https://firm2.com',
+        contactEmail: 'contact@firm2.com',
+        sourceProvider: 'serper',
+      },
+      {
+        businessName: 'Firm 3',
+        websiteUrl: 'https://firm3.com',
+        contactEmail: 'contact@firm3.com',
+        sourceProvider: 'serper',
+      },
+      {
+        businessName: 'Firm 4',
+        websiteUrl: 'https://firm4.com',
+        contactEmail: 'contact@firm4.com',
+        sourceProvider: 'serper',
+      },
+    ]
+
+    const evaluateMock = vi.fn().mockResolvedValue(qualifiedEval)
+    const pitchMock = vi.fn().mockImplementation((b) => Promise.resolve(fakePitch(b)))
+    const sendMock = vi.fn().mockResolvedValue({ messageId: 'msg-target' })
+
+    const summary = await runDailyOutreach({
+      mode: 'manual',
+      targetCount: 2, // Explicitly request only 2
+      seedCandidates: candidates,
+      deps: {
+        repository: repo,
+        evaluateWebsite: evaluateMock,
+        generatePitch: pitchMock,
+        sendPitchEmail: sendMock,
+      },
+    })
+
+    expect(summary.sentCount).toBe(2)
+    expect(sendMock).toHaveBeenCalledTimes(2)
+  })
 })
 
 describe('calculateSessionTarget', () => {

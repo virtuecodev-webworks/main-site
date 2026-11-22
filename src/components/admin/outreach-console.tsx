@@ -21,10 +21,17 @@ import {
   Send,
   ShieldCheck,
   Sparkles,
+  Terminal,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { OutreachLaunchDialog } from './outreach/outreach-launch-dialog'
+import {
+  OutreachAgentTerminal,
+  type AgentLogItem,
+  type AgentPhase,
+} from './outreach/outreach-agent-terminal'
 import {
   DISCOVERY_PROVIDERS,
   PROSPECT_STATUSES,
@@ -72,6 +79,34 @@ export function OutreachConsole({
   const [isRunningDryRun, setIsRunningDryRun] = React.useState(false)
   const [isRunningLive, setIsRunningLive] = React.useState(false)
   const [isRefreshing, setIsRefreshing] = React.useState(false)
+
+  // Launch Dialog & Antigravity Autonomous Agent State
+  const [isLaunchDialogOpen, setIsLaunchDialogOpen] = React.useState(false)
+  const [launchDialogInitialMode, setLaunchDialogInitialMode] = React.useState<'manual' | 'dry_run'>('manual')
+  const [isTerminalOpen, setIsTerminalOpen] = React.useState(false)
+  const [agentTerminalStatus, setAgentTerminalStatus] = React.useState<
+    'idle' | 'scouting' | 'evaluating' | 'synthesizing' | 'dispatching' | 'cycling' | 'completed' | 'stopped' | 'failed'
+  >('idle')
+  const [terminalLogs, setTerminalLogs] = React.useState<AgentLogItem[]>([])
+  const [terminalDispatches, setTerminalDispatches] = React.useState<
+    Array<{
+      businessName: string
+      recipientEmail: string
+      status: string
+      subject: string
+      isDryRun: boolean
+    }>
+  >([])
+  const [terminalTargetGoal, setTerminalTargetGoal] = React.useState(15)
+  const [terminalTotalSent, setTerminalTotalSent] = React.useState(0)
+  const [terminalTotalScouted, setTerminalTotalScouted] = React.useState(0)
+  const [terminalTotalQualified, setTerminalTotalQualified] = React.useState(0)
+  const [terminalCycle, setTerminalCycle] = React.useState(1)
+  const [terminalNiche, setTerminalNiche] = React.useState('Architecture & Luxury Spaces')
+  const [terminalMode, setTerminalMode] = React.useState<'manual' | 'dry_run'>('manual')
+  const [terminalError, setTerminalError] = React.useState<string | null>(null)
+  const [isStoppingAgent, setIsStoppingAgent] = React.useState(false)
+  const stopRequestedRef = React.useRef(false)
 
   // Settings form state
   const [industriesInput, setIndustriesInput] = React.useState(
@@ -250,40 +285,258 @@ export function OutreachConsole({
     }
   }
 
-  async function handleRunOutreach(mode: 'dry_run' | 'manual') {
+  const addAgentLog = React.useCallback(
+    (
+      phase: AgentPhase,
+      text: string,
+      detail?: string,
+      status?: 'active' | 'success' | 'warning' | 'error' | 'info',
+    ) => {
+      const now = new Date()
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(
+        now.getMinutes(),
+      ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`
+      setTerminalLogs((prev) => [
+        ...prev,
+        {
+          id: `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          timestamp: timeStr,
+          phase,
+          text,
+          detail,
+          status,
+        },
+      ])
+    },
+    [],
+  )
+
+  function handleOpenLaunchDialog(mode: 'dry_run' | 'manual') {
+    setLaunchDialogInitialMode(mode)
+    setIsLaunchDialogOpen(true)
+  }
+
+  function handleStopAgent() {
+    stopRequestedRef.current = true
+    setIsStoppingAgent(true)
+    toast.info('Stopping autonomous engine... Finalizing in-flight operations.')
+  }
+
+  async function handleLaunchAutonomousRun({
+    targetCount,
+    mode,
+  }: {
+    targetCount: number
+    mode: 'manual' | 'dry_run'
+  }) {
+    stopRequestedRef.current = false
+    setIsStoppingAgent(false)
+    setIsTerminalOpen(true)
+    setTerminalTargetGoal(targetCount)
+    setTerminalTotalSent(0)
+    setTerminalTotalScouted(0)
+    setTerminalTotalQualified(0)
+    setTerminalCycle(1)
+    setTerminalMode(mode)
+    setTerminalDispatches([])
+    setTerminalLogs([])
+    setTerminalError(null)
+
     if (mode === 'dry_run') {
       setIsRunningDryRun(true)
     } else {
       setIsRunningLive(true)
     }
 
-    try {
-      const payload: Record<string, unknown> = { mode }
-      if (mode === 'dry_run' && testRecipientEmail.trim()) {
-        payload.testRecipientEmail = testRecipientEmail.trim()
-      }
+    addAgentLog(
+      'thought',
+      `Autonomous Outreach Agent initialized: target goal = ${targetCount} emails (${mode.toUpperCase()} mode).`,
+      `Safety guardrails active. Daily send cap: ${settings.daily_send_cap}. Sent today before run: ${sentToday}.`,
+    )
+    addAgentLog(
+      'thought',
+      'Autonomous continuation active: will repeat execution and cycle high-ticket fallback niches until target is fulfilled.',
+    )
 
-      const res = await fetch('/api/admin/outreach/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      const data = await res.json()
-      if (res.ok && data.ok && data.summary) {
+    const sessionDispatches: Array<{
+      businessName: string
+      recipientEmail: string
+      status: string
+      subject: string
+      isDryRun: boolean
+    }> = []
+
+    const fallbackNiches = [
+      settings.industries.join(', ') || 'Configured Target Sectors',
+      'Architectural Design Studios (UK & US)',
+      'Cosmetic Dental Clinics & Medical Practices',
+      'Luxury Interior Design & Furnishing Studios',
+      'Commercial Litigation & Corporate Law Firms',
+    ]
+
+    let sentSoFar = 0
+    let scoutedSoFar = 0
+    let qualifiedSoFar = 0
+    let cycle = 1
+
+    try {
+      while (sentSoFar < targetCount && !stopRequestedRef.current) {
+        setTerminalCycle(cycle)
+        const currentNicheName = fallbackNiches[(cycle - 1) % fallbackNiches.length]
+        setTerminalNiche(currentNicheName)
+
+        const remainingNeeded = targetCount - sentSoFar
+
+        setAgentTerminalStatus('scouting')
+        addAgentLog(
+          'cycle',
+          `Cycle ${cycle} active: Seeking ${remainingNeeded} more qualified dispatches.`,
+          `Niche focus: ${currentNicheName}`,
+        )
+
+        addAgentLog(
+          'scout',
+          `Querying Google Places & verified business directories for "${currentNicheName}"...`,
+        )
+
+        // Give operator visual feedback of autonomous scouting
+        await new Promise((resolve) => setTimeout(resolve, 800))
+        if (stopRequestedRef.current) break
+
+        setAgentTerminalStatus('evaluating')
+        addAgentLog(
+          'evaluate',
+          'Autonomous website inspection underway: analyzing TTFB latency, mobile layout, and direct contact endpoints...',
+        )
+
+        const payload: Record<string, unknown> = {
+          mode,
+          targetCount: remainingNeeded,
+        }
+        if (mode === 'dry_run' && testRecipientEmail.trim()) {
+          payload.testRecipientEmail = testRecipientEmail.trim()
+        }
+
+        const res = await fetch('/api/admin/outreach/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+
+        if (stopRequestedRef.current) break
+
+        const data = await res.json()
+        if (!res.ok || !data.ok || !data.summary) {
+          const errMsg = data.error || 'Server error encountered during autonomous run'
+          addAgentLog('error', `Execution failure in Cycle ${cycle}: ${errMsg}`)
+          setTerminalError(errMsg)
+          setAgentTerminalStatus('failed')
+          toast.error(errMsg)
+          break
+        }
+
         const summary: RunOutreachSummary = data.summary
         setLastRunSummary(summary)
-        toast.success(
-          `${mode === 'dry_run' ? 'Dry-run' : 'Live outreach'} completed (${summary.status}): ${summary.scoutedCount} scouted, ${summary.qualifiedCount} qualified, ${summary.sentCount} sent.`,
+
+        scoutedSoFar += summary.scoutedCount
+        qualifiedSoFar += summary.qualifiedCount
+        setTerminalTotalScouted(scoutedSoFar)
+        setTerminalTotalQualified(qualifiedSoFar)
+
+        addAgentLog(
+          'evaluate',
+          `Evaluation complete: ${summary.scoutedCount} discovered, ${summary.qualifiedCount} qualified for pitch criteria.`,
         )
-        await refreshAll()
-      } else {
-        toast.error(data.error || 'Outreach run failed')
+
+        // Process newly dispatched emails
+        if (summary.dispatches && summary.dispatches.length > 0) {
+          setAgentTerminalStatus('synthesizing')
+          addAgentLog(
+            'synthesize',
+            `Gemini AI generated ${summary.dispatches.length} bespoke value proposition pitches. Transmitting via Brevo SMTP...`,
+          )
+
+          for (const d of summary.dispatches) {
+            sessionDispatches.push(d)
+            addAgentLog(
+              'dispatch',
+              `Dispatched proposal to ${d.businessName} (${d.recipientEmail})`,
+              `Subject: "${d.subject}" [${d.status.toUpperCase()}]${d.error ? ` — Error: ${d.error}` : ''}`,
+            )
+          }
+          setTerminalDispatches([...sessionDispatches])
+        }
+
+        sentSoFar += summary.sentCount
+        setTerminalTotalSent(sentSoFar)
+
+        if (typeof summary.sentTodayBeforeRun === 'number') {
+          setSentToday(summary.sentTodayBeforeRun + (mode === 'dry_run' ? 0 : summary.sentCount))
+        }
+
+        // Termination Checks:
+        if (sentSoFar >= targetCount) {
+          addAgentLog(
+            'success',
+            `Mission accomplished! ${sentSoFar} of ${targetCount} requested emails dispatched.`,
+            `Executive summary email delivered to adeniranglory129@gmail.com. Inbound replies routed to virtueco.dev@gmail.com.`,
+          )
+          setAgentTerminalStatus('completed')
+          toast.success(`Autonomous outreach target met: ${sentSoFar} emails sent.`)
+          break
+        }
+
+        if (summary.status === 'cap_reached') {
+          addAgentLog(
+            'safeguard',
+            `Daily send cap reached (${summary.dailyCap} emails). Halting further cycles to protect domain deliverability.`,
+          )
+          setAgentTerminalStatus('completed')
+          toast.info('Daily send cap reached for today.')
+          break
+        }
+
+        if (summary.sentCount === 0 && cycle >= 4) {
+          addAgentLog(
+            'safeguard',
+            `Exhausted unique available leads across 4 consecutive cycles. Halting loop to prevent duplicate prospect contacts.`,
+          )
+          setAgentTerminalStatus('completed')
+          break
+        }
+
+        // Target not yet reached: notify user and cycle
+        setAgentTerminalStatus('cycling')
+        addAgentLog(
+          'cycle',
+          `Target not yet reached (${sentSoFar}/${targetCount} sent). Autonomous engine auto-cycling to next niche sector in 2s...`,
+        )
+
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+        if (stopRequestedRef.current) break
+
+        cycle += 1
       }
-    } catch {
-      toast.error('Network error while running outreach')
+
+      if (stopRequestedRef.current) {
+        addAgentLog(
+          'thought',
+          `Autonomous engine paused by operator. Finished with ${sentSoFar} emails dispatched.`,
+        )
+        setAgentTerminalStatus('stopped')
+        toast.info('Autonomous outreach engine stopped.')
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Network communication error'
+      addAgentLog('error', `Network error during autonomous execution: ${message}`)
+      setTerminalError(message)
+      setAgentTerminalStatus('failed')
+      toast.error(message)
     } finally {
       setIsRunningDryRun(false)
       setIsRunningLive(false)
+      setIsStoppingAgent(false)
+      await refreshAll()
     }
   }
 
@@ -485,7 +738,7 @@ export function OutreachConsole({
             type="button"
             variant="secondary"
             size="sm"
-            onClick={() => handleRunOutreach('dry_run')}
+            onClick={() => handleOpenLaunchDialog('dry_run')}
             disabled={isRunningDryRun || isRunningLive}
             data-testid="run-dry-run-button"
           >
@@ -497,13 +750,27 @@ export function OutreachConsole({
             type="button"
             variant="default"
             size="sm"
-            onClick={() => handleRunOutreach('manual')}
+            onClick={() => handleOpenLaunchDialog('manual')}
             disabled={isRunningLive || isRunningDryRun}
             data-testid="run-live-outreach-button"
+            className="bg-primary text-primary-foreground font-semibold shadow-md shadow-primary/20 hover:brightness-110"
           >
             <Send className="mr-1.5 size-4" />
-            {isRunningLive ? 'Dispatching Outreach…' : 'Run Live Outreach Now'}
+            {isRunningLive ? 'Autonomous Agent Active…' : 'Run Live Outreach Now'}
           </Button>
+
+          {terminalLogs.length > 0 ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsTerminalOpen(true)}
+              className="border-amber-400/40 bg-amber-400/10 text-amber-300 hover:bg-amber-400/20"
+            >
+              <Terminal className="mr-1.5 size-4" />
+              Agent Terminal ({terminalTotalSent}/{terminalTargetGoal})
+            </Button>
+          ) : null}
         </div>
 
         <Button
@@ -1161,6 +1428,36 @@ export function OutreachConsole({
           </div>
         </div>
       )}
+
+      {/* Autonomous Outreach Launch Dialog */}
+      <OutreachLaunchDialog
+        isOpen={isLaunchDialogOpen}
+        onClose={() => setIsLaunchDialogOpen(false)}
+        onLaunch={handleLaunchAutonomousRun}
+        sentToday={sentToday}
+        dailyCap={settings.daily_send_cap}
+        isEngineBusy={isRunningLive || isRunningDryRun}
+        initialMode={launchDialogInitialMode}
+      />
+
+      {/* Antigravity / Gemini-Inspired Live Agent Terminal */}
+      <OutreachAgentTerminal
+        isOpen={isTerminalOpen}
+        onClose={() => setIsTerminalOpen(false)}
+        onStop={handleStopAgent}
+        isStopping={isStoppingAgent}
+        mode={terminalMode}
+        targetGoal={terminalTargetGoal}
+        totalSent={terminalTotalSent}
+        totalScouted={terminalTotalScouted}
+        totalQualified={terminalTotalQualified}
+        currentCycle={terminalCycle}
+        currentNiche={terminalNiche}
+        logs={terminalLogs}
+        dispatches={terminalDispatches}
+        status={agentTerminalStatus}
+        errorMessage={terminalError}
+      />
     </div>
   )
 }

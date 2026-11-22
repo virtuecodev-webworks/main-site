@@ -339,17 +339,22 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
     }
   }
 
+  const explicitTarget =
+    typeof options.targetCount === 'number' && options.targetCount > 0
+      ? options.targetCount
+      : null
+
   const sessionTarget = isDryRun
-    ? testRecipient
-      ? DRY_RUN_MAX_DISPATCHES
-      : 0
-    : calculateSessionTarget(options.mode, settings.daily_send_cap, sentTodayBeforeRun)
+    ? explicitTarget ?? (testRecipient ? DRY_RUN_MAX_DISPATCHES : 0)
+    : explicitTarget !== null
+      ? Math.min(explicitTarget, remainingLiveCap)
+      : calculateSessionTarget(options.mode, settings.daily_send_cap, sentTodayBeforeRun)
 
   const maxSendsThisRun = sessionTarget
 
   const candidatesNeeded =
     options.mode === 'manual' || isDryRun
-      ? Math.min(60, Math.max(25, maxSendsThisRun * 3))
+      ? Math.min(100, Math.max(30, maxSendsThisRun * 4))
       : Math.min(120, Math.max(75, maxSendsThisRun * 5))
   let candidates: DiscoveredBusiness[]
   try {

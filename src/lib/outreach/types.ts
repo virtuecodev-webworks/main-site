@@ -398,6 +398,7 @@ export interface RunOutreachOptions {
   mode: OutreachRunMode
   triggeredBy?: string | null
   testRecipientEmail?: string
+  targetCount?: number
   overrideCriteria?: Partial<
     Pick<
       OutreachSettings,

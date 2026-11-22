@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
       mode: parsed.data.mode,
       triggeredBy: isUuid ? auth.session.userId : null,
       testRecipientEmail: parsed.data.testRecipientEmail,
+      targetCount: parsed.data.targetCount,
       overrideCriteria: parsed.data.overrideCriteria,
       seedCandidates: parsed.data.seedCandidates,
     })
