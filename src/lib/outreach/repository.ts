@@ -432,7 +432,33 @@ export function createOutreachRepository(
       throw new OutreachRepositoryError(error.message, error.code)
     }
 
-    return data ?? []
+    const runs = data ?? []
+
+    // Auto-heal any runs that were abandoned in 'running' state (> 2 minutes ago)
+    const staleThreshold = new Date(Date.now() - 2 * 60 * 1000).toISOString()
+    const staleRuns = runs.filter(
+      (r) => r.status === 'running' && r.started_at && r.started_at < staleThreshold,
+    )
+    if (staleRuns.length > 0) {
+      for (const stale of staleRuns) {
+        try {
+          const updateQuery = client.from('outreach_runs').update({
+            status: 'completed',
+            completed_at: new Date().toISOString(),
+            error_summary: 'Batch ended at execution window limit',
+          })
+          if (typeof updateQuery?.eq === 'function') {
+            void updateQuery.eq('id', stale.id)
+          }
+        } catch {
+          // best-effort auto-heal
+        }
+        stale.status = 'completed'
+        stale.error_summary = 'Batch ended at execution window limit'
+      }
+    }
+
+    return runs
   }
 
   const logDispatch = async (input: LogDispatchInput): Promise<OutreachDispatch> => {

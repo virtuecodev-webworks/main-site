@@ -320,7 +320,10 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
       : 0
     : remainingLiveCap
 
-  const candidatesNeeded = Math.min(120, Math.max(75, maxSendsThisRun * 3))
+  const candidatesNeeded =
+    options.mode === 'manual' || isDryRun
+      ? Math.min(35, Math.max(15, maxSendsThisRun * 2))
+      : Math.min(120, Math.max(75, maxSendsThisRun * 3))
   let candidates: DiscoveredBusiness[]
   try {
     candidates =
@@ -371,6 +374,12 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
     return failedSummary
   }
 
+  const runStartTime = Date.now()
+  // Manual interactive runs must return swiftly to avoid browser & gateway timeouts (25s budget).
+  // Daily background cron runs have up to 45s before Vercel's 60s hard ceiling.
+  const maxExecutionTimeMs =
+    options.mode === 'manual' || isDryRun ? 25_000 : 45_000
+
   const scoutedCount = candidates.length
   let qualifiedCount = 0
   let sentCount = 0
@@ -380,7 +389,15 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
   const dispatches: RunOutreachSummary['dispatches'] = []
   const inRunTracker = new InRunDedupTracker()
 
-  for (const candidate of candidates) {
+  for (let candidateIdx = 0; candidateIdx < candidates.length; candidateIdx++) {
+    const candidate = candidates[candidateIdx]
+
+    // Wall-clock deadline check: if approaching timeout budget, conclude loop cleanly
+    if (Date.now() - runStartTime > maxExecutionTimeMs) {
+      skippedCount += candidates.length - candidateIdx
+      break
+    }
+
     const identity = resolveProspectIdentity(candidate)
 
     if (inRunTracker.hasSeen(identity)) {
