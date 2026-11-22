@@ -87,6 +87,8 @@ export interface OutreachSettings {
   min_issue_score: number
   dry_run_default: boolean
   test_recipient_email: string | null
+  serper_api_key?: string | null
+  gemini_api_key?: string | null
   updated_at: string
 }
 
@@ -101,6 +103,8 @@ export const DEFAULT_OUTREACH_SETTINGS: OutreachSettings = {
   min_issue_score: 30,
   dry_run_default: false,
   test_recipient_email: null,
+  serper_api_key: null,
+  gemini_api_key: null,
   updated_at: new Date(0).toISOString(),
 }
 
@@ -224,6 +228,8 @@ export type OutreachSettingsPatch = Partial<
     | 'min_issue_score'
     | 'dry_run_default'
     | 'test_recipient_email'
+    | 'serper_api_key'
+    | 'gemini_api_key'
   >
 >
 

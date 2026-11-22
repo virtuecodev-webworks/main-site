@@ -6,8 +6,11 @@ import {
   CheckCircle2,
   Clock,
   ExternalLink,
+  Eye,
+  EyeOff,
   Filter,
   Globe,
+  Key,
   Mail,
   Pause,
   Play,
@@ -91,6 +94,13 @@ export function OutreachConsole({
   const [dryRunDefault, setDryRunDefault] = React.useState<boolean>(
     initialSettings.dry_run_default,
   )
+  const [serperApiKey, setSerperApiKey] = React.useState<string>(
+    initialSettings.serper_api_key ?? '',
+  )
+  const [geminiApiKey, setGeminiApiKey] = React.useState<string>(
+    initialSettings.gemini_api_key ?? '',
+  )
+  const [showApiKeys, setShowApiKeys] = React.useState(false)
 
   // Prospects filter & manual creation state
   const [prospectStatusFilter, setProspectStatusFilter] = React.useState<'all' | ProspectStatus>(
@@ -132,6 +142,8 @@ export function OutreachConsole({
     setMinIssueScore(next.min_issue_score)
     setTestRecipientEmail(next.test_recipient_email ?? '')
     setDryRunDefault(next.dry_run_default)
+    setSerperApiKey(next.serper_api_key ?? '')
+    setGeminiApiKey(next.gemini_api_key ?? '')
   }, [])
 
   const refreshAll = React.useCallback(async () => {
@@ -214,6 +226,8 @@ export function OutreachConsole({
         min_issue_score: Number(minIssueScore),
         dry_run_default: dryRunDefault,
         test_recipient_email: testRecipientEmail.trim() || null,
+        serper_api_key: serperApiKey.trim() || null,
+        gemini_api_key: geminiApiKey.trim() || null,
       }
 
       const res = await fetch('/api/admin/outreach/settings', {
@@ -741,6 +755,51 @@ export function OutreachConsole({
                 />
                 <span>Default manual runs to Dry-Run mode</span>
               </label>
+
+              <div className="mt-2 flex flex-col gap-3 rounded-xl border border-border/70 bg-muted/20 p-3.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                    <Key className="size-3.5 text-primary" />
+                    <span>Engine API Credentials (Saved in Secure Database)</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowApiKeys(!showApiKeys)}
+                    className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground"
+                  >
+                    {showApiKeys ? <EyeOff className="size-3" /> : <Eye className="size-3" />}
+                    <span>{showApiKeys ? 'Hide' : 'Reveal'}</span>
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="outreach-serper-key" className="text-[11px] font-medium text-muted-foreground">
+                    Serper Places API Key (Business Discovery)
+                  </label>
+                  <input
+                    id="outreach-serper-key"
+                    type={showApiKeys ? 'text' : 'password'}
+                    value={serperApiKey}
+                    onChange={(e) => setSerperApiKey(e.target.value)}
+                    placeholder="Enter Serper API key"
+                    className="rounded-lg border border-border bg-background px-3 py-1.5 font-mono text-xs"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="outreach-gemini-key" className="text-[11px] font-medium text-muted-foreground">
+                    Gemini API Key (AI Audit Pitch Customization)
+                  </label>
+                  <input
+                    id="outreach-gemini-key"
+                    type={showApiKeys ? 'text' : 'password'}
+                    value={geminiApiKey}
+                    onChange={(e) => setGeminiApiKey(e.target.value)}
+                    placeholder="Enter Gemini API key"
+                    className="rounded-lg border border-border bg-background px-3 py-1.5 font-mono text-xs"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-end gap-3 border-t border-border pt-4">

@@ -225,6 +225,7 @@ async function discoverViaOsm(params: {
 }): Promise<DiscoveredBusiness[]> {
   const { industry, location, keywords, limit, timeoutMs, fetchFn } = params
 
+  const nomTimeout = Math.min(timeoutMs, 4000)
   const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(location)}`
   const nomRes = await fetchFn(nominatimUrl, {
     method: 'GET',
@@ -232,7 +233,7 @@ async function discoverViaOsm(params: {
       'User-Agent': 'VirtueCoWebworksOutreach/1.0 (+https://virtuecowebworks.solutions)',
       Accept: 'application/json',
     },
-    signal: AbortSignal.timeout(timeoutMs),
+    signal: AbortSignal.timeout(nomTimeout),
   })
 
   if (!nomRes.ok) {
@@ -259,7 +260,7 @@ async function discoverViaOsm(params: {
 
   const bbox = `${south},${west},${north},${east}`
   const filterClauses = buildOverpassFilters(industry, keywords, bbox)
-  const overpassTimeoutSec = Math.max(5, Math.min(25, Math.ceil(timeoutMs / 1000)))
+  const overpassTimeoutSec = Math.max(3, Math.min(6, Math.ceil(nomTimeout / 1000)))
   const ql = `[out:json][timeout:${overpassTimeoutSec}];(${filterClauses.join('')});out center tags ${limit};`
 
   const overpassRes = await fetchFn('https://overpass-api.de/api/interpreter', {
@@ -270,7 +271,7 @@ async function discoverViaOsm(params: {
       Accept: 'application/json',
     },
     body: `data=${encodeURIComponent(ql)}`,
-    signal: AbortSignal.timeout(timeoutMs),
+    signal: AbortSignal.timeout(nomTimeout),
   })
 
   if (!overpassRes.ok) {
@@ -482,9 +483,14 @@ export async function discoverBusinesses(
   const collected: DiscoveredBusiness[] = []
   const seenKeys = new Set<string>()
   const errors: unknown[] = []
+  let consecutiveOsmErrors = 0
 
   for (const pair of pairs) {
     if (collected.length >= maxCandidates) break
+    if (provider === 'osm' && consecutiveOsmErrors >= 2) {
+      console.warn('[outreach/discovery] Aborting OSM early after 2 consecutive failures')
+      break
+    }
     const remaining = maxCandidates - collected.length
 
     try {
@@ -520,6 +526,8 @@ export async function discoverBusinesses(
         })
       }
 
+      consecutiveOsmErrors = 0
+
       for (const candidate of batch) {
         const key = buildInBatchKey(candidate)
         if (seenKeys.has(key)) continue
@@ -528,6 +536,7 @@ export async function discoverBusinesses(
         if (collected.length >= maxCandidates) break
       }
     } catch (err) {
+      consecutiveOsmErrors++
       console.warn(
         `[outreach/discovery] ${provider} query failed for "${pair.industry}" in "${pair.location}":`,
         err instanceof Error ? err.message : err,

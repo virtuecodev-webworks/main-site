@@ -74,6 +74,8 @@ export const outreachSettingsUpdateSchema = z
     min_issue_score: z.number().int().min(0).max(100).optional(),
     dry_run_default: z.boolean().optional(),
     test_recipient_email: nullableEmail.optional(),
+    serper_api_key: z.string().trim().max(200).nullable().optional(),
+    gemini_api_key: z.string().trim().max(200).nullable().optional(),
   })
   .strict()
   .refine((data) => Object.values(data).some((value) => value !== undefined), {

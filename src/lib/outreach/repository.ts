@@ -90,6 +90,12 @@ export function createOutreachRepository(
     if (patch.test_recipient_email !== undefined) {
       payload.test_recipient_email = normalizeNullableLower(patch.test_recipient_email) ?? null
     }
+    if (patch.serper_api_key !== undefined) {
+      payload.serper_api_key = patch.serper_api_key?.trim() || null
+    }
+    if (patch.gemini_api_key !== undefined) {
+      payload.gemini_api_key = patch.gemini_api_key?.trim() || null
+    }
 
     const { data, error } = await client
       .from('outreach_settings')

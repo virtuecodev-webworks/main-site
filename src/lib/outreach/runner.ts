@@ -232,6 +232,12 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
   const testRecipient =
     normalizeEmail(options.testRecipientEmail) ?? normalizeEmail(settings.test_recipient_email)
 
+  const mergedEnv: Record<string, string | undefined> = {
+    ...process.env,
+    ...(settings.serper_api_key ? { SERPER_API_KEY: settings.serper_api_key } : {}),
+    ...(settings.gemini_api_key ? { GEMINI_API_KEY: settings.gemini_api_key } : {}),
+  }
+
   const run = await repository.createRun({
     mode: options.mode,
     status: 'running',
@@ -307,7 +313,11 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
   let candidates: DiscoveredBusiness[]
   try {
     candidates =
-      options.seedCandidates !== undefined ? options.seedCandidates : await discover(criteria)
+      options.seedCandidates !== undefined
+        ? options.seedCandidates
+        : options.deps?.discoverBusinesses
+          ? await discover(criteria)
+          : await discover(criteria, { env: mergedEnv })
   } catch (err) {
     const errMsg = err instanceof Error ? err.message : 'Discovery failed'
     await repository.completeRun(run.id, {
@@ -512,7 +522,9 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
     let attemptedSubject = ''
 
     try {
-      const pitch = await generate(candidate, evaluation)
+      const pitch = await generate(candidate, evaluation, {
+        apiKey: mergedEnv.GEMINI_API_KEY,
+      })
       const rawSubject = pitch.subject.trim()
       attemptedSubject = isDryRun
         ? rawSubject.startsWith('[DRY RUN]')
@@ -673,7 +685,11 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
 
   if (shouldSendAdminReport) {
     try {
-      await sendDailyOutreachReportEmail(summary, criteria)
+      await sendDailyOutreachReportEmail(
+        summary,
+        criteria,
+        settings.test_recipient_email ?? options.testRecipientEmail,
+      )
     } catch (err) {
       console.warn(
         '[outreach/runner] Failed to send daily outreach report email:',
