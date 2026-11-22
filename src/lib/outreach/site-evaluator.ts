@@ -10,7 +10,7 @@ export interface SiteEvaluatorOptions {
   checkContactFallback?: boolean
 }
 
-const DEFAULT_TIMEOUT_MS = 8_000
+const DEFAULT_TIMEOUT_MS = 4_000
 const MAX_HTML_BYTES = 512 * 1024
 const SLOW_TTFB_THRESHOLD_MS = 2_500
 const THIN_CONTENT_MIN_CHARS = 120

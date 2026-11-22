@@ -134,7 +134,7 @@ export function buildFallbackPitch(
     auditBullets,
     recommendedPackage,
     ctaText: 'Book a Free 15-Min Walkthrough',
-    closing: `Best regards,\n${AGENCY.name}`,
+    closing: `Prefer email over a form? Simply reply directly to this message and our engineering team will get right back to you.\n\nBest regards,\n${AGENCY.name}`,
     model: 'deterministic-fallback',
   }
 }
@@ -187,7 +187,7 @@ function buildPitchPrompt(
     '  "auditBullets": ["2 to 4 concrete, specific bullet points grounded in the detected issues"],',
     '  "recommendedPackage": "one matching package from the catalog above with USD price and delivery days",',
     '  "ctaText": "short action button text e.g. Book a Free 15-Min Walkthrough",',
-    '  "closing": "short polite sign-off mentioning Virtue & Co. Webworks"',
+    '  "closing": "short sign-off mentioning they can also simply reply directly to this email, from Virtue & Co. Webworks"',
     '}',
   ].join('\n')
 }

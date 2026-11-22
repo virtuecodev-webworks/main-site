@@ -58,10 +58,10 @@ interface SerperPlacesResponse {
   }>
 }
 
-const DEFAULT_MAX_CANDIDATES = 25
-const MAX_ALLOWED_CANDIDATES = 50
-const DEFAULT_TIMEOUT_MS = 10_000
-const MAX_QUERY_PAIRS = 12
+const DEFAULT_MAX_CANDIDATES = 75
+const MAX_ALLOWED_CANDIDATES = 120
+const DEFAULT_TIMEOUT_MS = 6_000
+const MAX_QUERY_PAIRS = 25
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/
 
 export function resolveDiscoveryProvider(

@@ -218,6 +218,8 @@ export async function renderOutreachPitchEmail(
       '',
       `${props.pitch.ctaText}: ${ctaLink}`,
       '',
+      'Prefer email? You can also simply reply directly to this message and our engineering team will get right back to you.',
+      '',
       props.pitch.closing,
       '',
       `Unsubscribe: ${props.unsubscribeUrl}`,

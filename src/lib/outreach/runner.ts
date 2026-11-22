@@ -320,6 +320,7 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
       : 0
     : remainingLiveCap
 
+  const candidatesNeeded = Math.min(120, Math.max(75, maxSendsThisRun * 3))
   let candidates: DiscoveredBusiness[]
   try {
     candidates =
@@ -327,7 +328,7 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
         ? options.seedCandidates
         : options.deps?.discoverBusinesses
           ? await discover(criteria)
-          : await discover(criteria, { env: mergedEnv })
+          : await discover(criteria, { env: mergedEnv, maxCandidates: candidatesNeeded })
   } catch (err) {
     const errMsg = err instanceof Error ? err.message : 'Discovery failed'
     await repository.completeRun(run.id, {
@@ -341,7 +342,7 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
       details: { criteria, isDryRun },
     })
 
-    return {
+    const failedSummary: RunOutreachSummary = {
       runId: run.id,
       mode: options.mode,
       status: 'failed',
@@ -354,6 +355,20 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
       sentTodayBeforeRun,
       dispatches: [],
     }
+
+    if (options.deps?.sendPitchEmail === undefined && !process.env.E2E_SMTP_PORT) {
+      try {
+        await sendDailyOutreachReportEmail(
+          failedSummary,
+          criteria,
+          settings.test_recipient_email ?? options.testRecipientEmail,
+        )
+      } catch (reportErr) {
+        console.warn('[outreach/runner] Failed to send report on discovery failure:', reportErr)
+      }
+    }
+
+    return failedSummary
   }
 
   const scoutedCount = candidates.length
@@ -690,7 +705,6 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
 
   const shouldSendAdminReport =
     options.deps?.sendPitchEmail === undefined &&
-    !process.env.VITEST &&
     !process.env.E2E_SMTP_PORT
 
   if (shouldSendAdminReport) {
