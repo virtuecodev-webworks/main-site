@@ -113,7 +113,7 @@ export function PwaInstallPrompt({
           await fetch('/api/push/subscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subscription: sub }),
+            body: JSON.stringify({ subscription: sub.toJSON ? sub.toJSON() : sub }),
           })
         }
       }

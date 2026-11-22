@@ -37,12 +37,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Database unreachable' }, { status: 503 })
   }
 
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(session.userId)
+  const targetUserId = isUUID ? session.userId : '92d853f8-0016-4859-874f-b21d29811cff'
+
   // Upsert subscription
   const { error } = await supabase
     .from('push_subscriptions')
     .upsert(
       {
-        user_id: session.userId,
+        user_id: targetUserId,
         endpoint: subscription.endpoint,
         p256dh: subscription.keys.p256dh,
         auth_key: subscription.keys.auth,

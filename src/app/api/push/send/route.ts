@@ -2,6 +2,7 @@ import 'server-only'
 import { NextResponse, type NextRequest } from 'next/server'
 import webpush from 'web-push'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { resolveSession } from '@/lib/supabase/auth'
 
 if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
   webpush.setVapidDetails(
@@ -140,12 +141,28 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
  */
 export async function POST(request: NextRequest) {
   const secret = request.headers.get('x-cron-secret')
-  if (secret !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const isCron = Boolean(secret && secret === process.env.CRON_SECRET)
+
+  let isAdminUser = isCron
+  let currentUserId: string | null = null
+
+  if (!isCron) {
+    const session = await resolveSession()
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    isAdminUser = Boolean(session.isAdmin || session.isStaff)
+    currentUserId = session.userId
   }
 
-  const payload: PushPayload = await request.json()
-  const result = await sendPushToAdmins(payload)
+  const payload: PushPayload = await request.json().catch(() => ({
+    title: 'Virtue & Co. Test Notification',
+    body: 'Test push notification delivered successfully across all devices!',
+  }))
+
+  const result = isAdminUser
+    ? await sendPushToAdmins(payload)
+    : (currentUserId ? await sendPushToUser(currentUserId, payload) : { sent: 0, failed: 0 })
 
   return NextResponse.json({ ok: true, ...result })
 }

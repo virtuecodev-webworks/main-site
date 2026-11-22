@@ -1,7 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { Bell, Check, Smartphone, Volume2, X } from 'lucide-react'
+import { Bell, Check, Send, Smartphone, Volume2, X } from 'lucide-react'
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -34,6 +35,7 @@ export function NotificationBellSheet({
   const [open, setOpen] = React.useState(false)
   const [permission, setPermission] = React.useState<NotificationPermission>('default')
   const [isSubscribing, setIsSubscribing] = React.useState(false)
+  const [isSendingTest, setIsSendingTest] = React.useState(false)
 
   React.useEffect(() => {
     if ('Notification' in window) {
@@ -43,7 +45,7 @@ export function NotificationBellSheet({
 
   const handleSubscribe = async () => {
     if (!('Notification' in window)) {
-      alert('Push notifications are not supported in this browser.')
+      toast.error('Push notifications are not supported in this browser.')
       return
     }
 
@@ -65,17 +67,57 @@ export function NotificationBellSheet({
         }
 
         if (sub) {
-          await fetch('/api/push/subscribe', {
+          const res = await fetch('/api/push/subscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subscription: sub }),
+            body: JSON.stringify({ subscription: sub.toJSON ? sub.toJSON() : sub }),
           })
+          if (res.ok) {
+            toast.success('Push notifications active for this device!')
+          } else {
+            const data = await res.json().catch(() => ({}))
+            toast.error(data.error || 'Failed to register subscription with server.')
+          }
+        } else {
+          toast.info('Notification permission granted.')
         }
+      } else if (perm === 'denied') {
+        toast.error('Notifications blocked in browser settings.')
       }
     } catch (err) {
       console.warn('[Notifications] push subscribe notice:', err)
+      toast.error('Could not activate push notifications.')
     } finally {
       setIsSubscribing(false)
+    }
+  }
+
+  const handleSendTestPush = async () => {
+    setIsSendingTest(true)
+    try {
+      const res = await fetch('/api/push/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Virtue & Co. Test Alert 🔔',
+          body: 'Push alerts are working perfectly across your devices!',
+          url: '/en/admin',
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.ok) {
+        if (data.sent > 0) {
+          toast.success(`Test push delivered to ${data.sent} device(s)!`)
+        } else {
+          toast.warning('No active subscriptions found in database yet. Tap "Enable" above first.')
+        }
+      } else {
+        toast.error(data.error || 'Failed to dispatch test notification.')
+      }
+    } catch (err) {
+      toast.error('Network error dispatching test push.')
+    } finally {
+      setIsSendingTest(false)
     }
   }
 
@@ -145,6 +187,19 @@ export function NotificationBellSheet({
               <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
                 Receive instant notifications on your lock screen when messages or milestones are updated.
               </p>
+
+              <div className="mt-3 pt-2.5 border-t border-border/60 flex items-center justify-between gap-2">
+                <span className="text-[11px] text-muted-foreground">Push test:</span>
+                <button
+                  type="button"
+                  onClick={handleSendTestPush}
+                  disabled={isSendingTest}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-primary/20 active:scale-95 transition-all disabled:opacity-50"
+                >
+                  <Send className="size-3" />
+                  <span>{isSendingTest ? 'Sending…' : 'Send Test Alert'}</span>
+                </button>
+              </div>
             </div>
 
             {/* Notification items */}
