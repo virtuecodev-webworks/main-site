@@ -13,6 +13,7 @@ import {
   Sparkles,
   Info,
   ExternalLink,
+  Send,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -27,9 +28,14 @@ declare global {
   }
 }
 
+const VAPID_PUBLIC_KEY =
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
+  'BDJPQeyyxXQ4jLCBXVNXIhJovM6JtzfIMWHTOSpxMhEbrfXnsUM02nD5jmSAk9FnkNw7hkBRmj6-EJ__bS1P6G4'
+
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const clean = base64String.trim().replace(/\s+/g, '')
+  const padding = '='.repeat((4 - (clean.length % 4)) % 4)
+  const base64 = (clean + padding).replace(/-/g, '+').replace(/_/g, '/')
   const rawData = window.atob(base64)
   const outputArray = new Uint8Array(rawData.length)
   for (let i = 0; i < rawData.length; ++i) {
@@ -49,8 +55,45 @@ export function AppInstallAdvisor({
   const [isMobile, setIsMobile] = useState(false)
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default')
   const [isSubscribing, setIsSubscribing] = useState(false)
+  const [isSendingTest, setIsSendingTest] = useState(false)
   const [dismissed, setDismissed] = useState(false)
   const [showManualGuide, setShowManualGuide] = useState(false)
+
+  // Auto-sync push subscription to database whenever permission is granted
+  const syncPushSubscription = useCallback(async () => {
+    if (typeof window === 'undefined' || !('Notification' in window) || !('serviceWorker' in navigator)) {
+      return false
+    }
+    if (Notification.permission !== 'granted') {
+      return false
+    }
+
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js').catch(() => null)
+      const activeReg = reg || (await navigator.serviceWorker.ready.catch(() => null))
+      if (!activeReg) return false
+
+      let sub = await activeReg.pushManager.getSubscription()
+      if (!sub) {
+        sub = await activeReg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as unknown as BufferSource,
+        })
+      }
+
+      if (sub) {
+        const res = await fetch('/api/push/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription: sub.toJSON ? sub.toJSON() : sub }),
+        })
+        return res.ok
+      }
+    } catch (err) {
+      console.warn('[PWA] Push subscription sync notice:', err)
+    }
+    return false
+  }, [])
 
   useEffect(() => {
     // 1. Detect if running in standalone PWA mode
@@ -83,9 +126,12 @@ export function AppInstallAdvisor({
         .catch((err) => console.warn('[PWA] SW notice:', err))
     }
 
-    // 5. Check Notification permission
+    // 5. Check Notification permission & auto-sync if granted
     if (typeof window !== 'undefined' && 'Notification' in window) {
       setNotificationPermission(Notification.permission)
+      if (Notification.permission === 'granted') {
+        syncPushSubscription()
+      }
     }
 
     // 6. Capture early or pending beforeinstallprompt event
@@ -185,32 +231,12 @@ export function AppInstallAdvisor({
         return
       }
 
-      if (permission === 'granted' && 'serviceWorker' in navigator) {
-        const reg = await navigator.serviceWorker.ready
-        const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-
-        let sub = await reg.pushManager.getSubscription()
-        if (!sub && vapidPublicKey) {
-          sub = await reg.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) as unknown as BufferSource,
-          })
-        }
-
-        if (sub) {
-          const res = await fetch('/api/push/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subscription: sub.toJSON ? sub.toJSON() : sub }),
-          })
-
-          if (res.ok) {
-            toast.success('Push notifications active! Instant alerts enabled.')
-          } else {
-            toast.success('Push notifications granted for this device.')
-          }
+      if (permission === 'granted') {
+        const synced = await syncPushSubscription()
+        if (synced) {
+          toast.success('Push notifications active! Instant alerts enabled.')
         } else {
-          toast.success('Push notifications activated.')
+          toast.success('Push notification permission granted.')
         }
       }
     } catch (e) {
@@ -219,7 +245,38 @@ export function AppInstallAdvisor({
     } finally {
       setIsSubscribing(false)
     }
-  }, [])
+  }, [syncPushSubscription])
+
+  const handleSendTestPush = useCallback(async () => {
+    setIsSendingTest(true)
+    try {
+      await syncPushSubscription()
+
+      const res = await fetch('/api/push/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Virtue & Co. Test Alert 🔔',
+          body: 'Push alerts are working perfectly across your devices!',
+          url: '/en/admin',
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.ok) {
+        if (data.sent > 0) {
+          toast.success(`Test push delivered to ${data.sent} device(s)!`)
+        } else {
+          toast.warning('Push dispatched. Tap "Enable" above if not yet active.')
+        }
+      } else {
+        toast.error(data.error || 'Failed to dispatch test notification.')
+      }
+    } catch (err) {
+      toast.error('Network error dispatching test push.')
+    } finally {
+      setIsSendingTest(false)
+    }
+  }, [syncPushSubscription])
 
   const handleDismiss = () => {
     setDismissed(true)
@@ -229,15 +286,10 @@ export function AppInstallAdvisor({
   // If already dismissed, hide
   if (dismissed) return null
 
-  // If already standalone AND notifications are already granted, nothing left to advise!
-  if (isStandalone && notificationPermission === 'granted') {
-    return null
-  }
-
   // ─────────────────────────────────────────────────────────────────────────────
-  // STAGE 2: App IS Installed (Standalone mode) -> Suggest Enabling Notifications
+  // STAGE 2: App IS Installed (Standalone mode)
   // ─────────────────────────────────────────────────────────────────────────────
-  if (isStandalone && notificationPermission !== 'granted') {
+  if (isStandalone) {
     return (
       <div
         className={`relative overflow-hidden rounded-[24px] border border-amber-500/30 bg-[#0a0a0a] p-5 sm:p-6 text-[#f5f4f0] shadow-2xl backdrop-blur-xl ${className}`}
@@ -248,7 +300,7 @@ export function AppInstallAdvisor({
           <div className="flex items-center justify-between gap-3">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-[11px] font-semibold text-amber-300">
               <Sparkles className="size-3 text-amber-300" />
-              <span>Recommended: Enable Push Alerts</span>
+              <span>{notificationPermission === 'granted' ? 'Native App Mode Active' : 'Recommended: Enable Push Alerts'}</span>
             </div>
 
             <button
@@ -268,31 +320,53 @@ export function AppInstallAdvisor({
 
             <div className="flex flex-col gap-1">
               <h3 className="font-display text-base font-bold tracking-tight text-[#f5f4f0] sm:text-lg">
-                App Installed — Activate Instant Push Alerts
+                {notificationPermission === 'granted'
+                  ? 'App Installed — Push Alerts Active'
+                  : 'App Installed — Activate Instant Push Alerts'}
               </h3>
               <p className="text-xs sm:text-[13px] leading-relaxed text-[#f5f4f0]/70">
-                Receive instant sound notifications for new order inquiries, project delivery updates, and direct client messages directly on your device.
+                {notificationPermission === 'granted'
+                  ? 'Instant notifications are enabled on this device. Tap "Send Test Alert" below to test lock screen push delivery.'
+                  : 'Receive instant sound notifications for new order inquiries, project delivery updates, and direct client messages directly on your device.'}
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-white/10">
-            <button
-              type="button"
-              onClick={handleNotificationRequest}
-              disabled={isSubscribing}
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-[#0a0a0a] shadow-md transition-all hover:brightness-110 active:scale-95 disabled:opacity-50"
-            >
-              <Bell className="size-4 fill-current" />
-              <span>{isSubscribing ? 'Activating Alerts…' : 'Enable Mobile Push Alerts'}</span>
-            </button>
+            {notificationPermission === 'granted' ? (
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/15 px-3 py-2 text-xs font-semibold text-emerald-400">
+                  <Check className="size-4" />
+                  <span>Push Alerts Active</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleSendTestPush}
+                  disabled={isSendingTest}
+                  className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-[#0a0a0a] shadow-md transition-all hover:brightness-110 active:scale-95 disabled:opacity-50"
+                >
+                  <Send className="size-4" />
+                  <span>{isSendingTest ? 'Sending Test…' : 'Send Test Alert'}</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleNotificationRequest}
+                disabled={isSubscribing}
+                className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-[#0a0a0a] shadow-md transition-all hover:brightness-110 active:scale-95 disabled:opacity-50"
+              >
+                <Bell className="size-4 fill-current" />
+                <span>{isSubscribing ? 'Activating Alerts…' : 'Enable Mobile Push Alerts'}</span>
+              </button>
+            )}
 
             <button
               type="button"
               onClick={handleDismiss}
               className="ml-auto text-xs font-medium text-[#f5f4f0]/50 hover:text-[#f5f4f0] transition-colors py-2 px-1"
             >
-              Maybe Later
+              Dismiss
             </button>
           </div>
         </div>
@@ -406,6 +480,19 @@ export function AppInstallAdvisor({
                   : 'Install App on Desktop'}
             </span>
           </button>
+
+          {/* If push notifications are active, expose the 1-click Test Alert button right here! */}
+          {notificationPermission === 'granted' && (
+            <button
+              type="button"
+              onClick={handleSendTestPush}
+              disabled={isSendingTest}
+              className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-2.5 text-xs font-semibold text-primary shadow-sm hover:bg-primary/25 active:scale-95 transition-all disabled:opacity-50"
+            >
+              <Send className="size-4" />
+              <span>{isSendingTest ? 'Sending Test…' : 'Send Test Alert'}</span>
+            </button>
+          )}
 
           {/* Dismiss / Continue in Browser */}
           <button

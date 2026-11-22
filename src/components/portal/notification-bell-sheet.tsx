@@ -5,9 +5,14 @@ import { Bell, Check, Send, Smartphone, Volume2, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
+const VAPID_PUBLIC_KEY =
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
+  'BDJPQeyyxXQ4jLCBXVNXIhJovM6JtzfIMWHTOSpxMhEbrfXnsUM02nD5jmSAk9FnkNw7hkBRmj6-EJ__bS1P6G4'
+
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const clean = base64String.trim().replace(/\s+/g, '')
+  const padding = '='.repeat((4 - (clean.length % 4)) % 4)
+  const base64 = (clean + padding).replace(/-/g, '+').replace(/_/g, '/')
   const rawData = window.atob(base64)
   const outputArray = new Uint8Array(rawData.length)
   for (let i = 0; i < rawData.length; ++i) {
@@ -38,8 +43,29 @@ export function NotificationBellSheet({
   const [isSendingTest, setIsSendingTest] = React.useState(false)
 
   React.useEffect(() => {
-    if ('Notification' in window) {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
       setPermission(Notification.permission)
+      if (Notification.permission === 'granted' && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').then(async (reg) => {
+          const activeReg = reg || (await navigator.serviceWorker.ready.catch(() => null))
+          if (activeReg) {
+            let sub = await activeReg.pushManager.getSubscription().catch(() => null)
+            if (!sub) {
+              sub = await activeReg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as unknown as BufferSource,
+              }).catch(() => null)
+            }
+            if (sub) {
+              fetch('/api/push/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subscription: sub.toJSON ? sub.toJSON() : sub }),
+              }).catch(() => {})
+            }
+          }
+        }).catch(() => {})
+      }
     }
   }, [])
 
@@ -55,14 +81,14 @@ export function NotificationBellSheet({
       setPermission(perm)
 
       if (perm === 'granted' && 'serviceWorker' in navigator) {
-        const reg = await navigator.serviceWorker.ready
-        const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+        const reg = await navigator.serviceWorker.register('/sw.js').catch(() => null)
+        const activeReg = reg || (await navigator.serviceWorker.ready.catch(() => null))
 
-        let sub = await reg.pushManager.getSubscription()
-        if (!sub && vapidPublicKey) {
-          sub = await reg.pushManager.subscribe({
+        let sub = activeReg ? await activeReg.pushManager.getSubscription() : null
+        if (!sub && activeReg) {
+          sub = await activeReg.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) as unknown as BufferSource,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as unknown as BufferSource,
           })
         }
 
