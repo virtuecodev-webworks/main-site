@@ -63,17 +63,17 @@ afterEach(() => {
 describe('generatePitch', () => {
   it('calls Gemini REST API with E2E-compatible prompt and parses fenced JSON', async () => {
     const geminiPayload = {
-      subject: 'Modernizing Harbor Bakery online',
-      headline: 'Turn local searches into daily bakery orders',
+      subject: "quick question regarding Harbor Bakery's client inquiries",
+      headline: "Optimizing Harbor Bakery's mobile inquiry flow",
       greeting: 'Hi Harbor Bakery team,',
-      opening: 'We spotted a few technical gaps on your current website that may slow mobile visitors.',
+      opening: "I was recently reviewing Harbor Bakery's online presence and noticed friction points where prospective clients drop off before reaching out.",
       auditBullets: [
-        'Missing HTTPS encryption triggers browser security warnings.',
-        'No mobile viewport tag makes phone browsing cramped.',
+        'Security warnings appear when visitors land on your site, creating hesitation for clients looking to order.',
+        'The viewing experience on modern mobile devices requires zooming or horizontal scrolling.',
       ],
-      recommendedPackage: 'WordPress & Headless CMS Engineering — Corporate Site ($260, 10-day delivery)',
-      ctaText: 'Book a Free Walkthrough',
-      closing: 'Best regards,\nVirtue & Co. Webworks',
+      recommendedPackage: 'Bespoke Web Engineering & Mobile Experience Overhaul',
+      ctaText: "Reply 'Yes' for Custom Breakdown",
+      closing: 'Before our team puts together a custom visual breakdown and prototype, are you open to partnering with an outside engineering studio to upgrade this?\n\nIf you are, simply reply directly to this email with a quick "yes".\n\nWarm regards,\nGlory Adeniran · Lead Client Strategist\nVirtue & Co. Webworks',
     }
 
     const fetchMock = vi.fn<typeof fetch>().mockResolvedValueOnce(
@@ -192,7 +192,7 @@ describe('generatePitch', () => {
 })
 
 describe('buildFallbackPitch', () => {
-  it('tailors package and bullets for businesses without a website vs retail/e-commerce', () => {
+  it('tailors capability and bullets for businesses without a website vs retail/e-commerce without quoting prices', () => {
     const noSitePitch = buildFallbackPitch(
       {
         businessName: 'Apex Consulting',
@@ -213,8 +213,11 @@ describe('buildFallbackPitch', () => {
         title: null,
       },
     )
-    expect(noSitePitch.recommendedPackage).toContain('Wix Studio')
+    expect(noSitePitch.subject).toBe("quick question regarding Apex Consulting's online presence")
+    expect(noSitePitch.recommendedPackage).toContain('Custom Brand Web Presence')
+    expect(noSitePitch.recommendedPackage).not.toContain('$')
     expect(noSitePitch.auditBullets[0]).toContain('Apex Consulting')
+    expect(noSitePitch.closing).toContain('simply reply directly to this email with a quick "yes"')
 
     const ecomPitch = buildFallbackPitch(
       {
@@ -226,7 +229,11 @@ describe('buildFallbackPitch', () => {
       },
       sampleEvaluation,
     )
-    expect(ecomPitch.recommendedPackage).toContain('Product Storefront')
+    expect(ecomPitch.subject).toBe("quick question regarding Velvet Boutique's client inquiries")
+    expect(ecomPitch.recommendedPackage).toBe('Bespoke E-Commerce Architecture & Conversion Optimization')
+    expect(ecomPitch.recommendedPackage).not.toContain('$')
+    expect(ecomPitch.auditBullets.join(' ')).not.toMatch(/\bms\b|ttfb|copyright \d{4}/i)
+    expect(ecomPitch.closing).toContain('simply reply directly to this email with a quick "yes"')
   })
 })
 

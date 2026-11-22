@@ -41,7 +41,7 @@ export function OutreachPitchEmail({
   return (
     <Shell
       preheader={pitch.headline}
-      eyebrow={isDryRun ? 'Dry Run · Site Audit' : 'Site Audit'}
+      eyebrow={isDryRun ? 'Dry Run · Executive Inquiry' : 'Executive Inquiry'}
     >
       {isDryRun && (
         <div style={{ marginBottom: 14 }}>
@@ -90,7 +90,7 @@ export function OutreachPitchEmail({
             marginBottom: 12,
           }}
         >
-          ( What we spotted{websiteUrl ? ` · ${websiteUrl}` : ''} )
+          ( Strategic Observations{websiteUrl ? ` · ${websiteUrl}` : ''} )
         </div>
         <ul
           style={{
@@ -115,7 +115,7 @@ export function OutreachPitchEmail({
           borderRadius: 14,
           padding: '18px 22px',
           textAlign: 'left',
-          margin: '0 0 22px',
+          margin: '0 0 20px',
         }}
       >
         <div
@@ -129,17 +129,19 @@ export function OutreachPitchEmail({
             marginBottom: 6,
           }}
         >
-          ( Recommended Solution )
+          ( Direct Reply Invitation )
         </div>
         <div
           style={{
-            fontSize: 14.5,
-            fontWeight: 600,
+            fontSize: 14,
             color: TEXT_LIGHT,
-            lineHeight: 1.5,
+            lineHeight: 1.6,
           }}
         >
-          {pitch.recommendedPackage}
+          Are you open to partnering with an outside engineering studio to overhaul your mobile visitor flow?
+          <div style={{ marginTop: 8, color: '#e6edf3', fontWeight: 600 }}>
+            👉 Simply reply directly to this email with a quick <span style={{ color: GOLD }}>&quot;yes&quot;</span> and our team will prepare a tailored visual teardown and prototype for your brand.
+          </div>
         </div>
       </div>
 
@@ -159,7 +161,7 @@ export function OutreachPitchEmail({
           lineHeight: 1.5,
         }}
       >
-        Prefer email over a form? <strong>You can simply reply directly to this message</strong> — our lead engineering team reads and responds to every email.
+        Prefer email over a form? <strong>You can simply reply directly to this message</strong> — our lead client strategist reads and responds to every email.
       </div>
 
       <div

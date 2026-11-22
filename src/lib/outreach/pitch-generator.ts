@@ -2,7 +2,6 @@ import 'server-only'
 
 import { z } from 'zod'
 import { AGENCY } from '@/lib/constants'
-import { AGENCY_SERVICES, getServiceByCategory } from '@/lib/packages'
 import type {
   DiscoveredBusiness,
   GeneratedPitch,
@@ -26,9 +25,9 @@ const geminiPitchSchema = z.object({
   greeting: z.string().trim().min(2).max(120),
   opening: z.string().trim().min(15).max(1000),
   auditBullets: z.array(z.string().trim().min(5).max(300)).min(1).max(6),
-  recommendedPackage: z.string().trim().min(3).max(160),
+  recommendedPackage: z.string().trim().min(3).max(160).default('Bespoke Web Engineering & Conversion Architecture'),
   ctaText: z.string().trim().min(3).max(100),
-  closing: z.string().trim().min(3).max(300),
+  closing: z.string().trim().min(3).max(600),
 })
 
 interface GeminiApiResponse {
@@ -49,52 +48,43 @@ function selectRecommendedPackage(
   const hasLegacy = evaluation.issues.some((issue) => issue.code === 'legacy_builder')
 
   if (/\b(shop|store|retail|boutique|ecommerce|commerce|mart)\b/.test(contextText)) {
-    const service = getServiceByCategory('ecommerce') ?? AGENCY_SERVICES[1]
-    const pkg = service.packages.starter
-    return `${service.title} — ${pkg.name} ($${pkg.priceUsd}, ${pkg.deliveryDays}-day delivery)`
+    return 'Bespoke E-Commerce Architecture & Conversion Optimization'
   }
 
   if (hasLegacy || /\b(blog|media|hospitality|hotel|restaurant|cafe|bakery)\b/.test(contextText)) {
-    const service = getServiceByCategory('wordpress') ?? AGENCY_SERVICES[2]
-    const pkg = service.packages.business
-    return `${service.title} — ${pkg.name} ($${pkg.priceUsd}, ${pkg.deliveryDays}-day delivery)`
+    return 'Content Experience & High-Performance Headless Web Architecture'
   }
 
   if (!evaluation.hasWebsite) {
-    const service = getServiceByCategory('wix') ?? AGENCY_SERVICES[3]
-    const pkg = service.packages.starter
-    return `${service.title} — ${pkg.name} ($${pkg.priceUsd}, ${pkg.deliveryDays}-day delivery)`
+    return 'Custom Brand Web Presence & Inbound Acquisition Funnel'
   }
 
-  const service = getServiceByCategory('custom') ?? AGENCY_SERVICES[0]
-  const pkg = service.packages.business
-  return `${service.title} — ${pkg.name} ($${pkg.priceUsd}, ${pkg.deliveryDays}-day delivery)`
+  return 'Bespoke Web Engineering & Mobile Experience Overhaul'
 }
 
 function formatIssueBullet(issue: SiteIssue, business: DiscoveredBusiness): string {
   switch (issue.code) {
     case 'no_website':
-      return `${business.businessName} currently has no dedicated website listed, making it harder for local customers searching online to discover and book with you.`
+      return `${business.businessName} currently has no dedicated web presence listed, making it difficult for local clients searching on mobile to discover, trust, and book with you.`
     case 'unreachable':
-      return `Your current web address timed out or failed to respond during our automated check${issue.detail ? ` (${issue.detail})` : ''}, which blocks prospective visitors.`
+      return `Prospective clients trying to open your website encounter connection drops or loading failures, causing them to leave for competing alternatives.`
     case 'http_error':
-      return `Your website returned an error status (${issue.detail ?? 'HTTP error'}), leaving visitors with a broken first impression.`
+      return `Visitors navigating to your website encounter service interruption screens, leading to an immediate loss of inbound customer confidence.`
     case 'no_https':
-      return 'The site is served without HTTPS encryption, which triggers browser "Not Secure" warnings and reduces customer trust.'
+      return `Security warnings appear when visitors land on your site, which creates hesitation for clients looking to contact or transact with you.`
     case 'slow_ttfb':
-      return `Initial server response took ${issue.detail ?? 'over 2.5 seconds'}, which increases bounce rates on mobile connections.`
+      return `Mobile visitors experience noticeable loading friction before content appears, leading to elevated drop-off rates during first-time visits.`
     case 'missing_title':
-      return 'Pages are missing a clear <title> tag, hurting search visibility and browser tab clarity.'
     case 'missing_meta_description':
-      return 'There is no SEO meta description configured to control how your business appears in Google search results.'
+      return `Your business listing in search results lacks clear branding and service context, causing prospective clients to click on competing listings.`
     case 'missing_viewport':
-      return 'The site lacks a mobile viewport configuration, causing cramped or zoomed-out layouts on phones.'
+      return `The viewing experience on modern mobile devices requires zooming or horizontal scrolling, creating friction for visitors trying to get in touch.`
     case 'legacy_builder':
-      return `Your web presence shows an outdated footprint${issue.detail ? ` (${issue.detail})` : ''}, limiting speed, branding, and conversion rates.`
+      return `The current layout and interface show styling patterns that feel disconnected from modern customer expectations, impacting overall brand trust.`
     case 'thin_content':
-      return 'The landing page has minimal visible content, giving potential customers too little context on your services or how to contact you.'
+      return `Key service details and clear contact pathways are sparse, leaving potential customers uncertain about how to take the next step.`
     default:
-      return `${issue.label}${issue.detail ? ` (${issue.detail})` : ''}`
+      return `Potential clients on mobile devices experience friction in your booking and enquiry journey.`
   }
 }
 
@@ -104,27 +94,29 @@ export function buildFallbackPitch(
 ): GeneratedPitch {
   const recommendedPackage = selectRecommendedPackage(business, evaluation)
   const locationSuffix = business.location ? ` in ${business.location}` : ''
-  const industryPhrase = business.industry ? `${business.industry} ` : ''
 
   const auditBullets =
     evaluation.issues.length > 0
-      ? evaluation.issues.slice(0, 4).map((issue) => formatIssueBullet(issue, business))
+      ? evaluation.issues.slice(0, 3).map((issue) => formatIssueBullet(issue, business))
       : [
-          `Opportunity to modernize ${business.businessName}'s online positioning and conversion flow for local search traffic.`,
-          'Fast, mobile-first architecture with clear calls-to-action to capture more inbound leads.',
+          `Potential clients searching for ${business.businessName}${locationSuffix} on mobile devices encounter subtle friction before reaching your contact points.`,
+          `High-intent visitors are dropping off before submitting an enquiry due to navigation hurdles on phone screens.`,
+          `Opportunity to capture more inbound client enquiries with a modern, high-converting digital experience.`,
         ]
 
   const subject = !evaluation.hasWebsite
-    ? `A fast, modern website for ${business.businessName}${locationSuffix}`
-    : `Quick website audit & redesign ideas for ${business.businessName}`
+    ? `quick question regarding ${business.businessName}'s online presence`
+    : `quick question regarding ${business.businessName}'s client inquiries`
 
   const headline = !evaluation.hasWebsite
-    ? `Bring ${business.businessName} online with a conversion-ready site`
-    : `A few quick wins we spotted on ${business.businessName}'s website`
+    ? `Helping ${business.businessName} capture inbound mobile clients`
+    : `Optimizing ${business.businessName}'s mobile inquiry flow`
 
   const opening = !evaluation.hasWebsite
-    ? `We came across ${business.businessName}${locationSuffix} while researching ${industryPhrase}businesses and noticed you do not have an active website yet. At ${AGENCY.name}, we build fast, transparent fixed-price websites designed to turn local searches into booked clients.`
-    : `We recently ran a quick technical check on ${business.websiteUrl ?? business.businessName}${locationSuffix} and spotted a few straightforward fixes that could help ${business.businessName} capture more inbound enquiries.`
+    ? `I was recently looking into ${business.businessName}${locationSuffix} and noticed your business doesn't have an active website yet. We work with growing businesses to help them capture high-value clients who search on mobile devices.`
+    : `I was recently reviewing ${business.businessName}'s online presence and noticed a few friction points where potential clients are likely dropping off before submitting an enquiry.`
+
+  const closing = `Before our team puts together a custom visual breakdown and prototype for your brand, are you open to partnering with an outside engineering studio to upgrade this?\n\nIf you are, simply reply directly to this email with a quick "yes" and I’ll be glad to share the details.\n\nWarm regards,\nGlory Adeniran · Lead Client Strategist\n${AGENCY.name}`
 
   return {
     subject,
@@ -133,40 +125,33 @@ export function buildFallbackPitch(
     opening,
     auditBullets,
     recommendedPackage,
-    ctaText: 'Book a Free 15-Min Walkthrough',
-    closing: `Prefer email over a form? Simply reply directly to this message and our engineering team will get right back to you.\n\nBest regards,\n${AGENCY.name}`,
+    ctaText: 'Reply "Yes" or Schedule a Walkthrough',
+    closing,
     model: 'deterministic-fallback',
   }
-}
-
-function buildServiceCatalogSummary(): string {
-  return AGENCY_SERVICES.map((service) => {
-    const starter = service.packages.starter
-    const business = service.packages.business
-    return `- ${service.title}: ${starter.name} ($${starter.priceUsd}, ${starter.deliveryDays}d) | ${business.name} ($${business.priceUsd}, ${business.deliveryDays}d)`
-  }).join('\n')
 }
 
 function buildPitchPrompt(
   business: DiscoveredBusiness,
   evaluation: SiteEvaluationResult,
 ): string {
-  const issuesText =
+  const issuesSummary =
     evaluation.issues.length > 0
       ? evaluation.issues
-          .map(
-            (issue) =>
-              `- [${issue.severity.toUpperCase()}] ${issue.code}: ${issue.label}${issue.detail ? ` (${issue.detail})` : ''}`,
-          )
+          .map((i) => `- Strategic Area: ${i.label} (Severity: ${i.severity})`)
           .join('\n')
-      : '- None detected (general conversion & modernization review)'
+      : '- General conversion flow and mobile user experience review'
 
   return [
-    `You are a senior web engineering strategist at ${AGENCY.name} (${AGENCY.domain}, ${AGENCY.email}).`,
-    'Write a concise, genuine, non-spammy B2B cold outreach email pitch tailored to the prospect below.',
+    `You are Glory Adeniran, Lead Client Strategist at ${AGENCY.name} (${AGENCY.domain}).`,
+    'Write a concise, warm, authentic 1-on-1 consultative cold outreach email to the business leadership below.',
     '',
-    'Agency Service Catalog:',
-    buildServiceCatalogSummary(),
+    'CRITICAL STRATEGY & COMPLIANCE RULES:',
+    '1. DO NOT mention technical bug jargon or specific technical fixes (NO server response times in ms, NO missing HTML/meta tags, NO copyright dates, NO mention of SSL certificates). We must NOT give away the exact technical fixes so they do not simply hand them to their existing developer.',
+    '2. DO NOT mention package names, tiers, prices, dollar amounts ($), or delivery days anywhere in the email.',
+    '3. Focus the conversation on mobile user experience, client drop-off, and lost inbound enquiries/bookings.',
+    '4. Subject line MUST be lowercase and conversational, e.g. "quick question regarding [Business Name]\'s client inquiries".',
+    '5. In the closing, include a polite qualification check asking if they are open to partnering with an outside engineering studio to overhaul this, and instruct them to simply reply directly with "yes".',
     '',
     'Prospect Details:',
     `Business Name: ${business.businessName}`,
@@ -174,20 +159,19 @@ function buildPitchPrompt(
     `Location: ${business.location ?? 'Not specified'}`,
     `Website: ${business.websiteUrl ?? 'None'}`,
     `Has Website: ${evaluation.hasWebsite ? 'Yes' : 'No'}`,
-    `Site Issue Score: ${evaluation.issueScore}/100`,
-    'Detected Issues:',
-    issuesText,
+    'High-Level Observation Areas:',
+    issuesSummary,
     '',
     'Return ONLY a single raw JSON object (no markdown fences, no commentary) with these exact keys:',
     '{',
-    '  "subject": "concise email subject line (5-120 chars)",',
-    '  "headline": "punchy card headline (5-140 chars)",',
+    '  "subject": "lowercase conversational subject line e.g. quick question regarding [Business Name]\'s client inquiries (5-120 chars)",',
+    '  "headline": "concise consultative headline focusing on mobile client capture (5-140 chars)",',
     '  "greeting": "short greeting e.g. Hi <Business> team,",',
-    '  "opening": "2-3 personalized sentences referencing their business and findings",',
-    '  "auditBullets": ["2 to 4 concrete, specific bullet points grounded in the detected issues"],',
-    '  "recommendedPackage": "one matching package from the catalog above with USD price and delivery days",',
-    '  "ctaText": "short action button text e.g. Book a Free 15-Min Walkthrough",',
-    '  "closing": "short sign-off mentioning they can also simply reply directly to this email, from Virtue & Co. Webworks"',
+    '  "opening": "2-3 authentic, thoughtful sentences explaining you reviewed their presence and noticed friction points where prospective clients drop off before reaching out",',
+    '  "auditBullets": ["2 to 3 high-level strategic observations about lost conversions or mobile friction, WITHOUT mentioning specific code or server ms"],',
+    '  "recommendedPackage": "high-level strategic focus WITHOUT any price or dollar sign (e.g. Bespoke Web Engineering & Conversion Architecture)",',
+    '  "ctaText": "short action text e.g. Reply \'Yes\' for Custom Breakdown",',
+    '  "closing": "warm sign-off asking if they are open to partnering with an outside engineering studio, inviting them to reply \'yes\' directly to this email, signed Glory Adeniran · Lead Client Strategist, Virtue & Co. Webworks"',
     '}',
   ].join('\n')
 }
