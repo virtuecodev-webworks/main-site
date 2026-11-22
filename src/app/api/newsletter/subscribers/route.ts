@@ -25,7 +25,14 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = await getDbClient()
+  // Reads go through the admin's own session (RLS allows admin SELECT).
+  let supabase = null
+  try {
+    supabase = await createSupabaseServerClient()
+  } catch {
+    supabase = null
+  }
+  if (!supabase) supabase = await getDbClient()
   if (!supabase) {
     return NextResponse.json({ error: 'Database unavailable' }, { status: 503 })
   }

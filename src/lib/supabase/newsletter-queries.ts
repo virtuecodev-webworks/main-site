@@ -5,14 +5,15 @@ import { createSupabaseServerClient } from './server'
 import type { NewsletterDispatch, NewsletterSubscriber } from './types'
 
 export async function getNewsletterDashboardData() {
-  let supabase: any = createSupabaseAdminClient()
-  if (!supabase) {
-    try {
-      supabase = await createSupabaseServerClient()
-    } catch {
-      supabase = null
-    }
+  // Read as the signed-in admin first: RLS grants admins SELECT, so this works
+  // even if the deployment's service-role key is missing or misconfigured.
+  let supabase: any = null
+  try {
+    supabase = await createSupabaseServerClient()
+  } catch {
+    supabase = null
   }
+  if (!supabase) supabase = createSupabaseAdminClient()
   if (!supabase) {
     supabase = createSupabasePublicClient()
   }

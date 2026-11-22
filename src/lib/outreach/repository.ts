@@ -448,7 +448,11 @@ export function createOutreachRepository(
             error_summary: 'Batch ended at execution window limit',
           })
           if (typeof updateQuery?.eq === 'function') {
-            void updateQuery.eq('id', stale.id)
+            // Supabase builders are lazy — attach handlers so the update actually executes.
+            updateQuery.eq('id', stale.id).then(
+              () => {},
+              () => {},
+            )
           }
         } catch {
           // best-effort auto-heal
