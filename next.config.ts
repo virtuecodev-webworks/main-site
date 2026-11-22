@@ -16,6 +16,10 @@ const supabaseHost = (() => {
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
+  experimental: {
+    agentUpgrade: 'security',
+  },
+
   images: {
     // Supabase Storage public buckets serve portfolio screenshots.
     remotePatterns: [
