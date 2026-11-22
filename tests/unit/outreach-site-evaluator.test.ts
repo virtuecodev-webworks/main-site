@@ -236,4 +236,24 @@ describe('evaluateWebsite', () => {
       'support@other.com',
     ])
   })
+
+  it('extractPublicEmails extracts email from schema.org JSON-LD microdata', () => {
+    const html = `
+      <html>
+        <head>
+          <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Luxury London Architects",
+              "email": "contact@londonarchitects.example"
+            }
+          </script>
+        </head>
+      </html>
+    `
+    expect(extractPublicEmails(html, 'londonarchitects.example')).toEqual([
+      'contact@londonarchitects.example',
+    ])
+  })
 })

@@ -381,24 +381,44 @@ export function OutreachConsole({
           settings.locations.length > 0 ? settings.locations : ['London UK', 'Austin TX', 'Miami FL'],
       },
       {
-        name: 'Architectural Design & Luxury Builders (London & New York)',
+        name: 'Architectural Studios & Luxury Architects (London UK)',
         industries: ['architectural design studio', 'luxury residential architect'],
-        locations: ['London UK', 'New York NY'],
+        locations: ['London UK', 'Chelsea London', 'Mayfair London'],
       },
       {
-        name: 'Cosmetic Dental & Aesthetic Medical Practices (Miami & Austin)',
+        name: 'Cosmetic Dental Clinics & Medical Spas (Miami & Fort Lauderdale)',
         industries: ['cosmetic dental clinic', 'aesthetic medical spa'],
-        locations: ['Miami FL', 'Austin TX'],
+        locations: ['Miami FL', 'Coral Gables FL', 'Fort Lauderdale FL'],
       },
       {
-        name: 'High-End Interior Design & Decor Studios (Los Angeles & Chicago)',
+        name: 'High-End Interior Design & Decor Studios (New York NY)',
         industries: ['luxury interior designer', 'high end interior design studio'],
-        locations: ['Los Angeles CA', 'Chicago IL'],
+        locations: ['New York NY', 'Manhattan NY', 'Brooklyn NY'],
       },
       {
-        name: 'Commercial Litigation & Corporate Law Firms (London & Manchester)',
+        name: 'Cosmetic Surgery & Modern Healthcare (Austin & Dallas)',
+        industries: ['plastic surgery clinic', 'aesthetic dermatology practice'],
+        locations: ['Austin TX', 'Dallas TX'],
+      },
+      {
+        name: 'Custom Luxury Home Builders (Los Angeles & Beverly Hills)',
+        industries: ['custom luxury home builder', 'high end residential general contractor'],
+        locations: ['Los Angeles CA', 'Beverly Hills CA', 'Santa Monica CA'],
+      },
+      {
+        name: 'Commercial Litigation & Corporate Law Firms (Manchester & Birmingham)',
         industries: ['boutique law firm', 'commercial litigation solicitors'],
-        locations: ['London UK', 'Manchester UK'],
+        locations: ['Manchester UK', 'Birmingham UK'],
+      },
+      {
+        name: 'Architectural Lighting & Landscape Studios (Chicago & Seattle)',
+        industries: ['architectural lighting design', 'high end landscape architect'],
+        locations: ['Chicago IL', 'Seattle WA'],
+      },
+      {
+        name: 'Private Wealth Advisory & Family Offices (Toronto & Vancouver)',
+        industries: ['private wealth management firm', 'family office advisory'],
+        locations: ['Toronto ON', 'Vancouver BC'],
       },
     ]
 
@@ -406,7 +426,6 @@ export function OutreachConsole({
     let scoutedSoFar = 0
     let qualifiedSoFar = 0
     let cycle = 1
-    let consecutiveZeroSends = 0
 
     try {
       while (sentSoFar < targetCount && !stopRequestedRef.current) {
@@ -563,17 +582,12 @@ export function OutreachConsole({
         }
 
         if (summary.sentCount === 0) {
-          consecutiveZeroSends += 1
-          if (consecutiveZeroSends >= fallbackSectors.length) {
-            addAgentLog(
-              'safeguard',
-              `Completed search across all ${fallbackSectors.length} sector profiles without finding new deliverable leads. Halting loop to prevent duplicate contacts.`,
-            )
-            setAgentTerminalStatus('completed')
-            break
-          }
-        } else {
-          consecutiveZeroSends = 0
+          addAgentLog(
+            'cycle',
+            `Cycle ${cycle}: 0 deliverable emails dispatched in "${currentSector.name}". Relentlessly rotating to next sector to achieve remaining target of ${remainingNeeded} emails...`,
+            undefined,
+            'info',
+          )
         }
 
         // Target not yet reached: notify user and cycle

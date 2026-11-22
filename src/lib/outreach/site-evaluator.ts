@@ -164,6 +164,24 @@ function registrableBase(host: string): string {
   return parts.slice(-2).join('.')
 }
 
+function extractJsonLdEmails(html: string): string[] {
+  const emails: string[] = []
+  const scriptRegex = /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi
+  let match: RegExpExecArray | null
+  while ((match = scriptRegex.exec(html)) !== null) {
+    const content = match[1]
+    const emailMatches = content.match(/"email"\s*:\s*"([^"]+)"/gi) ?? []
+    for (const em of emailMatches) {
+      const valMatch = em.match(/"email"\s*:\s*"([^"]+)"/i)
+      if (valMatch && valMatch[1]) {
+        const clean = sanitizeCandidateEmail(valMatch[1])
+        if (clean) emails.push(clean)
+      }
+    }
+  }
+  return emails
+}
+
 export function extractPublicEmails(html: string, siteHostname?: string | null): string[] {
   if (!html) return []
 
@@ -183,6 +201,11 @@ export function extractPublicEmails(html: string, siteHostname?: string | null):
   for (const raw of rawMatches) {
     const clean = sanitizeCandidateEmail(raw)
     if (clean) candidates.add(clean)
+  }
+
+  // 3. Schema.org JSON-LD microdata
+  for (const email of extractJsonLdEmails(html)) {
+    candidates.add(email)
   }
 
   const normalizedSiteHost = siteHostname?.toLowerCase().replace(/^www\./, '') ?? null
@@ -342,7 +365,7 @@ function collectContactCandidateUrls(html: string, baseUrl: string): string[] {
   while ((match = hrefRegex.exec(html)) !== null) {
     const rawHref = match[1].trim()
     if (!rawHref || /^(mailto|tel|javascript|data):/i.test(rawHref)) continue
-    if (!/(?:contact|about)/i.test(rawHref)) continue
+    if (!/(?:contact|about|team|reach|touch|enquir)/i.test(rawHref)) continue
 
     try {
       const resolved = new URL(rawHref, baseParsed)
@@ -357,14 +380,18 @@ function collectContactCandidateUrls(html: string, baseUrl: string): string[] {
       // ignore invalid href
     }
 
-    if (urls.length >= 2) break
+    if (urls.length >= 3) break
   }
 
   if (urls.length === 0) {
-    urls.push(`${baseParsed.origin}/contact`, `${baseParsed.origin}/about`)
+    urls.push(
+      `${baseParsed.origin}/contact`,
+      `${baseParsed.origin}/contact-us`,
+      `${baseParsed.origin}/about`,
+    )
   }
 
-  return urls.slice(0, 2)
+  return urls.slice(0, 3)
 }
 
 function clampScore(total: number): number {
