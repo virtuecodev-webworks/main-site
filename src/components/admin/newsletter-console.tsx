@@ -59,16 +59,20 @@ export function NewsletterConsole({
   const [isSendingCustom, setIsSendingCustom] = React.useState(false)
 
   const activeSubscribersCount = React.useMemo(() => {
-    return subscribersList.filter((s) => s.status === 'active').length
-  }, [subscribersList])
+    const listActive = subscribersList.filter((s) => s.status === 'active' || !s.status).length
+    return Math.max(listActive, initialSubscribers ?? 0)
+  }, [subscribersList, initialSubscribers])
 
   // Fetch latest subscriber roster & counts from DB
   const refreshSubscribers = React.useCallback(async () => {
     setIsRefreshing(true)
     try {
-      const res = await fetch('/api/newsletter/subscribers')
+      const res = await fetch('/api/newsletter/subscribers', {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' },
+      })
       const data = await res.json()
-      if (res.ok && data.ok) {
+      if (res.ok && data.ok && Array.isArray(data.subscribers)) {
         setSubscribersList(data.subscribers)
       }
     } catch (err) {

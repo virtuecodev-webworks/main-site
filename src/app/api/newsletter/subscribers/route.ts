@@ -6,6 +6,9 @@ import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { resolveAdminSession } from '@/lib/supabase/auth'
 import type { NewsletterSubscriber } from '@/lib/supabase/types'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getDbClient() {
   const adminClient = createSupabaseAdminClient()
   if (adminClient) return adminClient
