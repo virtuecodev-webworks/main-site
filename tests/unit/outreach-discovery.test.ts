@@ -268,4 +268,40 @@ describe('discoverBusinesses', () => {
     expect(results).toHaveLength(2)
     expect(results.map((r) => r.businessName)).toEqual(['Shop One', 'Shop Two'])
   })
+
+  it('cycles into fallback high-ticket categories when enableFallbacks is true and candidates are needed', async () => {
+    const fetchMock = vi.fn<typeof fetch>()
+    // Primary query returns 1 candidate
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse({
+        places: [{ title: 'Boutique One', website: 'https://b1.example', cid: 'b1' }],
+      }),
+    )
+    // Fallback high-ticket query (e.g. architectural design firm) returns second candidate
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse({
+        places: [{ title: 'Apex Architects', website: 'https://apex.example', cid: 'arch1' }],
+      }),
+    )
+
+    const results = await discoverBusinesses(
+      {
+        industries: ['boutique hotel'],
+        locations: ['London UK'],
+        keywords: [],
+        discovery_provider: 'serper',
+        min_issue_score: 30,
+      },
+      {
+        fetchFn: fetchMock,
+        env: { SERPER_API_KEY: 'test-serper-key' },
+        maxCandidates: 2,
+        enableFallbacks: true,
+      },
+    )
+
+    expect(results).toHaveLength(2)
+    expect(results.map((r) => r.businessName)).toEqual(['Boutique One', 'Apex Architects'])
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
 })

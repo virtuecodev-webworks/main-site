@@ -217,7 +217,8 @@ describe('buildFallbackPitch', () => {
     expect(noSitePitch.recommendedPackage).toContain('Custom Brand Web Presence')
     expect(noSitePitch.recommendedPackage).not.toContain('$')
     expect(noSitePitch.auditBullets[0]).toContain('Apex Consulting')
-    expect(noSitePitch.closing).toContain('simply reply directly to this email with a quick "yes"')
+    expect(noSitePitch.closing).toContain('Glory Adeniran · Lead Client Strategist')
+    expect(noSitePitch.closing).not.toContain('simply reply directly')
 
     const ecomPitch = buildFallbackPitch(
       {
@@ -233,7 +234,8 @@ describe('buildFallbackPitch', () => {
     expect(ecomPitch.recommendedPackage).toBe('Bespoke E-Commerce Architecture & Conversion Optimization')
     expect(ecomPitch.recommendedPackage).not.toContain('$')
     expect(ecomPitch.auditBullets.join(' ')).not.toMatch(/\bms\b|ttfb|copyright \d{4}/i)
-    expect(ecomPitch.closing).toContain('simply reply directly to this email with a quick "yes"')
+    expect(ecomPitch.closing).toContain('Glory Adeniran · Lead Client Strategist')
+    expect(ecomPitch.closing).not.toContain('simply reply directly')
   })
 })
 

@@ -116,7 +116,7 @@ export function buildFallbackPitch(
     ? `I was recently looking into ${business.businessName}${locationSuffix} and noticed your business doesn't have an active website yet. We work with growing businesses to help them capture high-value clients who search on mobile devices.`
     : `I was recently reviewing ${business.businessName}'s online presence and noticed a few friction points where potential clients are likely dropping off before submitting an enquiry.`
 
-  const closing = `Before our team puts together a custom visual breakdown and prototype for your brand, are you open to partnering with an outside engineering studio to upgrade this?\n\nIf you are, simply reply directly to this email with a quick "yes" and I’ll be glad to share the details.\n\nWarm regards,\nGlory Adeniran · Lead Client Strategist\n${AGENCY.name}`
+  const closing = `Warm regards,\nGlory Adeniran · Lead Client Strategist\n${AGENCY.name}`
 
   return {
     subject,
@@ -151,7 +151,7 @@ function buildPitchPrompt(
     '2. DO NOT mention package names, tiers, prices, dollar amounts ($), or delivery days anywhere in the email.',
     '3. Focus the conversation on mobile user experience, client drop-off, and lost inbound enquiries/bookings.',
     '4. Subject line MUST be lowercase and conversational, e.g. "quick question regarding [Business Name]\'s client inquiries".',
-    '5. In the closing, include a polite qualification check asking if they are open to partnering with an outside engineering studio to overhaul this, and instruct them to simply reply directly with "yes".',
+    '5. In the closing, provide strictly a warm, executive sign-off: "Warm regards,\nGlory Adeniran · Lead Client Strategist\nVirtue & Co. Webworks" (do NOT repeat the partnership question in the closing, as it is already displayed in the email body).',
     '',
     'Prospect Details:',
     `Business Name: ${business.businessName}`,
@@ -171,7 +171,7 @@ function buildPitchPrompt(
     '  "auditBullets": ["2 to 3 high-level strategic observations about lost conversions or mobile friction, WITHOUT mentioning specific code or server ms"],',
     '  "recommendedPackage": "high-level strategic focus WITHOUT any price or dollar sign (e.g. Bespoke Web Engineering & Conversion Architecture)",',
     '  "ctaText": "short action text e.g. Reply \'Yes\' for Custom Breakdown",',
-    '  "closing": "warm sign-off asking if they are open to partnering with an outside engineering studio, inviting them to reply \'yes\' directly to this email, signed Glory Adeniran · Lead Client Strategist, Virtue & Co. Webworks"',
+    '  "closing": "strictly the sign-off: Warm regards,\\nGlory Adeniran · Lead Client Strategist\\nVirtue & Co. Webworks"',
     '}',
   ].join('\n')
 }

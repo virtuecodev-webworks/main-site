@@ -11,6 +11,7 @@ export interface DiscoveryOptions {
   timeoutMs?: number
   fetchFn?: typeof fetch
   env?: Record<string, string | undefined>
+  enableFallbacks?: boolean
 }
 
 interface NominatimResult {
@@ -368,6 +369,14 @@ async function discoverViaGooglePlaces(params: {
   return results
 }
 
+export const FALLBACK_HIGH_TICKET_INDUSTRIES = [
+  'architectural design firm',
+  'cosmetic dental clinic',
+  'private medical clinic',
+  'commercial litigation law firm',
+  'luxury interior design studio',
+] as const
+
 async function discoverViaSerper(params: {
   apiKey: string
   industry: string
@@ -377,7 +386,8 @@ async function discoverViaSerper(params: {
   fetchFn: typeof fetch
 }): Promise<DiscoveredBusiness[]> {
   const { apiKey, industry, location, keywords, timeoutMs, fetchFn } = params
-  const q = [industry, ...keywords.slice(0, 3), location].filter(Boolean).join(' ')
+  const primaryKeyword = keywords.length > 0 ? keywords[0].trim() : ''
+  const q = [industry, primaryKeyword, location].filter(Boolean).join(' ')
 
   const res = await fetchFn('https://google.serper.dev/places', {
     method: 'POST',
@@ -480,12 +490,29 @@ export async function discoverBusinesses(
     if (pairs.length >= MAX_QUERY_PAIRS) break
   }
 
+  // Fallback high-ticket pairs if enabled and primary pairs yield fewer than maxCandidates
+  const fallbackPairs: Array<{ industry: string; location: string }> = []
+  if (options?.enableFallbacks) {
+    const lowerQueryIndustries = new Set(queryIndustries.map((i) => i.toLowerCase()))
+    for (const location of locations) {
+      for (const fallback of FALLBACK_HIGH_TICKET_INDUSTRIES) {
+        if (!lowerQueryIndustries.has(fallback.toLowerCase())) {
+          fallbackPairs.push({ industry: fallback, location })
+          if (pairs.length + fallbackPairs.length >= MAX_QUERY_PAIRS * 2) break
+        }
+      }
+      if (pairs.length + fallbackPairs.length >= MAX_QUERY_PAIRS * 2) break
+    }
+  }
+
+  const allPairsToTry = [...pairs, ...fallbackPairs]
+
   const collected: DiscoveredBusiness[] = []
   const seenKeys = new Set<string>()
   const errors: unknown[] = []
   let consecutiveOsmErrors = 0
 
-  for (const pair of pairs) {
+  for (const pair of allPairsToTry) {
     if (collected.length >= maxCandidates) break
     if (provider === 'osm' && consecutiveOsmErrors >= 2) {
       console.warn('[outreach/discovery] Aborting OSM early after 2 consecutive failures')

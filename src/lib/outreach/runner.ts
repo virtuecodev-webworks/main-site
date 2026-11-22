@@ -18,6 +18,7 @@ import type {
   OutreachCriteriaSnapshot,
   OutreachProspect,
   OutreachRunnerDeps,
+  OutreachRunMode,
   OutreachRunStatus,
   RunOutreachOptions,
   RunOutreachSummary,
@@ -26,6 +27,30 @@ import type {
 
 export const DRY_RUN_MAX_DISPATCHES = 3
 export const DEFAULT_OUTREACH_REPORT_EMAIL = 'adeniranglory129@gmail.com'
+
+export function calculateSessionTarget(
+  mode: OutreachRunMode,
+  dailySendCap: number,
+  sentTodayBeforeRun: number,
+  referenceDate: Date = new Date(),
+): number {
+  const remainingLiveCap = Math.max(0, dailySendCap - sentTodayBeforeRun)
+  if (remainingLiveCap === 0) return 0
+
+  if (mode === 'cron') {
+    const utcHour = referenceDate.getUTCHours()
+    // Morning window (< 14:00 UTC): aim for 15 sends
+    if (utcHour < 14) {
+      const morningCap = Math.min(15, dailySendCap)
+      return Math.max(0, Math.min(morningCap - sentTodayBeforeRun, remainingLiveCap))
+    }
+    // Evening window (>= 14:00 UTC): aim for remainder of daily cap
+    return remainingLiveCap
+  }
+
+  // Manual interactive runs: batch up to 15 (or remaining cap)
+  return Math.min(15, remainingLiveCap)
+}
 
 function escapeHtml(value: string): string {
   return value
@@ -314,16 +339,18 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
     }
   }
 
-  const maxSendsThisRun = isDryRun
+  const sessionTarget = isDryRun
     ? testRecipient
       ? DRY_RUN_MAX_DISPATCHES
       : 0
-    : remainingLiveCap
+    : calculateSessionTarget(options.mode, settings.daily_send_cap, sentTodayBeforeRun)
+
+  const maxSendsThisRun = sessionTarget
 
   const candidatesNeeded =
     options.mode === 'manual' || isDryRun
-      ? Math.min(35, Math.max(15, maxSendsThisRun * 2))
-      : Math.min(120, Math.max(75, maxSendsThisRun * 3))
+      ? Math.min(60, Math.max(25, maxSendsThisRun * 3))
+      : Math.min(120, Math.max(75, maxSendsThisRun * 5))
   let candidates: DiscoveredBusiness[]
   try {
     candidates =
@@ -331,7 +358,11 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
         ? options.seedCandidates
         : options.deps?.discoverBusinesses
           ? await discover(criteria)
-          : await discover(criteria, { env: mergedEnv, maxCandidates: candidatesNeeded })
+          : await discover(criteria, {
+              env: mergedEnv,
+              maxCandidates: candidatesNeeded,
+              enableFallbacks: true,
+            })
   } catch (err) {
     const errMsg = err instanceof Error ? err.message : 'Discovery failed'
     await repository.completeRun(run.id, {
@@ -375,10 +406,9 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
   }
 
   const runStartTime = Date.now()
-  // Manual interactive runs must return swiftly to avoid browser & gateway timeouts (25s budget).
-  // Daily background cron runs have up to 45s before Vercel's 60s hard ceiling.
+  // Manual interactive runs: up to 35s budget. Background cron runs: up to 50s budget.
   const maxExecutionTimeMs =
-    options.mode === 'manual' || isDryRun ? 25_000 : 45_000
+    options.mode === 'manual' || isDryRun ? 35_000 : 50_000
 
   const scoutedCount = candidates.length
   let qualifiedCount = 0
@@ -389,304 +419,346 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
   const dispatches: RunOutreachSummary['dispatches'] = []
   const inRunTracker = new InRunDedupTracker()
 
-  for (let candidateIdx = 0; candidateIdx < candidates.length; candidateIdx++) {
-    const candidate = candidates[candidateIdx]
+  const BATCH_SIZE = 6
 
-    // Wall-clock deadline check: if approaching timeout budget, conclude loop cleanly
+  for (let batchStart = 0; batchStart < candidates.length; batchStart += BATCH_SIZE) {
     if (Date.now() - runStartTime > maxExecutionTimeMs) {
-      skippedCount += candidates.length - candidateIdx
+      skippedCount += candidates.length - batchStart
+      break
+    }
+    if (sentCount >= maxSendsThisRun) {
+      skippedCount += candidates.length - batchStart
+      if (!isDryRun) {
+        hitCap = true
+      }
       break
     }
 
-    const identity = resolveProspectIdentity(candidate)
+    const batch = candidates.slice(batchStart, batchStart + BATCH_SIZE)
 
-    if (inRunTracker.hasSeen(identity)) {
-      skippedCount++
-      continue
-    }
-    inRunTracker.markSeen({
-      dedupKey: identity.dedupKey,
-      normalizedDomain: identity.normalizedDomain,
-      normalizedEmail: null,
-    })
-
-    let existing: OutreachProspect | null = null
-    try {
-      const crossCheck = await checkCrossRunEligibility(repository, {
-        dedupKey: identity.dedupKey,
-        normalizedDomain: identity.normalizedDomain,
-        contactEmail: identity.normalizedEmail,
-      })
-
-      if (!crossCheck.eligible) {
-        skippedCount++
-        continue
-      }
-      existing = crossCheck.existingProspect
-    } catch (err) {
-      failedCount++
-      const errMsg = err instanceof Error ? err.message : 'Eligibility check failed'
-      dispatches.push({
-        businessName: candidate.businessName,
-        recipientEmail: isDryRun ? (testRecipient ?? '') : (identity.normalizedEmail ?? ''),
-        status: 'failed',
-        subject: '',
-        isDryRun,
-        error: errMsg,
-      })
-      continue
-    }
-
-    let evaluation: SiteEvaluationResult
-    const evalTimestamp = new Date().toISOString()
-
-    try {
-      evaluation = await evaluate(candidate, criteria.min_issue_score)
-    } catch (err) {
-      failedCount++
-      const errMsg = err instanceof Error ? err.message : 'Website evaluation failed'
-      try {
-        await repository.upsertProspect({
-          business_name: candidate.businessName,
-          normalized_domain: identity.normalizedDomain,
-          website_url: candidate.websiteUrl ?? null,
-          industry: candidate.industry ?? null,
-          location: candidate.location ?? null,
-          contact_email: identity.normalizedEmail ?? normalizeEmail(existing?.contact_email),
-          phone: candidate.phone ?? null,
-          source_provider: candidate.sourceProvider,
-          source_external_id: candidate.sourceExternalId ?? null,
-          dedup_key: identity.dedupKey,
-          evaluation_status: 'failed',
-          status: isDryRun ? (existing?.status ?? 'discovered') : 'failed',
-          last_evaluated_at: evalTimestamp,
-          last_error: errMsg,
-          raw_metadata: candidate.rawMetadata ?? null,
+    // Phase 1: Cross-check eligibility for each candidate in the batch
+    const prepped = await Promise.all(
+      batch.map(async (candidate) => {
+        const identity = resolveProspectIdentity(candidate)
+        if (inRunTracker.hasSeen(identity)) {
+          return { candidate, identity, eligible: false, existing: null, error: null }
+        }
+        inRunTracker.markSeen({
+          dedupKey: identity.dedupKey,
+          normalizedDomain: identity.normalizedDomain,
+          normalizedEmail: null,
         })
-      } catch {
-        // best-effort persistence
+        try {
+          const crossCheck = await checkCrossRunEligibility(repository, {
+            dedupKey: identity.dedupKey,
+            normalizedDomain: identity.normalizedDomain,
+            contactEmail: identity.normalizedEmail,
+          })
+          return {
+            candidate,
+            identity,
+            eligible: crossCheck.eligible,
+            existing: crossCheck.existingProspect,
+            error: null,
+          }
+        } catch (err) {
+          const errMsg = err instanceof Error ? err.message : 'Eligibility check failed'
+          return {
+            candidate,
+            identity,
+            eligible: false,
+            existing: null,
+            error: errMsg,
+          }
+        }
+      }),
+    )
+
+    // Phase 2: Parallel site evaluation for eligible candidates
+    const evaluatedResults = await Promise.allSettled(
+      prepped.map(async (item) => {
+        if (!item.eligible) return null
+        return evaluate(item.candidate, criteria.min_issue_score)
+      }),
+    )
+
+    // Phase 3: Sequentially process each candidate in the batch
+    for (let j = 0; j < prepped.length; j++) {
+      const { candidate, identity, eligible, existing, error } = prepped[j]
+
+      if (error) {
+        failedCount++
+        dispatches.push({
+          businessName: candidate.businessName,
+          recipientEmail: isDryRun ? (testRecipient ?? '') : (identity.normalizedEmail ?? ''),
+          status: 'failed',
+          subject: '',
+          isDryRun,
+          error,
+        })
+        continue
       }
-      continue
-    }
 
-    const contactEmail =
-      identity.normalizedEmail ??
-      normalizeEmail(evaluation.extractedEmail) ??
-      normalizeEmail(existing?.contact_email)
-
-    const basePayload = buildBaseProspectPayload(candidate, identity, evaluation)
-
-    if (contactEmail) {
-      if (inRunTracker.hasSeenEmail(contactEmail)) {
+      if (!eligible) {
         skippedCount++
         continue
       }
-      inRunTracker.markEmail(contactEmail)
 
-      const optedOut = await repository.isOptedOut(contactEmail)
-      if (optedOut) {
+      const evalResult = evaluatedResults[j]
+      const evalTimestamp = new Date().toISOString()
+      if (evalResult.status === 'rejected' || !evalResult.value) {
+        failedCount++
+        const errMsg =
+          evalResult.status === 'rejected' && evalResult.reason instanceof Error
+            ? evalResult.reason.message
+            : 'Website evaluation failed'
+        try {
+          await repository.upsertProspect({
+            business_name: candidate.businessName,
+            normalized_domain: identity.normalizedDomain,
+            website_url: candidate.websiteUrl ?? null,
+            industry: candidate.industry ?? null,
+            location: candidate.location ?? null,
+            contact_email: identity.normalizedEmail ?? normalizeEmail(existing?.contact_email),
+            phone: candidate.phone ?? null,
+            source_provider: candidate.sourceProvider,
+            source_external_id: candidate.sourceExternalId ?? null,
+            dedup_key: identity.dedupKey,
+            evaluation_status: 'failed',
+            status: isDryRun ? (existing?.status ?? 'discovered') : 'failed',
+            last_evaluated_at: evalTimestamp,
+            last_error: errMsg,
+            raw_metadata: candidate.rawMetadata ?? null,
+          })
+        } catch {
+          // best-effort persistence
+        }
+        continue
+      }
+
+      const evaluation = evalResult.value
+      const contactEmail =
+        identity.normalizedEmail ??
+        normalizeEmail(evaluation.extractedEmail) ??
+        normalizeEmail(existing?.contact_email)
+
+      const basePayload = buildBaseProspectPayload(candidate, identity, evaluation)
+
+      if (contactEmail) {
+        if (inRunTracker.hasSeenEmail(contactEmail)) {
+          skippedCount++
+          continue
+        }
+        inRunTracker.markEmail(contactEmail)
+
+        const optedOut = await repository.isOptedOut(contactEmail)
+        if (optedOut) {
+          await repository.upsertProspect({
+            ...basePayload,
+            contact_email: contactEmail,
+            evaluation_status: 'evaluated',
+            status: 'opted_out',
+            last_evaluated_at: evalTimestamp,
+          })
+          skippedCount++
+          continue
+        }
+      }
+
+      if (!evaluation.qualified) {
         await repository.upsertProspect({
           ...basePayload,
           contact_email: contactEmail,
           evaluation_status: 'evaluated',
-          status: 'opted_out',
+          status:
+            existing?.status === 'qualified_no_email' || !existing
+              ? 'discovered'
+              : existing.status,
           last_evaluated_at: evalTimestamp,
         })
         skippedCount++
         continue
       }
-    }
 
-    if (!evaluation.qualified) {
-      await repository.upsertProspect({
-        ...basePayload,
-        contact_email: contactEmail,
-        evaluation_status: 'evaluated',
-        status: existing?.status === 'qualified_no_email' || !existing ? 'discovered' : existing.status,
-        last_evaluated_at: evalTimestamp,
-      })
-      skippedCount++
-      continue
-    }
+      qualifiedCount++
 
-    qualifiedCount++
+      if (!contactEmail) {
+        await repository.upsertProspect({
+          ...basePayload,
+          contact_email: null,
+          evaluation_status: 'evaluated',
+          status: 'qualified_no_email',
+          last_evaluated_at: evalTimestamp,
+        })
+        skippedCount++
+        continue
+      }
 
-    if (!contactEmail) {
-      await repository.upsertProspect({
-        ...basePayload,
-        contact_email: null,
-        evaluation_status: 'evaluated',
-        status: 'qualified_no_email',
-        last_evaluated_at: evalTimestamp,
-      })
-      skippedCount++
-      continue
-    }
+      if (isDryRun && !testRecipient) {
+        await repository.upsertProspect({
+          ...basePayload,
+          contact_email: contactEmail,
+          evaluation_status: 'evaluated',
+          status: existing?.status ?? 'qualified',
+          last_evaluated_at: evalTimestamp,
+        })
+        skippedCount++
+        continue
+      }
 
-    if (isDryRun && !testRecipient) {
-      await repository.upsertProspect({
+      if (sentCount >= maxSendsThisRun) {
+        await repository.upsertProspect({
+          ...basePayload,
+          contact_email: contactEmail,
+          evaluation_status: 'evaluated',
+          status: existing?.status ?? 'qualified',
+          last_evaluated_at: evalTimestamp,
+        })
+        skippedCount++
+        if (!isDryRun) {
+          hitCap = true
+        }
+        continue
+      }
+
+      inRunTracker.markEmail(contactEmail)
+
+      const prospect = await repository.upsertProspect({
         ...basePayload,
         contact_email: contactEmail,
         evaluation_status: 'evaluated',
         status: existing?.status ?? 'qualified',
         last_evaluated_at: evalTimestamp,
       })
-      skippedCount++
-      continue
-    }
 
-    if (sentCount >= maxSendsThisRun) {
-      await repository.upsertProspect({
-        ...basePayload,
-        contact_email: contactEmail,
-        evaluation_status: 'evaluated',
-        status: existing?.status ?? 'qualified',
-        last_evaluated_at: evalTimestamp,
-      })
-      skippedCount++
-      if (!isDryRun) {
-        hitCap = true
-      }
-      continue
-    }
-
-    inRunTracker.markEmail(contactEmail)
-
-    const prospect = await repository.upsertProspect({
-      ...basePayload,
-      contact_email: contactEmail,
-      evaluation_status: 'evaluated',
-      status: existing?.status ?? 'qualified',
-      last_evaluated_at: evalTimestamp,
-    })
-
-    const recipientEmail = isDryRun ? testRecipient! : contactEmail
-    let attemptedSubject = ''
-
-    try {
-      const pitch = await generate(candidate, evaluation, {
-        apiKey: mergedEnv.GEMINI_API_KEY,
-      })
-      const rawSubject = pitch.subject.trim()
-      attemptedSubject = isDryRun
-        ? rawSubject.startsWith('[DRY RUN]')
-          ? rawSubject
-          : `[DRY RUN] ${rawSubject}`
-        : rawSubject
-
-      const unsubscribeUrl = buildUnsubscribeUrl(recipientEmail)
-      const sendResult = await sendPitch({
-        to: recipientEmail,
-        subject: attemptedSubject,
-        pitch,
-        business: candidate,
-        isDryRun,
-        unsubscribeUrl,
-      })
-
-      if (
-        sendResult &&
-        typeof sendResult === 'object' &&
-        'ok' in sendResult &&
-        (sendResult as { ok?: unknown }).ok === false
-      ) {
-        const failureReason = (sendResult as { error?: unknown }).error
-        throw new Error(
-          typeof failureReason === 'string' && failureReason.trim().length > 0
-            ? failureReason
-            : 'Outreach email dispatch returned ok: false',
-        )
-      }
-
-      sentCount++
-
-      const fullEmailPreview = [
-        pitch.greeting,
-        '',
-        pitch.opening,
-        '',
-        'Strategic Observations:',
-        ...pitch.auditBullets.map((b) => `• ${b}`),
-        '',
-        'Partnership Check & Invitation:',
-        'Are you open to partnering with an outside engineering studio to overhaul this?',
-        'Simply reply directly to this email with a quick "yes" and our team will prepare a tailored visual teardown and prototype.',
-        '',
-        pitch.closing,
-      ].join('\n')
-
-      const dispatchStatus = isDryRun ? 'dry_run' : 'sent'
-      await repository.logDispatch({
-        run_id: run.id,
-        prospect_id: prospect.id,
-        business_name: candidate.businessName,
-        recipient_email: recipientEmail,
-        is_dry_run: isDryRun,
-        subject: attemptedSubject,
-        body_preview: fullEmailPreview,
-        status: dispatchStatus,
-        message_id: sendResult?.messageId ?? null,
-      })
-
-      if (!isDryRun) {
-        await repository.updateProspect(prospect.id, {
-          status: 'pitched',
-          pitch_subject: attemptedSubject,
-          pitch_preview: fullEmailPreview,
-          last_pitched_at: new Date().toISOString(),
-          last_error: null,
-        })
-      } else {
-        await repository.updateProspect(prospect.id, {
-          pitch_subject: attemptedSubject,
-          pitch_preview: fullEmailPreview,
-          last_error: null,
-        })
-      }
-
-      dispatches.push({
-        businessName: candidate.businessName,
-        recipientEmail,
-        status: dispatchStatus,
-        subject: attemptedSubject,
-        isDryRun,
-      })
-    } catch (err) {
-      failedCount++
-      const errMsg = err instanceof Error ? err.message : 'Outreach dispatch failed'
+      const recipientEmail = isDryRun ? testRecipient! : contactEmail
+      let attemptedSubject = ''
 
       try {
+        const pitch = await generate(candidate, evaluation, {
+          apiKey: mergedEnv.GEMINI_API_KEY,
+        })
+        const rawSubject = pitch.subject.trim()
+        attemptedSubject = isDryRun
+          ? rawSubject.startsWith('[DRY RUN]')
+            ? rawSubject
+            : `[DRY RUN] ${rawSubject}`
+          : rawSubject
+
+        const unsubscribeUrl = buildUnsubscribeUrl(recipientEmail)
+        const sendResult = await sendPitch({
+          to: recipientEmail,
+          subject: attemptedSubject,
+          pitch,
+          business: candidate,
+          isDryRun,
+          unsubscribeUrl,
+        })
+
+        if (
+          sendResult &&
+          typeof sendResult === 'object' &&
+          'ok' in sendResult &&
+          (sendResult as { ok?: unknown }).ok === false
+        ) {
+          const failureReason = (sendResult as { error?: unknown }).error
+          throw new Error(
+            typeof failureReason === 'string' && failureReason.trim().length > 0
+              ? failureReason
+              : 'Outreach email dispatch returned ok: false',
+          )
+        }
+
+        sentCount++
+
+        const fullEmailPreview = [
+          pitch.greeting,
+          '',
+          pitch.opening,
+          '',
+          'Strategic Observations:',
+          ...pitch.auditBullets.map((b) => `• ${b}`),
+          '',
+          'Partnership Check & Invitation:',
+          'Are you open to partnering with an outside engineering studio to overhaul this?',
+          'Simply reply directly to this email with a quick "yes" and our team will prepare a tailored visual teardown and prototype.',
+          '',
+          pitch.closing,
+        ].join('\n')
+
+        const dispatchStatus = isDryRun ? 'dry_run' : 'sent'
         await repository.logDispatch({
           run_id: run.id,
           prospect_id: prospect.id,
           business_name: candidate.businessName,
           recipient_email: recipientEmail,
           is_dry_run: isDryRun,
-          subject: attemptedSubject || `Outreach pitch for ${candidate.businessName}`,
+          subject: attemptedSubject,
+          body_preview: fullEmailPreview,
+          status: dispatchStatus,
+          message_id: sendResult?.messageId ?? null,
+        })
+
+        if (!isDryRun) {
+          await repository.updateProspect(prospect.id, {
+            status: 'pitched',
+            pitch_subject: attemptedSubject,
+            pitch_preview: fullEmailPreview,
+            last_pitched_at: new Date().toISOString(),
+            last_error: null,
+          })
+        } else {
+          await repository.updateProspect(prospect.id, {
+            pitch_subject: attemptedSubject,
+            pitch_preview: fullEmailPreview,
+            last_error: null,
+          })
+        }
+
+        dispatches.push({
+          businessName: candidate.businessName,
+          recipientEmail,
+          status: dispatchStatus,
+          subject: attemptedSubject,
+          isDryRun,
+        })
+      } catch (err) {
+        failedCount++
+        const errMsg = err instanceof Error ? err.message : 'Outreach dispatch failed'
+
+        try {
+          await repository.logDispatch({
+            run_id: run.id,
+            prospect_id: prospect.id,
+            business_name: candidate.businessName,
+            recipient_email: recipientEmail,
+            is_dry_run: isDryRun,
+            subject: attemptedSubject || `Outreach pitch for ${candidate.businessName}`,
+            status: 'failed',
+            error: errMsg,
+          })
+        } catch {
+          // best-effort logging
+        }
+
+        try {
+          await repository.updateProspect(prospect.id, {
+            status: isDryRun ? prospect.status : 'failed',
+            last_error: errMsg,
+          })
+        } catch {
+          // best-effort status update
+        }
+
+        dispatches.push({
+          businessName: candidate.businessName,
+          recipientEmail,
           status: 'failed',
+          subject: attemptedSubject,
+          isDryRun,
           error: errMsg,
         })
-      } catch {
-        // best-effort logging
       }
-
-      try {
-        await repository.updateProspect(prospect.id, {
-          status: isDryRun ? prospect.status : 'failed',
-          last_error: errMsg,
-        })
-      } catch {
-        // best-effort status update
-      }
-
-      dispatches.push({
-        businessName: candidate.businessName,
-        recipientEmail,
-        status: 'failed',
-        subject: attemptedSubject,
-        isDryRun,
-        error: errMsg,
-      })
     }
   }
 

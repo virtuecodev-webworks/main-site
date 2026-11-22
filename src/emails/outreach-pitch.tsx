@@ -149,28 +149,11 @@ export function OutreachPitchEmail({
 
       <div
         style={{
-          marginTop: 14,
-          marginBottom: 16,
-          padding: '12px 16px',
-          background: CARD_WELL,
-          border: `1px solid ${BORDER_DIVIDER}`,
-          borderRadius: 10,
-          textAlign: 'center',
-          fontSize: 13,
-          color: TEXT_DARK,
-          lineHeight: 1.5,
-        }}
-      >
-        Prefer email over a form? <strong>You can simply reply directly to this message</strong> — our lead client strategist reads and responds to every email.
-      </div>
-
-      <div
-        style={{
           fontSize: 14.5,
           color: TEXT_MUTED_DARK,
           lineHeight: 1.65,
           whiteSpace: 'pre-line',
-          marginTop: 8,
+          marginTop: 18,
         }}
       >
         {pitch.closing}

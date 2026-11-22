@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { DRY_RUN_MAX_DISPATCHES, runDailyOutreach } from '@/lib/outreach/runner'
+import {
+  calculateSessionTarget,
+  DRY_RUN_MAX_DISPATCHES,
+  runDailyOutreach,
+} from '@/lib/outreach/runner'
 import { getUtcDayBounds } from '@/lib/outreach/repository'
 import {
   DEFAULT_OUTREACH_SETTINGS,
@@ -571,5 +575,35 @@ describe('runDailyOutreach', () => {
       discovery_provider: 'osm',
       min_issue_score: 50,
     })
+  })
+})
+
+describe('calculateSessionTarget', () => {
+  it('enforces 15 morning and 15 evening session quotas for cron', () => {
+    const morningDate = new Date('2026-11-22T08:00:00Z') // 08:00 UTC
+    const eveningDate = new Date('2026-11-22T18:00:00Z') // 18:00 UTC
+
+    // Morning run: sent 0 so far -> target 15
+    expect(calculateSessionTarget('cron', 30, 0, morningDate)).toBe(15)
+
+    // Morning run: sent 5 earlier today -> target 10 to hit morning goal of 15
+    expect(calculateSessionTarget('cron', 30, 5, morningDate)).toBe(10)
+
+    // Morning run: already reached 15 today -> target 0 for morning
+    expect(calculateSessionTarget('cron', 30, 15, morningDate)).toBe(0)
+
+    // Evening run: sent 15 in morning -> target remaining 15
+    expect(calculateSessionTarget('cron', 30, 15, eveningDate)).toBe(15)
+
+    // Evening run: morning only sent 10 -> evening recovers up to daily cap (20)
+    expect(calculateSessionTarget('cron', 30, 10, eveningDate)).toBe(20)
+
+    // Cap reached -> target 0
+    expect(calculateSessionTarget('cron', 30, 30, eveningDate)).toBe(0)
+
+    // Manual run: batches up to 15 or remaining
+    expect(calculateSessionTarget('manual', 30, 0, morningDate)).toBe(15)
+    expect(calculateSessionTarget('manual', 30, 20, morningDate)).toBe(10)
+    expect(calculateSessionTarget('manual', 30, 30, morningDate)).toBe(0)
   })
 })
