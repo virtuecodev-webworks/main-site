@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   AlertCircle,
@@ -267,6 +268,12 @@ export function OutreachAgentTerminal({
     }
   }, [logs, autoScroll, activeTab])
 
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   // Reset tab on open
   React.useEffect(() => {
     if (isOpen) {
@@ -274,7 +281,7 @@ export function OutreachAgentTerminal({
     }
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!isOpen || !mounted) return null
 
   const progressPercent = Math.min(
     100,
@@ -369,8 +376,8 @@ export function OutreachAgentTerminal({
 
   const currentBadge = getStatusBadge()
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6">
       {/* Dimmed luxury obsidian backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -829,6 +836,7 @@ export function OutreachAgentTerminal({
           </div>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body,
   )
 }

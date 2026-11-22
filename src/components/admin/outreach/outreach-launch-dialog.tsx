@@ -96,7 +96,7 @@ export function OutreachLaunchDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => (!open ? onClose() : undefined)}>
-      <DialogContent className="max-w-xl border-amber-500/25 bg-[#0a0a0a]/95 p-6 backdrop-blur-2xl text-[#f5f4f0] shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_50px_rgba(220,170,40,0.1)] sm:rounded-3xl relative overflow-hidden">
+      <DialogContent className="max-w-xl border-amber-500/25 bg-[#0a0a0a]/95 p-6 backdrop-blur-2xl text-[#f5f4f0] shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_50px_rgba(220,170,40,0.1)] sm:rounded-3xl overflow-hidden">
         {/* Top ambient aurora glow */}
         <div className="pointer-events-none absolute -top-24 left-1/2 h-44 w-72 -translate-x-1/2 rounded-full bg-gradient-to-b from-amber-500/20 via-primary/10 to-transparent blur-3xl" />
 
