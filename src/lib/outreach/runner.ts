@@ -354,8 +354,8 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
 
   const candidatesNeeded =
     options.mode === 'manual' || isDryRun
-      ? Math.min(100, Math.max(30, maxSendsThisRun * 4))
-      : Math.min(120, Math.max(75, maxSendsThisRun * 5))
+      ? Math.min(35, Math.max(12, maxSendsThisRun * 3))
+      : Math.min(100, Math.max(50, maxSendsThisRun * 4))
   let candidates: DiscoveredBusiness[]
   try {
     candidates =
@@ -411,9 +411,9 @@ export async function runDailyOutreach(options: RunOutreachOptions): Promise<Run
   }
 
   const runStartTime = Date.now()
-  // Manual interactive runs: up to 35s budget. Background cron runs: up to 50s budget.
+  // Manual interactive runs: up to 24s budget (strictly under Vercel serverless limit). Background cron runs: up to 50s budget.
   const maxExecutionTimeMs =
-    options.mode === 'manual' || isDryRun ? 35_000 : 50_000
+    options.mode === 'manual' || isDryRun ? 24_000 : 50_000
 
   const scoutedCount = candidates.length
   let qualifiedCount = 0

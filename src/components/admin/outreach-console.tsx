@@ -378,6 +378,7 @@ export function OutreachConsole({
     let scoutedSoFar = 0
     let qualifiedSoFar = 0
     let cycle = 1
+    let consecutiveZeroSends = 0
 
     try {
       while (sentSoFar < targetCount && !stopRequestedRef.current) {
@@ -386,11 +387,15 @@ export function OutreachConsole({
         setTerminalNiche(currentNicheName)
 
         const remainingNeeded = targetCount - sentSoFar
+        // Snappy batching: request up to 3 emails per cycle.
+        // Discovery + evaluation + Gemini pitch + Brevo send for 3 leads finishes in ~8-12 seconds,
+        // which runs safely within Vercel serverless execution limits and provides progressive live UI feedback.
+        const batchTarget = Math.min(3, remainingNeeded)
 
         setAgentTerminalStatus('scouting')
         addAgentLog(
           'cycle',
-          `Cycle ${cycle} active: Seeking ${remainingNeeded} more qualified dispatches.`,
+          `Cycle ${cycle} active: Scouting for ${batchTarget} high-converting leads (${sentSoFar}/${targetCount} sent).`,
           `Niche focus: ${currentNicheName}`,
         )
 
@@ -411,7 +416,7 @@ export function OutreachConsole({
 
         const payload: Record<string, unknown> = {
           mode,
-          targetCount: remainingNeeded,
+          targetCount: batchTarget,
         }
         if (mode === 'dry_run' && testRecipientEmail.trim()) {
           payload.testRecipientEmail = testRecipientEmail.trim()
@@ -425,14 +430,37 @@ export function OutreachConsole({
 
         if (stopRequestedRef.current) break
 
-        const data = await res.json()
-        if (!res.ok || !data.ok || !data.summary) {
-          const errMsg = data.error || 'Server error encountered during autonomous run'
-          addAgentLog('error', `Execution failure in Cycle ${cycle}: ${errMsg}`)
-          setTerminalError(errMsg)
-          setAgentTerminalStatus('failed')
-          toast.error(errMsg)
-          break
+        const rawText = await res.text()
+        let data: { ok?: boolean; error?: string; summary?: RunOutreachSummary } | null = null
+        try {
+          data = JSON.parse(rawText)
+        } catch {
+          // If server returned non-JSON (e.g. 504 Gateway Timeout or HTML proxy error), recover gracefully
+          const isTimeout = res.status === 504 || rawText.includes('timeout') || rawText.includes('An error occurred')
+          const recoveryNote = isTimeout
+            ? `Vercel serverless gateway timed out during Cycle ${cycle}. Engine auto-recovering in 2s with next sector...`
+            : `Network sync warning (HTTP ${res.status}). Auto-recovering in 2s...`
+
+          addAgentLog('thought', recoveryNote, undefined, 'warning')
+          await new Promise((resolve) => setTimeout(resolve, 2000))
+          cycle += 1
+          continue
+        }
+
+        if (!res.ok || !data || !data.ok || !data.summary) {
+          const errMsg = data?.error || `Server error encountered during Cycle ${cycle} (HTTP ${res.status})`
+          if (errMsg.toLowerCase().includes('api key') || errMsg.toLowerCase().includes('configuration')) {
+            addAgentLog('error', `Configuration requirement: ${errMsg}`)
+            setTerminalError(errMsg)
+            setAgentTerminalStatus('failed')
+            toast.error(errMsg)
+            break
+          }
+
+          addAgentLog('thought', `Cycle ${cycle} notice: ${errMsg}. Auto-recovering in 2s...`, undefined, 'warning')
+          await new Promise((resolve) => setTimeout(resolve, 2000))
+          cycle += 1
+          continue
         }
 
         const summary: RunOutreachSummary = data.summary
@@ -496,20 +524,25 @@ export function OutreachConsole({
           break
         }
 
-        if (summary.sentCount === 0 && cycle >= 4) {
-          addAgentLog(
-            'safeguard',
-            `Exhausted unique available leads across 4 consecutive cycles. Halting loop to prevent duplicate prospect contacts.`,
-          )
-          setAgentTerminalStatus('completed')
-          break
+        if (summary.sentCount === 0) {
+          consecutiveZeroSends += 1
+          if (consecutiveZeroSends >= 3) {
+            addAgentLog(
+              'safeguard',
+              `Exhausted unique available leads across 3 consecutive cycles. Halting loop to prevent duplicate prospect contacts.`,
+            )
+            setAgentTerminalStatus('completed')
+            break
+          }
+        } else {
+          consecutiveZeroSends = 0
         }
 
         // Target not yet reached: notify user and cycle
         setAgentTerminalStatus('cycling')
         addAgentLog(
           'cycle',
-          `Target not yet reached (${sentSoFar}/${targetCount} sent). Autonomous engine auto-cycling to next niche sector in 2s...`,
+          `Progress update: ${sentSoFar} of ${targetCount} sent. Rotating to next sector in 2s...`,
         )
 
         await new Promise((resolve) => setTimeout(resolve, 2000))

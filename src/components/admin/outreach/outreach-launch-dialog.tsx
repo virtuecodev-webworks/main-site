@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { GeminiSparkle } from './outreach-agent-terminal'
 
 interface OutreachLaunchDialogProps {
   isOpen: boolean
@@ -95,22 +96,25 @@ export function OutreachLaunchDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => (!open ? onClose() : undefined)}>
-      <DialogContent className="max-w-xl border-amber-500/20 bg-[#0d0d0d]/95 p-6 backdrop-blur-xl sm:rounded-2xl">
+      <DialogContent className="max-w-xl border-amber-500/25 bg-[#0a0a0a]/95 p-6 backdrop-blur-2xl text-[#f5f4f0] shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_50px_rgba(220,170,40,0.1)] sm:rounded-3xl relative overflow-hidden">
+        {/* Top ambient aurora glow */}
+        <div className="pointer-events-none absolute -top-24 left-1/2 h-44 w-72 -translate-x-1/2 rounded-full bg-gradient-to-b from-amber-500/20 via-primary/10 to-transparent blur-3xl" />
+
         <DialogHeader className="gap-2">
-          <div className="flex items-center gap-2">
-            <div className="relative grid size-9 place-items-center rounded-xl bg-gradient-to-tr from-amber-500/20 to-yellow-400/30 text-amber-400 ring-1 ring-amber-400/30">
-              <Bot className="size-5" />
+          <div className="flex items-center gap-3">
+            <div className="relative grid size-10 place-items-center rounded-2xl border border-amber-400/30 bg-gradient-to-br from-amber-500/15 via-[#161616] to-[#0a0a0a] shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+              <GeminiSparkle className="size-5 text-amber-300" animate />
               <span className="absolute -top-1 -right-1 flex size-2.5">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex size-2.5 rounded-full bg-amber-500" />
+                <span className="relative inline-flex size-2.5 rounded-full bg-amber-400" />
               </span>
             </div>
             <div>
-              <DialogTitle className="text-lg font-semibold tracking-tight text-white">
+              <DialogTitle className="text-base sm:text-lg font-semibold tracking-tight text-white">
                 Launch Autonomous Outreach Agent
               </DialogTitle>
               <DialogDescription className="text-xs text-neutral-400">
-                Antigravity Execution Engine · Continuous Category Cycling
+                Virtue &amp; Co. Intelligence · Multi-Cycle Acquisition Engine
               </DialogDescription>
             </div>
           </div>
