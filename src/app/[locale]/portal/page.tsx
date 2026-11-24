@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { PortalEmpty, OrderCard } from '@/components/portal/order-view'
+import { OrderCard } from '@/components/portal/order-view'
 import { NewRequestForm } from '@/components/portal/new-request-form'
-import { ClientMobileDashboard } from '@/components/portal/client-mobile-dashboard'
 import { ClientDesktopDashboard } from '@/components/portal/client-desktop-dashboard'
 import { requireClient } from '@/lib/supabase/auth'
 import { listOrders, getUnreadSummary } from '@/lib/supabase/orders'
@@ -24,21 +23,10 @@ export default async function PortalPage({ params }: { params: Promise<{ locale:
   const [orders, region] = await Promise.all([listOrders(), resolveServerCountry()])
 
   const unread = await getUnreadSummary(orders.map((order) => order.id))
-  const { live, past } = partitionByLiveness(orders)
+  const { past } = partitionByLiveness(orders)
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* 1. Mobile App Dashboard (< lg) (Mockup Screen 1: Hero card & 2x2 Action Tiles) */}
-      <ClientMobileDashboard
-        orders={orders}
-        unreadSummary={unread}
-        clientName={session.name}
-        clientEmail={session.email}
-        locale={locale}
-        currency={region.currency}
-      />
-
-      {/* 2. Desktop Workspace Dashboard (>= lg) (Mockup "Mondays" Desktop Layout) */}
+    <div className="flex flex-col gap-6">
       <ClientDesktopDashboard
         orders={orders}
         unreadSummary={unread}
@@ -48,8 +36,7 @@ export default async function PortalPage({ params }: { params: Promise<{ locale:
         currency={region.currency}
       />
 
-      {/* 3. New Project Request Modal / Form Anchor */}
-      <div id="new-request" className="pt-4">
+      <div id="new-request" className="gd-panel" data-gd-enter>
         <NewRequestForm
           locale={locale}
           currency={region.currency}
@@ -57,10 +44,9 @@ export default async function PortalPage({ params }: { params: Promise<{ locale:
         />
       </div>
 
-      {/* 4. Past / Archived Builds (Collapsible if present) */}
       {past.length ? (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+        <section className="gd-panel flex flex-col gap-4" data-gd-enter>
+          <h2 className="text-[11px] font-bold tracking-[0.14em] text-[var(--gd-muted)] uppercase">
             {t('past')} ({past.length})
           </h2>
           <ul className="flex flex-col gap-4">

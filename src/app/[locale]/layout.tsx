@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import type { Metadata, Viewport } from 'next'
 import { notFound } from 'next/navigation'
-import { Instrument_Sans, Inter } from 'next/font/google'
+import { Instrument_Sans, Inter, Manrope } from 'next/font/google'
 import localFont from 'next/font/local'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -36,6 +36,13 @@ const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-inter',
+  display: 'swap',
+})
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-manrope',
   display: 'swap',
 })
 
@@ -150,7 +157,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={getDirection(locale)}
-      className={`${instrumentSans.variable} ${inter.variable} ${gropled.variable}`}
+      className={`${instrumentSans.variable} ${inter.variable} ${manrope.variable} ${gropled.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

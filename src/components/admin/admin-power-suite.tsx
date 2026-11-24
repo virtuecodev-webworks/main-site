@@ -99,25 +99,22 @@ export function AdminPowerSuite({ metrics, orders, inquiries, locale }: AdminPow
   ]
 
   return (
-    <div className="surface rounded-2xl border border-border overflow-hidden">
+    <div className="rounded-[20px] overflow-hidden bg-transparent">
       {/* Header & Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 border-b border-border bg-muted/20">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 border-b border-border bg-[var(--gd-inner)]">
         <div className="flex items-center gap-2">
-          <Sparkles className="size-4 text-gold-500" />
+          <Sparkles className="size-4 text-[var(--gd-teal)]" />
           <h3 className="font-display text-sm font-bold text-foreground">
             Studio Operations &amp; Growth Suite
           </h3>
         </div>
 
-        <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="gd-period flex items-center gap-1 flex-wrap">
           <button
             type="button"
+            aria-pressed={activeTab === 'analytics'}
             onClick={() => setActiveTab('analytics')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'analytics'
-                ? 'bg-gold-500 text-obsidian shadow-xs'
-                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-            }`}
+            className="inline-flex items-center gap-1.5"
           >
             <BarChart3 className="size-3.5" />
             <span>Revenue &amp; Funnel</span>
@@ -125,12 +122,9 @@ export function AdminPowerSuite({ metrics, orders, inquiries, locale }: AdminPow
 
           <button
             type="button"
+            aria-pressed={activeTab === 'payment-link'}
             onClick={() => setActiveTab('payment-link')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'payment-link'
-                ? 'bg-gold-500 text-obsidian shadow-xs'
-                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-            }`}
+            className="inline-flex items-center gap-1.5"
           >
             <CreditCard className="size-3.5" />
             <span>1-Click Payment Link</span>
@@ -138,12 +132,9 @@ export function AdminPowerSuite({ metrics, orders, inquiries, locale }: AdminPow
 
           <button
             type="button"
+            aria-pressed={activeTab === 'seo'}
             onClick={() => setActiveTab('seo')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'seo'
-                ? 'bg-gold-500 text-obsidian shadow-xs'
-                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-            }`}
+            className="inline-flex items-center gap-1.5"
           >
             <SearchCheck className="size-3.5" />
             <span>SEO &amp; Site Health</span>

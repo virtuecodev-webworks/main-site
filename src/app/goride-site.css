@@ -1,0 +1,621 @@
+/* ==========================================================================
+   Editorial Paper & Interactive Blueprint Design Tokens (.gr-*)
+   Inspired by warm architectural paper, crisp ink, and gold micro-interactions.
+   ========================================================================== */
+
+:root {
+  --gr-page: #F4F0E8;
+  --gr-panel: #F8F5EE;
+  --gr-card: #FFFFFF;
+  --gr-ink: #14161B;
+  --gr-grey: #6B6F77;
+  --gr-line: rgba(20, 22, 27, 0.08);
+  --gr-accent: #F6B51E;
+  --gr-accent-soft: #FDEFC8;
+  --gr-map-block: #ECE6DA;
+  --gr-map-road: #FFFFFF;
+  --gr-map-park: #D7E4C4;
+  --gr-map-water: #C3D9E4;
+  --gr-paper-block: #EFE8DC;
+  --gr-paper-water: #DCE5E9;
+  --gr-paper-park: #E1E6D3;
+  --gr-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --gr-nav: 68px;
+  --gr-max: 1280px;
+}
+
+html.dark {
+  --gr-page: #0B0C10;
+  --gr-panel: #12141A;
+  --gr-card: #191C24;
+  --gr-ink: #F5F4F0;
+  --gr-grey: #9C9B99;
+  --gr-line: rgba(245, 244, 240, 0.1);
+  --gr-accent: #F6B51E;
+  --gr-accent-soft: rgba(246, 181, 30, 0.16);
+  --gr-map-block: #191C24;
+  --gr-map-road: #262B38;
+  --gr-map-park: #1D2B22;
+  --gr-map-water: #172632;
+  --gr-paper-block: #171A22;
+  --gr-paper-water: #16232D;
+  --gr-paper-park: #1A251F;
+}
+
+/* Marketing page wrapper gets the warm paper ground */
+.gr-site-shell {
+  background-color: var(--gr-page);
+  color: var(--gr-ink);
+}
+
+.gr-focus:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--gr-ink) 45%, transparent);
+  outline-offset: 2px;
+}
+
+/* ---------- Floating Frosted Paper Navbar ---------- */
+.gr-nav {
+  margin-bottom: calc(-1 * var(--gr-nav));
+  padding-top: 12px;
+}
+
+.gr-nav-shell {
+  margin-inline: 8px;
+}
+
+.gr-nav-bar {
+  border: 1px solid color-mix(in srgb, var(--gr-ink) 8%, transparent);
+  border-radius: 16px;
+  padding-inline: 12px 8px;
+  background-color: color-mix(in srgb, var(--gr-panel) 78%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 12px 30px -20px rgba(60, 45, 20, 0.45);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+html.dark .gr-nav-bar {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 36px -18px rgba(0, 0, 0, 0.65);
+}
+
+.gr-nav[data-scrolled='true'] .gr-nav-bar {
+  background-color: color-mix(in srgb, var(--gr-panel) 94%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 16px 36px -18px rgba(60, 45, 20, 0.5);
+}
+
+html.dark .gr-nav[data-scrolled='true'] .gr-nav-bar {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 20px 44px -16px rgba(0, 0, 0, 0.8);
+}
+
+@media (min-width: 640px) {
+  .gr-nav-shell {
+    margin-inline: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gr-nav-shell {
+    max-width: calc(var(--gr-max) + 40px);
+    margin-inline: max(36px, (100% - var(--gr-max) - 40px) / 2);
+  }
+
+  .gr-nav-bar {
+    padding-inline: 18px 10px;
+  }
+}
+
+.gr-nav-hover {
+  background-color: color-mix(in srgb, var(--gr-ink) 6%, transparent);
+}
+
+.gr-menu {
+  border: 1px solid var(--gr-line);
+  background-color: var(--gr-card);
+  box-shadow: 0 24px 60px -30px rgba(60, 45, 20, 0.45);
+}
+
+/* ---------- Hero Panel & Paper Grain ---------- */
+.gr-frame {
+  padding-inline: 12px;
+}
+
+.gr-inset {
+  padding-inline: 20px;
+}
+
+@media (min-width: 640px) {
+  .gr-frame {
+    padding-inline: 16px;
+  }
+  .gr-inset {
+    padding-inline: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gr-frame {
+    padding-inline: 20px;
+  }
+  .gr-inset {
+    padding-inline: 56px;
+  }
+}
+
+.gr-panel {
+  min-height: calc(var(--gr-copy-bottom, 580px) + 40px + var(--gr-phone) * 2.07 + 44px);
+  border-radius: 0 0 28px 28px;
+  background-color: var(--gr-panel);
+  color: var(--gr-ink);
+  --gr-phone: min(264px, calc(100vw - 64px));
+}
+
+.gr-panel::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0.075 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  content: '';
+  pointer-events: none;
+}
+
+.gr-layout {
+  padding-top: calc(var(--gr-nav) + 32px);
+}
+
+@media (min-width: 768px) {
+  .gr-panel {
+    height: 100dvh;
+    min-height: 700px;
+    --gr-phone: clamp(236px, calc((100dvh - var(--gr-nav) - 130px) * 0.47), 274px);
+  }
+
+  .gr-layout {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    padding-top: calc(var(--gr-nav) * 0.55);
+  }
+}
+
+@media (min-width: 1024px) {
+  .gr-panel {
+    min-height: 680px;
+    border-radius: 0 0 40px 40px;
+    --gr-phone: clamp(244px, calc((100dvh - var(--gr-nav) - 105px) * 0.47), 306px);
+  }
+}
+
+@media (min-width: 1600px) {
+  .gr-panel {
+    --gr-phone: clamp(256px, calc((100dvh - var(--gr-nav) - 105px) * 0.47), 336px);
+  }
+}
+
+.gr-container {
+  width: 100%;
+  max-width: var(--gr-max);
+  margin-inline: auto;
+}
+
+.gr-copy {
+  container-type: inline-size;
+  max-width: 560px;
+  text-shadow: 0 0 22px var(--gr-panel);
+}
+
+@media (min-width: 768px) {
+  .gr-copy {
+    max-width: calc(100% - var(--gr-phone) - 44px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .gr-copy {
+    max-width: min(580px, 100% - var(--gr-phone) - 72px);
+  }
+}
+
+@media (min-width: 1536px) {
+  .gr-copy {
+    max-width: min(650px, 100% - var(--gr-phone) - 72px);
+  }
+}
+
+.gr-title {
+  font-size: clamp(2.35rem, 1.35rem + 4.2vw, 4.65rem);
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+}
+
+.gr-title-line {
+  white-space: nowrap;
+}
+
+/* ---------- Blueprint City Plan & Reveal ---------- */
+@property --gr-reveal {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+.gr-reveal {
+  --gr-origin: 50% 74%;
+  -webkit-mask-image: radial-gradient(
+    circle at var(--gr-origin),
+    #000 calc(var(--gr-reveal) - 16%),
+    transparent var(--gr-reveal)
+  );
+  mask-image: radial-gradient(
+    circle at var(--gr-origin),
+    #000 calc(var(--gr-reveal) - 16%),
+    transparent var(--gr-reveal)
+  );
+}
+
+.gr-plan {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 18%, #000 46%);
+  mask-image: linear-gradient(to bottom, transparent 18%, #000 46%);
+}
+
+@media (min-width: 768px) {
+  .gr-reveal {
+    --gr-origin: 76% 50%;
+  }
+
+  .gr-plan {
+    -webkit-mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.1) 16%, rgba(0, 0, 0, 0.36) 36%, #000 58%);
+    mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.1) 16%, rgba(0, 0, 0, 0.36) 36%, #000 58%);
+  }
+}
+
+.gr-district {
+  color: color-mix(in srgb, var(--gr-ink) 9%, transparent);
+  font-size: clamp(20px, 2.7vw, 44px);
+  letter-spacing: -0.04em;
+  transition: color 0.4s var(--gr-ease);
+}
+
+.gr-district-on {
+  color: color-mix(in srgb, var(--gr-accent) 62%, transparent);
+}
+
+.gr-district-hover {
+  color: color-mix(in srgb, var(--gr-ink) 22%, transparent);
+}
+
+.gr-flag {
+  background-color: var(--gr-card);
+  color: var(--gr-ink);
+  box-shadow:
+    0 0 0 1px var(--gr-line),
+    0 14px 28px -16px rgba(60, 45, 20, 0.5);
+}
+
+.gr-flag-stem {
+  background-color: var(--gr-ink);
+}
+
+.gr-cursor-ring {
+  border: 1.5px solid color-mix(in srgb, var(--gr-ink) 45%, transparent);
+  background-color: color-mix(in srgb, var(--gr-accent) 18%, transparent);
+}
+
+.gr-cursor-tag {
+  background-color: var(--gr-ink);
+  color: var(--gr-card);
+}
+
+.gr-phone-glow {
+  inset: 8% -55%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--gr-accent) 26%, transparent), transparent);
+  filter: blur(14px);
+}
+
+/* ---------- Interactive Phone Frame ---------- */
+.gr-phone-spot {
+  top: calc(var(--gr-copy-bottom, 580px) + 36px);
+  left: calc(50% - var(--gr-phone) / 2);
+  border-radius: calc(var(--gr-phone) * 0.165);
+}
+
+@media (min-width: 768px) {
+  .gr-phone-spot {
+    top: calc(50% + var(--gr-nav) / 2 - var(--gr-phone) * 1.03);
+    left: auto;
+    right: 36px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gr-phone-spot {
+    right: calc((100% - min(100% - 152px, var(--gr-max))) / 2 - 10px);
+  }
+}
+
+.gr-phone {
+  width: var(--gr-phone);
+  padding: calc(var(--gr-phone) * 0.026);
+  border-radius: calc(var(--gr-phone) * 0.165);
+  background: linear-gradient(150deg, #d8c9b1 0%, #8a7b67 22%, #3b352e 52%, #a8977c 100%);
+  box-shadow:
+    0 60px 90px -45px rgba(60, 45, 20, 0.5),
+    0 22px 40px -26px rgba(60, 45, 20, 0.45);
+}
+
+.gr-bezel {
+  padding: calc(var(--gr-phone) * 0.022);
+  border-radius: calc(var(--gr-phone) * 0.142);
+  background-color: #0d0e10;
+}
+
+.gr-screen {
+  container-type: inline-size;
+  aspect-ratio: 0.46;
+  border-radius: calc(var(--gr-phone) * 0.12);
+  background-color: var(--gr-map-block);
+  color: var(--gr-ink);
+  isolation: isolate;
+}
+
+.gr-screen-top {
+  background: linear-gradient(
+    to bottom,
+    var(--gr-card) 34%,
+    color-mix(in srgb, var(--gr-card) 72%, transparent) 70%,
+    transparent
+  );
+}
+
+.gr-search {
+  background-color: var(--gr-card);
+  box-shadow:
+    0 0 0 1px var(--gr-line),
+    0 10px 20px -14px rgba(20, 22, 27, 0.45);
+}
+
+.gr-sheet {
+  background-color: var(--gr-card);
+  box-shadow: 0 -12px 24px -18px rgba(20, 22, 27, 0.45);
+}
+
+.gr-hold {
+  background-color: var(--gr-ink);
+  touch-action: none;
+}
+
+.gr-avatar {
+  border: 1.5px solid var(--gr-accent);
+  background-color: var(--gr-accent-soft);
+  color: var(--gr-ink);
+}
+
+/* ---------- Live Ticker & Riders ---------- */
+.gr-ticker {
+  background-color: color-mix(in srgb, var(--gr-card) 82%, transparent);
+  box-shadow:
+    0 0 0 1px var(--gr-line),
+    0 10px 24px -18px rgba(60, 45, 20, 0.45);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.gr-ticker-tag {
+  background-color: var(--gr-ink);
+  color: var(--gr-card);
+}
+
+.gr-rider {
+  border: 2.5px solid var(--gr-panel);
+  background-color: var(--gr-accent-soft);
+}
+
+.gr-live-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background-color: var(--gr-accent);
+}
+
+.gr-live-dot::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--gr-accent);
+  content: '';
+  animation: gr-ping 1.8s var(--gr-ease) infinite;
+}
+
+@keyframes gr-ping {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+/* ---------- Signature Expanding Yellow-Tile CTA Buttons (.gr-cta & .gr-ghost) ---------- */
+@layer components {
+  .gr-cta {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    height: 52px;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+    border-radius: 14px;
+    padding: 0 7px 0 20px;
+    background: linear-gradient(180deg, #2a2d34 0%, #14161B 100%);
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-shadow: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      0 1px 2px rgba(20, 22, 27, 0.3),
+      0 14px 28px -14px rgba(20, 22, 27, 0.55);
+    transition:
+      color 0.45s var(--gr-ease),
+      box-shadow 0.3s var(--gr-ease),
+      transform 0.15s var(--gr-ease);
+  }
+
+  html.dark .gr-cta {
+    background: linear-gradient(180deg, #242730 0%, #181a20 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .gr-cta:hover {
+    color: #14161B;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 1px 2px rgba(20, 22, 27, 0.2),
+      0 18px 32px -14px color-mix(in srgb, var(--gr-accent) 80%, transparent);
+  }
+
+  .gr-cta:active {
+    transform: scale(0.97);
+  }
+
+  .gr-cta-fill {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--gr-accent);
+    clip-path: inset(6px 6px 6px calc(100% - 46px) round 10px);
+    transition: clip-path 0.55s var(--gr-ease);
+  }
+
+  .gr-cta:hover .gr-cta-fill {
+    clip-path: inset(0 0 0 0 round 14px);
+  }
+
+  .gr-cta-tile {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    place-items: center;
+    color: #14161B;
+  }
+
+  .gr-cta-arrow {
+    width: 17px;
+    height: 17px;
+    transition: transform 0.45s var(--gr-ease);
+  }
+
+  .gr-cta:hover .gr-cta-arrow {
+    transform: translate(2px, -2px) rotate(45deg);
+  }
+
+  .gr-cta-label {
+    grid-area: 1 / 1;
+    transition: transform 0.45s var(--gr-ease);
+  }
+
+  .gr-cta-label-hover {
+    transform: translateY(115%);
+  }
+
+  .gr-cta:hover .gr-cta-label-rest {
+    transform: translateY(-115%);
+  }
+
+  .gr-cta:hover .gr-cta-label-hover {
+    transform: translateY(0);
+  }
+
+  .gr-cta-sm {
+    height: 40px;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 0 5px 0 14px;
+    font-size: 13px;
+  }
+
+  .gr-cta-sm .gr-cta-fill {
+    clip-path: inset(4px 4px 4px calc(100% - 36px) round 8px);
+  }
+
+  .gr-cta-sm:hover .gr-cta-fill {
+    clip-path: inset(0 0 0 0 round 12px);
+  }
+
+  .gr-cta-sm .gr-cta-tile {
+    width: 30px;
+    height: 30px;
+  }
+
+  .gr-cta-sm .gr-cta-arrow {
+    width: 14px;
+    height: 14px;
+  }
+
+  .gr-ghost {
+    display: inline-flex;
+    height: 52px;
+    align-items: center;
+    gap: 9px;
+    border-radius: 14px;
+    padding: 0 20px 0 18px;
+    background-color: color-mix(in srgb, var(--gr-card) 74%, transparent);
+    color: var(--gr-ink);
+    font-size: 14.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gr-ink) 14%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition:
+      box-shadow 0.25s var(--gr-ease),
+      background-color 0.25s var(--gr-ease),
+      transform 0.15s var(--gr-ease);
+  }
+
+  .gr-ghost:hover {
+    background-color: var(--gr-card);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--gr-ink) 32%, transparent),
+      0 12px 24px -16px rgba(60, 45, 20, 0.5);
+  }
+
+  .gr-ghost svg {
+    transition: transform 0.35s var(--gr-ease);
+  }
+
+  .gr-ghost:hover svg {
+    transform: translateX(2px);
+  }
+
+  .gr-ghost:active {
+    transform: scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr-cta-fill,
+  .gr-cta-label,
+  .gr-cta-arrow {
+    transition: none;
+  }
+  .gr-live-dot::after {
+    animation: none;
+  }
+}

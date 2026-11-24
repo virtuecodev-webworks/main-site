@@ -13,7 +13,7 @@ export async function CtaBand({ className }: { className?: string }) {
 
   return (
     <Reveal className={cn('w-full', className)}>
-      <section className="section_careers relative isolate flex min-h-[76vh] flex-col justify-between overflow-hidden rounded-t-[20px] bg-[#0a0a0a] px-5 py-16 text-[#f5f4f0] sm:rounded-t-3xl sm:px-10 sm:py-24">
+      <section className="section_careers relative isolate flex min-h-[76vh] flex-col justify-between overflow-hidden rounded-t-[28px] bg-[#14161B] px-5 py-16 text-[#f5f4f0] sm:rounded-t-[40px] sm:px-10 sm:py-24">
         {/* Atmospheric architectural backdrop & vignette */}
         <div
           aria-hidden="true"

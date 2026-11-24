@@ -33,9 +33,11 @@ export interface NotificationItem {
 export function NotificationBellSheet({
   unreadCount = 0,
   notifications = [],
+  triggerClassName,
 }: {
   unreadCount?: number
   notifications?: NotificationItem[]
+  triggerClassName?: string
 }) {
   const [open, setOpen] = React.useState(false)
   const [permission, setPermission] = React.useState<NotificationPermission>('default')
@@ -153,7 +155,10 @@ export function NotificationBellSheet({
         type="button"
         onClick={() => setOpen(!open)}
         aria-label="View notifications and push alerts"
-        className="relative flex size-9 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-all hover:border-primary active:scale-95"
+        className={cn(
+          'relative flex size-9 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-all hover:border-primary active:scale-95',
+          triggerClassName,
+        )}
       >
         <Bell className="size-4" />
         {unreadCount > 0 && (

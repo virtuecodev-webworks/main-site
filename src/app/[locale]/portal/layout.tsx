@@ -36,14 +36,11 @@ export default async function PortalLayout({
   const session = await requireClient(locale)
 
   return (
-    <div className="min-h-dvh bg-muted/40">
-      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-4 sm:px-8 sm:py-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8 lg:py-10 pb-28 lg:pb-10">
-        <PortalNav locale={locale} name={session.name} email={session.email} />
-        <main className="min-w-0 flex flex-col gap-6">
-          <AppInstallAdvisor className="w-full" />
-          {children}
-        </main>
+    <PortalNav locale={locale} name={session.name} email={session.email}>
+      <div className="flex flex-col gap-5">
+        <AppInstallAdvisor className="w-full" />
+        {children}
       </div>
-    </div>
+    </PortalNav>
   )
 }

@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { ArrowUpRight } from 'lucide-react'
-import { Link } from '@/i18n/navigation'
 import { Hero } from '@/components/site/hero'
 import { QuoteMarquee } from '@/components/site/quote-marquee'
 import { LiveStudioTracker } from '@/components/site/capabilities-band'
@@ -78,13 +76,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 Explore our full catalog of web applications, luxury stores, and digital platforms.
               </p>
             </div>
-            <Link
-              href="/portfolio"
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-gold-500 active:scale-95 shrink-0"
-            >
-              <span>Explore All Projects (6+)</span>
-              <ArrowUpRight className="size-4" />
-            </Link>
+            <VantraButton href="/portfolio" variant="dark" hoverLabel="6+ live builds" className="shrink-0">
+              Explore All Projects
+            </VantraButton>
           </div>
         </div>
       </section>

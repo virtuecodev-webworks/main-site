@@ -17,7 +17,7 @@ export async function SiteFooter() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="footer relative z-10 -mt-6 overflow-hidden rounded-t-[20px] border-t border-[#f5f4f01f] bg-[#0a0a0a] px-5 pt-20 pb-12 text-[#f5f4f0] sm:px-10 sm:pt-24">
+    <footer className="footer relative z-10 -mt-6 overflow-hidden rounded-t-[28px] border-t border-[#f5f4f01f] bg-[#14161B] px-5 pt-20 pb-12 text-[#f5f4f0] sm:rounded-t-[40px] sm:px-10 sm:pt-24">
       <div className="container-max">
         {/* Top 12-Col Architectural Grid */}
         <div className="footer_top grid grid-cols-1 gap-16 lg:grid-cols-12">
