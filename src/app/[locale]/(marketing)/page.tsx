@@ -5,7 +5,6 @@ import { QuoteMarquee } from '@/components/site/quote-marquee'
 import { LiveStudioTracker } from '@/components/site/capabilities-band'
 import { ServiceShowcase } from '@/components/site/service-showcase'
 import { PortfolioGrid } from '@/components/site/portfolio-grid'
-import { SpeedComparisonSlider } from '@/components/site/speed-comparison-slider'
 import { SocialProofStrip } from '@/components/site/social-proof-strip'
 import { ProjectEstimator } from '@/components/site/project-estimator'
 import { Faq } from '@/components/site/faq'
@@ -83,10 +82,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* 4. Interactive Wix-to-Next.js Speed & Performance Comparison */}
-      <SpeedComparisonSlider />
-
-      {/* 5. Live Build Tracker */}
+      {/* 4. Live Build Tracker */}
       <LiveStudioTracker />
 
       {/* 6. Verified Client Outcomes & Social Proof */}

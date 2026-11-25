@@ -1217,18 +1217,13 @@ export function Hero() {
                   </Link>
                 </motion.div>
 
-                {/* Tech Stack & Launch Verification Caption */}
+                {/* Launch Verification Badge */}
                 <motion.div
                   initial={prefersReduced ? false : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3, ease: EASE_OUT }}
                   className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12.5px] text-[var(--gr-ink)]/60"
                 >
-                  <span>
-                    Engineered with <strong className="font-semibold text-[var(--gr-ink)]">Next.js 16</strong> ·{' '}
-                    <strong className="font-semibold text-[var(--gr-ink)]">TypeScript</strong> ·{' '}
-                    <strong className="font-semibold text-[var(--gr-ink)]">Supabase</strong>
-                  </span>
                   <LaunchBadge theme="auto" variant="compact" className="scale-90 origin-left" />
                 </motion.div>
 
