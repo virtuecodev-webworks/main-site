@@ -194,7 +194,7 @@ export function organizationJsonLd(locale: string) {
                 description:
                   'Bespoke, high-performance web applications built from scratch with Next.js and Supabase. Tailored for SaaS products, interactive portals, and custom web tools.',
               },
-              price: '120.00',
+              price: '150.00',
               priceCurrency: 'USD',
               priceValidUntil: '2027-12-31',
               availability: 'https://schema.org/InStock',
@@ -208,7 +208,7 @@ export function organizationJsonLd(locale: string) {
                 description:
                   'High-converting online shops with bank-grade checkout, automated customer receipt dispatch, inventory management, and fast mobile navigation.',
               },
-              price: '160.00',
+              price: '250.00',
               priceCurrency: 'USD',
               priceValidUntil: '2027-12-31',
               availability: 'https://schema.org/InStock',
@@ -222,7 +222,7 @@ export function organizationJsonLd(locale: string) {
                 description:
                   'Modern, clean WordPress architectures configured for business credibility, fast load times, and easy visual content editing.',
               },
-              price: '95.00',
+              price: '150.00',
               priceCurrency: 'USD',
               priceValidUntil: '2027-12-31',
               availability: 'https://schema.org/InStock',
@@ -236,7 +236,7 @@ export function organizationJsonLd(locale: string) {
                 description:
                   'Polished, custom Wix Studio websites built with responsive fluid layouts, custom micro-interactions, and built-in lead capture.',
               },
-              price: '80.00',
+              price: '150.00',
               priceCurrency: 'USD',
               priceValidUntil: '2027-12-31',
               availability: 'https://schema.org/InStock',
@@ -278,7 +278,7 @@ export function organizationJsonLd(locale: string) {
             name: 'How much does website design and development cost at Virtue & Co. Webworks?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Our website design and development packages start at accessible fixed rates: Custom websites start at $120, Online Stores start at $160, WordPress websites start at $95, and Wix Studio designs start at $80. Every project receives an itemized quote and one guaranteed fixed price before any work begins.',
+              text: 'Projects start at $150 USD for focused landing pages, WordPress foundations, and Wix Studio one-pagers, and from $250 USD for product storefronts. Multi-page brand websites start at $350–$450 USD, and full-stack web apps start at $950 USD. Every engagement receives an itemized written quote and one fixed price before work begins.',
             },
           },
           {
@@ -286,7 +286,7 @@ export function organizationJsonLd(locale: string) {
             name: 'How long does a new website or redesign take to launch?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Starter business websites and redesigns are delivered in 5 to 10 working days, complete brand and e-commerce stores in 10 to 18 working days, and custom web applications in 20 to 30 working days. We commit to a fixed deadline agreed on kickoff.',
+              text: 'Landing pages launch in 5 to 8 business days, multi-page business websites in 2 to 3 weeks, and e-commerce stores or custom web applications in 3 to 6 weeks after scope sign-off and content handover.',
             },
           },
           {

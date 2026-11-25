@@ -6,6 +6,7 @@ import { LaunchBadge } from '@/components/site/launch-badge'
 import { CountrySwitcher } from './country-switcher'
 import { LanguageSwitcher } from './language-switcher'
 import { NewsletterForm } from './newsletter-form'
+import { VisitorAvailability } from './visitor-availability'
 import { AGENCY } from '@/lib/constants'
 import { FOOTER_LEGAL, PRIMARY_NAV, SERVICES } from '@/lib/studio'
 
@@ -59,11 +60,12 @@ export async function SiteFooter() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <span className="label-mono-xs text-[#f5f4f0]/45">Operations</span>
+                <span className="label-mono-xs text-[#f5f4f0]/45">Operations &amp; Hours</span>
                 <span className="inline-flex items-center gap-2 text-[#f5f4f0]/75">
                   <Globe className="size-3.5 text-primary" aria-hidden="true" />
                   <span>{t('worldwide')}</span>
                 </span>
+                <VisitorAvailability variant="footer" />
               </div>
             </div>
 

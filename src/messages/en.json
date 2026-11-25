@@ -104,7 +104,7 @@
         "senior": "Direct Senior Access"
       },
       "badges": {
-        "rating": "5.0 Star Rating",
+        "rating": "Direct Senior Team",
         "ownership": "100% Code Ownership",
         "portal": "Direct Client Portal"
       },
@@ -113,7 +113,7 @@
     },
     "stats": {
       "launch": "Most projects take",
-      "lighthouse": "Speed score we aim for",
+      "lighthouse": "Core Web Vitals target",
       "senior": "You talk to the builder",
       "response": "We reply within"
     },
@@ -174,10 +174,10 @@
       ]
     },
     "live": {
-      "eyebrow": "Active Projects",
-      "title": "What we are building right now.",
-      "subtitle": "Live progress on active client projects. Transparent timelines from kickoff to launch.",
-      "viewCaseStudy": "View Case Study ↗"
+      "eyebrow": "Interactive Demos",
+      "title": "Explore live interactive demos.",
+      "subtitle": "Test our UI architecture and engineering quality directly in your browser.",
+      "viewCaseStudy": "Inspect Demo ↗"
     },
     "values": {
       "eyebrow": "Our Standards",
@@ -201,7 +201,7 @@
         "description": "Custom-engineered from scratch - fast on every device, easy to run, and built to grow with your business.",
         "features": [
           "Bespoke design, never a template",
-          "Sub-second load times on mobile",
+          "Core Web Vitals & mobile speed optimization",
           "Dashboards, portals & integrations",
           "100% source code ownership"
         ],
@@ -251,7 +251,7 @@
         "description": "Custom-engineered from scratch - fast on every device, easy to run, and built to grow with your business.",
         "features": [
           "Bespoke design, never a template",
-          "Sub-second load times on mobile",
+          "Core Web Vitals & mobile speed optimization",
           "Dashboards, portals & integrations",
           "100% source code ownership"
         ],
@@ -414,7 +414,7 @@
   },
   "Contact": {
     "title": "Contact",
-    "metaTitle": "Get a Free Website Quote · Virtue & Co. Webworks",
+    "metaTitle": "Get a Free Website Quote",
     "metaDescription": "Tell us about your new website or redesign project. Get a clear plan, fixed price, and timeline within 24 to 48 hours.",
     "eyebrow": "Get a price",
     "subtitle": "Tell us what you need. We'll reply with a clear plan, a timeline and one fixed price.",
@@ -777,9 +777,9 @@
   "Pricing": {
     "eyebrow": "Pricing",
     "title": "Simple, honest pricing.",
-    "subtitle": "No packages and no invented tiers - every project is priced on what it actually needs.",
+    "subtitle": "Starter builds begin from  USD (or local equivalent) for focused landing pages, with custom projects scoped on a written fixed quote.",
     "from": "Projects from",
-    "note": "That's the smallest job we take on. Real projects are priced after a short call, and you always get the final number in writing before anything starts.",
+    "note": "Every engagement receives an itemized written plan and fixed price before work starts. Performance targets apply to delivered pages excluding unoptimized third-party embeds.",
     "cta": "Get a price",
     "secondary": "See what's included"
   },
@@ -789,7 +789,7 @@
     "items": {
       "timeline": {
         "q": "How long does a project take?",
-        "a": "Marketing websites launch in 2-4 weeks. Custom platforms and online stores take 4-8 weeks with weekly live previews."
+        "a": "Landing pages ship in 5–8 business days, multi-page sites in 2–3 weeks, and stores or web apps in 3–6 weeks after scope and content sign-off."
       },
       "stack": {
         "q": "What do you build with?",
@@ -934,7 +934,7 @@
       "title": "Privacy Policy",
       "metaTitle": "Privacy Policy",
       "metaDescription": "How Virtue & Co. Webworks collects, uses and protects personal information submitted through this website.",
-      "intro": "This policy explains what we collect when you use virtueco.dev, why we collect it, and the choices you have. We keep it deliberately short because we collect very little.",
+      "intro": "This policy explains what we collect when you use virtuecowebworks.solutions, why we collect it, and the choices you have. We keep it deliberately short because we collect very little.",
       "sections": [
         {
           "heading": "Who we are",

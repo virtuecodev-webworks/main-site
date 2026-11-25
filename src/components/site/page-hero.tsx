@@ -35,7 +35,7 @@ export function PageHero({
       <div
         className={cn(
           'container-max flex flex-col border-b border-border pb-12 sm:pb-16',
-          centered ? 'items-center text-center' : 'items-start text-left',
+          centered ? 'items-center text-center' : 'items-start text-start',
         )}
       >
         {eyebrow ? (

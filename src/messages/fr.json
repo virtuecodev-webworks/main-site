@@ -104,7 +104,7 @@
         "senior": "Contact direct développeur"
       },
       "badges": {
-        "rating": "Note de 5.0 étoiles",
+        "rating": "Équipe senior directe",
         "ownership": "Propriété du code à 100%",
         "portal": "Espace client dédié"
       },
@@ -113,7 +113,7 @@
     },
     "stats": {
       "launch": "Lancement typique",
-      "lighthouse": "Objectif Lighthouse",
+      "lighthouse": "Objectif Core Web Vitals",
       "senior": "Équipe senior, sans intermédiaire",
       "response": "Première réponse"
     },
@@ -175,10 +175,10 @@
       ]
     },
     "live": {
-      "eyebrow": "Projets en cours",
-      "title": "Ce que nous construisons en ce moment.",
-      "subtitle": "Avancement en direct sur les projets en cours. Des délais transparents du début jusqu'au lancement.",
-      "viewCaseStudy": "Voir l'étude de cas ↗"
+      "eyebrow": "Démos interactives",
+      "title": "Explorez nos démos interactives.",
+      "subtitle": "Testez notre architecture UI et notre qualité d’ingénierie directement dans votre navigateur.",
+      "viewCaseStudy": "Voir la démo ↗"
     },
     "values": {
       "eyebrow": "Nos standards",
@@ -202,7 +202,7 @@
         "description": "Quand les outils standards freinent votre ambition, nous développons proprement. Des front-ends typés et orientés composants, avec rendu serveur, cache en périphérie et un design system qui vous appartient.",
         "features": [
           "Architecture Next.js App Router + TypeScript",
-          "Design system sur mesure avec les tokens Tailwind CSS",
+          "Optimisation Core Web Vitals et vitesse mobile",
           "Budgets Core Web Vitals contrôlés en intégration continue",
           "API headless, tableaux de bord et intégrations"
         ],
@@ -252,7 +252,7 @@
         "description": "Quand les outils standards freinent votre ambition, nous développons proprement. Des front-ends typés et orientés composants, avec rendu serveur, cache en périphérie et un design system qui vous appartient.",
         "features": [
           "Architecture Next.js App Router + TypeScript",
-          "Design system sur mesure avec les tokens Tailwind CSS",
+          "Optimisation Core Web Vitals et vitesse mobile",
           "Budgets Core Web Vitals contrôlés en intégration continue",
           "API headless, tableaux de bord et intégrations"
         ],
@@ -759,9 +759,9 @@
     "cta": "Obtenir un prix",
     "eyebrow": "Tarifs",
     "title": "Des tarifs simples et transparents.",
-    "subtitle": "Pas de forfaits opaques ni de paliers inventés - chaque projet est tarifé selon ses besoins réels.",
+    "subtitle": "Les sites vitrines débutent à 150 $ USD (ou équivalent local), et chaque projet sur mesure reçoit un devis écrit à prix fixe.",
     "from": "Projets à partir de",
-    "note": "C'est notre tarif plancher. Les projets réels sont chiffrés après un court échange, avec un montant garanti par écrit avant le début des travaux.",
+    "note": "Chaque mission commence par un plan détaillé et un tarif garanti par écrit. Les objectifs de performance s’appliquent aux pages livrées hors scripts tiers non optimisés.",
     "secondary": "Découvrir ce qui est inclus"
   },
   "Login": {
@@ -941,7 +941,7 @@
     "items": {
       "timeline": {
         "q": "Combien de temps prend un projet ?",
-        "a": "Un site vitrine simple prend généralement deux à quatre semaines. Une plateforme sur mesure ou une boutique en ligne demande six à douze semaines, selon le périmètre et la rapidité de vos retours."
+        "a": "Les pages de lancement prennent 5 à 8 jours ouvrés, les sites multi-pages 2 à 3 semaines, et les boutiques ou applications web 3 à 6 semaines après validation du cahier des charges."
       },
       "stack": {
         "q": "Quelles technologies utilisez-vous ?",

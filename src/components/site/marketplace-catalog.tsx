@@ -8,13 +8,16 @@ import {
   ArrowRight,
   ShieldCheck,
 } from 'lucide-react'
+import { useLocale } from 'next-intl'
+import { Link } from '@/i18n/navigation'
+import { useRegion } from '@/components/site/region-provider'
 import {
   AGENCY_SERVICES,
   type AgencyServiceOffering,
   type PackageTier,
   type ServicePackage,
 } from '@/lib/packages'
-import type { ProjectCategory } from '@/lib/constants'
+import type { CurrencyCode, ProjectCategory } from '@/lib/constants'
 import { formatMoney } from '@/lib/utils'
 import { PackageIntakeModal } from './package-intake-modal'
 
@@ -26,9 +29,17 @@ const CATEGORIES: { label: string; value: 'all' | ProjectCategory }[] = [
   { label: 'Online Stores', value: 'ecommerce' },
 ]
 
+function packagePrice(pkg: ServicePackage, currency: CurrencyCode): number {
+  if (currency === 'NGN') return pkg.priceNgn
+  if (currency === 'GBP') return Math.round(pkg.priceUsd * 0.8)
+  if (currency === 'EUR') return Math.round(pkg.priceUsd * 0.92)
+  return pkg.priceUsd
+}
+
 export function MarketplaceCatalog() {
+  const locale = useLocale()
+  const { currency } = useRegion()
   const [selectedCategory, setSelectedCategory] = useState<'all' | ProjectCategory>('all')
-  const currency = 'USD'
 
   const [selectedTiers, setSelectedTiers] = useState<Record<string, PackageTier>>({
     custom: 'business',
@@ -67,33 +78,42 @@ export function MarketplaceCatalog() {
               ( &nbsp;&nbsp;&nbsp;Fixed-Price Packages&nbsp;&nbsp;&nbsp; )
             </span>
             <h2 className="heading-style-h2 mt-3 max-w-[18ch]">
-              Clear pricing. Guaranteed launch dates.
+              Clear pricing. Agreed launch dates.
             </h2>
           </div>
           <div className="section_meta max-w-sm">
             <span className="label-mono text-foreground">No Hidden Fees · Direct Senior Team</span>
             <span className="text-muted-foreground">
-              Choose a package tier below to see exact deliverables, timeline, and fixed pricing.
+              Choose a package tier below to see exact deliverables, delivery windows, and fixed pricing in {currency}.
             </span>
           </div>
         </div>
 
         {/* Clean Category Filter Pills */}
-        <div className="mb-10 flex flex-wrap items-center gap-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.value}
-              type="button"
-              onClick={() => setSelectedCategory(cat.value)}
-              className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
-                selectedCategory === cat.value
-                  ? 'bg-foreground text-background shadow-sm'
-                  : 'border border-border bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
+        <div
+          role="tablist"
+          aria-label="Filter service packages"
+          className="mb-10 flex flex-wrap items-center gap-2"
+        >
+          {CATEGORIES.map((cat) => {
+            const active = selectedCategory === cat.value
+            return (
+              <button
+                key={cat.value}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setSelectedCategory(cat.value)}
+                className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
+                  active
+                    ? 'bg-foreground text-background shadow-sm'
+                    : 'border border-border bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground'
+                }`}
+              >
+                {cat.label}
+              </button>
+            )
+          })}
         </div>
 
         {/* Services Grid */}
@@ -101,7 +121,7 @@ export function MarketplaceCatalog() {
           {filteredServices.map((svc, idx) => {
             const currentTier = selectedTiers[svc.category] || 'business'
             const currentPkg = svc.packages[currentTier]
-            const price = currentPkg.priceUsd
+            const price = packagePrice(currentPkg, currency)
             const num = String(idx + 1).padStart(3, '0')
 
             return (
@@ -127,13 +147,19 @@ export function MarketplaceCatalog() {
                 </p>
 
                 {/* Tier Switcher Tabs */}
-                <div className="mb-6 grid grid-cols-3 gap-1 rounded-xl border border-border bg-background/60 p-1 text-xs font-semibold">
+                <div
+                  role="tablist"
+                  aria-label={`${svc.title} tiers`}
+                  className="mb-6 grid grid-cols-3 gap-1 rounded-xl border border-border bg-background/60 p-1 text-xs font-semibold"
+                >
                   {(['starter', 'business', 'enterprise'] as PackageTier[]).map((tier) => {
                     const active = currentTier === tier
                     return (
                       <button
                         key={tier}
                         type="button"
+                        role="tab"
+                        aria-selected={active}
                         onClick={() => setTierForService(svc.category, tier)}
                         className={`rounded-lg py-2 capitalize transition-all ${
                           active
@@ -154,9 +180,9 @@ export function MarketplaceCatalog() {
                       <span className="font-display text-base font-semibold text-foreground">
                         {currentPkg.name}
                       </span>
-                      <div className="text-right">
-                        <span className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                          {formatMoney(price, currency, 'en-US', { decimals: false })}
+                      <div className="text-end">
+                        <span className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl tabular-nums">
+                          {formatMoney(price, currency, locale, { decimals: false })}
                         </span>
                       </div>
                     </div>
@@ -167,11 +193,11 @@ export function MarketplaceCatalog() {
                     {/* Timeline and Revisions */}
                     <div className="mb-5 flex items-center gap-6 border-y border-border/60 py-3 text-xs font-medium text-foreground">
                       <div className="flex items-center gap-1.5">
-                        <Clock className="h-4 w-4 text-primary" />
-                        <span>{currentPkg.deliveryDays} Days Delivery</span>
+                        <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
+                        <span>{currentPkg.deliveryDays} Business Days</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <RefreshCw className="h-4 w-4 text-primary" />
+                        <RefreshCw className="h-4 w-4 text-primary" aria-hidden="true" />
                         <span>{currentPkg.revisions} Revisions</span>
                       </div>
                     </div>
@@ -180,7 +206,7 @@ export function MarketplaceCatalog() {
                     <ul className="mb-6 space-y-2.5 text-xs text-muted-foreground">
                       {currentPkg.features.map((feat, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                           <span className="text-foreground/90">{feat}</span>
                         </li>
                       ))}
@@ -195,23 +221,26 @@ export function MarketplaceCatalog() {
                       className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-95"
                     >
                       <span>Select {currentPkg.name}</span>
-                      <ArrowRight className="h-4 w-4" />
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
 
                 {/* Bottom Trust Note */}
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                    <span>Fixed price · 100% ownership on launch</span>
+                    <ShieldCheck className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+                    <span>Fixed scope · 100% ownership on launch</span>
                   </div>
-                  <a
-                    href={`/contact?service=${svc.category}&tier=${currentTier}`}
+                  <Link
+                    href={{
+                      pathname: '/contact',
+                      query: { service: svc.category, tier: currentTier },
+                    }}
                     className="font-medium hover:text-foreground hover:underline"
                   >
                     Need something custom?
-                  </a>
+                  </Link>
                 </div>
               </div>
             )

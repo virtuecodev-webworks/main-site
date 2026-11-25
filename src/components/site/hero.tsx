@@ -1,14 +1,12 @@
 'use client'
 
 import * as React from 'react'
-import Image from 'next/image'
 import {
   AnimatePresence,
   MotionConfig,
   animate,
   motion,
   useMotionValue,
-  useMotionValueEvent,
   useReducedMotion,
   useTransform,
 } from 'framer-motion'
@@ -38,17 +36,9 @@ import { cn } from '@/lib/utils'
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const
 
-const STUDIO_CITIES = [
-  { name: 'London', builds: 48 },
-  { name: 'New York', builds: 36 },
-  { name: 'Lagos', builds: 62 },
-  { name: 'Toronto', builds: 29 },
-  { name: 'Dubai', builds: 24 },
-]
-
 const HERO_PHRASES = [
   'to grow your business.',
-  'for sub-second speed.',
+  'for fast, reliable speed.',
   'with fixed pricing.',
   'you 100% own.',
 ]
@@ -79,15 +69,9 @@ const BLUEPRINT = {
 
 const BUILD_TIERS = [
   { id: 'landing', label: 'Landing', price: 150, days: '5 days', stack: 'Next.js Edge Site' },
-  { id: 'store', label: 'Store', price: 650, days: '3 wks', stack: 'Global E-Commerce' },
-  { id: 'app', label: 'Web App', price: 950, days: '4 wks', stack: 'Full-Stack Platform' },
+  { id: 'store', label: 'Store', price: 450, days: '14 days', stack: 'Global E-Commerce' },
+  { id: 'app', label: 'Web App', price: 950, days: '21 days', stack: 'Full-Stack Platform' },
 ] as const
-
-const CLIENT_AVATARS = [
-  { name: 'Aurum Capital', src: '/work/aurum-hero.jpg' },
-  { name: 'Maison Finery', src: '/work/finery-hero.jpg' },
-  { name: 'Meridian Review', src: '/work/meridian-hero.jpg' },
-]
 
 const LENS_ZOOM = 1.42
 const LENS_PIN_Y = 0.41
@@ -379,26 +363,6 @@ function Phrase({ text }: { text: string }) {
   )
 }
 
-function LiveCounter({ value }: { value: number }) {
-  const ref = React.useRef<HTMLSpanElement>(null)
-  const shown = useMotionValue(value)
-
-  useMotionValueEvent(shown, 'change', (latest) => {
-    if (ref.current) ref.current.textContent = String(Math.round(latest))
-  })
-
-  React.useEffect(() => {
-    const controls = animate(shown, value, { duration: 0.85, ease: EASE_OUT })
-    return () => controls.stop()
-  }, [shown, value])
-
-  return (
-    <span ref={ref} className="tabular-nums">
-      {value}
-    </span>
-  )
-}
-
 function HoldToDeploy({
   label,
   busy,
@@ -494,7 +458,6 @@ export function Hero() {
   const [hoverDistrict, setHoverDistrict] = React.useState<string | null>(null)
   const [activeDistrict, setActiveDistrict] = React.useState('Luxury Stores')
   const [phraseIdx, setPhraseIdx] = React.useState(0)
-  const [cityIdx, setCityIdx] = React.useState(0)
   const [rating, setRating] = React.useState(5)
 
   const progress = useMotionValue(0)
@@ -517,18 +480,14 @@ export function Hero() {
     return () => observer.disconnect()
   }, [])
 
-  // Rotate hero phrases & live city ticker
+  // Rotate hero phrases
   React.useEffect(() => {
     if (prefersReduced) return
     const phraseTimer = window.setInterval(() => {
       setPhraseIdx((i) => (i + 1) % HERO_PHRASES.length)
     }, 3000)
-    const cityTimer = window.setInterval(() => {
-      setCityIdx((i) => (i + 1) % STUDIO_CITIES.length)
-    }, 3400)
     return () => {
       window.clearInterval(phraseTimer)
-      window.clearInterval(cityTimer)
     }
   }, [prefersReduced])
 
@@ -683,7 +642,6 @@ export function Hero() {
   const dropDistrict =
     grid && dropPoint ? grid.districtAt(dropPoint.x, dropPoint.y) : null
   const activeTier = BUILD_TIERS[tierIndex]
-  const currentCity = STUDIO_CITIES[cityIdx]
 
   return (
     <MotionConfig reducedMotion="user">
@@ -861,7 +819,7 @@ export function Hero() {
                             <div className="absolute bottom-0 left-0 flex -translate-x-1/2 flex-col items-center">
                               <span className="bg-[var(--gr-ink)] text-[var(--gr-card)] mb-1.5 rounded-full px-2.5 py-0.5 text-[10.5px] font-semibold whitespace-nowrap">
                                 {buildStatus === 'live'
-                                  ? '100/100'
+                                  ? '90+ CWV Target'
                                   : buildStatus === 'idle'
                                     ? activeTier.days
                                     : 'Building…'}
@@ -1042,12 +1000,12 @@ export function Hero() {
                                   </div>
                                   <div className="mt-1.5 flex justify-between text-[9.5px] text-[var(--gr-grey)]">
                                     <span>TypeScript + Next.js 16</span>
-                                    <span>0.28s TTFB</span>
+                                    <span>Edge Cached</span>
                                   </div>
                                 </div>
 
                                 <div className="rounded-[10px] bg-[var(--gr-panel)] px-2.5 py-2 text-[10px] font-medium text-[var(--gr-ink)]">
-                                  Fixed price locked at ${activeTier.price} USD
+                                  Fixed price from ${activeTier.price} USD
                                 </div>
                               </motion.div>
                             )}
@@ -1066,7 +1024,7 @@ export function Hero() {
                                 </span>
                                 <div>
                                   <p className="text-[13.5px] font-bold leading-tight">
-                                    100/100 Lighthouse Ready
+                                    Launch Ready Preview
                                   </p>
                                   <p className="text-[var(--gr-grey)] mt-0.5 text-[10px]">
                                     {activeTier.stack} · Ready to start
@@ -1112,46 +1070,22 @@ export function Hero() {
           <div className="gr-inset w-full">
             <div ref={copyRef} className="gr-container">
               <div className="gr-copy pointer-events-auto relative z-10 flex flex-col items-start">
-                {/* Live Studio Ticker */}
+                {/* Studio Status Pill */}
                 <motion.p
                   initial={prefersReduced ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, ease: EASE_OUT }}
-                  className="gr-ticker flex items-center gap-2.5 rounded-[12px] py-1.5 pr-3.5 pl-1.5 text-[12.5px]"
+                  className="gr-ticker flex items-center gap-2.5 rounded-[12px] py-1.5 pe-3.5 ps-1.5 text-[12.5px]"
                 >
                   <span className="gr-ticker-tag flex items-center gap-1.5 rounded-[8px] px-2 py-1 text-[10px] font-bold tracking-[0.12em]">
                     <span aria-hidden="true" className="gr-live-dot" />
-                    LIVE
+                    OPEN
                   </span>
-                  <span className="text-[var(--gr-ink)]/75">
+                  <span className="text-[var(--gr-ink)]/80">
                     <span className="text-[var(--gr-ink)] font-semibold">
-                      <LiveCounter value={currentCity.builds} />
-                    </span>{' '}
-                    <span className="hidden sm:inline">sites engineered for clients in </span>
-                    <span className="sm:hidden">builds in </span>
-                    <span className="relative inline-grid overflow-hidden align-bottom">
-                      {STUDIO_CITIES.map((c) => (
-                        <span
-                          key={c.name}
-                          aria-hidden="true"
-                          className="invisible col-start-1 row-start-1 font-semibold"
-                        >
-                          {c.name}
-                        </span>
-                      ))}
-                      <AnimatePresence mode="popLayout" initial={false}>
-                        <motion.span
-                          key={currentCity.name}
-                          initial={{ y: '100%', opacity: 0 }}
-                          animate={{ y: '0%', opacity: 1 }}
-                          exit={{ y: '-100%', opacity: 0 }}
-                          transition={{ duration: 0.4, ease: EASE_OUT }}
-                          className="text-[var(--gr-ink)] col-start-1 row-start-1 inline-block font-semibold"
-                        >
-                          {currentCity.name}
-                        </motion.span>
-                      </AnimatePresence>
+                      {t('available')}
                     </span>
+                    <span className="hidden sm:inline"> · Fixed-price remote web studio · Worldwide</span>
                   </span>
                 </motion.p>
 
@@ -1207,7 +1141,7 @@ export function Hero() {
                   transition={{ duration: 0.65, delay: 0.24, ease: EASE_OUT }}
                   className="mt-7 flex w-full flex-wrap items-center gap-3 sm:w-auto"
                 >
-                  <VantraButton href="/contact" variant="dark" hoverLabel="Get fixed quote">
+                  <VantraButton href="/contact#quote-form" variant="dark" hoverLabel="Get fixed quote">
                     {t('primaryCta')}
                   </VantraButton>
 
@@ -1227,65 +1161,32 @@ export function Hero() {
                   <LaunchBadge theme="auto" variant="compact" className="scale-90 origin-left" />
                 </motion.div>
 
-                {/* Avatar Stack + 5 Animated Stars + Lighthouse Stat */}
-                <motion.div
+                {/* Verifiable Studio Commitments Strip */}
+                <motion.dl
                   initial={prefersReduced ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.65, delay: 0.36, ease: EASE_OUT }}
-                  className="mt-6 flex items-center gap-4"
+                  className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[12.5px]"
                 >
-                  <span className="flex">
-                    {CLIENT_AVATARS.map((avatar, idx) => (
-                      <Image
-                        key={avatar.name}
-                        src={avatar.src}
-                        alt={avatar.name}
-                        width={40}
-                        height={40}
-                        style={{ zIndex: CLIENT_AVATARS.length - idx }}
-                        className="gr-rider relative -ml-2.5 size-9 rounded-full object-cover first:ml-0"
-                      />
-                    ))}
-                  </span>
+                  <div className="leading-tight">
+                    <dt className="text-[var(--gr-ink)] font-bold">Written Quotes</dt>
+                    <dd className="text-[var(--gr-ink)]/65 text-[11.5px]">Fixed scope from $150</dd>
+                  </div>
 
-                  <span className="leading-tight">
-                    <span className="flex items-center gap-1.5">
-                      <span className="flex gap-0.5">
-                        {Array.from({ length: 5 }, (_, idx) => (
-                          <motion.span
-                            key={idx}
-                            initial={prefersReduced ? false : { scale: 0.4, opacity: 0.3 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{
-                              type: 'spring',
-                              stiffness: 480,
-                              damping: 18,
-                              delay: prefersReduced ? 0 : 0.45 + idx * 0.06,
-                            }}
-                          >
-                            <Star
-                              aria-hidden="true"
-                              className="size-3.5 fill-[var(--gr-accent)] text-[var(--gr-accent)]"
-                            />
-                          </motion.span>
-                        ))}
-                      </span>
-                      <span className="text-[var(--gr-ink)] text-[13.5px] font-bold">5.0</span>
-                    </span>
-                    <span className="text-[var(--gr-ink)]/65 text-[12px] whitespace-nowrap">
-                      Verified client rating
-                    </span>
-                  </span>
+                  <span aria-hidden="true" className="bg-[var(--gr-ink)]/12 hidden h-7 w-px sm:block" />
 
-                  <span aria-hidden="true" className="bg-[var(--gr-ink)]/12 hidden h-8 w-px sm:block" />
+                  <div className="leading-tight">
+                    <dt className="text-[var(--gr-ink)] font-bold">100% Ownership</dt>
+                    <dd className="text-[var(--gr-ink)]/65 text-[11.5px]">Code, domain &amp; accounts</dd>
+                  </div>
 
-                  <span className="hidden leading-tight whitespace-nowrap sm:block">
-                    <span className="text-[var(--gr-ink)] block text-[14.5px] font-bold">
-                      100/100
-                    </span>
-                    <span className="text-[var(--gr-ink)]/65 text-[12px]">Lighthouse SLA</span>
-                  </span>
-                </motion.div>
+                  <span aria-hidden="true" className="bg-[var(--gr-ink)]/12 hidden h-7 w-px sm:block" />
+
+                  <div className="hidden leading-tight sm:block">
+                    <dt className="text-[var(--gr-ink)] font-bold">30-Day Support</dt>
+                    <dd className="text-[var(--gr-ink)]/65 text-[11.5px]">Post-launch warranty included</dd>
+                  </div>
+                </motion.dl>
               </div>
             </div>
           </div>

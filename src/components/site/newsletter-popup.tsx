@@ -165,7 +165,7 @@ export function NewsletterPopup() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 16, scale: 0.96 }}
           transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-[65] w-[calc(100vw-32px)] sm:w-[380px] max-w-full font-sans"
+          className="fixed bottom-4 start-4 sm:bottom-6 sm:start-6 z-[65] w-[calc(100vw-32px)] sm:w-[380px] max-w-full font-sans"
           role="dialog"
           aria-modal="false"
           aria-labelledby="newsletter-dispatch-title"
@@ -183,7 +183,7 @@ export function NewsletterPopup() {
               type="button"
               onClick={handleDismiss}
               aria-label="Close subscription popup"
-              className="absolute top-3.5 right-3.5 z-30 size-8 sm:size-9 rounded-full bg-white/[0.06] hover:bg-white/[0.15] text-[#f5f4f0]/60 hover:text-[#f5f4f0] border border-white/10 flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dcaa28]"
+              className="absolute top-3.5 end-3.5 z-30 size-8 sm:size-9 rounded-full bg-white/[0.06] hover:bg-white/[0.15] text-[#f5f4f0]/60 hover:text-[#f5f4f0] border border-white/10 flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#dcaa28]"
             >
               <X className="size-4" strokeWidth={2} />
             </button>
@@ -207,7 +207,7 @@ export function NewsletterPopup() {
             ) : (
               <div className="relative z-10 flex flex-col gap-3">
                 {/* Brand Eyebrow */}
-                <div className="flex items-center gap-2 pr-8">
+                <div className="flex items-center gap-2 pe-8">
                   <span className="size-1.5 rounded-full bg-[#dcaa28]" />
                   <span className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#dcaa28]">
                     ( Newsletter )

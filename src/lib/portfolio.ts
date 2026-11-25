@@ -11,6 +11,7 @@ export interface ProjectCard {
   client: string | null
   summary: string | null
   category: ProjectCategory
+  kind: 'client' | 'concept'
   techTags: string[]
   liveUrl: string | null
   coverUrl: string | null
@@ -19,7 +20,8 @@ export interface ProjectCard {
 }
 
 /**
- * Built-in real interactive showcase websites hosted natively inside the app at `/showcase/[slug]`.
+ * Built-in interactive concept websites hosted natively inside the app at `/showcase/[slug]`
+ * so visitors can test UI craft and application logic live in the browser.
  */
 export const SHOWCASE_SLUGS = new Set([
   'aurum-capital-platform',
@@ -34,13 +36,24 @@ export const SHOWCASE_SLUGS = new Set([
 /** Maps a Supabase row to the card view model, resolving Storage paths and live showcase URLs. */
 export function toProjectCard(project: Project): ProjectCard {
   const fallbackMatch = PLACEHOLDER_PROJECTS.find((p) => p.slug === project.slug)
+  const isBuiltInShowcase = SHOWCASE_SLUGS.has(project.slug) && Boolean(fallbackMatch)
   const resolvedCover = publicMediaUrl(project.cover_image_path)
   const coverUrl =
-    (resolvedCover && !resolvedCover.endsWith('.svg'))
+    resolvedCover && !resolvedCover.endsWith('.svg')
       ? resolvedCover
       : (fallbackMatch?.coverUrl ?? PHOTOS.workBand)
 
+  if (isBuiltInShowcase && fallbackMatch) {
+    return {
+      ...fallbackMatch,
+      id: project.id,
+      coverUrl,
+      featured: project.featured,
+    }
+  }
+
   const liveUrl = project.live_url || `/portfolio/${project.slug}`
+  const isExternalLive = Boolean(project.live_url && /^https?:\/\//i.test(project.live_url))
 
   return {
     id: project.id,
@@ -49,7 +62,11 @@ export function toProjectCard(project: Project): ProjectCard {
     client: project.client || fallbackMatch?.client || null,
     summary: project.summary || fallbackMatch?.summary || null,
     category: project.category || fallbackMatch?.category || 'custom',
-    techTags: (project.tech_tags && project.tech_tags.length > 0) ? project.tech_tags : (fallbackMatch?.techTags ?? []),
+    kind: isExternalLive ? 'client' : 'concept',
+    techTags:
+      project.tech_tags && project.tech_tags.length > 0
+        ? project.tech_tags
+        : (fallbackMatch?.techTags ?? []),
     liveUrl,
     coverUrl,
     featured: project.featured,
@@ -58,19 +75,21 @@ export function toProjectCard(project: Project): ProjectCard {
 }
 
 /**
- * 6 Full-Scale Interactive Client Websites built natively into the platform
- * so prospective clients can test and experience real live work across industries.
+ * 7 Interactive Studio Concept Demos built natively into the platform so
+ * prospective clients can test UI patterns, calculators, and responsive flows
+ * directly in the browser.
  */
 export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-1',
     slug: 'aurum-capital-platform',
-    title: 'Aurum Private Treasury - Corporate Banking & Yield OS',
-    client: 'Aurum Private Treasury',
+    title: 'Aurum Treasury — Financial Dashboard UI Concept',
+    client: 'Studio Concept · Fintech UI',
     summary:
-      'Corporate banking platform with live T-Bill yield vaults (5.28% APY), multi-currency wire transfers, and programmable Visa Infinite corporate cards.',
+      'Interactive concept build demonstrating treasury allocation views, simulated FX transfer flows, and responsive card-control UI patterns.',
     category: 'custom',
-    techTags: ['Corporate Banking', 'Live FX & Wires', 'Card Controls', 'Yield Calculator'],
+    kind: 'concept',
+    techTags: ['Interactive Demo', 'Fintech UI', 'Card Controls', 'Yield Calculator'],
     liveUrl: '/showcase/aurum-capital-platform',
     coverUrl: '/work/aurum-hero.jpg',
     featured: true,
@@ -79,12 +98,13 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-2',
     slug: 'finery-commerce',
-    title: 'Maison Finery - Paris & Milan Luxury Flagship Store',
-    client: 'Maison Finery Paris',
+    title: 'Maison Finery — Multi-Currency Storefront Concept',
+    client: 'Studio Concept · E-Commerce',
     summary:
-      'Luxury ready-to-wear and leather goods store with real-time 4-currency conversion, quick-view product modal, and working slide-out checkout bag.',
+      'Interactive storefront prototype with 4-currency display switching, quick-view product modal, and a working slide-out shopping bag.',
     category: 'ecommerce',
-    techTags: ['Luxury Storefront', 'Multi-Currency', 'Slide-Out Bag', 'Apple Pay & Stripe'],
+    kind: 'concept',
+    techTags: ['Interactive Demo', 'Multi-Currency UI', 'Slide-Out Bag', 'Checkout Flow'],
     liveUrl: '/showcase/finery-commerce',
     coverUrl: '/work/finery-hero.jpg',
     featured: true,
@@ -93,12 +113,13 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-7',
     slug: 'the-royal-banquet',
-    title: 'The Royal Banquet — Luxury Summer Gala & VIP Dining Experience',
-    client: 'Grace Empire by Golden Spoon',
+    title: 'The Royal Banquet — Event Ticketing & Menu Concept',
+    client: 'Studio Concept · Event Platform',
     summary:
-      'High-society summer banquet and cultural celebration in Darlington, UK. Re-engineered from Wix into a sub-second reservation engine with VIP table allocations, dual-kitchen gastronomy showcases, and instant QR passes.',
+      'Interactive event-site concept featuring multi-tier RSVP selection, client-side QR pass preview, and a dual-kitchen menu explorer.',
     category: 'wix',
-    techTags: ['Wix Modernization', 'VIP Pass Generator', 'Dual-Kitchen Gastronomy', 'Sub-100ms Reservations', 'UK Event Ticketing'],
+    kind: 'concept',
+    techTags: ['Interactive Demo', 'RSVP Modal', 'QR Pass Preview', 'Menu Explorer'],
     liveUrl: '/showcase/the-royal-banquet',
     coverUrl: '/work/royal-banquet-hero.jpg',
     featured: true,
@@ -107,12 +128,13 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-3',
     slug: 'meridian-editorial',
-    title: 'The Meridian Review - Global Affairs & Audio Magazine',
-    client: 'The Meridian Review',
+    title: 'The Meridian Review — Digital Magazine Concept',
+    client: 'Studio Concept · Editorial',
     summary:
-      'Global print and digital journal featuring a full-article reader modal, 24/7 narrated audio essay player, and interactive global infrastructure charts.',
+      'Editorial publication prototype featuring a full-article reader modal, docked audio player UI, and interactive data visualizations.',
     category: 'wordpress',
-    techTags: ['Digital Magazine', 'Audio Essay Player', 'Full Article Reader', 'Interactive Charts'],
+    kind: 'concept',
+    techTags: ['Interactive Demo', 'Editorial UI', 'Audio Player', 'Article Reader'],
     liveUrl: '/showcase/meridian-editorial',
     coverUrl: '/work/meridian-hero.jpg',
     featured: true,
@@ -121,12 +143,13 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-4',
     slug: 'northline-studio',
-    title: 'Northline - Nordic Architectural Prefab & Cabin Configurator',
-    client: 'Northline Architectural Prefab',
+    title: 'Northline — Architectural Cabin Configurator Concept',
+    client: 'Studio Concept · Architecture',
     summary:
-      'Precision timber modular residences with an interactive 4-step cabin configurator, clickable SVG floorplan blueprints, and monthly financing calculator.',
+      'Interactive architectural showcase with a 4-step cabin specification configurator, SVG floorplan explorer, and estimate calculator.',
     category: 'wix',
-    techTags: ['4-Step Configurator', 'SVG Blueprints', 'Financing Calculator', 'Booking Flow'],
+    kind: 'concept',
+    techTags: ['Interactive Demo', '4-Step Configurator', 'SVG Blueprints', 'Cost Estimator'],
     liveUrl: '/showcase/northline-studio',
     coverUrl: '/work/northline-hero.jpg',
     featured: true,
@@ -135,12 +158,13 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-5',
     slug: 'kinetix-ai-cloud',
-    title: 'Kinetix AI Cloud - Bare-Metal B200 GPU Clusters & Inference',
-    client: 'Kinetix AI Cloud',
+    title: 'Kinetix AI Cloud — Developer Console UI Concept',
+    client: 'Studio Concept · Developer Tools',
     summary:
-      'AI developer platform with a live token-streaming inference playground, B200/H100 GPU cluster price calculator, and global fiber region map.',
+      'Developer platform concept with a simulated token-streaming playground, GPU cluster pricing calculator, and tabbed SDK snippets.',
     category: 'custom',
-    techTags: ['Live AI Playground', 'GPU Cluster Calculator', 'Global Region Map', 'Developer Docs'],
+    kind: 'concept',
+    techTags: ['Interactive Demo', 'Playground UI', 'Pricing Calculator', 'SDK Tabs'],
     liveUrl: '/showcase/kinetix-ai-cloud',
     coverUrl: '/work/kinetix-hero.jpg',
     featured: true,
@@ -149,12 +173,13 @@ export const PLACEHOLDER_PROJECTS: ProjectCard[] = [
   {
     id: 'showcase-6',
     slug: 'solace-health-portal',
-    title: 'Solace Health - 110+ Biomarker & Whole-Body MRI Longevity Clinic',
-    client: 'Solace Longevity & Diagnostics',
+    title: 'Solace Health — Diagnostics & Booking UI Concept',
+    client: 'Studio Concept · Health UX',
     summary:
-      'Preventative medicine and longevity portal with an interactive 110+ biomarker lab report explorer, biological age calculator, and clinic appointment booking.',
+      'Interactive patient portal prototype showcasing searchable lab-range UI, summary score visualizations, and a 3-step booking flow.',
     category: 'custom',
-    techTags: ['110+ Biomarker Lab UI', 'Biological Age Clock', 'Clinic Scheduler', 'Patient Portal'],
+    kind: 'concept',
+    techTags: ['Interactive Demo', 'Lab Results UI', 'Booking Flow', 'Patient UX'],
     liveUrl: '/showcase/solace-health-portal',
     coverUrl: '/work/solace-hero.jpg',
     featured: true,
@@ -188,373 +213,332 @@ export interface CaseStudyDetails {
 export const CASE_STUDY_DETAILS: Record<string, CaseStudyDetails> = {
   'aurum-capital-platform': {
     challenge:
-      'Private equity firms and corporate family offices were losing up to 72 hours per cross-border wire settlement while managing $400M+ in idle cash across legacy banking portals with zero real-time yield accrual visibility.',
+      'Financial portals frequently bury key treasury actions behind dense multi-page tables, slow PDF exports, and fragmented card-management screens.',
     challengeBullets: [
-      'Fragmented PDF statements and 3-day ACH settlement lags created liquidity uncertainty.',
-      'Significant cash drag: corporate treasury balances earned sub-1% interest in legacy checking accounts.',
-      'No programmatic controls for executive cards, creating manual accounting bottlenecks.',
-      'Complex security risks with static API keys and manual email authorization threads.',
+      'Complex balance and yield views are hard to scan quickly on desktop or mobile.',
+      'Transfer workflows often force full-page reloads and unclear confirmation states.',
+      'Card freeze and spending-limit controls are commonly hidden in nested settings.',
     ],
     solution:
-      'We designed and shipped a sub-50ms corporate treasury OS featuring automated overnight T-Bill yield sweeps (5.28% APY), real-time FX wire simulation, and programmable Visa Infinite virtual card controls.',
+      'This interactive studio concept demonstrates a unified financial dashboard UI with a simulated yield calculator, multi-currency wire preview, and instant card-control toggles.',
     keyFixes: [
-      'Automated overnight yield sweeps into US Treasury-backed vaults with compounding daily projections.',
-      'Instant optimistic wire settlement engine with multi-signature executive authorization states.',
-      'Zero-trust programmable card control matrix (instant freeze, category lock, auto-expiring single-use cards).',
-      'High-contrast obsidian glass UI with clean financial telemetry and zero layout shifts.',
+      'Interactive yield projection calculator for comparing allocation scenarios.',
+      'Optimistic transfer preview state with clear validation and confirmation steps.',
+      'Card-control matrix UI for instant freeze, limit sliders, and category toggles.',
+      'High-contrast dark interface with accessible data hierarchy and zero layout shift.',
     ],
     metrics: [
-      { label: '5.28% APY', value: '5.28%', caption: 'Automated overnight treasury sweep yield' },
-      { label: '< 45ms', value: '< 45ms', caption: 'Optimistic ledger balance update latency' },
-      { label: '100% Verified', value: '100%', caption: 'Cryptographic multi-signature transaction safety' },
+      { label: 'Concept Build', value: 'Interactive', caption: 'Testable financial UI demo in browser' },
+      { label: '4 Modules', value: '4 Views', caption: 'Overview, yield calculator, transfers, cards' },
+      { label: 'Responsive', value: 'Mobile + Web', caption: 'Adaptive dashboard layout across viewports' },
     ],
     outcomes: [
       {
-        title: 'Treasury Yield',
-        text: 'Automated overnight sweep collapsed $400M+ in idle capital into compounding 5.28% T-Bill vaults with zero manual transfers.',
-        metric: '5.28% APY',
+        title: 'Yield Calculator UI',
+        text: 'Interactive allocation slider demonstrating real-time React state updates without page reloads.',
+        metric: 'Interactive',
       },
       {
-        title: 'Settlement Speed',
-        text: 'Cross-border ledger balance synchronization and multi-currency wire updates down to sub-45ms.',
-        metric: '< 45ms',
+        title: 'Transfer Flow UX',
+        text: 'Step-by-step wire preview and confirmation pattern designed for clarity and error prevention.',
+        metric: '3 Steps',
       },
       {
-        title: 'Security Architecture',
-        text: 'Cryptographic multi-signature transaction authorization and programmable Visa Infinite card freeze rules.',
-        metric: '100% Safe',
+        title: 'Card Controls',
+        text: 'Instant toggle states and spending-limit controls illustrating complex state management.',
+        metric: 'Live UI',
       },
       {
-        title: 'Engineering Handover',
-        text: 'Delivered with zero third-party banking plugin dependencies, clean API wrappers, and full audit logs.',
-        metric: '0 plugins',
+        title: 'Clean Architecture',
+        text: 'Built with modular TypeScript components and zero third-party dashboard template bloat.',
+        metric: 'TypeScript',
       },
     ],
     galleryImages: ['/work/aurum-hero.jpg', '/work/aurum-wire.jpg', '/work/aurum-cards.jpg'],
-    clientQuote: {
-      quote: 'Virtue & Co. replaced a 4-system banking labyrinth with a single fluid treasury interface. Our CFO now allocates $25M in yield in under ten seconds.',
-      author: 'Julian Vane',
-      role: 'Chief Investment Officer, Aurum Private Treasury',
-    },
   },
   'finery-commerce': {
     challenge:
-      'Maison Finery’s previous e-commerce storefront suffered from a 68% mobile cart abandonment rate due to slow page loads, disjointed multi-step checkout redirects, and poor currency handling across USD, EUR, GBP, and NGN markets.',
+      'Editorial e-commerce storefronts often suffer from jarring layout shifts on large lookbook imagery, clunky currency switches, and slow cart drawers on mobile.',
     challengeBullets: [
-      '4.2-second initial page load with heavy visual layout shifts on runway photo galleries.',
-      'Shoppers in London, Paris, and Lagos were forced into foreign transaction fees without local currencies.',
-      'Slide-out shopping bag required full page reloads and crashed frequently on mobile Safari.',
-      'Static editorial lookbooks had no direct "add to bag" interaction, losing high-intent impulse sales.',
+      'Heavy image galleries can shift page content when dimensions are not reserved.',
+      'Currency selectors often reset cart state or require full page reloads.',
+      'Shoppable lookbooks frequently lack direct quick-add interactions.',
     ],
     solution:
-      'Engineered a headless luxury flagship store with dynamic 4-currency conversion, an instantaneous slide-out cart drawer, and interactive lookbook hot-spots.',
+      'This interactive storefront demo showcases dynamic 4-currency formatting, a quick-view product modal, and an instant slide-out shopping bag.',
     keyFixes: [
-      'Built a real-time dynamic FX engine for USD, EUR, GBP, and NGN with localized payment rails.',
-      'Deployed zero-shift image pipelines with blur-up placeholders for high-resolution fashion photography.',
-      'Created a single-click slide-out bag with Apple Pay and instant Stripe session tokenization.',
-      'Designed an editorial runway viewer that lets shoppers select sizes and check out directly from photos.',
+      'Client-side 4-currency switcher (USD, EUR, GBP, NGN) updating prices across the catalog.',
+      'Reserved aspect-ratio image containers to keep gallery layouts stable.',
+      'Slide-out shopping bag drawer with quantity controls and subtotal calculation.',
+      'Editorial lookbook modal pattern for inspecting sizing and adding items directly.',
     ],
     metrics: [
-      { label: '+340%', value: '+340%', caption: 'Mobile checkout completion velocity' },
-      { label: '0.32s', value: '0.32s', caption: 'Product catalog filter and currency switch latency' },
-      { label: '99/100', value: '99/100', caption: 'Google Lighthouse Mobile Performance score' },
+      { label: 'Concept Build', value: 'Interactive', caption: 'Testable storefront prototype in browser' },
+      { label: '4 Currencies', value: 'USD/EUR/GBP/NGN', caption: 'Instant client-side price formatting demo' },
+      { label: 'Cart Drawer', value: 'Live Bag', caption: 'Add, remove, and update quantities live' },
     ],
     outcomes: [
       {
-        title: 'Mobile Checkout',
-        text: 'Checkout completion up 340% on mobile traffic with four localized currencies and slide-out Apple Pay.',
-        metric: '+340%',
+        title: 'Slide-Out Shopping Bag',
+        text: 'Full client-side cart state with quantity updates, item removal, and subtotal breakdown.',
+        metric: 'Live Cart',
       },
       {
-        title: 'Catalog Velocity',
-        text: 'Product filter and currency switch response time reduced to 0.32 seconds with zero layout shift.',
-        metric: '0.32s',
+        title: 'Currency Switching',
+        text: 'Instant conversion preview across USD, EUR, GBP, and NGN without losing bag state.',
+        metric: '4 Currencies',
       },
       {
-        title: 'Core Web Vitals',
-        text: 'Google Lighthouse mobile performance score verified across all runway lookbooks and PDPs.',
-        metric: '99/100',
+        title: 'Responsive Catalog',
+        text: 'Category filters and quick-view modals tailored for both mobile and desktop shoppers.',
+        metric: 'Mobile-First',
       },
       {
-        title: 'Global Handover',
-        text: 'Editorial team ships new seasonal collections weekly with zero developer intervention.',
-        metric: '0 redraws',
+        title: 'Editorial Handover Pattern',
+        text: 'Structured product data schema designed to plug cleanly into Stripe or headless CMS.',
+        metric: 'Modular',
       },
     ],
     galleryImages: ['/work/finery-hero.jpg', '/work/finery-catalog.jpg', '/work/finery-cart.jpg'],
-    clientQuote: {
-      quote: 'Our international checkout conversion doubled within 14 days of launch. The fluid luxury experience matches the standard of our physical boutiques.',
-      author: 'Clara Delacroix',
-      role: 'Global E-Commerce Director, Maison Finery',
-    },
   },
   'the-royal-banquet': {
     challenge:
-      'The client’s previous Wix site had a 5.8-second load time, broken mobile booking redirects, unoptimized media assets, and lacked an interactive reservation flow for high-society dignitaries attending an exclusive 100-guest gala in Darlington, UK.',
+      'Event and hospitality websites built on heavy drag-and-drop templates frequently suffer from slow mobile rendering, confusing RSVP steps, and static PDF menus.',
     challengeBullets: [
-      'Heavy 15MB uncompressed Wix page weight caused severe lag on mobile devices.',
-      'Guests were confused by static text blocks with no interactive ticket tier selection or real-time availability counters.',
-      'Dual-kitchen culinary partners (Afri Aroma & Golden Spoon) had no structured menu presentation for dietary preferences.',
-      'Manual ticketing and RSVP confirmations created administrative chaos and delayed entry validation.',
+      'Large unoptimized template bundles slow down mobile access for event guests.',
+      'Static text blocks make comparing ticket tiers and seating options tedious.',
+      'Multi-menu events need clear filtering for courses and dietary notes.',
     ],
     solution:
-      'Rebuilt into a custom Next.js 16 luxury event platform with an instant digital QR pass generator, real-time ticket tier counter, dual-kitchen culinary showcase, and dress code visualizer.',
+      'This interactive event concept demonstrates a custom Next.js event layout with 3-tier pass selection, a client-side QR preview, and a dual-kitchen menu explorer.',
     keyFixes: [
-      'Re-engineered from bloated Wix scripts into a clean sub-100ms Next.js web application with 100/100 Lighthouse performance.',
-      'Developed an interactive 3-tier pass reservation system (£65 Royal, £120 VIP Table, £250 Imperial Suite) with instant QR pass generation.',
-      'Created an interactive dual-kitchen dining hall explorer highlighting authentic African heritage cuisine (Afri Aroma) and contemporary European banquet mastery (Golden Spoon).',
-      'Integrated VIP concierge hotline and direct hotline phone touchpoints with bespoke Blue & Gold aesthetic swatches.',
+      'Interactive 3-tier pass selector with guest count and instant booking summary.',
+      'Client-side pass preview card showing how digital confirmation tickets can be presented.',
+      'Tabbed dual-kitchen menu explorer with dietary indicators and course breakdowns.',
+      'Responsive typography and high-contrast gold-on-obsidian event styling.',
     ],
     metrics: [
-      { label: '< 0.1s', value: '< 100ms', caption: 'Instant interactive pass reservation and tier checkout' },
-      { label: '100 Guests', value: '100 Capped', caption: 'Strict royal capacity managed with real-time pass allocation' },
-      { label: '100%', value: '100%', caption: 'Lighthouse mobile performance score after Wix modernization' },
+      { label: 'Concept Build', value: 'Interactive', caption: 'Testable event & ticketing demo in browser' },
+      { label: '3 Pass Tiers', value: '3 Tiers', caption: 'Interactive ticket selection & preview' },
+      { label: '2 Menus', value: 'Dual Kitchen', caption: 'Filterable tasting & dietary presentation' },
     ],
     outcomes: [
       {
-        title: 'Performance Modernization',
-        text: 'Transformed a sluggish 15MB Wix website into an ultra-fast sub-100ms application with zero script bloat.',
-        metric: '< 100ms',
-      },
-      {
-        title: 'Ticketing Experience',
-        text: 'Frictionless 3-tier reservation modal with instant digital holographic QR pass creation and wallet download.',
+        title: 'Interactive Pass Flow',
+        text: 'Tier selection modal with guest count, summary calculation, and digital pass preview.',
         metric: '3 Tiers',
       },
       {
-        title: 'Culinary Presentation',
-        text: 'Interactive dual-kitchen showcase with dietary tags, chef notes, and pairing recommendations.',
+        title: 'Culinary Showcase',
+        text: 'Tabbed dual-kitchen menu layout with course details and dietary tags.',
         metric: '2 Kitchens',
       },
       {
-        title: 'Exclusivity Management',
-        text: 'Precise capacity controls ensuring the 100-guest limit is preserved with automated VIP reference tracking.',
-        metric: '100 guests',
+        title: 'Mobile Layout',
+        text: 'Structured for single-hand smartphone navigation with clear action targets.',
+        metric: 'Responsive',
+      },
+      {
+        title: 'Custom Codebase',
+        text: 'Demonstrates how a bespoke Next.js build replaces heavy template scripts.',
+        metric: 'Zero Bloat',
       },
     ],
     galleryImages: ['/work/royal-banquet-hero.jpg', '/work/royal-banquet-hero.jpg', '/work/royal-banquet-hero.jpg'],
-    clientQuote: {
-      quote: 'Virtue & Co. transformed our Wix page into a royal digital palace. The VIP ticket flow and menu presentations elevated the prestige of our entire banquet.',
-      author: 'Moyosoluwa Benson',
-      role: 'Host & Executive Director, Grace Empire',
-    },
   },
   'meridian-editorial': {
     challenge:
-      'A distinguished digital journal covering geopolitical economics suffered from high reader abandonment due to intrusive ad clutter, 5-second article load times, and zero audio accompaniment for mobile commuters.',
+      'Content-heavy publications often bury long-form journalism under intrusive popups, cluttered sidebars, and inconsistent reading layouts on smaller screens.',
     challengeBullets: [
-      'Readers dropped off within 90 seconds due to intrusive popups and sluggish page scrolling.',
-      'The editorial team lost hours formatting each issue due to a fragile, breaking block configuration.',
-      'Executive readers had no convenient audio option for listening during commutes.',
+      'Distracting page chrome interrupts reading flow on mobile and tablet devices.',
+      'Fragile block formatting can make multi-column editorial layouts break on resize.',
+      'Audio companions are rarely integrated cleanly with article reading views.',
     ],
     solution:
-      'Rebuilt into a clean architectural digital publication with a persistent audio essay player, distraction-free reading typography, and instant category filtering.',
+      'This interactive publication concept demonstrates distraction-free editorial typography, a full-article reader modal, and a docked audio-player UI.',
     keyFixes: [
-      'Eliminated plugin bloat, migrating to native Next.js edge caching and server-first static generation.',
-      'Built an accessible docked audio essay player with variable speeds (1x, 1.25x, 1.5x) and timestamp sync.',
-      'Engineered dynamic reading time estimates, pull-quote pins, and full-screen reading mode.',
-      'Formulated an editorial layout pairing Instrument Sans body with Inter display headings.',
+      'Clean article grid with category filters and reading-time indicators.',
+      'Docked audio player UI supporting playback controls and speed selection.',
+      'Distraction-free article reader modal with typographic hierarchy.',
+      'Editorial pairing of Inter display headings and Instrument Sans body copy.',
     ],
     metrics: [
-      { label: '0.28s', value: '0.28s', caption: 'Global TTFB via edge CDN caching' },
-      { label: '+185%', value: '+185%', caption: 'Average session duration and article completion' },
-      { label: '140k Readers', value: '140k', caption: 'Monthly readers served with zero server degradation' },
+      { label: 'Concept Build', value: 'Interactive', caption: 'Testable editorial publication demo' },
+      { label: 'Audio Player', value: 'Docked UI', caption: 'Variable playback control prototype' },
+      { label: 'Reader Mode', value: 'Full Modal', caption: 'Clean typographic article view' },
     ],
     outcomes: [
       {
-        title: 'Reader Retention',
-        text: 'Average session duration and article completion increased by 185% after eliminating sluggish popups.',
-        metric: '+185%',
+        title: 'Reader Experience',
+        text: 'Focused article modal designed for legible long-form reading across screen sizes.',
+        metric: 'Reader UI',
       },
       {
-        title: 'Edge Latency',
-        text: 'Global Time to First Byte across 140k monthly readers reduced to 0.28s via edge CDN static generation.',
-        metric: '0.28s',
+        title: 'Audio Companion UI',
+        text: 'Persistent player bar prototype with play/pause and speed-toggle controls.',
+        metric: 'Audio UI',
       },
       {
-        title: 'Audio Adoption',
-        text: 'Docked variable-speed audio player adopted by 44% of commute readers on mobile devices.',
-        metric: '44%',
+        title: 'Category Filtering',
+        text: 'Instant client-side filtering across editorial sections without page reloads.',
+        metric: 'Instant',
       },
       {
-        title: 'Editorial Autonomy',
-        text: 'Editorial desk formats and publishes digital issues in minutes without fragile CMS plugins.',
-        metric: '100% stable',
+        title: 'CMS-Ready Schema',
+        text: 'Structured article data model ready to connect to headless WordPress or Supabase.',
+        metric: 'CMS-Ready',
       },
     ],
     galleryImages: ['/work/meridian-hero.jpg', '/work/meridian-detail.jpg', '/work/meridian-audio.jpg'],
-    clientQuote: {
-      quote: 'Virtue & Co. turned our sluggish publication into a world-class reading experience. Our reader retention is at an all-time peak.',
-      author: 'Dr. Aris Thorne',
-      role: 'Editor-in-Chief, The Meridian Review',
-    },
   },
   'northline-studio': {
     challenge:
-      'A Nordic timber prefab architecture studio was losing high-net-worth clients because their website was a static photo gallery with no way to customize floorplans, calculate financing, or preview site orientations.',
+      'Architecture and custom-build websites often rely on static PDF brochures, forcing visitors to trade emails just to see floorplan dimensions or rough pricing.',
     challengeBullets: [
-      'Prospective buyers had to email back and forth for 5 days just to receive floorplan dimensions and pricing.',
-      'Static architectural blueprints were illegible on smartphones and tablets.',
-      'Zero visual way for clients to explore modular additions like saunas, glass extensions, or solar roofs.',
-      'Inconsistent visual branding between digital presentations and printed architectural monographs.',
+      'Static architectural drawings are difficult to inspect on smartphone screens.',
+      'Prospects have no interactive way to compare models, finishes, or add-ons.',
+      'Manual back-and-forth slows down initial project scoping.',
     ],
     solution:
-      'Engineered an architectural presentation platform featuring transparent timber specs, SVG floorplan blueprints, and a streamlined site consultation scheduler.',
+      'This interactive showcase concept pairs a 4-step cabin configurator with clickable SVG floorplan views and a live estimate summary.',
     keyFixes: [
-      'Engineered a 4-step cabin specification overview calculating foundation, timber grade, and options live.',
-      'Created interactive SVG architectural blueprints with room dimension popovers.',
-      'Built a transparent financing breakdown with down-payment and monthly installment estimates.',
-      'Designed a Nordic brutalist aesthetic with warm bone (#f5f4f0) and obsidian backgrounds.',
+      '4-step interactive cabin configurator updating specs and estimated totals live.',
+      'Scalable SVG floorplan blueprints with clear room dimensions.',
+      'Transparent monthly financing estimator alongside total build figures.',
+      'Warm bone and obsidian palette tailored for architectural photography.',
     ],
     metrics: [
-      { label: '+420%', value: '+420%', caption: 'Increase in qualified consultation bookings' },
-      { label: 'Instant', value: '4 Steps', caption: 'Online cabin specification vs 5-day email delays' },
-      { label: '98/100', value: '98/100', caption: 'Mobile usability and responsiveness score' },
+      { label: 'Concept Build', value: 'Interactive', caption: 'Testable configurator prototype in browser' },
+      { label: '4 Steps', value: '4-Step Flow', caption: 'Model, finishes, add-ons, and summary' },
+      { label: 'SVG Plans', value: 'Scalable UI', caption: 'Crisp blueprints at any zoom level' },
     ],
     outcomes: [
       {
-        title: 'Consultations',
-        text: 'Qualified architectural consultation bookings up 420% through the simplified online specification flow.',
-        metric: '+420%',
+        title: 'Interactive Configurator',
+        text: '4-step selection flow letting visitors explore models, cladding, and add-on options.',
+        metric: '4 Steps',
       },
       {
-        title: 'Specification Speed',
-        text: 'Cabin floorplan dimensions, timber specs, and pricing accessible in minutes vs 5-day email delays.',
-        metric: '4 steps',
+        title: 'SVG Blueprints',
+        text: 'Crisp vector floorplans that stay legible on both mobile phones and wide displays.',
+        metric: 'Vector UI',
       },
       {
-        title: 'Mobile Usability',
-        text: 'Architectural blueprints and financing breakdowns verified across smartphones and tablets.',
-        metric: '98/100',
+        title: 'Live Estimate Summary',
+        text: 'Dynamic price and financing breakdown updating as options are toggled.',
+        metric: 'Live Calc',
       },
       {
-        title: 'Sales Pipeline',
-        text: 'Clients arrive at the initial consultation with exact specifications, budget, and lot requirements ready.',
-        metric: '5x faster',
+        title: 'Lead Brief Handoff',
+        text: 'Structured summary format ready to pass straight into a consultation request.',
+        metric: 'Scoped',
       },
     ],
     galleryImages: ['/work/northline-hero.jpg', '/work/northline-blueprint.jpg', '/work/northline-specs.jpg'],
-    clientQuote: {
-      quote: 'Clients arrive at our initial consultation with their exact configured cabin and budget already selected. It transformed our sales pipeline completely.',
-      author: 'Marten Lindqvist',
-      role: 'Principal Architect, Northline Studio',
-    },
   },
   'kinetix-ai-cloud': {
     challenge:
-      'An AI infrastructure provider offering bare-metal NVIDIA B200 and H100 clusters had a developer console so confusing and cluttered that machine learning teams abandoned onboarding.',
+      'Infrastructure and developer-tool websites often hide real pricing behind sales gates and scatter SDK examples across disconnected documentation pages.',
     challengeBullets: [
-      'Cryptic server error messages and unhelpful technical jargon during cluster provisioning.',
-      'Engineers could not estimate hourly or monthly GPU costs before connecting corporate cards.',
-      'Latency telemetry across global fiber regions was scattered across separate dashboard tabs.',
-      'Copying SDK commands was frustrating due to missing syntax flags and parameters.',
+      'Developers want to estimate hourly and monthly compute costs before signing up.',
+      'Switching between cURL, Python, and TypeScript snippets is often clunky.',
+      'Complex specs need clear visual hierarchy without overwhelming the viewport.',
     ],
     solution:
-      'Re-engineered the cloud console into a clean, developer-first command interface with an instant GPU cluster estimator, streaming token latency radar, and clear SDK documentation.',
+      'This developer-console concept demonstrates an interactive GPU cluster cost calculator, simulated token-streaming playground, and 1-click SDK snippet tabs.',
     keyFixes: [
-      'Built an instant GPU cluster pricing estimator (per-hour and monthly) for B200, H100, and L40S cards.',
-      'Engineered a live token-streaming playground demonstrating real-time inference latency.',
-      'Developed a global fiber latency radar showing round-trip times to US-East, EU-Central, and AP-Tokyo.',
-      'Implemented 1-click SDK command copying with tabbed Python, cURL, and TypeScript examples.',
+      'Interactive hourly and monthly GPU cluster estimator across hardware tiers.',
+      'Simulated streaming inference playground demonstrating responsive output states.',
+      'Regional endpoint selector UI comparing sample latency regions.',
+      'Tabbed Python, cURL, and TypeScript code blocks with copy-to-clipboard.',
     ],
     metrics: [
-      { label: '12.4ms', value: '12.4ms', caption: 'Ultra-low edge inference latency telemetry' },
-      { label: '-62%', value: '-62%', caption: 'Reduction in developer onboarding drop-off' },
-      { label: '100% Transparent', value: 'Zero Egress', caption: 'Clear pricing with zero hidden egress fees' },
+      { label: 'Concept Build', value: 'Interactive', caption: 'Testable developer console UI in browser' },
+      { label: 'Calculator', value: 'Hourly / Monthly', caption: 'Real-time GPU cluster cost estimator' },
+      { label: 'SDK Tabs', value: '3 Languages', caption: 'Copyable cURL, Python & TypeScript snippets' },
     ],
     outcomes: [
       {
-        title: 'Developer Onboarding',
-        text: 'Onboarding drop-off reduced by 62% through the simplified bare-metal cluster provisioning flow.',
-        metric: '-62%',
+        title: 'Cluster Cost Calculator',
+        text: 'Interactive node-count and GPU-tier estimator updating hourly and monthly totals.',
+        metric: 'Live Calc',
       },
       {
-        title: 'Inference Telemetry',
-        text: 'Real-time token streaming and global fiber radar achieving 12.4ms edge round trips.',
-        metric: '12.4ms',
+        title: 'Playground UI',
+        text: 'Simulated token-streaming interface showing clean developer UX patterns.',
+        metric: 'Interactive',
       },
       {
-        title: 'Transparent Billing',
-        text: 'Hourly and monthly GPU calculator eliminating surprise egress bills and hidden fees.',
-        metric: 'Zero egress',
+        title: 'SDK Code Switcher',
+        text: 'Clean tabbed code samples with copy feedback across Python, cURL, and TypeScript.',
+        metric: '3 Tabs',
       },
       {
-        title: 'Cluster Uptime',
-        text: 'Cluster status, quota management, and SDK command copying running with 99.99% verified uptime.',
-        metric: '99.99%',
+        title: 'Developer Hierarchy',
+        text: 'Structured dark-mode layout keeping pricing, specs, and docs scannable.',
+        metric: 'Clean UI',
       },
     ],
     galleryImages: ['/work/kinetix-hero.jpg', '/work/kinetix-pricing.jpg', '/work/kinetix-playground.jpg'],
-    clientQuote: {
-      quote: 'Virtue & Co. built a console that developers actually enjoy using. Provisioning a 64x B200 cluster is now as straightforward as ordering an espresso.',
-      author: 'Kai Sorenson',
-      role: 'Head of Infrastructure, Kinetix AI Cloud',
-    },
   },
   'solace-health-portal': {
     challenge:
-      'An elite preventative medicine clinic offering whole-body MRI and 110+ biomarker diagnostic scans struggled with a 12-page paper patient onboarding packet and confusing PDF lab reports.',
+      'Healthcare and diagnostics portals often present lab results as dense, unsearchable PDFs and rely on multi-page forms for appointment scheduling.',
     challengeBullets: [
-      'Patients struggled to understand complex medical biomarker results sent as static multi-page PDFs.',
-      'High administrative burden manually transcribing patient medical intake forms into clinic databases.',
-      'Appointment calendar was disconnected from diagnostic scan suite availability.',
-      'Patients lacked visual tracking for longitudinal biological age improvement over time.',
+      'Static lab tables make it difficult for users to scan reference ranges.',
+      'Long intake forms create friction on mobile screens.',
+      'Scheduling interfaces are frequently disconnected from service descriptions.',
     ],
     solution:
-      'Designed a patient longevity portal featuring an interactive biomarker explorer, biological age calculator, and 3-step diagnostic appointment scheduler.',
+      'This patient-portal UI concept demonstrates an interactive biomarker explorer with sample data, visual range bars, and a 3-step appointment scheduler.',
     keyFixes: [
-      'Developed an interactive 110+ biomarker report with clear visual normal/optimal ranges and clinician notes.',
-      'Built an algorithmic biological age calculator showing age reduction through clinical protocols.',
-      'Integrated a calm, frictionless 3-step scan booking flow with instant calendar slot reservation.',
-      'Built with HIPAA-compliant design patterns, privacy-first data models, and clean typography.',
+      'Searchable and filterable sample biomarker table with clear visual range indicators.',
+      'Interactive summary view illustrating how longitudinal trends can be presented.',
+      'Calm 3-step appointment scheduling flow designed for clarity on mobile.',
+      'Accessible typography and high-contrast status indicators.',
     ],
     metrics: [
-      { label: '110+ Markers', value: '110+', caption: 'Interactive biomarkers tracked with real-time interpretation' },
-      { label: '3 Steps', value: '3 Steps', caption: 'Digital booking replacing 12-page manual intake packets' },
-      { label: '99.8%', value: '99.8%', caption: 'Patient satisfaction score across clinical portal users' },
+      { label: 'Concept Build', value: 'Interactive', caption: 'Testable health portal UI demo (sample data)' },
+      { label: '3 Steps', value: 'Booking Flow', caption: 'Streamlined appointment selection prototype' },
+      { label: 'Range UI', value: 'Visual Bars', caption: 'Clear presentation of sample lab ranges' },
     ],
     outcomes: [
       {
-        title: 'Patient Intake',
-        text: 'Digital booking and intake reduced from 12 manual paper pages to a calm 3-step online flow.',
-        metric: '3 steps',
+        title: '3-Step Scheduling UI',
+        text: 'Guided appointment booking prototype reducing form clutter on mobile and desktop.',
+        metric: '3 Steps',
       },
       {
-        title: 'Biomarker Clarity',
-        text: 'Interactive report tracking 110+ clinical biomarkers with longitudinal biological age clock.',
-        metric: '110+ markers',
+        title: 'Interactive Lab Explorer',
+        text: 'Filterable sample biomarker cards with visual reference-range bars.',
+        metric: 'Filterable',
       },
       {
-        title: 'Patient Satisfaction',
-        text: 'Patient satisfaction score across clinical portal users reached 99.8% in first six months.',
-        metric: '99.8%',
+        title: 'Accessible Layout',
+        text: 'High-contrast labels and spacious spacing designed for readability.',
+        metric: 'Accessible',
       },
       {
-        title: 'Clinical Efficiency',
-        text: 'Manual intake transcription eliminated, saving clinic staff 18 hours per week.',
-        metric: '18 hrs/wk',
+        title: 'Production-Ready Foundation',
+        text: 'UI architecture ready to integrate with a client’s compliant backend and auth.',
+        metric: 'Modular',
       },
     ],
     galleryImages: ['/work/solace-hero.jpg', '/work/solace-markers.jpg', '/work/solace-calendar.jpg'],
-    clientQuote: {
-      quote: 'Our patients regularly praise the clarity of our digital reports. The interface makes complex longevity medicine approachable and actionable.',
-      author: 'Dr. Evelyn Vance, MD',
-      role: 'Founder & Chief Medical Officer, Solace Longevity',
-    },
   },
 }
 
 /**
- * Ensures all 6 flagship interactive showcase websites lead the portfolio,
+ * Ensures the 7 flagship interactive concept demos lead the portfolio,
  * followed by any additional custom CMS projects created in the Admin dashboard.
  */
 export function mergeWithShowcaseProjects(dbProjects: ProjectCard[]): ProjectCard[] {
   const bySlug = new Map<string, ProjectCard>()
-  // Database projects take absolute priority so Admin edits & newly added projects reflect immediately
+  // Database projects take priority so Admin edits & newly added client projects reflect immediately
   for (const item of dbProjects) {
     bySlug.set(item.slug, item)
   }
-  // Fallback to placeholder definitions only for items not yet in the database
+  // Fallback to built-in concept demos for slugs not in the database
   for (const showcase of PLACEHOLDER_PROJECTS) {
     if (!bySlug.has(showcase.slug)) {
       bySlug.set(showcase.slug, showcase)

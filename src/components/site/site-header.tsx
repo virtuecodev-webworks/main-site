@@ -149,7 +149,7 @@ export function SiteHeader() {
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[120] focus:rounded-lg focus:bg-[var(--gr-ink)] focus:px-4 focus:py-2 focus:text-xs focus:font-medium focus:tracking-wider focus:text-[var(--gr-card)] focus:uppercase"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:start-3 focus:z-[120] focus:rounded-lg focus:bg-[var(--gr-ink)] focus:px-4 focus:py-2 focus:text-xs focus:font-medium focus:tracking-wider focus:text-[var(--gr-card)] focus:uppercase"
       >
         {t('skipToContent')}
       </a>
@@ -240,6 +240,12 @@ export function SiteHeader() {
 
             {/* Right Controls */}
             <div className="flex shrink-0 items-center gap-1.5">
+              <CountrySwitcher
+                label={t('country')}
+                variant="compact"
+                className="hidden h-8 rounded-lg border border-[var(--gr-line)] bg-[var(--gr-card)]/60 px-2 text-[var(--gr-ink)] hover:bg-[var(--gr-card)] sm:inline-flex"
+              />
+
               <LanguageSwitcher
                 label={t('changeLanguage')}
                 variant="pill"
@@ -346,9 +352,9 @@ export function SiteHeader() {
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
                                 transition={{ duration: 0.28, ease: PANEL_EASE }}
-                                className="overflow-hidden pl-4"
+                                className="overflow-hidden ps-4"
                               >
-                                <div className="mt-1.5 flex flex-col gap-1 border-l border-[var(--gr-line)] pl-3 py-1">
+                                <div className="mt-1.5 flex flex-col gap-1 border-s border-[var(--gr-line)] ps-3 py-1">
                                   {row.subItems.map((sub) => (
                                     <li key={sub.href}>
                                       <Link

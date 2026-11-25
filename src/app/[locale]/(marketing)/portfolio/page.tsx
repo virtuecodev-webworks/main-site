@@ -43,6 +43,12 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
 
       <section className="padding-global pb-20 sm:pb-28">
         <div className="container-max">
+          <div className="mb-8 flex flex-col gap-2 rounded-2xl border border-border bg-card px-5 py-4 text-xs leading-relaxed text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              <strong className="font-semibold text-foreground">Transparency note:</strong>{' '}
+              Entries labelled <strong className="font-semibold text-primary">Interactive Demo</strong> are studio-built concept applications you can test live in your browser to evaluate our UI and engineering craft. Published client engagements link directly to their live production domains.
+            </p>
+          </div>
           <PortfolioGrid projects={projects} headingLevel={2} floatingFilter />
         </div>
       </section>

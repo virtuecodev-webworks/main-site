@@ -180,18 +180,21 @@ export function PortfolioGrid({
                 />
 
                 {/* Vantra Top-Left Hover-Expanding Frosted Panel (`.work_panel`) */}
-                <div className="work_panel pointer-events-none absolute top-4 left-4 z-20 flex max-h-[5.25rem] w-[82%] flex-col justify-between overflow-hidden rounded-xl border border-[#f5f4f024] bg-[#0a0a0a7a] p-4 text-[#f5f4f0] backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:max-h-[12rem] group-hover:w-[calc(100%-2rem)] sm:top-5 sm:left-5 sm:w-[62%] sm:group-hover:w-[calc(100%-2.5rem)]">
+                <div className="work_panel pointer-events-none absolute top-4 start-4 z-20 flex max-h-[5.75rem] w-[84%] flex-col justify-between overflow-hidden rounded-xl border border-[#f5f4f024] bg-[#0a0a0a99] p-4 text-[#f5f4f0] backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:max-h-[13rem] group-hover:w-[calc(100%-2rem)] sm:top-5 sm:start-5 sm:w-[66%] sm:group-hover:w-[calc(100%-2.5rem)]">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
+                      <span className="mb-1 inline-flex items-center rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-primary uppercase">
+                        {project.kind === 'concept' ? 'Interactive Demo' : 'Client Project'}
+                      </span>
                       <Heading className="work_client truncate font-display text-base font-semibold tracking-[-0.02em] text-[#f5f4f0] sm:text-lg">
-                        {project.client ?? project.title}
+                        {project.title}
                       </Heading>
                       <p className="work_tag mt-0.5 truncate text-xs text-[#f5f4f0]/65">
                         {t(`filters.${project.category}`)} · {project.year}
                       </p>
                     </div>
                     <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#f5f4f0] transition-transform duration-300 group-hover:bg-primary group-hover:text-[#0a0a0a]">
-                      <ArrowUpRight className="size-4" />
+                      <ArrowUpRight className="size-4" aria-hidden="true" />
                     </span>
                   </div>
 
@@ -203,7 +206,7 @@ export function PortfolioGrid({
                       </p>
                     )}
                     <span className="label-mono-xs text-primary">
-                      Read Case Study ↗
+                      {project.kind === 'concept' ? 'Inspect Concept Demo ↗' : 'Read Case Study ↗'}
                     </span>
                   </div>
                 </div>
@@ -221,7 +224,7 @@ export function PortfolioGrid({
                     ))}
                   </ul>
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-primary sm:hidden">
-                    Case Study ↗
+                    {project.kind === 'concept' ? 'Explore Demo ↗' : 'Case Study ↗'}
                   </span>
                 </div>
               </article>

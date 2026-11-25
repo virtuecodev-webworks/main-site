@@ -115,33 +115,29 @@ export default async function CaseStudyDetailPage({
 
   const outcomes = caseDetails?.outcomes ?? [
     {
-      title: 'Checkout & Conversion',
-      text: 'Checkout completion up 24% on the same traffic, with friction collapsed into one seamless flow.',
-      metric: '+24%',
+      title: 'Responsive Architecture',
+      text: 'Designed and structured across mobile, tablet, and desktop viewports with consistent spacing and typography.',
+      metric: 'Responsive',
     },
     {
-      title: 'Delivery Speed',
-      text: 'Brief to launch in eight weeks, designed and engineered in parallel rather than handed over at the end.',
-      metric: '8 wks',
+      title: 'Performance Budget',
+      text: 'Built with clean semantic markup and minimal client-side overhead to support strong Core Web Vitals.',
+      metric: '90+ Target',
     },
     {
-      title: 'System Architecture',
-      text: 'One unified component library and design token set running every surface with zero drift.',
-      metric: '99/100',
+      title: 'Component System',
+      text: 'Unified tokens and reusable UI primitives engineered for straightforward maintenance and scaling.',
+      metric: 'Modular',
     },
     {
       title: 'Independent Handover',
-      text: 'Campaigns and updates shipped autonomously by their own team with zero agency dependency.',
-      metric: '0 redraws',
+      text: 'Full source code, accounts, and documentation structured for clean client ownership.',
+      metric: '100% Owned',
     },
   ]
 
-  const quote = caseDetails?.clientQuote ?? {
-    quote:
-      'Virtue & Co. replaced our fragmented tools with a system our team actually loves to use. It transformed our commercial velocity.',
-    author: 'Founding Partner',
-    role: project.client ?? project.title,
-  }
+  const quote = caseDetails?.clientQuote ?? null
+  const isConcept = project.kind === 'concept'
 
   const workLd = creativeWorkJsonLd({
     title: project.title,
@@ -195,25 +191,30 @@ export default async function CaseStudyDetailPage({
         </div>
 
         {/* Top Breadcrumb Bar */}
-        <div className="relative z-10 flex items-center justify-between pt-14 sm:pt-2">
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 pt-14 sm:pt-2">
           <Link
             href="/portfolio"
             className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.04em] text-[#f5f4f0]/75 uppercase transition-colors hover:text-primary"
           >
-            <ArrowLeft className="size-3.5" />
+            <ArrowLeft className="size-3.5" aria-hidden="true" />
             <span>All Work</span>
           </Link>
 
-          <span className="label-mono text-primary">
-            ( &nbsp;&nbsp;&nbsp;{t(`filters.${project.category}`)} · {project.year}&nbsp;&nbsp;&nbsp; )
-          </span>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="rounded-full border border-primary/40 bg-primary/15 px-3 py-1 text-[11px] font-semibold tracking-wider text-primary uppercase">
+              {isConcept ? 'Interactive Concept Demo' : 'Client Project'}
+            </span>
+            <span className="label-mono text-primary">
+              ( &nbsp;&nbsp;&nbsp;{t(`filters.${project.category}`)} · {project.year}&nbsp;&nbsp;&nbsp; )
+            </span>
+          </div>
         </div>
 
         {/* Bottom Hero Title & Summary */}
         <div className="relative z-10 mt-auto pt-24 pb-4">
           <div className="max-w-4xl">
             <h1 className="heading heading-style-h0 text-balance font-semibold text-[#f5f4f0]">
-              {project.client ?? project.title}
+              {project.title}
             </h1>
             {project.summary && (
               <p className="mt-6 max-w-2xl text-base sm:text-xl leading-relaxed text-[#f5f4f0]/80 font-normal">
@@ -228,10 +229,10 @@ export default async function CaseStudyDetailPage({
                   variant="gold"
                   external={project.liveUrl.startsWith('http')}
                 >
-                  Open Live Interactive Site
+                  {isConcept ? 'Launch Interactive Demo' : 'Visit Live Client Site'}
                 </VantraButton>
               ) : null}
-              <VantraButton href="/contact" variant="light">
+              <VantraButton href="/contact#quote-form" variant="light">
                 Start a Project
               </VantraButton>
             </div>
@@ -315,10 +316,10 @@ export default async function CaseStudyDetailPage({
           <div className="media_scrim absolute inset-0 bg-[#0a0a0a]/70" />
           <div className="case-outcome_content relative z-10 px-6 text-center">
             <span className="label-mono text-primary">
-              ( &nbsp;&nbsp;&nbsp;Commercial Impact&nbsp;&nbsp;&nbsp; )
+              ( &nbsp;&nbsp;&nbsp;{isConcept ? 'Architecture & Capabilities' : 'Commercial Impact'}&nbsp;&nbsp;&nbsp; )
             </span>
             <h2 className="heading heading-style-h1 is-center mt-3 text-balance font-semibold text-[#f5f4f0]">
-              What it did in market.
+              {isConcept ? 'What this demo showcases.' : 'What it did in market.'}
             </h2>
           </div>
         </div>
@@ -328,11 +329,15 @@ export default async function CaseStudyDetailPage({
           <div className="container-max">
             <div className="grid grid-cols-1 items-start gap-8 border-b border-border pb-10 md:grid-cols-12">
               <div className="md:col-span-4">
-                <h2 className="heading heading-style-h2">The results.</h2>
+                <h2 className="heading heading-style-h2">
+                  {isConcept ? 'Inside the build.' : 'The results.'}
+                </h2>
               </div>
               <div className="md:col-span-8">
                 <p className="text-base sm:text-lg text-muted-foreground">
-                  Measured post-launch in live production, with their internal team running the system independently.
+                  {isConcept
+                    ? 'Interactive UI patterns, responsiveness, and workflows built as a studio concept demo so you can test the experience directly in your browser.'
+                    : 'Delivered in production with clean code ownership and documented handover for the client team.'}
                 </p>
               </div>
             </div>
@@ -359,57 +364,59 @@ export default async function CaseStudyDetailPage({
         </div>
       </section>
 
-      {/* 4. Vantra Section Quote (`section_quote` — "In their words") */}
-      <section data-screen-label="Quote" className="section_quote padding-global pb-24">
-        <div className="container-max">
-          <div className="case-quote_grid grid grid-cols-1 items-center gap-8 rounded-[24px] border border-border bg-card p-6 sm:p-12 lg:grid-cols-12">
-            {/* Left Column: Vertical Editorial Visual */}
-            <div className="case-quote_media relative aspect-[4/5] max-h-[460px] w-full overflow-hidden rounded-[18px] bg-[#0a0a0a] lg:col-span-5">
-              <Image
-                src={galleryImages[1]}
-                alt={`${project.title} editorial visual`}
-                fill
-                className="image-cover object-cover"
-              />
-            </div>
-
-            {/* Right Column: Quote Content */}
-            <div className="case-quote_body flex flex-col justify-between space-y-8 lg:col-span-7 lg:pl-6">
-              <div className="case-quote_head flex items-center justify-between border-b border-border/60 pb-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                <span className="text-primary">In their words</span>
-                <span>Verified Client Review</span>
+      {/* 4. Vantra Section Quote (`section_quote`) — only shown when a verified client quote is present */}
+      {quote ? (
+        <section data-screen-label="Quote" className="section_quote padding-global pb-24">
+          <div className="container-max">
+            <div className="case-quote_grid grid grid-cols-1 items-center gap-8 rounded-[24px] border border-border bg-card p-6 sm:p-12 lg:grid-cols-12">
+              {/* Left Column: Vertical Editorial Visual */}
+              <div className="case-quote_media relative aspect-[4/5] max-h-[460px] w-full overflow-hidden rounded-[18px] bg-[#0a0a0a] lg:col-span-5">
+                <Image
+                  src={galleryImages[1]}
+                  alt={`${project.title} editorial visual`}
+                  fill
+                  className="image-cover object-cover"
+                />
               </div>
 
-              <blockquote className="font-display text-2xl sm:text-3xl font-medium leading-[1.28] tracking-tight text-foreground">
-                &ldquo;{quote.quote}&rdquo;
-              </blockquote>
-
-              <div className="case-quote_foot flex items-center gap-4 pt-2">
-                <div
-                  aria-hidden="true"
-                  className="flex size-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 font-display text-sm font-semibold tracking-wider text-primary shadow-sm"
-                >
-                  {quote.author
-                    .split(' ')
-                    .filter(Boolean)
-                    .map((n) => n[0])
-                    .join('')
-                    .slice(0, 2)
-                    .toUpperCase()}
+              {/* Right Column: Quote Content */}
+              <div className="case-quote_body flex flex-col justify-between space-y-8 lg:col-span-7 lg:ps-6">
+                <div className="case-quote_head flex items-center justify-between border-b border-border/60 pb-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  <span className="text-primary">In their words</span>
+                  <span>Client Review</span>
                 </div>
-                <div className="case-quote_identity">
-                  <div className="case-quote_name text-base font-semibold text-foreground">
-                    {quote.author}
+
+                <blockquote className="font-display text-2xl sm:text-3xl font-medium leading-[1.28] tracking-tight text-foreground">
+                  &ldquo;{quote.quote}&rdquo;
+                </blockquote>
+
+                <div className="case-quote_foot flex items-center gap-4 pt-2">
+                  <div
+                    aria-hidden="true"
+                    className="flex size-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 font-display text-sm font-semibold tracking-wider text-primary shadow-sm"
+                  >
+                    {quote.author
+                      .split(' ')
+                      .filter(Boolean)
+                      .map((n) => n[0])
+                      .join('')
+                      .slice(0, 2)
+                      .toUpperCase()}
                   </div>
-                  <div className="section_meta-text text-xs text-muted-foreground">
-                    {quote.role}
+                  <div className="case-quote_identity">
+                    <div className="case-quote_name text-base font-semibold text-foreground">
+                      {quote.author}
+                    </div>
+                    <div className="section_meta-text text-xs text-muted-foreground">
+                      {quote.role}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {/* 5. More Selected Work */}
       {moreWork.length > 0 && (

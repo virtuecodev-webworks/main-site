@@ -86,7 +86,7 @@ export const FOOTER_LEGAL = [
  */
 export const STATS = [
   { key: 'launch', value: '2-4 wks' },
-  { key: 'lighthouse', value: '100' },
+  { key: 'lighthouse', value: '90+' },
   { key: 'senior', value: '1:1' },
   { key: 'response', value: '< 48h' },
 ] as const
@@ -119,8 +119,10 @@ export const TECH_STACK = [
 export const PROMISES = ['senior', 'scope', 'reply', 'handover'] as const
 
 export const PRICE_FLOOR: Record<string, number> = {
-  USD: 100,
-  NGN: 135000,
+  USD: 150,
+  GBP: 120,
+  EUR: 140,
+  NGN: 225000,
 }
 
 /** The currency the floor is anchored to when there is no local figure. */

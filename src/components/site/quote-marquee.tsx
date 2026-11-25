@@ -2,28 +2,33 @@
 
 import * as React from 'react'
 import { motion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
+import { getDirection } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 
-function ScrubChar({
-  char,
+function ScrubSpan({
+  text,
   progress,
   range,
+  className,
 }: {
-  char: string
+  text: string
   progress: MotionValue<number>
   range: [number, number]
+  className?: string
 }) {
   const opacity = useTransform(progress, range, [0.15, 1])
   return (
-    <motion.span style={{ opacity }} className="transition-colors">
-      {char}
+    <motion.span style={{ opacity }} className={cn('transition-colors', className)}>
+      {text}
     </motion.span>
   )
 }
 
 export function QuoteMarquee({ className }: { className?: string }) {
   const t = useTranslations('Home.statement')
+  const locale = useLocale()
+  const isRtl = getDirection(locale) === 'rtl'
   const statementText = t('text')
   const pillars = (t.raw('pillars') as string[]) ?? []
 
@@ -40,6 +45,7 @@ export function QuoteMarquee({ className }: { className?: string }) {
 
   const words = React.useMemo(() => statementText.split(' '), [statementText])
   const totalChars = statementText.length
+  const totalWords = Math.max(1, words.length)
 
   let charCursor = 0
 
@@ -60,28 +66,42 @@ export function QuoteMarquee({ className }: { className?: string }) {
             </span>
 
             <p className="statement_text font-display text-[clamp(1.75rem,2.875vw,2.875rem)] leading-[1.2] font-semibold tracking-[-0.025em] text-foreground">
-              {words.map((word, wordIndex) => {
-                const wordChars = word.split('')
-                const wordElement = (
-                  <span key={`${word}-${wordIndex}`} className="mr-[0.26em] inline-block">
-                    {wordChars.map((char, cIdx) => {
-                      const index = charCursor++
-                      const start = index / totalChars
-                      const end = Math.min(1, start + 3 / totalChars)
-                      return (
-                        <ScrubChar
-                          key={`${wordIndex}-${cIdx}`}
-                          char={char}
-                          progress={smoothProgress}
-                          range={[start, end]}
-                        />
-                      )
-                    })}
-                  </span>
-                )
-                charCursor++ // account for space
-                return wordElement
-              })}
+              {isRtl
+                ? words.map((word, wordIndex) => {
+                    const start = wordIndex / totalWords
+                    const end = Math.min(1, start + 1.5 / totalWords)
+                    return (
+                      <ScrubSpan
+                        key={`${word}-${wordIndex}`}
+                        text={word}
+                        progress={smoothProgress}
+                        range={[start, end]}
+                        className="me-[0.26em] inline-block"
+                      />
+                    )
+                  })
+                : words.map((word, wordIndex) => {
+                    const wordChars = word.split('')
+                    const wordElement = (
+                      <span key={`${word}-${wordIndex}`} className="me-[0.26em] inline-block">
+                        {wordChars.map((char, cIdx) => {
+                          const index = charCursor++
+                          const start = index / totalChars
+                          const end = Math.min(1, start + 3 / totalChars)
+                          return (
+                            <ScrubSpan
+                              key={`${wordIndex}-${cIdx}`}
+                              text={char}
+                              progress={smoothProgress}
+                              range={[start, end]}
+                            />
+                          )
+                        })}
+                      </span>
+                    )
+                    charCursor++ // account for space
+                    return wordElement
+                  })}
             </p>
           </div>
         </div>
@@ -92,7 +112,7 @@ export function QuoteMarquee({ className }: { className?: string }) {
         <div className="padding-global">
           <div className="container-max">
             <div className="statement_marquee relative mx-auto w-full overflow-hidden py-4 md:w-[76%] [mask-image:linear-gradient(90deg,transparent,#000_18%,#000_82%,transparent)]">
-              <div className="statement_track flex w-max items-center gap-12 pr-12 animate-marquee">
+              <div className="statement_track flex w-max items-center gap-12 pe-12 animate-marquee">
                 {[...pillars, ...pillars].map((pillar, idx) => (
                   <div
                     key={`${pillar}-${idx}`}
@@ -116,4 +136,3 @@ export function QuoteMarquee({ className }: { className?: string }) {
     </section>
   )
 }
-

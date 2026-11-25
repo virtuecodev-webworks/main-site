@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { AGENCY } from '@/lib/constants'
-import { AGENCY_SERVICES } from '@/lib/packages'
 
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system'
@@ -12,63 +11,63 @@ You are the Virtue & Co. Webworks Senior AI Advisor.
 Virtue & Co. Webworks (virtuecowebworks.solutions) is a productized web engineering studio and verified digital agency.
 Our mission: Deliver high-performance, bespoke web development on fixed turnaround times with zero freelance middlemen.
 
-Core Service Offerings & Packages (USD $ Only):
+Core Service Offerings & Packages (USD Base Pricing; settles in USD, GBP, EUR, or NGN):
 1. Custom Next.js 16 Web Applications:
-   - Starter ($120, 5 days delivery): High-converting MVP or single-page app, Tailwind v4, 100/100 Lighthouse performance.
-   - Business ($350, 10 days delivery): Full multi-page web platform, database & CMS integration, auth portal.
-   - Enterprise ($750, 21 days delivery): Full SaaS architecture, multi-tenant database, real-time collaboration.
+   - Starter ($150, 5 business days): Focused landing page or MVP, Tailwind v4, 90+ Core Web Vitals optimization target.
+   - Business ($450, 14 business days): Full multi-page web platform, database & CMS integration, auth portal.
+   - Enterprise ($950, 21 business days): Full-stack architecture, RLS database, client portal, workflow automation.
 
 2. WordPress Core & Performance:
-   - Starter ($95, 3 days delivery): Speed audit, Core Web Vitals optimization, database cleanup.
-   - Business ($260, 7 days delivery): Custom lightweight theme, Gutenberg block development, zero bloat.
-   - Enterprise ($550, 14 days delivery): Headless WordPress with Next.js frontend, WooCommerce integration.
+   - Starter ($150, 5 business days): Lightweight custom theme, Gutenberg block layout, SEO & caching setup.
+   - Business ($350, 10 business days): Up to 7 custom layouts, custom post types, 90+ Core Web Vitals target.
+   - Enterprise ($600, 18 business days): High-volume editorial or WooCommerce architecture with caching & staging.
 
 3. Wix & No-Code Modernization:
-   - Starter ($80, 4 days delivery): Wix site performance audit & UX optimization.
-   - Business ($220, 8 days delivery): Full rebuild of Wix site into custom Next.js 16 web app.
-   - Enterprise ($450, 15 days delivery): Complex multi-page Wix migration with custom CMS and dynamic data.
+   - Starter ($150, 5 business days): Custom Wix Studio responsive one-pager & lead capture setup.
+   - Business ($300, 10 business days): 5-page Wix Studio presence with CMS collections & bookings.
+   - Enterprise ($500, 14 business days): Wix Studio with Velo custom JavaScript logic & member portal.
 
-4. E-Commerce & Shopify Storefronts:
-   - Starter ($160, 5 days delivery): Conversion-focused single product or boutique store setup.
-   - Business ($390, 10 days delivery): Custom Shopify liquid theme or headless Next.js storefront with cart & checkout.
-   - Enterprise ($790, 20 days delivery): Enterprise e-commerce with inventory sync, CRM, and global edge CDN.
+4. E-Commerce & Multi-Currency Storefronts:
+   - Starter ($250, 7 business days): Up to 15 products with card & Apple Pay checkout.
+   - Business ($450, 14 business days): Multi-currency store (USD, GBP, EUR, NGN) with up to 60 products & coupons.
+   - Enterprise ($650, 21 business days): Custom storefront with recurring billing, webhooks, and shipping rules.
 
-Key Studio Guarantees:
-- 100/100 Lighthouse performance SLA.
+Key Studio Standards:
+- Core Web Vitals optimization (90+ target on delivered pages, excluding unoptimized third-party embeds).
 - Direct collaboration with senior engineers.
 - Live milestone tracking in the Client Portal (/portal).
-- Fixed prices in USD ($). No hidden hourly billings.
+- Written fixed-price quote upfront; timelines start after scope sign-off and content handover.
 - Email: ${AGENCY.email} (or ${AGENCY.fallbackEmail})
 - Website: https://${AGENCY.domain}
 
 Instructions:
 - Keep answers concise, confident, professional, and clear.
 - Recommend the best package when asked about projects.
-- Encourage users to click "Order Package" in the Services catalog or visit /contact for custom quotes.
+- Encourage users to click "Select" in the Services Catalog or visit /contact#quote-form for custom quotes.
 `.trim()
 
 function fallbackStudioResponse(query: string): string {
   const q = query.toLowerCase()
 
   if (q.includes('price') || q.includes('cost') || q.includes('package') || q.includes('how much')) {
-    return 'Our services are standardized into 3 accessible, transparent USD packages:\n\n' +
-      '• **Custom Next.js Web Apps**: $120 (Starter) | $350 (Business) | $750 (Enterprise)\n' +
-      '• **WordPress Development**: $95 (Starter) | $260 (Business) | $550 (Enterprise)\n' +
-      '• **Wix Modernization**: $80 (Starter) | $220 (Business) | $450 (Enterprise)\n' +
-      '• **Shopify E-Commerce**: $160 (Starter) | $390 (Business) | $790 (Enterprise)\n\n' +
-      'You can explore feature breakdowns and order directly from our Services Catalog on the homepage!'
+    return 'Projects start at $150 USD (or equivalent in GBP, EUR, and NGN). Here is our standard package ladder:\n\n' +
+      '• **Custom Next.js Web Apps**: $150 (Starter) | $450 (Business) | $950 (Enterprise)\n' +
+      '• **WordPress Development**: $150 (Starter) | $350 (Business) | $600 (Enterprise)\n' +
+      '• **Wix Studio Sites**: $150 (Starter) | $300 (Business) | $500 (Enterprise)\n' +
+      '• **E-Commerce Stores**: $250 (Starter) | $450 (Business) | $650 (Enterprise)\n\n' +
+      'You can explore feature breakdowns on /services or request an exact fixed quote at /contact#quote-form.'
   }
 
   if (q.includes('timeline') || q.includes('how long') || q.includes('turnaround') || q.includes('delivery')) {
-    return 'Every package has a guaranteed fixed delivery timeline:\n\n' +
-      '• **Starter tiers**: 3 to 5 business days.\n' +
-      '• **Business tiers**: 7 to 10 business days.\n' +
+    return 'Timelines start once scope and brand content are confirmed:\n\n' +
+      '• **Starter tiers**: 5 to 7 business days.\n' +
+      '• **Business tiers**: 10 to 14 business days.\n' +
       '• **Enterprise tiers**: 14 to 21 business days.\n\n' +
-      'Once submitted, you receive a live project reference (e.g. VCW-2026-XXXXXX) to monitor engineering progress in your Client Portal.'
+      'Every launch also includes 30 days of post-launch bug-fix support.'
   }
 
   if (q.includes('wix') || q.includes('migrate') || q.includes('rebuild')) {
-    return 'Yes! We specialize in migrating slow or rigid Wix sites into high-speed Next.js 16 web applications. Our $250 Business tier handles a complete 1:1 rebuild with sub-second page loads, responsive mobile UI, and 100/100 Lighthouse scores.'
+    return 'Yes! We migrate slow or rigid Wix sites into custom Next.js 16 web applications (from $450 Business tier) or build clean Wix Studio sites (from $150 Starter tier), targeting 90+ Core Web Vitals on delivered pages.'
   }
 
   if (q.includes('order') || q.includes('hire') || q.includes('start') || q.includes('begin')) {

@@ -104,7 +104,7 @@
         "senior": "Acceso directo a desarrolladores"
       },
       "badges": {
-        "rating": "Calificación 5.0 estrellas",
+        "rating": "Equipo sénior directo",
         "ownership": "100% Propiedad del código",
         "portal": "Portal de cliente directo"
       },
@@ -113,7 +113,7 @@
     },
     "stats": {
       "launch": "Lanzamiento típico",
-      "lighthouse": "Objetivo Lighthouse",
+      "lighthouse": "Objetivo Core Web Vitals",
       "senior": "Equipo sénior, sin intermediarios",
       "response": "Primera respuesta"
     },
@@ -175,10 +175,10 @@
       ]
     },
     "live": {
-      "eyebrow": "Proyectos en curso",
-      "title": "Lo que estamos construyendo ahora.",
-      "subtitle": "Progreso en tiempo real de proyectos activos. Plazos transparentes desde el inicio hasta el lanzamiento.",
-      "viewCaseStudy": "Ver caso de estudio ↗"
+      "eyebrow": "Demos interactivas",
+      "title": "Explora demos interactivas en vivo.",
+      "subtitle": "Prueba nuestra arquitectura de interfaz y calidad de ingeniería directamente en tu navegador.",
+      "viewCaseStudy": "Ver demo ↗"
     },
     "values": {
       "eyebrow": "Nuestros estándares",
@@ -202,7 +202,7 @@
         "description": "Cuando las herramientas estándar frenan tu ambición, construimos bien. Front-ends tipados y basados en componentes, con renderizado en servidor, caché en el edge y un design system que es tuyo.",
         "features": [
           "Arquitectura Next.js App Router + TypeScript",
-          "Design system propio con tokens de Tailwind CSS",
+          "Optimización Core Web Vitals y velocidad móvil",
           "Presupuestos de Core Web Vitals verificados en CI",
           "APIs headless, paneles e integraciones"
         ],
@@ -252,7 +252,7 @@
         "description": "Cuando las herramientas estándar frenan tu ambición, construimos bien. Front-ends tipados y basados en componentes, con renderizado en servidor, caché en el edge y un design system que es tuyo.",
         "features": [
           "Arquitectura Next.js App Router + TypeScript",
-          "Design system propio con tokens de Tailwind CSS",
+          "Optimización Core Web Vitals y velocidad móvil",
           "Presupuestos de Core Web Vitals verificados en CI",
           "APIs headless, paneles e integraciones"
         ],
@@ -759,9 +759,9 @@
     "cta": "Ver precio",
     "eyebrow": "Precios",
     "title": "Precios transparentes y directos.",
-    "subtitle": "Sin paquetes genéricos ni costes ocultos - presupuestamos según las necesidades reales de tu proyecto.",
+    "subtitle": "Los proyectos iniciales parten desde  USD (o equivalente local) para landing pages, con presupuestos cerrados por escrito.",
     "from": "Proyectos desde",
-    "note": "Este es nuestro proyecto mínimo. Cada trabajo se cotiza tras una breve charla, con un precio final por escrito antes de empezar.",
+    "note": "Cada proyecto recibe un plan detallado y precio fijo por escrito antes de empezar. Los objetivos de rendimiento aplican a páginas entregadas sin incrustaciones externas sin optimizar.",
     "secondary": "Ver qué incluye"
   },
   "Login": {
@@ -941,7 +941,7 @@
     "items": {
       "timeline": {
         "q": "¿Cuánto tiempo lleva un proyecto?",
-        "a": "Un sitio web estándar toma de dos a cuatro semanas. Una plataforma personalizada o tienda online requiere de seis a doce semanas, según complejidad y rapidez en el intercambio de contenido."
+        "a": "Las landing pages se entregan en 5–8 días hábiles, sitios multipágina en 2–3 semanas y tiendas o apps web en 3–6 semanas tras aprobar alcance y contenidos."
       },
       "stack": {
         "q": "¿Con qué tecnologías construyen?",

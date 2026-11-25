@@ -109,7 +109,7 @@ export function CountrySwitcher({ label, variant = 'compact', className }: Count
 
         <div className="relative">
           <Search
-            className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute top-1/2 start-3.5 size-4 -translate-y-1/2 text-muted-foreground"
             aria-hidden
           />
           <Input
@@ -118,7 +118,7 @@ export function CountrySwitcher({ label, variant = 'compact', className }: Count
             placeholder={t('search')}
             aria-label={t('search')}
             autoComplete="off"
-            className="pl-10"
+            className="ps-10"
           />
         </div>
 
@@ -160,7 +160,7 @@ export function CountrySwitcher({ label, variant = 'compact', className }: Count
                     onClick={() => choose(entry.code)}
                     aria-current={active ? 'true' : undefined}
                     className={cn(
-                      'flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left transition-colors',
+                      'flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-start transition-colors',
                       active
                         ? 'bg-gold-50 text-gold-800 dark:bg-gold-500/12 dark:text-gold-300'
                         : 'hover:bg-muted',

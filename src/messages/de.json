@@ -104,7 +104,7 @@
         "senior": "Direkter Entwicklerkontakt"
       },
       "badges": {
-        "rating": "5.0-Sterne-Bewertung",
+        "rating": "Direktes Senior-Team",
         "ownership": "100% Code-Eigentum",
         "portal": "Direktes Kundenportal"
       },
@@ -113,7 +113,7 @@
     },
     "stats": {
       "launch": "Typischer Launch",
-      "lighthouse": "Lighthouse-Ziel",
+      "lighthouse": "Core-Web-Vitals-Ziel",
       "senior": "Senior-Team, keine Übergaben",
       "response": "Erste Antwort"
     },
@@ -175,10 +175,10 @@
       ]
     },
     "live": {
-      "eyebrow": "Aktuelle Projekte",
-      "title": "Woran wir gerade arbeiten.",
-      "subtitle": "Echtzeit-Fortschritt bei aktiven Projekten. Transparente Zeitpläne von Start bis Launch.",
-      "viewCaseStudy": "Fallstudie ansehen ↗"
+      "eyebrow": "Interaktive Demos",
+      "title": "Interaktive Studio-Demos testen.",
+      "subtitle": "Testen Sie unsere UI-Architektur und Entwicklungsqualität direkt im Browser.",
+      "viewCaseStudy": "Demo ansehen ↗"
     },
     "values": {
       "eyebrow": "Unsere Maßstäbe",
@@ -202,7 +202,7 @@
         "description": "Wenn Standardwerkzeuge Ihre Ambitionen bremsen, entwickeln wir richtig. Typisierte, komponentenbasierte Frontends mit Server-Rendering, Edge-Caching und einem Designsystem, das Ihnen gehört.",
         "features": [
           "Next.js App Router + TypeScript-Architektur",
-          "Eigenes Designsystem mit Tailwind-CSS-Tokens",
+          "Core-Web-Vitals- & Mobile-Speed-Optimierung",
           "Core-Web-Vitals-Budgets in der CI abgesichert",
           "Headless-APIs, Dashboards und Integrationen"
         ],
@@ -252,7 +252,7 @@
         "description": "Wenn Standardwerkzeuge Ihre Ambitionen bremsen, entwickeln wir richtig. Typisierte, komponentenbasierte Frontends mit Server-Rendering, Edge-Caching und einem Designsystem, das Ihnen gehört.",
         "features": [
           "Next.js App Router + TypeScript-Architektur",
-          "Eigenes Designsystem mit Tailwind-CSS-Tokens",
+          "Core-Web-Vitals- & Mobile-Speed-Optimierung",
           "Core-Web-Vitals-Budgets in der CI abgesichert",
           "Headless-APIs, Dashboards und Integrationen"
         ],
@@ -759,9 +759,9 @@
     "cta": "Preis erhalten",
     "eyebrow": "Preise",
     "title": "Einfache, transparente Preisgestaltung.",
-    "subtitle": "Keine versteckten Gebühren oder künstlichen Tarife - jedes Projekt wird nach tatsächlichem Bedarf kalkuliert.",
+    "subtitle": "Starter-Builds beginnen ab 150 USD (oder Gegenwert) für fokussierte Landingpages; individuelle Projekte erhalten ein schriftliches Festpreisangebot.",
     "from": "Projekte ab",
-    "note": "Dies ist unser Einstiegspreis. Jedes Projekt wird nach kurzem Austausch kalkuliert - mit garantiertem Festpreis vor Projektstart.",
+    "note": "Jedes Projekt startet mit einem detaillierten Plan und garantiertem Festpreis. Leistungsziele gelten für ausgelieferte Seiten ohne unoptimierte Drittanbieter-Embeds.",
     "secondary": "Leistungsumfang ansehen"
   },
   "Login": {
@@ -941,7 +941,7 @@
     "items": {
       "timeline": {
         "q": "Wie lange dauert ein Projekt?",
-        "a": "Eine übersichtliche Website dauert in der Regel zwei bis vier Wochen. Eine maßgeschneiderte Plattform oder ein E-Commerce-Shop benötigt sechs bis zwölf Wochen."
+        "a": "Landingpages starten in 5–8 Werktagen, mehrseitige Websites in 2–3 Wochen und Shops oder Web-Apps in 3–6 Wochen nach Scope- und Inhaltsfreigabe."
       },
       "stack": {
         "q": "Welche Technologien nutzen Sie?",

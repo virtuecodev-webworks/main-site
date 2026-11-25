@@ -10,12 +10,10 @@ import { Button } from '@/components/ui/button'
 const STORAGE_KEY = 'vcw:cookie-consent'
 
 /**
- * Cookie consent notice.
+ * Low-profile cookie consent bar.
  *
- * Shown until the visitor makes a choice, then remembered in `localStorage`.
- * The site only sets preference cookies (language, theme) and privacy-friendly
- * analytics, so "essential only" is a genuine, working option — not a dark
- * pattern that breaks the site.
+ * Kept compact on mobile so it never obscures the hero headline or primary CTA,
+ * and delayed slightly after initial paint so first-screen engagement is smooth.
  */
 export function CookieConsent() {
   const t = useTranslations('Cookie')
@@ -32,10 +30,7 @@ export function CookieConsent() {
 
     if (stored) return
 
-    // Deferred to a microtask so this is a subscription callback rather than a
-    // synchronous cascading render inside the effect body. The banner animates
-    // in either way, so the delay is never perceptible.
-    const id = window.setTimeout(() => setVisible(true), 0)
+    const id = window.setTimeout(() => setVisible(true), 1200)
     return () => window.clearTimeout(id)
   }, [])
 
@@ -52,36 +47,41 @@ export function CookieConsent() {
     <AnimatePresence>
       {visible ? (
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 24 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          role="dialog"
+          exit={{ opacity: 0, y: 16 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          role="region"
           aria-label={t('title')}
-          className="fixed inset-x-4 bottom-4 z-[70] mx-auto max-w-2xl rounded-2xl border border-border bg-card p-5 shadow-elevation-3 sm:inset-x-auto sm:start-5 sm:bottom-5"
+          className="fixed inset-x-3 bottom-3 z-[70] mx-auto max-w-md rounded-xl border border-border bg-card/95 p-3 shadow-elevation-3 backdrop-blur-md sm:inset-x-auto sm:start-5 sm:bottom-5 sm:rounded-2xl sm:p-4"
         >
-          <div className="flex items-start gap-3.5">
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gold-50 text-gold-700 dark:bg-gold-500/12 dark:text-gold-300">
-              <Cookie className="size-4" aria-hidden />
-            </span>
+          <div className="flex flex-col gap-2.5 sm:gap-3">
+            <div className="flex items-start gap-2.5">
+              <span className="mt-0.5 hidden size-7 shrink-0 place-items-center rounded-full bg-gold-50 text-gold-700 dark:bg-gold-500/12 dark:text-gold-300 sm:grid">
+                <Cookie className="size-3.5" aria-hidden="true" />
+              </span>
 
-            <div className="flex-1">
-              <h2 className="font-display text-sm font-semibold">{t('title')}</h2>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
-                {t('body')}{' '}
-                <Link href="/privacy" className="text-gold-700 underline-offset-4 hover:underline dark:text-gold-400">
-                  {t('policy')}
-                </Link>
-              </p>
-
-              <div className="mt-4 flex flex-wrap gap-2.5">
-                <Button size="sm" variant="gold" onClick={() => decide('all')}>
-                  {t('accept')}
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => decide('essential')}>
-                  {t('decline')}
-                </Button>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs leading-snug text-muted-foreground">
+                  <strong className="font-semibold text-foreground">{t('title')}:</strong>{' '}
+                  {t('body')}{' '}
+                  <Link
+                    href="/privacy"
+                    className="font-medium text-gold-700 underline underline-offset-4 hover:opacity-80 dark:text-gold-400"
+                  >
+                    {t('policy')}
+                  </Link>
+                </p>
               </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2">
+              <Button size="sm" variant="outline" className="h-8 px-3 text-xs" onClick={() => decide('essential')}>
+                {t('decline')}
+              </Button>
+              <Button size="sm" variant="gold" className="h-8 px-3 text-xs" onClick={() => decide('all')}>
+                {t('accept')}
+              </Button>
             </div>
           </div>
         </motion.div>

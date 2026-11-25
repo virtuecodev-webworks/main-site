@@ -31,7 +31,7 @@ type Row = readonly [code: string, currency: CurrencyCode, timezone: string]
 
 const TABLE: readonly Row[] = [
   // Africa
-  ['NG', 'USD', 'Africa/Lagos'],
+  ['NG', 'NGN', 'Africa/Lagos'],
   ['GH', 'USD', 'Africa/Accra'],
   ['KE', 'USD', 'Africa/Nairobi'],
   ['ZA', 'USD', 'Africa/Johannesburg'],

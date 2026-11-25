@@ -2,6 +2,8 @@
 
 import * as React from 'react'
 import { Globe } from 'lucide-react'
+import { useLocale } from 'next-intl'
+import { getAvailability, nextOpening } from '@/lib/geo/availability'
 import { cn } from '@/lib/utils'
 
 export interface VisitorAvailabilityProps {
@@ -9,96 +11,125 @@ export interface VisitorAvailabilityProps {
   className?: string
 }
 
-interface TimeSnapshot {
-  formattedTime: string
-  cityLabel: string
-  timeZone: string
-  isDaytimeInVisitorZone: boolean
+interface AvailabilitySnapshot {
+  open: boolean
+  visitorTime: string
+  studioTime: string
+  visitorZoneCity: string
+  nextOpenText: string
 }
 
-function computeVisitorTime(): TimeSnapshot {
+function computeSnapshot(locale: string): AvailabilitySnapshot {
+  const now = new Date()
+  const availability = getAvailability(now)
+  const openingDate = nextOpening(now)
+
+  let visitorZone = 'UTC'
   try {
-    const now = new Date()
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
-
-    const formattedTime = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-      timeZone,
-    }).format(now)
-
-    const hourStr = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      hour12: false,
-      timeZone,
-    }).format(now)
-    const hour = Number.parseInt(hourStr, 10)
-    const isDaytimeInVisitorZone = Number.isNaN(hour) ? true : hour >= 7 && hour < 21
-
-    const parts = timeZone.split('/')
-    const rawCity = parts[parts.length - 1]?.replace(/_/g, ' ') || 'Global'
-    const cityLabel = rawCity === 'UTC' ? 'Global Desk' : rawCity
-
-    return {
-      formattedTime,
-      cityLabel,
-      timeZone,
-      isDaytimeInVisitorZone,
-    }
+    visitorZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
   } catch {
-    return {
-      formattedTime: '09:00 AM',
-      cityLabel: 'Global Desk',
-      timeZone: 'UTC',
-      isDaytimeInVisitorZone: true,
+    visitorZone = 'UTC'
+  }
+
+  const formatTime = (date: Date, timeZone: string) => {
+    try {
+      return new Intl.DateTimeFormat(locale, {
+        hour: 'numeric',
+        minute: '2-digit',
+        timeZone,
+      }).format(date)
+    } catch {
+      return new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        timeZone: 'UTC',
+      }).format(date)
     }
+  }
+
+  const formatNextOpen = (date: Date, timeZone: string) => {
+    try {
+      return new Intl.DateTimeFormat(locale, {
+        weekday: 'short',
+        hour: 'numeric',
+        minute: '2-digit',
+        timeZone,
+      }).format(date)
+    } catch {
+      return 'Mon 09:00 WAT'
+    }
+  }
+
+  const parts = visitorZone.split('/')
+  const rawCity = parts[parts.length - 1]?.replace(/_/g, ' ') || 'Local'
+  const visitorZoneCity = rawCity === 'UTC' ? 'UTC' : rawCity
+
+  return {
+    open: availability.open,
+    visitorTime: formatTime(now, visitorZone),
+    studioTime: formatTime(now, 'Africa/Lagos'),
+    visitorZoneCity,
+    nextOpenText: formatNextOpen(openingDate, visitorZone),
   }
 }
 
 /**
- * Syncs studio availability to the visitor's local timezone and country cleanly without any green dots.
+ * Displays accurate studio hours (WAT / UTC+1, Mon-Fri 09:00-18:00, Sat 10:00-14:00)
+ * converted into the visitor's local timezone.
  */
 export function VisitorAvailability({
   variant = 'inline',
   className,
 }: VisitorAvailabilityProps) {
-  const [snapshot, setSnapshot] = React.useState<TimeSnapshot | null>(null)
+  const locale = useLocale()
+  const [snapshot, setSnapshot] = React.useState<AvailabilitySnapshot | null>(null)
 
   React.useEffect(() => {
-    setSnapshot(computeVisitorTime())
+    setSnapshot(computeSnapshot(locale))
     const timer = window.setInterval(() => {
-      setSnapshot(computeVisitorTime())
+      setSnapshot(computeSnapshot(locale))
     }, 30_000)
     return () => window.clearInterval(timer)
-  }, [])
+  }, [locale])
 
-  const timeText = snapshot ? `${snapshot.formattedTime} (${snapshot.cityLabel})` : 'Local Desk Active'
-  const scheduleLabel = snapshot?.isDaytimeInVisitorZone
-    ? `Available now · ${snapshot.formattedTime} ${snapshot.cityLabel} time`
-    : `Available now · Global Desk (${snapshot?.formattedTime ?? 'Live'} ${snapshot?.cityLabel ?? ''})`
+  const statusText = snapshot
+    ? snapshot.open
+      ? `Studio open now · ${snapshot.studioTime} WAT (${snapshot.visitorTime} ${snapshot.visitorZoneCity})`
+      : `Studio closed · Opens ${snapshot.nextOpenText} (${snapshot.visitorZoneCity})`
+    : 'Mon–Fri 09:00–18:00 WAT (UTC+1)'
 
   if (variant === 'pill') {
     return (
       <div
         className={cn(
-          'inline-flex items-center rounded-full border border-[#f5f4f024] bg-[#0a0a0a80] px-3 py-1 text-[11px] font-medium text-[#f5f4f0]/85 backdrop-blur-md',
+          'inline-flex items-center gap-2 rounded-full border border-[#f5f4f024] bg-[#0a0a0a80] px-3 py-1 text-[11px] font-medium text-[#f5f4f0]/85 backdrop-blur-md',
           className,
         )}
       >
-        <span className="tracking-[0.03em]">{scheduleLabel}</span>
+        <span
+          aria-hidden="true"
+          className={cn(
+            'size-1.5 rounded-full',
+            snapshot?.open ? 'bg-emerald-400' : 'bg-amber-400',
+          )}
+        />
+        <span className="tracking-[0.02em]">{statusText}</span>
       </div>
     )
   }
 
   if (variant === 'footer') {
     return (
-      <div className={cn('flex flex-col gap-1.5', className)}>
-        <div className="inline-flex items-center text-xs font-medium text-[#f5f4f0]">
-          <span>Available Now · Synced to {snapshot?.cityLabel ?? 'Your Region'}</span>
-        </div>
-        <span className="text-xs text-[#f5f4f0]/55">
-          Local clock: {timeText} · Mon – Sun Global Engineering Coverage
+      <div className={cn('flex flex-col gap-1 text-xs', className)}>
+        <span className="font-medium text-[#f5f4f0]/90">
+          {snapshot
+            ? snapshot.open
+              ? `Studio open now (${snapshot.studioTime} WAT · ${snapshot.visitorTime} your time)`
+              : `Studio closed · Opens ${snapshot.nextOpenText} your time`
+            : 'Mon–Fri 09:00–18:00 WAT (UTC+1)'}
+        </span>
+        <span className="text-[#f5f4f0]/55">
+          Mon–Fri 09:00–18:00 · Sat 10:00–14:00 WAT (UTC+1)
         </span>
       </div>
     )
@@ -112,12 +143,25 @@ export function VisitorAvailability({
           className,
         )}
       >
-        <span className="font-medium text-foreground">
-          Desk Online · {snapshot?.cityLabel ?? 'Global'}
+        <span className="flex items-center gap-2 font-medium text-foreground">
+          <span
+            aria-hidden="true"
+            className={cn(
+              'size-2 rounded-full',
+              snapshot?.open ? 'bg-emerald-500' : 'bg-amber-500',
+            )}
+          />
+          <span>
+            {snapshot
+              ? snapshot.open
+                ? 'Studio Open Now'
+                : `Opens ${snapshot.nextOpenText}`
+              : 'Mon–Fri 09:00–18:00 WAT'}
+          </span>
         </span>
         <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
           <Globe className="size-3 text-primary" aria-hidden="true" />
-          {snapshot ? snapshot.formattedTime : '09:00 – 21:00 Local'}
+          {snapshot ? `${snapshot.visitorTime} (${snapshot.visitorZoneCity})` : 'WAT (UTC+1)'}
         </span>
       </div>
     )
@@ -126,7 +170,7 @@ export function VisitorAvailability({
   return (
     <span className={cn('inline-flex items-center', className)}>
       <span className="label-mono text-current">
-        ( &nbsp;&nbsp;{scheduleLabel}&nbsp;&nbsp; )
+        ( &nbsp;&nbsp;{statusText}&nbsp;&nbsp; )
       </span>
     </span>
   )

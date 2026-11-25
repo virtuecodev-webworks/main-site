@@ -4,9 +4,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Layers,
-  Sparkles,
   Zap,
-  ShieldCheck,
   CreditCard,
   Search,
   CheckCircle2,
@@ -49,15 +47,15 @@ const LAYERS: ArchitectureLayer[] = [
   {
     id: 'layer-engine',
     number: '02',
-    name: 'Ultra-Fast Frontend Engine',
-    kicker: 'Sub-Second Speed',
+    name: 'Fast Frontend Engine',
+    kicker: 'Performance First',
     businessBenefit:
-      '53% of mobile visitors leave a site if it takes longer than 3 seconds to load. We build on Next.js 16 so pages open in milliseconds without jarring screen flickers.',
+      'Slow pages cost mobile visitors before they read your offer. We build on Next.js with server rendering and lean bundles so pages open quickly without jarring layout shifts.',
     techSummary: 'React Server Components, hybrid static pre-rendering, minimal JavaScript payload.',
     deliverables: [
-      'Loads in under 1 second worldwide',
-      'Instant page flips without reloading',
-      'Zero bloated WordPress theme builders',
+      'Edge-cached page delivery worldwide',
+      'Smooth client-side route transitions',
+      'Zero bloated third-party theme builders',
       'Optimized images delivered in WebP/AVIF',
     ],
     icon: Zap,
@@ -100,11 +98,11 @@ const LAYERS: ArchitectureLayer[] = [
     name: 'Google SEO & Global Edge Delivery',
     kicker: 'Visibility & Traffic',
     businessBenefit:
-      'Help high-paying customers find you on Google. Every page is structured with search engine tags, rich social preview cards, and global edge caching.',
-    techSummary: 'JSON-LD schema markup, automated XML sitemaps, 100/100 Core Web Vitals score.',
+      'Help prospective customers find you on search engines. Every page is structured with clean metadata, social share previews, and global edge caching.',
+    techSummary: 'JSON-LD schema markup, automated XML sitemaps, 90+ Core Web Vitals target.',
     deliverables: [
-      '100/100 Google Lighthouse score',
-      'Automatic Google indexing & schema',
+      '90+ Core Web Vitals optimization target',
+      'Structured Google indexing & schema',
       'Crisp social media share previews',
       'Worldwide CDN edge server delivery',
     ],
@@ -151,12 +149,14 @@ export function WebsiteAnatomy() {
               const Icon = layer.icon
 
               return (
-                <div
+                <button
                   key={layer.id}
+                  type="button"
                   onClick={() => setSelectedLayerIndex(index)}
-                  className={`group relative rounded-2xl border p-4 sm:p-5 transition-all cursor-pointer ${
+                  aria-pressed={isSelected}
+                  className={`group relative w-full rounded-2xl border p-4 text-start sm:p-5 transition-all cursor-pointer ${
                     isSelected
-                      ? 'border-primary/80 bg-card shadow-lg ring-1 ring-primary/40 -translate-x-1 sm:-translate-x-2'
+                      ? 'border-primary/80 bg-card shadow-lg ring-1 ring-primary/40 -translate-x-1 sm:-translate-x-2 rtl:translate-x-1 rtl:sm:translate-x-2'
                       : 'border-border/80 bg-muted/30 hover:border-border hover:bg-muted/60'
                   }`}
                 >
@@ -178,19 +178,21 @@ export function WebsiteAnatomy() {
                             {layer.kicker}
                           </span>
                         </div>
-                        <h4 className="text-base sm:text-lg font-bold text-foreground">
+                        <h3 className="text-base sm:text-lg font-bold text-foreground">
                           {layer.name}
-                        </h4>
+                        </h3>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
                       <Icon
+                        aria-hidden="true"
                         className={`size-5 transition-colors ${
                           isSelected ? 'text-primary' : 'text-muted-foreground/60'
                         }`}
                       />
                       <ArrowRight
+                        aria-hidden="true"
                         className={`size-4 transition-transform ${
                           isSelected
                             ? 'text-primary translate-x-1'
@@ -199,7 +201,7 @@ export function WebsiteAnatomy() {
                       />
                     </div>
                   </div>
-                </div>
+                </button>
               )
             })}
           </div>

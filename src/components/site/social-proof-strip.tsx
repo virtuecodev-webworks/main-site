@@ -1,54 +1,51 @@
 'use client'
 
 import * as React from 'react'
-import { Award, CheckCircle2, Globe2, ShieldCheck, Star, Zap } from 'lucide-react'
+import { CheckCircle2, Clock, Code2, Globe2, ShieldCheck, Users } from 'lucide-react'
 import { LaunchBadge } from '@/components/site/launch-badge'
 
-const PROOF_METRICS = [
+const STUDIO_STANDARDS = [
   {
-    icon: Zap,
-    value: '100/100',
-    label: 'Lighthouse Performance SLA',
-    caption: 'Guaranteed sub-second edge loads',
-  },
-  {
-    icon: Star,
-    value: '5.0 / 5',
-    label: 'Verified Client Satisfaction',
-    caption: 'Across UK, EU, US & Africa',
+    icon: Users,
+    value: '1 : 1',
+    label: 'Direct Senior Engineers',
+    caption: 'No account managers or outsourced handoffs',
   },
   {
     icon: ShieldCheck,
-    value: '0 Plugins',
-    label: 'Zero Template Bloat',
-    caption: 'Pure TypeScript & Next.js 16',
+    value: '100%',
+    label: 'Source Code Ownership',
+    caption: 'Domain, codebase, and accounts belong to you',
+  },
+  {
+    icon: Code2,
+    value: '90+ CWV',
+    label: 'Core Web Vitals Target',
+    caption: 'Clean TypeScript & semantic HTML',
   },
   {
     icon: Globe2,
     value: '5 Locales',
-    label: 'Global Multilingual Ready',
-    caption: 'Multi-currency USD / GBP / NGN',
+    label: 'Multilingual & Multi-Currency',
+    caption: 'Settles in USD, GBP, EUR & NGN',
   },
 ]
 
-const CLIENT_VOICES = [
+const DELIVERY_CONDITIONS = [
   {
-    quote:
-      'Virtue & Co. transformed our Wix page into a royal digital palace. The VIP ticket flow and menu presentations elevated the prestige of our entire banquet.',
-    author: 'Moyosoluwa Benson',
-    role: 'Executive Director, Grace Empire UK',
+    title: 'Fixed-Scope Pricing',
+    body: 'Every project begins with a written scope and fixed price before work starts. Additions outside the agreed brief are quoted separately and only proceed with your approval.',
+    tag: 'Written quote upfront',
   },
   {
-    quote:
-      'Our international checkout conversion doubled within 14 days of launch. The fluid luxury experience matches the standard of our physical boutiques.',
-    author: 'Clara Delacroix',
-    role: 'Global E-Commerce Director, Maison Finery',
+    title: 'Performance & Accessibility Targets',
+    body: 'We engineer every custom page for 90+ Lighthouse Performance and Accessibility scores on delivered markup, excluding unoptimized third-party scripts or embeds added post-handover.',
+    tag: 'Measured before launch',
   },
   {
-    quote:
-      'Virtue & Co. replaced a 4-system banking labyrinth with a single fluid treasury interface. Our CFO allocates $25M in yield in under ten seconds.',
-    author: 'Julian Vane',
-    role: 'CIO, Aurum Private Treasury',
+    title: 'Timeline & 30-Day Support',
+    body: 'Delivery timelines start once scope, deposit, and required brand content are received. Every launch includes 30 days of free bug-fix support for delivered work.',
+    tag: '30-day warranty',
   },
 ]
 
@@ -59,21 +56,21 @@ export function SocialProofStrip() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
           <div>
             <span className="label-mono text-primary">
-              ( &nbsp;&nbsp;&nbsp;Verified Studio Outcomes&nbsp;&nbsp;&nbsp; )
+              ( &nbsp;&nbsp;&nbsp;Studio Commitments &amp; Standards&nbsp;&nbsp;&nbsp; )
             </span>
             <h2 className="heading-style-h2 mt-2">
-              Trusted by founders, luxury brands &amp; operators.
+              Clear terms, measurable targets, and direct engineering.
             </h2>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 self-start md:self-auto">
-            <CheckCircle2 className="size-3.5" />
-            <span>Fixed-price delivery · Direct senior engineers</span>
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-400 self-start md:self-auto">
+            <CheckCircle2 className="size-3.5" aria-hidden="true" />
+            <span>Fixed-price delivery · Direct senior team</span>
           </div>
         </div>
 
-        {/* 4 Telemetry Metrics */}
+        {/* 4 Studio Standards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          {PROOF_METRICS.map((item) => {
+          {STUDIO_STANDARDS.map((item) => {
             const Icon = item.icon
             return (
               <div
@@ -82,9 +79,9 @@ export function SocialProofStrip() {
               >
                 <div className="flex items-center justify-between">
                   <span className="flex size-9 items-center justify-center rounded-xl bg-primary/12 text-primary">
-                    <Icon className="size-4" />
+                    <Icon className="size-4" aria-hidden="true" />
                   </span>
-                  <Award className="size-3.5 text-muted-foreground/50" />
+                  <Clock className="size-3.5 text-muted-foreground/50" aria-hidden="true" />
                 </div>
                 <div>
                   <p className="font-display text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
@@ -103,30 +100,23 @@ export function SocialProofStrip() {
           <LaunchBadge theme="auto" variant="card" showLiveBeacon />
         </div>
 
-        {/* 3 Verified Client Quotes */}
+        {/* 3 Transparent Delivery Conditions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {CLIENT_VOICES.map((voice) => (
-            <blockquote
-              key={voice.author}
+          {DELIVERY_CONDITIONS.map((item) => (
+            <div
+              key={item.title}
               className="rounded-2xl border border-border bg-card p-6 flex flex-col justify-between gap-5"
             >
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-primary">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="size-3.5 fill-current" />
-                  ))}
-                </div>
-                <p className="text-sm leading-relaxed text-foreground/90">
-                  &ldquo;{voice.quote}&rdquo;
+              <div className="space-y-2.5">
+                <span className="label-mono-xs text-primary">{item.tag}</span>
+                <h3 className="font-display text-base font-semibold text-foreground">
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {item.body}
                 </p>
               </div>
-              <footer className="border-t border-border pt-4">
-                <div className="font-display text-sm font-semibold text-foreground">
-                  {voice.author}
-                </div>
-                <div className="text-xs text-muted-foreground mt-0.5">{voice.role}</div>
-              </footer>
-            </blockquote>
+            </div>
           ))}
         </div>
       </div>

@@ -62,7 +62,7 @@ export function Faq({ className, withHeading = true }: FaqProps) {
                       aria-expanded={isOpen}
                       aria-controls={panelId}
                       onClick={() => setOpen(isOpen ? null : key)}
-                      className="faq_question group flex w-full items-center justify-between gap-6 py-7 text-left transition-colors sm:py-8"
+                      className="faq_question group flex w-full items-center justify-between gap-6 py-7 text-start transition-colors sm:py-8"
                     >
                       <span className="flex items-baseline gap-4">
                         <span className="label-mono-xs text-muted-foreground">
@@ -100,7 +100,7 @@ export function Faq({ className, withHeading = true }: FaqProps) {
                         transition={{ duration: 0.4, ease: FAQ_EASE }}
                         className="overflow-hidden"
                       >
-                        <p className="pb-8 pl-8 max-w-[54ch] text-[15px] leading-relaxed text-muted-foreground">
+                        <p className="pb-8 ps-8 max-w-[54ch] text-[15px] leading-relaxed text-muted-foreground">
                           {t(`items.${key}.a`)}
                         </p>
                       </motion.div>

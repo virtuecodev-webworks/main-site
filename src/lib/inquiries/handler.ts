@@ -56,8 +56,11 @@ export async function handleInquiry(payload: unknown): Promise<InquiryResult> {
 
   const input = parsed.data
 
-  // Honeypot tripped: behave exactly like success so bots don't learn anything.
+  // Honeypot or instant bot-fill tripped: behave like success so bots don't learn anything.
   if (input.website) return { ok: true, code: 'ok' }
+  if (typeof input.startedAt === 'number' && Date.now() - input.startedAt < 1200) {
+    return { ok: true, code: 'ok' }
+  }
 
   const now = new Date().toISOString()
   const record: Inquiry = {

@@ -1,4 +1,5 @@
 import {
+  COUNTRIES,
   COUNTRY_COOKIE,
   DEFAULT_COUNTRY,
   GEO_COOKIE,
@@ -37,6 +38,71 @@ export const FALLBACK_REGION: RegionState = (() => {
   return { country, currency: country.currency, timezone: country.timezone, source: 'default' }
 })()
 
+const BY_TIMEZONE: Map<string, string> = (() => {
+  const map = new Map<string, string>()
+  for (const country of COUNTRIES) {
+    if (!map.has(country.timezone)) {
+      map.set(country.timezone, country.code)
+    }
+  }
+  const aliases: Record<string, string> = {
+    'America/Los_Angeles': 'US',
+    'America/Chicago': 'US',
+    'America/Denver': 'US',
+    'America/Phoenix': 'US',
+    'America/Anchorage': 'US',
+    'Pacific/Honolulu': 'US',
+    'America/Detroit': 'US',
+    'America/Vancouver': 'CA',
+    'America/Edmonton': 'CA',
+    'America/Winnipeg': 'CA',
+    'America/Halifax': 'CA',
+    'America/Montreal': 'CA',
+    'Australia/Melbourne': 'AU',
+    'Australia/Brisbane': 'AU',
+    'Australia/Perth': 'AU',
+    'Asia/Calcutta': 'IN',
+    'Asia/Saigon': 'VN',
+    'Europe/Kiev': 'UA',
+  }
+  for (const [tz, code] of Object.entries(aliases)) {
+    map.set(tz, code)
+  }
+  return map
+})()
+
+function inferCountryFromBrowser(): string | null {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+    if (tz) {
+      const fromTz = BY_TIMEZONE.get(tz)
+      if (fromTz && isSupportedCountry(fromTz)) return fromTz
+    }
+  } catch {
+    /* Intl timezone unavailable */
+  }
+
+  try {
+    const candidates = [
+      ...(Array.isArray(navigator.languages) ? navigator.languages : []),
+      navigator.language,
+    ].filter(Boolean)
+    for (const tag of candidates) {
+      const parts = tag.split(/[-_]/)
+      if (parts.length >= 2) {
+        const region = parts[parts.length - 1]?.toUpperCase()
+        if (region && /^[A-Z]{2}$/.test(region) && isSupportedCountry(region)) {
+          return region
+        }
+      }
+    }
+  } catch {
+    /* navigator unavailable */
+  }
+
+  return null
+}
+
 function readCookie(name: string): string | null {
   if (typeof document === 'undefined') return null
   const prefix = `${name}=`
@@ -61,11 +127,6 @@ export function buildRegion(code: string, source: RegionSource): RegionState {
 
 /**
  * Synchronous read of a region the browser already knows about.
- *
- * Returns `null` only when there is genuinely nothing cached, in which case the
- * caller falls back to a one-off lookup. This is what makes the common case — a
- * repeat visitor, or a first visit where the proxy has just set the cookie —
- * resolve with no round trip and no visible fallback.
  */
 export function readCachedRegion(): RegionState | null {
   const chosen = readCookie(COUNTRY_COOKIE)
@@ -78,8 +139,8 @@ export function readCachedRegion(): RegionState | null {
 }
 
 /**
- * Full resolution for when nothing is cached: the IP lookup, cached in a cookie
- * so it only ever happens once per visitor.
+ * Full resolution for when nothing is cached: IP geo header lookup first,
+ * followed by browser timezone/locale inference if the host has no geo headers.
  */
 export async function resolveRegion(): Promise<RegionState> {
   const cached = readCachedRegion()
@@ -95,7 +156,13 @@ export async function resolveRegion(): Promise<RegionState> {
       }
     }
   } catch {
-    /* Offline, or the request was blocked. The fallback is still settleable. */
+    /* Offline, or the request was blocked. Try browser inference below. */
+  }
+
+  const inferred = inferCountryFromBrowser()
+  if (inferred) {
+    writeCookie(GEO_COOKIE, inferred, REGION_COOKIE_MAX_AGE)
+    return buildRegion(inferred, 'detected')
   }
 
   return buildRegion(DEFAULT_COUNTRY, 'default')

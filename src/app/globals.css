@@ -629,8 +629,10 @@
     border-radius: 0;
   }
 
-  .vantra-input:focus {
-    outline: none;
+  .vantra-input:focus,
+  .vantra-input:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
     border-bottom-color: var(--primary);
   }
 

@@ -62,12 +62,11 @@ export async function CtaBand({ className }: { className?: string }) {
           </div>
 
           <div className="careers_actions flex flex-wrap items-center gap-3 shrink-0">
-            <VantraButton href="/contact" variant="gold">
+            <VantraButton href="/contact#quote-form" variant="gold">
               {t('primary')}
             </VantraButton>
             <VantraButton
-              href={`mailto:${AGENCY.email}?subject=Project%20enquiry`}
-              external
+              href="/contact?intent=call#quote-form"
               variant="light"
             >
               {t('secondary')}

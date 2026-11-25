@@ -78,6 +78,8 @@ export const inquirySchema = z.object({
     .min(10, 'Please tell us a little about your project (at least 10 characters)')
     .max(4000, 'Message is too long (maximum 4000 characters)'),
   locale: z.string().trim().min(2).max(8).default('en'),
+  /** Client mount timestamp used to silently filter instant sub-second bot submissions. */
+  startedAt: z.number().finite().optional().nullable(),
   /** Honeypot — real users never fill this, bots usually do. */
   website: z.string().max(0).optional().or(z.literal('')).or(z.null()),
 })
