@@ -30,7 +30,7 @@ export default async function SignupPage({ params }: { params: Promise<{ locale:
   const t = await getTranslations('Signup')
 
   return (
-    <AuthShell title={t('title')} subtitle={t('subtitle')}>
+    <AuthShell title={t('title')} subtitle={t('subtitle')} mode="signup">
       <React.Suspense
         fallback={
           <div className="flex items-center justify-center py-12">

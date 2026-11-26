@@ -34,6 +34,7 @@ export default async function ForgotPasswordPage({
     <AuthShell
       title="Reset your password"
       subtitle="Enter your email to receive recovery instructions."
+      mode="recovery"
     >
       <ForgotPasswordForm locale={locale} />
     </AuthShell>

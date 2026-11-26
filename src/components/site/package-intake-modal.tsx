@@ -25,13 +25,27 @@ interface PackageIntakeModalProps {
   service: AgencyServiceOffering | null
   pkg: ServicePackage | null
   currency?: CurrencyCode
+  discountPercent?: number
+  billingLabel?: string
 }
 
-function resolvePackagePrice(pkg: ServicePackage, currency: CurrencyCode): number {
-  if (currency === 'NGN') return pkg.priceNgn
-  if (currency === 'GBP') return Math.round(pkg.priceUsd * 0.8)
-  if (currency === 'EUR') return Math.round(pkg.priceUsd * 0.92)
-  return pkg.priceUsd
+function resolvePackagePrice(
+  pkg: ServicePackage,
+  currency: CurrencyCode,
+  discountPercent = 0,
+): number {
+  let base = pkg.priceUsd
+  if (currency === 'NGN') base = pkg.priceNgn
+  else if (currency === 'GBP') base = Math.round(pkg.priceUsd * 0.8)
+  else if (currency === 'EUR') base = Math.round(pkg.priceUsd * 0.92)
+
+  if (discountPercent > 0) {
+    const discounted = base * (1 - discountPercent / 100)
+    return currency === 'NGN'
+      ? Math.round(discounted / 1000) * 1000
+      : Math.round(discounted)
+  }
+  return base
 }
 
 export function PackageIntakeModal({
@@ -40,6 +54,8 @@ export function PackageIntakeModal({
   service,
   pkg,
   currency = 'USD',
+  discountPercent = 0,
+  billingLabel,
 }: PackageIntakeModalProps) {
   const locale = useLocale()
   const [step, setStep] = useState<1 | 2 | 3>(1)
@@ -74,7 +90,7 @@ export function PackageIntakeModal({
 
   if (!isOpen || !service || !pkg) return null
 
-  const price = resolvePackagePrice(pkg, currency)
+  const price = resolvePackagePrice(pkg, currency, discountPercent)
   const formattedPrice = formatMoney(price, currency, locale, { decimals: false })
 
   const handleNext = () => {
@@ -101,6 +117,9 @@ export function PackageIntakeModal({
 
     setSubmitting(true)
     try {
+      const billingNote = billingLabel
+        ? `\nBilling Mode: ${billingLabel}${discountPercent > 0 ? ` (${discountPercent}% upfront savings — ${formattedPrice})` : ` (${formattedPrice})`}`
+        : ''
       const res = await fetch('/api/orders/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -109,7 +128,7 @@ export function PackageIntakeModal({
           serviceTitle: service.title,
           tier: pkg.tier,
           projectName,
-          description,
+          description: `${description}${billingNote}`,
           targetAudience,
           referenceUrls,
           deadline,

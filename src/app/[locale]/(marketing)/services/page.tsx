@@ -7,6 +7,7 @@ import { ProjectEstimator } from '@/components/site/project-estimator'
 import { Faq } from '@/components/site/faq'
 import { CtaBand } from '@/components/site/cta-band'
 import { VantraButton } from '@/components/ui/vantra-button'
+import { BrandRadialBackdrop } from '@/components/ui/brand-radial-backdrop'
 import { PHOTOS } from '@/lib/photos'
 import { buildPageMetadata } from '@/lib/seo'
 
@@ -35,23 +36,24 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
   return (
     <>
       {/* 1. Vantra Rounded Services Hero (`section.section_services-hero`) */}
-      <section className="section_services-hero relative m-2 flex min-h-[74vh] flex-col justify-between overflow-hidden rounded-[20px] bg-[#0a0a0a] p-5 text-[#f5f4f0] sm:p-10">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+      <section className="section_services-hero relative isolate m-2 flex min-h-[74vh] flex-col justify-between overflow-hidden rounded-[20px] bg-[#0a0a0a] p-5 text-[#f5f4f0] sm:p-10">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
           <Image
             src={PHOTOS.services}
             alt={tPhotos('services.alt')}
             fill
             priority
             sizes="100vw"
-            className="object-cover opacity-45"
+            className="object-cover opacity-40"
           />
           <div
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(180deg, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.28) 42%, rgba(10,10,10,0.94) 100%)',
+                'linear-gradient(180deg, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.32) 42%, rgba(10,10,10,0.94) 100%)',
             }}
           />
+          <BrandRadialBackdrop className="z-0 opacity-65 mix-blend-screen" />
         </div>
 
         <div className="relative z-10 flex items-center justify-between pt-14 sm:pt-2">

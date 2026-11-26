@@ -4,6 +4,7 @@ import { Hero } from '@/components/site/hero'
 import { QuoteMarquee } from '@/components/site/quote-marquee'
 import { LiveStudioTracker } from '@/components/site/capabilities-band'
 import { ServiceShowcase } from '@/components/site/service-showcase'
+import { MarketplaceCatalog } from '@/components/site/marketplace-catalog'
 import { PortfolioGrid } from '@/components/site/portfolio-grid'
 import { SocialProofStrip } from '@/components/site/social-proof-strip'
 import { ProjectEstimator } from '@/components/site/project-estimator'
@@ -107,11 +108,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
 
           <ServiceShowcase />
+        </div>
+      </section>
 
-          {/* Live Interactive Price & Timeline Estimator */}
-          <div className="mt-16">
-            <ProjectEstimator />
-          </div>
+      {/* 8. Transparent Fixed-Price Packages */}
+      <div className="border-t border-border">
+        <MarketplaceCatalog />
+      </div>
+
+      {/* 9. Live Interactive Price & Timeline Estimator */}
+      <section className="padding-global padding-section border-t border-border">
+        <div className="container-max">
+          <ProjectEstimator />
         </div>
       </section>
 

@@ -2,55 +2,52 @@
 
 import * as React from 'react'
 import {
-  MailCheck,
-  UserPlus,
-  Sun,
-  Moon,
-  Laptop,
-  Clock,
   AlertCircle,
-  RefreshCw,
-  CheckCircle2,
-  Mail,
   ArrowRight,
-  ArrowLeft,
+  Building2,
+  Check,
+  CheckCircle2,
+  Clock,
+  Dot,
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  MailCheck,
+  Phone,
+  RefreshCw,
+  User,
 } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { VirtueSpinner } from '@/components/brand/virtue-spinner'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { signUpAction, verifyOtpAction, resendOtpAction } from '@/lib/actions/auth'
 import { SIGN_UP_IDLE } from '@/lib/actions/state'
 import { PwaInstallPrompt } from '@/components/pwa/pwa-install-prompt'
 import { CodeInput } from '@/components/auth/code-input'
-import { PasswordInput } from '@/components/auth/password-input'
 import { GoogleSignInButton } from '@/components/auth/google-sign-in-button'
-import { GoogleIcon } from '@/components/brand/google-icon'
-
-type ThemeChoice = 'light' | 'dark' | 'system'
+import { useAuthPortalHover } from '@/components/auth/auth-portal-shell'
+import { cn } from '@/lib/utils'
 
 /**
- * Client sign-up.
- *
- * First presents a clear choice between Google Sign-Up and Email Sign-Up.
- * When choosing email, users configure their preferred interface theme and password.
- * After email creation, prompts 6-digit verification code with live countdown.
+ * Client sign-up styled for the concentric orbital portal.
+ * Preserves full email + OTP verification, Google OAuth, and theme preference sync.
  */
 export function SignupForm({ locale }: { locale: string }) {
   const t = useTranslations('Signup')
   const searchParams = useSearchParams()
+  const { setHovering } = useAuthPortalHover()
+
   const paramEmail = searchParams.get('email') || ''
-  const initialMethod = searchParams.get('method') === 'email' || Boolean(paramEmail) ? 'email' : 'choose'
-  const [method, setMethod] = React.useState<'choose' | 'email'>(initialMethod)
 
   const [state, action, pending] = React.useActionState(signUpAction, SIGN_UP_IDLE)
-  const [preferredTheme, setPreferredTheme] = React.useState<ThemeChoice>('light')
+  const [preferredTheme, setPreferredTheme] = React.useState<'light' | 'dark' | 'system'>('light')
+  const [password, setPassword] = React.useState('')
+  const [showPassword, setShowPassword] = React.useState(false)
+  const [showConfirm, setShowConfirm] = React.useState(false)
 
   React.useEffect(() => {
-    // Read current theme from storage or default to light
     try {
       const stored = localStorage.getItem('vcw:theme')
       if (stored === 'dark' || stored === 'light' || stored === 'system') {
@@ -61,293 +58,192 @@ export function SignupForm({ locale }: { locale: string }) {
     }
   }, [])
 
-  const handleThemeChange = (choice: ThemeChoice) => {
-    setPreferredTheme(choice)
-    try {
-      localStorage.setItem('vcw:theme', choice)
-      const root = document.documentElement
-      if (choice === 'system') {
-        const dark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        root.classList.toggle('dark', dark)
-        root.style.colorScheme = dark ? 'dark' : 'light'
-      } else {
-        const isDark = choice === 'dark'
-        root.classList.toggle('dark', isDark)
-        root.style.colorScheme = isDark ? 'dark' : 'light'
-      }
-    } catch {
-      // ignore
-    }
-  }
-
   const errorText = state.status === 'error' ? t(`errors.${state.message}`) : null
 
-  // If user has submitted email signup, always stay in the OTP verification view
   if (state.status === 'confirm-email') {
     return <SignupVerificationStep email={state.email} locale={locale} />
   }
 
-  // Initial Choice View: Choose Google or Email
-  if (method === 'choose') {
-    return (
-      <div className="flex flex-col gap-5 font-sans">
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            Sign Up Options
-          </span>
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
-            Choose how you would like to create your client workspace.
-          </p>
-        </div>
+  const requirements = [
+    { label: '8+ chars', valid: password.length >= 8 },
+    { label: 'Number', valid: /[0-9]/.test(password) },
+    { label: 'Uppercase', valid: /[A-Z]/.test(password) },
+    { label: 'Symbol', valid: /[^A-Za-z0-9]/.test(password) },
+  ]
 
-        {/* Primary Option: Google */}
-        <div className="flex flex-col gap-2">
-          <GoogleSignInButton
-            locale={locale}
-            text="Sign up with Google"
-            subtext="Fastest · 1 click"
-          />
-        </div>
-
-        {/* Divider */}
-        <div className="relative my-1 flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border" />
-          </div>
-          <div className="relative bg-card px-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-            or continue with
-          </div>
-        </div>
-
-        {/* Secondary Option: Email Card */}
-        <button
-          type="button"
-          onClick={() => setMethod('email')}
-          className="group relative flex w-full items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 text-left transition-all hover:border-foreground/30 hover:bg-muted/40 active:scale-[0.99]"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gold-500/15 text-gold-700 dark:text-gold-300">
-              <Mail className="size-5" />
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[14px] font-semibold text-foreground">Sign up with Email</span>
-              </div>
-              <span className="text-[12px] text-muted-foreground">
-                Set a custom password and verify via 6-digit code
-              </span>
-            </div>
-          </div>
-          <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground shrink-0" />
-        </button>
-
-        {/* Legal Disclaimer */}
-        <p className="text-[11.5px] leading-relaxed text-muted-foreground pt-1">
-          {t.rich('legal', {
-            terms: (chunks) => (
-              <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
-                {chunks}
-              </Link>
-            ),
-            privacy: (chunks) => (
-              <Link href="/privacy" className="underline underline-offset-4 hover:text-foreground">
-                {chunks}
-              </Link>
-            ),
-          })}
-        </p>
-
-        {/* Link to Login */}
-        <p className="border-t border-border pt-4 text-[12.5px] text-muted-foreground">
-          {t('haveAccount')}{' '}
-          <Link
-            href="/login"
-            className="font-medium text-gold-700 underline-offset-4 hover:underline dark:text-gold-300"
-          >
-            {t('signIn')}
-          </Link>
-        </p>
-      </div>
-    )
-  }
-
-  // Email Sign Up Form View
   return (
-    <form action={action} className="flex flex-col gap-5 font-sans">
+    <form action={action} className="flex w-full flex-col gap-3 font-sans">
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="theme" value={preferredTheme} />
 
-      {/* Back to Options Banner */}
-      <div className="flex items-center justify-between border-b border-border pb-3">
-        <button
-          type="button"
-          onClick={() => setMethod('choose')}
-          className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="size-3.5" />
-          <span>All sign up options</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setMethod('choose')}
-          className="inline-flex items-center gap-1.5 text-[12px] font-medium text-gold-700 hover:underline dark:text-gold-300"
-        >
-          <GoogleIcon className="size-3.5" />
-          <span>Use Google instead</span>
-        </button>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="signup-name">{t('name')}</Label>
-        <Input
+      <label className="virtue-auth-field">
+        <User className="ic" aria-hidden="true" />
+        <input
           id="signup-name"
           name="fullName"
           autoComplete="name"
           required
           autoFocus
-          placeholder={t('namePlaceholder')}
+          aria-label={t('name')}
+          placeholder={t('namePlaceholder') ? `Full name (e.g. ${t('namePlaceholder')})` : t('name')}
         />
-      </div>
+      </label>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="signup-email">{t('email')}</Label>
-        <Input
+      <label className="virtue-auth-field">
+        <Mail className="ic" aria-hidden="true" />
+        <input
           id="signup-email"
           name="email"
           type="email"
           autoComplete="email"
           required
           defaultValue={paramEmail}
-          placeholder="you@company.com"
+          aria-label={t('email')}
+          placeholder={t('email')}
         />
+      </label>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label className="virtue-auth-field">
+          <Building2 className="ic" aria-hidden="true" />
+          <input
+            id="signup-company"
+            name="company"
+            autoComplete="organization"
+            aria-label={t('company')}
+            placeholder="Company (optional)"
+          />
+        </label>
+
+        <label className="virtue-auth-field">
+          <Phone className="ic" aria-hidden="true" />
+          <input
+            id="signup-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            aria-label={t('phone')}
+            placeholder="Phone (optional)"
+          />
+        </label>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="signup-company">
-          {t('company')} <span className="text-muted-foreground">{t('companyHint')}</span>
-        </Label>
-        <Input id="signup-company" name="company" autoComplete="organization" />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="signup-phone">
-          {t('phone')} <span className="text-muted-foreground">{t('phoneHint')}</span>
-        </Label>
-        <Input id="signup-phone" name="phone" type="tel" autoComplete="tel" />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="signup-password">{t('password')}</Label>
-        <PasswordInput
+      <div className="virtue-auth-field">
+        <Lock className="ic" aria-hidden="true" />
+        <input
           id="signup-password"
           name="password"
+          type={showPassword ? 'text' : 'password'}
           autoComplete="new-password"
           minLength={8}
           required
-          showRequirements
-          placeholder="Create a strong password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          aria-label={t('password')}
+          placeholder="Create password (8+ chars)"
         />
+        <button
+          type="button"
+          onClick={() => setShowPassword((prev) => !prev)}
+          tabIndex={-1}
+          aria-label={showPassword ? 'Hide password' : 'Show password'}
+          className="virtue-auth-eye"
+        >
+          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        </button>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="signup-confirm">{t('confirmPassword')}</Label>
-        <PasswordInput
+      {password.length > 0 && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-[11px]">
+          {requirements.map((req) => (
+            <span
+              key={req.label}
+              className={cn(
+                'inline-flex items-center gap-1 transition-colors',
+                req.valid ? 'font-medium text-gold-400' : 'text-[#f5f4f0]/45',
+              )}
+            >
+              {req.valid ? <Check className="size-3" /> : <Dot className="size-3" />}
+              {req.label}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="virtue-auth-field">
+        <Lock className="ic" aria-hidden="true" />
+        <input
           id="signup-confirm"
           name="confirmPassword"
+          type={showConfirm ? 'text' : 'password'}
           autoComplete="new-password"
           minLength={8}
           required
-          placeholder="Confirm your password"
+          aria-label={t('confirmPassword')}
+          placeholder={t('confirmPassword')}
         />
-      </div>
-
-      {/* Preferred Interface Theme Selector */}
-      <div className="flex flex-col gap-2 pt-1">
-        <Label className="text-xs font-semibold">Preferred Interface Theme</Label>
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            type="button"
-            onClick={() => handleThemeChange('light')}
-            className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border p-2.5 text-xs font-medium transition-all ${
-              preferredTheme === 'light'
-                ? 'border-primary bg-primary/10 text-primary shadow-sm font-semibold'
-                : 'border-border bg-card text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Sun className="h-4 w-4" />
-            <span>Light (Default)</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleThemeChange('dark')}
-            className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border p-2.5 text-xs font-medium transition-all ${
-              preferredTheme === 'dark'
-                ? 'border-primary bg-primary/10 text-primary shadow-sm font-semibold'
-                : 'border-border bg-card text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Moon className="h-4 w-4" />
-            <span>Dark</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleThemeChange('system')}
-            className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border p-2.5 text-xs font-medium transition-all ${
-              preferredTheme === 'system'
-                ? 'border-primary bg-primary/10 text-primary shadow-sm font-semibold'
-                : 'border-border bg-card text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Laptop className="h-4 w-4" />
-            <span>System</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setShowConfirm((prev) => !prev)}
+          tabIndex={-1}
+          aria-label={showConfirm ? 'Hide password' : 'Show password'}
+          className="virtue-auth-eye"
+        >
+          {showConfirm ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        </button>
       </div>
 
       {errorText ? (
-        <p className="text-[12.5px] text-destructive" role="alert">
+        <p className="text-[12.5px] text-[#ffb4ab]" role="alert">
           {errorText}
         </p>
       ) : null}
 
-      <Button type="submit" variant="gold" size="lg" disabled={pending} className="mt-2">
+      <button
+        type="submit"
+        disabled={pending}
+        onPointerEnter={() => setHovering(true)}
+        onPointerLeave={() => setHovering(false)}
+        className="virtue-auth-primary mt-1"
+      >
         {pending ? (
           <>
             <VirtueSpinner className="size-4" />
-            {t('submitting')}
+            <span>{t('submitting')}</span>
           </>
         ) : (
           <>
-            <UserPlus className="size-4" />
-            {t('submit')}
+            <span>{t('submit')}</span>
+            <ArrowRight aria-hidden="true" />
           </>
         )}
-      </Button>
+      </button>
 
-      <p className="text-[11.5px] leading-relaxed text-muted-foreground">
+      <div className="virtue-auth-or my-1">
+        <i />
+        <span>or</span>
+        <i />
+      </div>
+
+      <GoogleSignInButton
+        variant="portal"
+        locale={locale}
+        text="Continue with Google"
+      />
+
+      <p className="pt-1 text-center text-[11.5px] leading-relaxed text-[#f5f4f0]/50">
         {t.rich('legal', {
           terms: (chunks) => (
-            <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
+            <Link href="/terms" className="text-[#f5f4f0]/75 underline underline-offset-4 hover:text-gold-400">
               {chunks}
             </Link>
           ),
           privacy: (chunks) => (
-            <Link href="/privacy" className="underline underline-offset-4 hover:text-foreground">
+            <Link href="/privacy" className="text-[#f5f4f0]/75 underline underline-offset-4 hover:text-gold-400">
               {chunks}
             </Link>
           ),
         })}
-      </p>
-
-      <p className="border-t border-border pt-5 text-[12.5px] text-muted-foreground">
-        {t('haveAccount')}{' '}
-        <Link
-          href="/login"
-          className="font-medium text-gold-700 underline-offset-4 hover:underline dark:text-gold-300"
-        >
-          {t('signIn')}
-        </Link>
       </p>
     </form>
   )
@@ -357,7 +253,7 @@ export function SignupForm({ locale }: { locale: string }) {
  * 10-Minute Verification Step with live countdown and one-click resend.
  */
 function SignupVerificationStep({ email, locale }: { email: string; locale: string }) {
-  // 10 minutes = 600 seconds
+  const { setHovering } = useAuthPortalHover()
   const [timeLeft, setTimeLeft] = React.useState(600)
   const [otpError, setOtpError] = React.useState<string | null>(null)
   const [otpPending, setOtpPending] = React.useState(false)
@@ -365,7 +261,6 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
   const [resendStatus, setResendStatus] = React.useState<string | null>(null)
   const [codeKey, setCodeKey] = React.useState(0)
 
-  // 10-minute countdown timer
   React.useEffect(() => {
     if (timeLeft <= 0) return
     const timer = setInterval(() => {
@@ -413,7 +308,9 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
 
     if (res.ok) {
       setTimeLeft(600)
-      setResendStatus('A fresh 6-digit code has been sent to your email. You have 10 minutes to enter it.')
+      setResendStatus(
+        'A fresh 6-digit code has been sent to your email. You have 10 minutes to enter it.',
+      )
       setCodeKey((k) => k + 1)
     } else if ((res as { alreadyConfirmed?: boolean }).alreadyConfirmed) {
       setResendStatus(null)
@@ -427,25 +324,30 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
   }
 
   return (
-    <div className="flex flex-col gap-5 font-sans">
-      <div className="flex items-center gap-3 rounded-xl bg-gold-500/10 p-3.5 text-gold-800 ring-1 ring-gold-500/25 ring-inset dark:text-gold-300">
-        <MailCheck aria-hidden="true" className="size-5 shrink-0 text-gold-500" />
-        <p className="text-[13px] font-medium">Check your email for your 6-digit verification code</p>
+    <div className="flex w-full flex-col gap-4 font-sans">
+      <div className="flex items-center gap-3 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3.5 text-gold-200">
+        <MailCheck aria-hidden="true" className="size-5 shrink-0 text-gold-400" />
+        <p className="text-[13px] font-medium">
+          Check your email for your 6-digit verification code
+        </p>
       </div>
 
-      <p className="text-sm text-muted-foreground">
-        We sent a verification code to <strong className="text-foreground">{email}</strong>. Enter the 6-digit code below to activate your client workspace.
+      <p className="text-center text-sm text-[#f5f4f0]/70">
+        We sent a verification code to <strong className="text-[#f5f4f0]">{email}</strong>. Enter
+        the 6-digit code below to activate your client workspace.
       </p>
 
-      {/* Countdown timer badge */}
-      <div className="flex items-center justify-between rounded-xl bg-muted/60 px-3.5 py-2.5 text-xs text-muted-foreground border border-border/70">
+      <div className="flex items-center justify-between rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-xs text-[#f5f4f0]/70">
         <span className="flex items-center gap-2">
-          <Clock className="size-4 text-gold-500" />
+          <Clock className="size-4 text-gold-400" aria-hidden="true" />
           <span>
             {timeLeft > 0 ? (
-              <>Code valid for: <strong className="font-mono text-foreground font-bold">{formattedTime}</strong></>
+              <>
+                Code valid for:{' '}
+                <strong className="font-mono font-bold text-[#f5f4f0]">{formattedTime}</strong>
+              </>
             ) : (
-              <strong className="text-destructive font-semibold">Code has expired (00:00)</strong>
+              <strong className="font-semibold text-[#ffb4ab]">Code has expired (00:00)</strong>
             )}
           </span>
         </span>
@@ -455,7 +357,7 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
             type="button"
             onClick={handleResend}
             disabled={resendPending}
-            className="text-primary hover:underline font-semibold disabled:opacity-50 text-[11.5px]"
+            className="text-[11.5px] font-semibold text-gold-400 hover:underline disabled:opacity-50"
           >
             {resendPending ? 'Sending...' : 'Resend code'}
           </button>
@@ -463,8 +365,8 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
       </div>
 
       {resendStatus ? (
-        <div className="flex items-start gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-800 dark:text-gold-300">
-          <CheckCircle2 className="size-4 shrink-0 mt-0.5 text-gold-500" />
+        <div className="flex items-start gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-200">
+          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-gold-400" aria-hidden="true" />
           <p>{resendStatus}</p>
         </div>
       ) : null}
@@ -474,36 +376,45 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
         <input type="hidden" name="locale" value={locale} />
 
         <div className="flex flex-col gap-2">
-          <Label className="sr-only">6-Digit Verification Code</Label>
+          <span className="sr-only">6-Digit Verification Code</span>
           <CodeInput key={codeKey} name="token" autoFocus disabled={timeLeft <= 0} />
         </div>
 
         {otpError ? (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive flex items-start gap-2">
-            <AlertCircle className="size-4 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2 rounded-xl border border-destructive/40 bg-destructive/15 p-3 text-xs text-[#ffb4ab]">
+            <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <p className="font-medium">{otpError}</p>
           </div>
         ) : null}
 
         {timeLeft > 0 ? (
-          <Button type="submit" variant="gold" size="lg" disabled={otpPending} className="w-full">
+          <button
+            type="submit"
+            disabled={otpPending}
+            onPointerEnter={() => setHovering(true)}
+            onPointerLeave={() => setHovering(false)}
+            className="virtue-auth-primary"
+          >
             {otpPending ? (
               <>
                 <VirtueSpinner className="size-4" />
                 <span>Verifying...</span>
               </>
             ) : (
-              <span>Verify &amp; Enter Portal</span>
+              <>
+                <span>Verify &amp; Enter Portal</span>
+                <ArrowRight aria-hidden="true" />
+              </>
             )}
-          </Button>
+          </button>
         ) : (
-          <Button
+          <button
             type="button"
-            variant="gold"
-            size="lg"
             onClick={handleResend}
             disabled={resendPending}
-            className="w-full flex items-center justify-center gap-2"
+            onPointerEnter={() => setHovering(true)}
+            onPointerLeave={() => setHovering(false)}
+            className="virtue-auth-primary"
           >
             {resendPending ? (
               <>
@@ -512,24 +423,23 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
               </>
             ) : (
               <>
-                <RefreshCw className="size-4" />
+                <RefreshCw className="size-4" aria-hidden="true" />
                 <span>Request a New Code</span>
               </>
             )}
-          </Button>
+          </button>
         )}
       </form>
 
-      {/* PWA App Install & Notification prompt upon account creation */}
       <PwaInstallPrompt autoShow />
 
-      <div className="flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
+      <div className="flex items-center justify-between border-t border-white/10 pt-4 text-xs text-[#f5f4f0]/60">
         <span>Didn&apos;t receive it?</span>
         <button
           type="button"
           onClick={handleResend}
           disabled={resendPending}
-          className="font-semibold text-primary hover:underline disabled:opacity-50"
+          className="font-semibold text-gold-400 hover:underline disabled:opacity-50"
         >
           {resendPending ? 'Sending...' : 'Request another code'}
         </button>

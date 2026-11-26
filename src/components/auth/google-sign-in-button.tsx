@@ -11,6 +11,7 @@ interface GoogleSignInButtonProps {
   text?: string
   subtext?: string
   next?: string
+  variant?: 'default' | 'portal'
   className?: string
 }
 
@@ -19,6 +20,7 @@ export function GoogleSignInButton({
   text = 'Continue with Google',
   subtext,
   next,
+  variant = 'default',
   className = '',
 }: GoogleSignInButtonProps) {
   const [loading, setLoading] = React.useState(false)
@@ -68,13 +70,19 @@ export function GoogleSignInButton({
     }
   }
 
+  const isPortal = variant === 'portal'
+
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex w-full flex-col gap-2">
       <button
         type="button"
         onClick={handleGoogleSignIn}
         disabled={loading}
-        className={`group relative flex w-full items-center justify-center gap-3 rounded-2xl border border-border bg-card px-4 py-3.5 text-[14px] font-semibold text-foreground shadow-xs transition-all hover:border-foreground/30 hover:bg-muted/50 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+        className={
+          isPortal
+            ? `virtue-auth-soc ${className}`
+            : `group relative flex w-full items-center justify-center gap-3 rounded-2xl border border-border bg-card px-4 py-3.5 text-[14px] font-semibold text-foreground shadow-xs transition-all hover:border-foreground/30 hover:bg-muted/50 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 ${className}`
+        }
       >
         {loading ? (
           <>

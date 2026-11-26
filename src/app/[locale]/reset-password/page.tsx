@@ -29,6 +29,7 @@ export default async function ResetPasswordPage({
     <AuthShell
       title="Create new password"
       subtitle="Choose a secure password for your account."
+      mode="recovery"
     >
       <ResetPasswordForm locale={locale} />
     </AuthShell>

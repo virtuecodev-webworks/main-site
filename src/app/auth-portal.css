@@ -1,0 +1,506 @@
+/* ==========================================================================
+   Virtue & Co. Webworks — Concentric Orbital Auth Portal (`.virtue-auth`)
+   Deep Obsidian Ink (#0a0a0a) + Warm Bone (#f5f4f0) + Rich Brand Gold (#dcaa28)
+   ========================================================================== */
+
+.virtue-auth {
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #0a0a0a;
+  color: #f5f4f0;
+  font-family: var(--font-instrument-sans), var(--font-sans), sans-serif;
+
+  /* Override theme tokens locally so child forms/inputs/buttons always stay legible on obsidian */
+  --background: #0a0a0a;
+  --foreground: #f5f4f0;
+  --card: #121215;
+  --card-foreground: #f5f4f0;
+  --popover: #141416;
+  --popover-foreground: #f5f4f0;
+  --muted: #18181b;
+  --muted-foreground: rgba(245, 244, 240, 0.62);
+  --border: rgba(245, 244, 240, 0.14);
+  --input: rgba(245, 244, 240, 0.16);
+  --primary: #dcaa28;
+  --primary-foreground: #191308;
+  --ring: #e8bb3f;
+  --tx: 0px;
+  --ty: 0px;
+}
+
+/* Central radial gold bloom shifted by pointer parallax */
+.virtue-auth-glow {
+  position: fixed;
+  inset: -25%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    circle at 50% 48%,
+    rgba(220, 170, 40, 0.24) 0%,
+    rgba(184, 134, 11, 0.08) 32%,
+    rgba(10, 10, 10, 0) 64%
+  );
+  transform: translate3d(calc(var(--tx, 0px) * 1.4), calc(var(--ty, 0px) * 1.4), 0);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0.85;
+}
+
+.virtue-auth.is-hovering .virtue-auth-glow {
+  opacity: 1;
+  filter: brightness(1.18);
+}
+
+/* Centered concentric orbital SVG */
+.virtue-auth-rings {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: max(135vmax, 1320px);
+  height: max(135vmax, 1320px);
+  pointer-events: none;
+  z-index: 1;
+  transform: translate3d(
+    calc(-50% + var(--tx, 0px)),
+    calc(-50% + var(--ty, 0px)),
+    0
+  );
+  will-change: transform;
+}
+
+.virtue-auth-rings .base {
+  fill: none;
+  stroke: rgba(245, 244, 240, 0.075);
+  stroke-width: 1.1;
+}
+
+.virtue-auth-rings .arc {
+  fill: none;
+  stroke: url(#virtue-arc-gradient);
+  stroke-width: 1.85;
+  stroke-linecap: round;
+  transform-origin: 1000px 1000px;
+  animation: virtue-ring-spin var(--duration, 48s) linear infinite;
+  opacity: 0.72;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.virtue-auth-rings .arc.reverse {
+  animation-direction: reverse;
+}
+
+.virtue-auth.is-hovering .virtue-auth-rings .arc {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(220, 170, 40, 0.5));
+}
+
+.virtue-auth-rings .wave {
+  fill: none;
+  stroke: rgba(220, 170, 40, 0.35);
+  stroke-width: 1.2;
+  transform-origin: 1000px 1000px;
+  animation: virtue-ring-wave 8.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.virtue-auth-rings .wave-b {
+  animation-delay: -4.25s;
+}
+
+@keyframes virtue-ring-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes virtue-ring-wave {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+
+/* Header */
+.virtue-auth-top {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.35rem clamp(1.1rem, 3.5vw, 2.75rem);
+}
+
+.virtue-auth-join {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.8125rem;
+  color: rgba(245, 244, 240, 0.65);
+}
+
+.virtue-auth-join a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #f5f4f0;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(245, 244, 240, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
+}
+
+.virtue-auth-join a:hover {
+  border-color: rgba(220, 170, 40, 0.65);
+  color: #f7d863;
+  background: rgba(220, 170, 40, 0.09);
+}
+
+.virtue-auth-join a svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  transition: transform 0.25s ease;
+}
+
+.virtue-auth-join a:hover svg {
+  transform: translateX(2px);
+}
+
+/* Center Column */
+.virtue-auth-col {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  padding: 1.25rem 1.25rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.virtue-auth-mark {
+  margin-bottom: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.virtue-auth-title {
+  font-family: var(--font-inter), var(--font-display), sans-serif;
+  font-size: clamp(1.75rem, 3.2vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  color: #f5f4f0;
+  text-align: center;
+}
+
+.virtue-auth-sub {
+  margin-top: 0.5rem;
+  margin-bottom: 1.6rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: rgba(245, 244, 240, 0.62);
+  text-align: center;
+  max-width: 36ch;
+}
+
+.virtue-auth-body {
+  width: 100%;
+}
+
+/* Sleek glass icon-prefixed input field */
+.virtue-auth-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  height: 3.1rem;
+  padding: 0 0.9rem;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(245, 244, 240, 0.14);
+  background: rgba(18, 18, 22, 0.72);
+  backdrop-filter: blur(14px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.virtue-auth-field:hover {
+  border-color: rgba(245, 244, 240, 0.26);
+}
+
+.virtue-auth-field:focus-within {
+  border-color: #dcaa28;
+  background: rgba(20, 20, 24, 0.92);
+  box-shadow: 0 0 0 3px rgba(220, 170, 40, 0.18);
+}
+
+.virtue-auth-field[data-invalid='true'] {
+  border-color: rgba(229, 118, 109, 0.75);
+  box-shadow: 0 0 0 3px rgba(229, 118, 109, 0.16);
+}
+
+.virtue-auth-field .ic {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  color: rgba(245, 244, 240, 0.5);
+  transition: color 0.25s ease;
+}
+
+.virtue-auth-field:focus-within .ic {
+  color: #e8bb3f;
+}
+
+.virtue-auth-field input {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f5f4f0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.virtue-auth-field input::placeholder {
+  color: rgba(245, 244, 240, 0.42);
+  font-weight: 400;
+}
+
+/* Override browser dark-mode autofill yellow/white background */
+.virtue-auth-field input:-webkit-autofill,
+.virtue-auth-field input:-webkit-autofill:hover,
+.virtue-auth-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f5f4f0;
+  -webkit-box-shadow: 0 0 0 1000px #141418 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.virtue-auth-eye {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  border-radius: 0.5rem;
+  color: rgba(245, 244, 240, 0.5);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.virtue-auth-eye:hover {
+  color: #f5f4f0;
+}
+
+.virtue-auth-forgot {
+  align-self: flex-end;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(245, 244, 240, 0.65);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.virtue-auth-forgot:hover {
+  color: #e8bb3f;
+}
+
+/* Primary Gold CTA */
+.virtue-auth-primary {
+  width: 100%;
+  height: 3.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(247, 216, 99, 0.55);
+  background: linear-gradient(180deg, #e8bb3f 0%, #dcaa28 60%, #b8860b 100%);
+  color: #191308;
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow: 0 10px 28px -8px rgba(220, 170, 40, 0.5);
+  transition: transform 0.2s ease, filter 0.25s ease, box-shadow 0.25s ease;
+}
+
+.virtue-auth-primary:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow: 0 14px 34px -6px rgba(220, 170, 40, 0.65);
+}
+
+.virtue-auth-primary:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.virtue-auth-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.virtue-auth-primary svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.virtue-auth-primary:hover:not(:disabled) svg {
+  transform: translateX(3px);
+}
+
+/* Divider */
+.virtue-auth-or {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 244, 240, 0.42);
+}
+
+.virtue-auth-or i {
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: rgba(245, 244, 240, 0.12);
+}
+
+/* Social Auth Button */
+.virtue-auth-soc {
+  width: 100%;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(245, 244, 240, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  color: #f5f4f0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.2s ease;
+}
+
+.virtue-auth-soc:hover:not(:disabled) {
+  border-color: rgba(245, 244, 240, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.virtue-auth-soc:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.virtue-auth-soc:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Footer */
+.virtue-auth-foot {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.2rem clamp(1.1rem, 3.5vw, 2.75rem);
+  font-size: 0.78rem;
+  color: rgba(245, 244, 240, 0.48);
+}
+
+.virtue-auth-foot nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.virtue-auth-foot a {
+  color: rgba(245, 244, 240, 0.62);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.virtue-auth-foot a:hover {
+  color: #e8bb3f;
+}
+
+/* Entrance stagger */
+.virtue-auth-rise {
+  animation: virtue-rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.virtue-auth-rise-1 {
+  animation-delay: 0.04s;
+}
+.virtue-auth-rise-2 {
+  animation-delay: 0.09s;
+}
+.virtue-auth-rise-3 {
+  animation-delay: 0.14s;
+}
+
+@keyframes virtue-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 540px) {
+  .virtue-auth-join span {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .virtue-auth-rings .arc,
+  .virtue-auth-rings .wave,
+  .virtue-auth-rise {
+    animation: none !important;
+  }
+  .virtue-auth-glow,
+  .virtue-auth-rings {
+    transform: translate3d(-50%, -50%, 0);
+  }
+  .virtue-auth-glow {
+    transform: none;
+  }
+}

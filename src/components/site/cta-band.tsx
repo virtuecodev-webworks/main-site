@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { Reveal } from '@/components/motion/reveal'
 import { VantraButton } from '@/components/ui/vantra-button'
+import { BrandRadialBackdrop } from '@/components/ui/brand-radial-backdrop'
 import { AGENCY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
@@ -13,25 +14,9 @@ export async function CtaBand({ className }: { className?: string }) {
 
   return (
     <Reveal className={cn('w-full', className)}>
-      <section className="section_careers relative isolate flex min-h-[76vh] flex-col justify-between overflow-hidden rounded-t-[28px] bg-[#14161B] px-5 py-16 text-[#f5f4f0] sm:rounded-t-[40px] sm:px-10 sm:py-24">
-        {/* Atmospheric architectural backdrop & vignette */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              'radial-gradient(85% 90% at 78% 18%, rgba(220, 170, 40, 0.22) 0%, rgba(220, 170, 40, 0.04) 48%, rgba(10, 10, 10, 0.96) 100%)',
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.12]"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, rgba(245,244,240,0.16) 1px, transparent 1px), linear-gradient(to bottom, rgba(245,244,240,0.16) 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
-        />
+      <section className="section_careers relative isolate flex min-h-[76vh] flex-col justify-between overflow-hidden rounded-t-[28px] bg-[#0a0a0a] px-5 py-16 text-[#f5f4f0] sm:rounded-t-[40px] sm:px-10 sm:py-24">
+        {/* Branded radial horizon backdrop & architectural hairline grid */}
+        <BrandRadialBackdrop subtleGrid />
 
         {/* Top Meta Bar */}
         <div className="container-max relative z-10 flex w-full flex-wrap items-center justify-between gap-4 border-b border-[#f5f4f01f] pb-6">

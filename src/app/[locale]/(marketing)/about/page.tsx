@@ -4,6 +4,7 @@ import { Check } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { CtaBand } from '@/components/site/cta-band'
 import { VantraButton } from '@/components/ui/vantra-button'
+import { BrandRadialBackdrop } from '@/components/ui/brand-radial-backdrop'
 import { Reveal } from '@/components/motion/reveal'
 import { LaunchBadge } from '@/components/site/launch-badge'
 import { PHOTOS } from '@/lib/photos'
@@ -156,7 +157,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       {/* 3. Vantra "By the Numbers" Snapshot Section (`section.section_snapshot`) */}
       <section className="section_snapshot padding-global py-8">
         <div className="container-max">
-          <div className="profile_panel overflow-hidden rounded-[20px] bg-[#0a0a0a] p-7 text-[#f5f4f0] sm:p-14">
+          <div className="profile_panel relative isolate overflow-hidden rounded-[20px] bg-[#0a0a0a] p-7 text-[#f5f4f0] sm:p-14">
+            <BrandRadialBackdrop subtleGrid />
             <div className="grid grid-cols-1 gap-10 border-b border-[#f5f4f01f] pb-12 lg:grid-cols-12 lg:items-end">
               <div className="lg:col-span-7">
                 <span className="label-mono text-primary">

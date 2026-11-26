@@ -2,6 +2,7 @@
 @import 'tw-animate-css';
 @import './glassy-dashboard.css';
 @import './goride-site.css';
+@import './auth-portal.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
