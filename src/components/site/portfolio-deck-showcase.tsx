@@ -208,14 +208,9 @@ export function PortfolioDeckShowcase({
                 {String(visible.length).padStart(2, '0')} )
               </span>
               {active && (
-                <>
-                  <span className="inline-flex items-center rounded-full border border-primary/40 bg-primary/12 px-2.5 py-0.5 text-[11px] font-semibold tracking-wider text-primary uppercase">
-                    {active.kind === 'concept' ? 'Interactive Demo' : 'Client Project'}
-                  </span>
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {t(`filters.${active.category}`)} · {active.year}
-                  </span>
-                </>
+                <span className="text-xs font-medium text-muted-foreground">
+                  {t(`filters.${active.category}`)} · {active.year}
+                </span>
               )}
             </div>
 
@@ -249,8 +244,8 @@ export function PortfolioDeckShowcase({
             <TumbleDeckShowcase
               deckRef={deckRef}
               cards={deckCards}
-              height="clamp(360px, 58svh, 580px)"
-              aspect={1.95}
+              height="clamp(480px, 80svh, 880px)"
+              aspect={1.85}
               depth={Math.min(5, Math.max(2, deckCards.length - 1))}
               onActiveIndexChange={setActiveIndex}
               ariaLabel="Virtue & Co. website portfolio showcase"
@@ -286,7 +281,7 @@ export function PortfolioDeckShowcase({
 
                 <div className="flex shrink-0 flex-wrap items-center gap-2.5">
                   <VantraButton href={`/portfolio/${active.slug}`} variant="gold" size="sm">
-                    {active.kind === 'concept' ? 'Inspect Demo' : 'Read Case Study'}
+                    View Case Study
                   </VantraButton>
 
                   {active.liveUrl && active.liveUrl !== 'hidden' ? (

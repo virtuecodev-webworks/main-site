@@ -180,13 +180,14 @@ export default function TumbleDeckShowcase({
     const fit = () => {
       const W0 = root.clientWidth
       const H0 = root.clientHeight
-      const wFrac = W0 < 420 ? 0.8 : 0.655
-      const h = Math.max(60, Math.min((W0 * wFrac) / aspect, H0 * 0.42, 620))
-      const w = h * aspect
-      const top = H0 / 2 - 0.62 * h
-      geo.current = { h, gap: 0.24 * h }
-      scene.style.perspective = `${6 * h}px`
-      scene.style.perspectiveOrigin = `50% ${top - 1.66 * h}px`
+      const wFrac = W0 < 640 ? 0.92 : W0 < 1024 ? 0.88 : 0.84
+      const effectiveAspect = W0 < 640 ? Math.min(aspect, 1.45) : aspect
+      const h = Math.max(120, Math.min((W0 * wFrac) / effectiveAspect, H0 * 0.56, 720))
+      const w = h * effectiveAspect
+      const top = H0 * 0.5 - 0.52 * h
+      geo.current = { h, gap: 0.19 * h }
+      scene.style.perspective = `${5.4 * h}px`
+      scene.style.perspectiveOrigin = `50% ${top - 1.45 * h}px`
       root.style.setProperty('--td-w', `${w}px`)
       root.style.setProperty('--td-h', `${h}px`)
       root.style.setProperty('--td-top', `${top}px`)
