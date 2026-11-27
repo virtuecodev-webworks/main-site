@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { VirtueSpinner } from '@/components/brand/virtue-spinner'
+import { VirtueGlassReveal } from '@/components/ui/glass-icon-reveal'
 import { cn } from '@/lib/utils'
 
 /**
@@ -22,13 +22,22 @@ export function RouteLoader({
       role="status"
       aria-live="polite"
       className={cn(
-        'grid w-full place-items-center px-6',
-        fullscreen ? 'min-h-dvh' : 'min-h-[70vh] py-24',
+        'grid w-full place-items-center bg-[#f5f4f0] px-6 dark:bg-[#0a0a0a]',
+        fullscreen ? 'min-h-dvh' : 'min-h-[70vh] py-20',
         className,
       )}
     >
-      <div className="flex flex-col items-center gap-5">
-        <VirtueSpinner className="size-12 text-gold-500" />
+      <div className="flex flex-col items-center gap-3">
+        <VirtueGlassReveal
+          loop
+          speed={1.4}
+          tileSize={148}
+          className="size-44 sm:size-52"
+          tuning={{
+            present: 1.7,
+            glide: 1.5,
+          }}
+        />
         <p className="text-[11px] font-medium tracking-[0.3em] text-muted-foreground uppercase">
           {t('loading')}
         </p>

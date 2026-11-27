@@ -5,7 +5,7 @@ import { QuoteMarquee } from '@/components/site/quote-marquee'
 import { LiveStudioTracker } from '@/components/site/capabilities-band'
 import { ServiceShowcase } from '@/components/site/service-showcase'
 import { MarketplaceCatalog } from '@/components/site/marketplace-catalog'
-import { PortfolioGrid } from '@/components/site/portfolio-grid'
+import { PortfolioDeckShowcase } from '@/components/site/portfolio-deck-showcase'
 import { SocialProofStrip } from '@/components/site/social-proof-strip'
 import { ProjectEstimator } from '@/components/site/project-estimator'
 import { Faq } from '@/components/site/faq'
@@ -31,10 +31,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations('Home')
   const tCommon = await getTranslations('Common')
 
-  const featured = await getFeaturedProjects(4)
+  const featured = await getFeaturedProjects(8)
 
-  // Show only 2 flagship projects on the homepage to avoid clutter
-  const projects = mergeWithShowcaseProjects(featured.map(toProjectCard)).slice(0, 2)
+  // Present all flagship & featured projects in the interactive 3D Tumble Deck
+  const projects = mergeWithShowcaseProjects(featured.map(toProjectCard))
 
   return (
     <>
@@ -64,7 +64,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
           </div>
 
-          <PortfolioGrid projects={projects} showFilters={false} />
+          <PortfolioDeckShowcase projects={projects} />
 
           {/* Explicit callout to see all other projects */}
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-border bg-card p-6 sm:p-8">

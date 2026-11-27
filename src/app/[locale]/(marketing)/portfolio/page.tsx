@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PageHero } from '@/components/site/page-hero'
-import { PortfolioGrid } from '@/components/site/portfolio-grid'
+import { PortfolioDeckShowcase } from '@/components/site/portfolio-deck-showcase'
 import { ProjectFolders } from '@/components/site/project-folders'
 import { CtaBand } from '@/components/site/cta-band'
 import { getPublishedProjects } from '@/lib/supabase/queries'
@@ -49,7 +49,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
               Entries labelled <strong className="font-semibold text-primary">Interactive Demo</strong> are studio-built concept applications you can test live in your browser to evaluate our UI and engineering craft. Published client engagements link directly to their live production domains.
             </p>
           </div>
-          <PortfolioGrid projects={projects} headingLevel={2} floatingFilter />
+          <PortfolioDeckShowcase projects={projects} headingLevel={2} showFilters showViewToggle />
         </div>
       </section>
 

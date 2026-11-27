@@ -6,6 +6,7 @@ import { PageTransition } from '@/components/motion/page-transition'
 import { SmoothScroll } from '@/components/motion/smooth-scroll'
 import { RegionProvider } from '@/components/site/region-provider'
 import { NewsletterPopup } from '@/components/site/newsletter-popup'
+import { BrandLoader } from '@/components/site/brand-loader'
 
 /**
  * Marketing shell: public header, footer and the route transition.
@@ -20,6 +21,7 @@ import { NewsletterPopup } from '@/components/site/newsletter-popup'
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <RegionProvider>
+      <BrandLoader label="Loading Virtue & Co. Webworks" />
       <SmoothScroll>
         <div className="gr-site-shell flex min-h-dvh flex-col">
           <SiteHeader />

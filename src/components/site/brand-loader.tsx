@@ -2,29 +2,25 @@
 
 import * as React from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { VirtueMark } from '@/components/brand/virtue-mark'
+import { VirtueGlassReveal } from '@/components/ui/glass-icon-reveal'
 
 export interface BrandLoaderProps {
   label: string
 }
 
 /**
- * First-load architectural brand veil — the precision illustrated logo motion is the preloader.
+ * First-load architectural brand veil — WebGL2 liquid-glass Virtue monogram reveal.
  */
-export function BrandLoader({ label }: { label: string }) {
+export function BrandLoader({ label }: BrandLoaderProps) {
   const prefersReducedMotion = useReducedMotion()
   const [visible, setVisible] = React.useState(true)
 
   React.useEffect(() => {
-    if (prefersReducedMotion) {
-      setVisible(false)
-      return
-    }
+    if (prefersReducedMotion) return
 
-    // Play full smooth 1.5s architectural draw
     const timer = window.setTimeout(() => {
       setVisible(false)
-    }, 1500)
+    }, 2450)
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === ' ') {
@@ -40,13 +36,13 @@ export function BrandLoader({ label }: { label: string }) {
   }, [prefersReducedMotion])
 
   React.useEffect(() => {
-    if (!visible) return
+    if (!visible || prefersReducedMotion) return
     const previous = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
       document.body.style.overflow = previous
     }
-  }, [visible])
+  }, [visible, prefersReducedMotion])
 
   const show = visible && !prefersReducedMotion
 
@@ -59,30 +55,32 @@ export function BrandLoader({ label }: { label: string }) {
           aria-live="polite"
           aria-label={label}
           onClick={() => setVisible(false)}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-background cursor-pointer select-none font-sans"
+          className="fixed inset-0 z-[100] flex cursor-pointer flex-col items-center justify-center overflow-hidden bg-[#f5f4f0] font-sans select-none dark:bg-[#0a0a0a]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.02 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Subtle clean grid backdrop */}
-          <div
-            aria-hidden
-            className="grid-backdrop pointer-events-none absolute inset-0 opacity-20 [mask-image:radial-gradient(circle_at_50%_50%,#000_50%,transparent_100%)]"
-          />
-
-          <div className="relative flex flex-col items-center gap-6">
-            {/* Architectural Monogram Logo with frame-accurate drawing */}
-            <div className="relative h-24 w-24">
-              <VirtueMark className="h-full w-full shadow-lg" animate delay={0.05} />
-            </div>
+          <div className="relative flex flex-col items-center gap-3">
+            {/* WebGL2 Liquid-Glass Virtue Logo Reveal */}
+            <VirtueGlassReveal
+              className="h-56 w-56 sm:h-64 sm:w-64"
+              tileSize={220}
+              loop={false}
+              speed={1.45}
+              tuning={{
+                present: 1.85,
+                glide: 1.65,
+                startZoom: 2.3,
+              }}
+            />
 
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
+              transition={{ duration: 0.45, delay: 0.35 }}
               className="flex flex-col items-center gap-1.5"
             >
-              <span className="font-sans font-bold text-lg tracking-tight text-foreground">
+              <span className="font-display text-lg font-bold tracking-tight text-foreground">
                 Virtue <span className="text-primary">&amp;</span> Co.
               </span>
               <span className="font-sans text-xs font-semibold tracking-[0.3em] text-muted-foreground uppercase">
@@ -97,7 +95,7 @@ export function BrandLoader({ label }: { label: string }) {
               className="h-full bg-primary"
               initial={{ scaleX: 0, originX: 0 }}
               animate={{ scaleX: 1 }}
-              transition={{ duration: 1.45, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 2.35, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
 
