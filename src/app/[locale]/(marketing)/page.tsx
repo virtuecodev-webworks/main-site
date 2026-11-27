@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Hero } from '@/components/site/hero'
 import { QuoteMarquee } from '@/components/site/quote-marquee'
-import { LiveStudioTracker } from '@/components/site/capabilities-band'
 import { ServiceShowcase } from '@/components/site/service-showcase'
 import { MarketplaceCatalog } from '@/components/site/marketplace-catalog'
 import { PortfolioDeckShowcase } from '@/components/site/portfolio-deck-showcase'
@@ -83,10 +82,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* 4. Live Build Tracker */}
-      <LiveStudioTracker />
-
-      {/* 6. Verified Client Outcomes & Social Proof */}
+      {/* 4. Verified Client Outcomes & Social Proof */}
       <SocialProofStrip />
 
       {/* 7. Services Showcase */}
