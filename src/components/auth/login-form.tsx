@@ -44,8 +44,8 @@ export function LoginForm({ locale }: { locale: string }) {
       <input type="hidden" name="locale" value={locale} />
 
       {isConfirmed ? (
-        <div className="flex items-center gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-200">
-          <CheckCircle2 className="size-4 shrink-0 text-gold-400" aria-hidden="true" />
+        <div className="flex items-center gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-800 dark:text-gold-200">
+          <CheckCircle2 className="size-4 shrink-0 text-gold-600 dark:text-gold-400" aria-hidden="true" />
           <p className="font-medium">
             Account verified successfully! Please sign in with your password.
           </p>
@@ -53,8 +53,8 @@ export function LoginForm({ locale }: { locale: string }) {
       ) : null}
 
       {isReset ? (
-        <div className="flex items-center gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-200">
-          <CheckCircle2 className="size-4 shrink-0 text-gold-400" aria-hidden="true" />
+        <div className="flex items-center gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-800 dark:text-gold-200">
+          <CheckCircle2 className="size-4 shrink-0 text-gold-600 dark:text-gold-400" aria-hidden="true" />
           <p className="font-medium">
             Password updated! Please sign in with your new password.
           </p>
@@ -62,7 +62,7 @@ export function LoginForm({ locale }: { locale: string }) {
       ) : null}
 
       {isOauthError ? (
-        <div className="flex items-start gap-2.5 rounded-xl border border-destructive/40 bg-destructive/15 p-3 text-xs text-[#ffb4ab]">
+        <div className="flex items-start gap-2.5 rounded-xl border border-destructive/35 bg-destructive/10 p-3 text-xs text-destructive">
           <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <p className="font-medium">
             {oauthMsg ||
@@ -119,11 +119,11 @@ export function LoginForm({ locale }: { locale: string }) {
       {state.status === 'error' && state.message === 'not-registered' ? (
         <div className="flex flex-col gap-2.5 rounded-xl border border-gold-500/35 bg-gold-500/10 p-4">
           <div className="flex items-start gap-2.5">
-            <AlertCircle className="mt-0.5 size-4 shrink-0 text-gold-400" aria-hidden="true" />
+            <AlertCircle className="mt-0.5 size-4 shrink-0 text-gold-600 dark:text-gold-400" aria-hidden="true" />
             <div>
-              <p className="text-xs font-semibold text-[#f5f4f0]">Account Not Found</p>
-              <p className="mt-0.5 text-xs text-[#f5f4f0]/70">
-                The email <strong className="text-[#f5f4f0]">{email}</strong> has not been
+              <p className="text-xs font-semibold text-foreground">Account Not Found</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                The email <strong className="text-foreground">{email}</strong> has not been
                 registered yet.
               </p>
             </div>
@@ -136,7 +136,7 @@ export function LoginForm({ locale }: { locale: string }) {
           </Link>
         </div>
       ) : error ? (
-        <p className="text-[12.5px] text-[#ffb4ab]" role="alert">
+        <p className="text-[12.5px] text-destructive" role="alert">
           {error}
         </p>
       ) : null}

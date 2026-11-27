@@ -154,13 +154,15 @@ export function SignupForm({ locale }: { locale: string }) {
       </div>
 
       {password.length > 0 && (
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-[11px]">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-border bg-card/80 px-3 py-2 text-[11px] backdrop-blur-sm">
           {requirements.map((req) => (
             <span
               key={req.label}
               className={cn(
                 'inline-flex items-center gap-1 transition-colors',
-                req.valid ? 'font-medium text-gold-400' : 'text-[#f5f4f0]/45',
+                req.valid
+                  ? 'font-medium text-gold-700 dark:text-gold-400'
+                  : 'text-muted-foreground',
               )}
             >
               {req.valid ? <Check className="size-3" /> : <Dot className="size-3" />}
@@ -194,7 +196,7 @@ export function SignupForm({ locale }: { locale: string }) {
       </div>
 
       {errorText ? (
-        <p className="text-[12.5px] text-[#ffb4ab]" role="alert">
+        <p className="text-[12.5px] text-destructive" role="alert">
           {errorText}
         </p>
       ) : null}
@@ -231,15 +233,21 @@ export function SignupForm({ locale }: { locale: string }) {
         text="Continue with Google"
       />
 
-      <p className="pt-1 text-center text-[11.5px] leading-relaxed text-[#f5f4f0]/50">
+      <p className="pt-1 text-center text-[11.5px] leading-relaxed text-muted-foreground">
         {t.rich('legal', {
           terms: (chunks) => (
-            <Link href="/terms" className="text-[#f5f4f0]/75 underline underline-offset-4 hover:text-gold-400">
+            <Link
+              href="/terms"
+              className="text-foreground/80 underline underline-offset-4 hover:text-gold-700 dark:hover:text-gold-400"
+            >
               {chunks}
             </Link>
           ),
           privacy: (chunks) => (
-            <Link href="/privacy" className="text-[#f5f4f0]/75 underline underline-offset-4 hover:text-gold-400">
+            <Link
+              href="/privacy"
+              className="text-foreground/80 underline underline-offset-4 hover:text-gold-700 dark:hover:text-gold-400"
+            >
               {chunks}
             </Link>
           ),
@@ -325,29 +333,29 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
 
   return (
     <div className="flex w-full flex-col gap-4 font-sans">
-      <div className="flex items-center gap-3 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3.5 text-gold-200">
-        <MailCheck aria-hidden="true" className="size-5 shrink-0 text-gold-400" />
+      <div className="flex items-center gap-3 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3.5 text-gold-800 dark:text-gold-200">
+        <MailCheck aria-hidden="true" className="size-5 shrink-0 text-gold-600 dark:text-gold-400" />
         <p className="text-[13px] font-medium">
           Check your email for your 6-digit verification code
         </p>
       </div>
 
-      <p className="text-center text-sm text-[#f5f4f0]/70">
-        We sent a verification code to <strong className="text-[#f5f4f0]">{email}</strong>. Enter
+      <p className="text-center text-sm text-muted-foreground">
+        We sent a verification code to <strong className="text-foreground">{email}</strong>. Enter
         the 6-digit code below to activate your client workspace.
       </p>
 
-      <div className="flex items-center justify-between rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-xs text-[#f5f4f0]/70">
+      <div className="flex items-center justify-between rounded-xl border border-border bg-card/80 px-3.5 py-2.5 text-xs text-muted-foreground backdrop-blur-sm">
         <span className="flex items-center gap-2">
-          <Clock className="size-4 text-gold-400" aria-hidden="true" />
+          <Clock className="size-4 text-gold-600 dark:text-gold-400" aria-hidden="true" />
           <span>
             {timeLeft > 0 ? (
               <>
                 Code valid for:{' '}
-                <strong className="font-mono font-bold text-[#f5f4f0]">{formattedTime}</strong>
+                <strong className="font-mono font-bold text-foreground">{formattedTime}</strong>
               </>
             ) : (
-              <strong className="font-semibold text-[#ffb4ab]">Code has expired (00:00)</strong>
+              <strong className="font-semibold text-destructive">Code has expired (00:00)</strong>
             )}
           </span>
         </span>
@@ -357,7 +365,7 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
             type="button"
             onClick={handleResend}
             disabled={resendPending}
-            className="text-[11.5px] font-semibold text-gold-400 hover:underline disabled:opacity-50"
+            className="text-[11.5px] font-semibold text-gold-700 hover:underline disabled:opacity-50 dark:text-gold-400"
           >
             {resendPending ? 'Sending...' : 'Resend code'}
           </button>
@@ -365,8 +373,8 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
       </div>
 
       {resendStatus ? (
-        <div className="flex items-start gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-200">
-          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-gold-400" aria-hidden="true" />
+        <div className="flex items-start gap-2.5 rounded-xl border border-gold-500/30 bg-gold-500/10 p-3 text-xs text-gold-800 dark:text-gold-200">
+          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-gold-600 dark:text-gold-400" aria-hidden="true" />
           <p>{resendStatus}</p>
         </div>
       ) : null}
@@ -381,7 +389,7 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
         </div>
 
         {otpError ? (
-          <div className="flex items-start gap-2 rounded-xl border border-destructive/40 bg-destructive/15 p-3 text-xs text-[#ffb4ab]">
+          <div className="flex items-start gap-2 rounded-xl border border-destructive/35 bg-destructive/10 p-3 text-xs text-destructive">
             <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <p className="font-medium">{otpError}</p>
           </div>
@@ -433,13 +441,13 @@ function SignupVerificationStep({ email, locale }: { email: string; locale: stri
 
       <PwaInstallPrompt autoShow />
 
-      <div className="flex items-center justify-between border-t border-white/10 pt-4 text-xs text-[#f5f4f0]/60">
+      <div className="flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
         <span>Didn&apos;t receive it?</span>
         <button
           type="button"
           onClick={handleResend}
           disabled={resendPending}
-          className="font-semibold text-gold-400 hover:underline disabled:opacity-50"
+          className="font-semibold text-gold-700 hover:underline disabled:opacity-50 dark:text-gold-400"
         >
           {resendPending ? 'Sending...' : 'Request another code'}
         </button>

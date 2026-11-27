@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { VirtueMark } from '@/components/brand/virtue-mark'
 import { VirtueWordmark } from '@/components/brand/virtue-wordmark'
+import { ThemeToggle } from '@/components/theme/theme-toggle'
 
 const RING_SIZES = [300, 372, 452, 542, 644, 758, 884, 1000] as const
 
@@ -103,7 +104,7 @@ export function AuthPortalShell({
               x2="1700"
               y2="1700"
             >
-              <stop stopColor="#f7d863" />
+              <stop stopColor="#e8bb3f" />
               <stop offset="0.55" stopColor="#dcaa28" />
               <stop offset="1" stopColor="#8a6608" />
             </linearGradient>
@@ -139,42 +140,48 @@ export function AuthPortalShell({
         {/* Top Bar */}
         <header className="virtue-auth-top">
           <Link href="/" aria-label="Virtue & Co. Webworks Home">
-            <VirtueWordmark tone="invert" />
+            <VirtueWordmark />
           </Link>
 
-          <div className="virtue-auth-join">
-            {mode === 'login' ? (
-              <>
-                <span>New to Virtue &amp; Co.?</span>
-                <Link href="/signup">
-                  Create account
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              </>
-            ) : mode === 'signup' ? (
-              <>
-                <span>Already have an account?</span>
-                <Link href="/login">
-                  Sign in
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              </>
-            ) : (
-              <>
-                <span>Remembered your password?</span>
-                <Link href="/login">
-                  Back to sign in
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              </>
-            )}
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <ThemeToggle
+              label="Toggle theme"
+              className="size-9 rounded-full border border-border bg-card/75 backdrop-blur-md"
+            />
+            <div className="virtue-auth-join">
+              {mode === 'login' ? (
+                <>
+                  <span>New to Virtue &amp; Co.?</span>
+                  <Link href="/signup">
+                    Create account
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                </>
+              ) : mode === 'signup' ? (
+                <>
+                  <span>Already have an account?</span>
+                  <Link href="/login">
+                    Sign in
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <span>Remembered your password?</span>
+                  <Link href="/login">
+                    Back to sign in
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </header>
 
         {/* Center Portal Column */}
         <main className="virtue-auth-col">
           <div className="virtue-auth-mark virtue-auth-rise">
-            <VirtueMark className="size-12" animate={false} tone="invert" />
+            <VirtueMark className="size-12" animate={false} />
           </div>
 
           <h1 className="virtue-auth-title virtue-auth-rise virtue-auth-rise-1">
